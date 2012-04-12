@@ -500,7 +500,7 @@ MatrixGeneric<T> MatrixGeneric<T>::operator* (const MatrixGeneric<T>& matrix) co
 
     // if dimension of this is (m,n) and dimension of matrix is (n,o), the
     // dimension of the product will be (m,o).
-    // P(r,c) = sum(i=0, n, this(r,i)*matrix(i,c)
+    // P(r,c) = sum( i=0, n, this(r,i)*matrix(i,c) )
     MatrixGeneric<T> temp(rows, matrix.cols);
 
     try
