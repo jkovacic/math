@@ -111,7 +111,7 @@ public:
     static unsigned int leastCommonMultiple(unsigned int first, unsigned int second);
 
 private:
-    // Reduces the fraction (divides numerator and denominator by ther greatest common divisor)
+    // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
     void reduce();
     // Auxilary function that calculates unreduced numerator of difference of two fraction
     // Only its sign actually matters, so it returns -1, 0 or 1
