@@ -178,7 +178,7 @@ T SqMatrixGeneric<T>::determinant() const throw(MatrixException)
      */
 
     // Initial value. It will be negated each time two lines need to be swapped.
-    // At the end of the algorithm it will be multiplied by all diagnal elements
+    // At the end of the algorithm it will be multiplied by all diagonal elements
     T retVal = (T) 1;
 
     try
