@@ -58,9 +58,9 @@ bool NumericUtil<T>::isZero(T value)
 {
     bool retVal = false;
     // quick definition of an absolute value
-    T absValue = ( value>=0 ? value: -value );
+    T absValue = ( value>=0 ? value : -value );
 
-    retVal = (absValue < EPS ? true: false );
+    retVal = (absValue < EPS ? true : false );
 
     return retVal;
 }
