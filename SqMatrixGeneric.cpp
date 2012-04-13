@@ -131,7 +131,7 @@ void SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixException)
         {
             for ( j=0; j<N; j++ )
             {
-                    this->elems.at(ELM(i, j)) = ( 0 == i-j ? scalar : (T) 0 );
+                this->elems.at(ELM(i, j)) = ( 0 == i-j ? scalar : (T) 0 );
             } // for j
         } // for i
     }  // try
