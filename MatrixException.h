@@ -31,7 +31,7 @@ Declaration of the class MatrixException
 
 struct MatrixException : public IMathException
 {
-    /// Enum with possible eror codes
+    /// Enum with possible error codes
     enum err_codes {
         FORBIDDEN,                  /// Operation is forbidden for this type of a matrix
         OUT_OF_MEMORY,              /// Could not allocate enough memory
