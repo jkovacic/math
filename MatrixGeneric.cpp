@@ -323,7 +323,7 @@ MatrixGeneric<T> MatrixGeneric<T>::operator+ (const MatrixGeneric<T>& matrix) co
 }
 
 /**
- * Adition operator (+=) that adds a matrix to this and assigns the sum to itself.
+ * Addition operator (+=) that adds a matrix to this and assigns the sum to itself.
  * Both matrices must have the same dimension (equal number of rows and columns)
  *
  * @param matrix to be added to this one
