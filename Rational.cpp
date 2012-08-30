@@ -26,7 +26,6 @@ limitations under the License.
 
 #include "Rational.h"
 
-#include <iostream>
 #include <limits.h>
 
 /**
@@ -116,9 +115,11 @@ unsigned int Rational::getDenominator() const
  * @param numerator (default: 0)
  * @param denominator (default: 1)
  *
+ * @return reference to itself
+ *
  * @throw RationalException when attempting to set a zero denominator
  */
-void Rational::set(int numerator, int denominator) throw(RationalException)
+Rational& Rational::set(int numerator, int denominator) throw(RationalException)
 {
     // Check for zero denominator
     if ( 0 == denominator )
@@ -144,16 +145,19 @@ void Rational::set(int numerator, int denominator) throw(RationalException)
 
     // and finally reduce the fraction
     reduce();
+
+    return *this;
 } // Rational::set
 
 /**
  * Outputs the fraction to stdout in form 'num/den'
  *
  * @param factor (default: 1): optional, if set, both members will be multiplied by it
+ * @param str (default cout): output stream, the fraction will be dislayed
  */
-void Rational::display(int factor) const
+void Rational::display(int factor, std::ostream& str) const
 {
-    std::cout << num*factor << '/' << denom*factor;
+    str << num*factor << '/' << denom*factor;
 }
 
 /**
@@ -254,9 +258,11 @@ Rational Rational::invert() const throw(RationalException)
  * Modifies the fraction with its inverse value (swaps the numerator and denominator).
  * If the numerator equals zero, this is not possible so an exception will be thrown.
  *
+ * @return reference to itself
+ * 
  * @throw RationalException if attempting to invert a fraction whose numerator equals zero
  */
-void Rational::inverse() throw(RationalException)
+Rational& Rational::inverse() throw(RationalException)
 {
     // Check if inversion is possible (num!=0)
     if ( 0 == num )
@@ -267,6 +273,8 @@ void Rational::inverse() throw(RationalException)
 
     // inversion is possible, swap the fractions num. and denom.
     set(denom, num);
+
+    return *this;
 } // Rational::inverse
 
 /**
@@ -719,7 +727,7 @@ std::ostream& operator<<(std::ostream& output, const Rational& frac)
 }
 
 /**
- * An auxilary function that reduces the fraction:
+ * An auxiliary function that reduces the fraction:
  * divides the numerator and denominator by their greatest common divisor
  */
 void Rational::reduce()
@@ -826,7 +834,7 @@ unsigned int Rational::leastCommonMultiple(unsigned int first, unsigned int seco
 } // Rational::leastCommonMultiple
 
 /**
- * An auxilary function that calculates (unreduced) numerator of (this-frac).
+ * An auxiliary function that calculates (unreduced) numerator of (this-frac).
  * It is only needed by comparison operators who actually only need to know its sign
  *
  * @param fraction
@@ -862,7 +870,7 @@ int Rational::sign(const Rational& frac) const
 }
 
 /**
- * Auxilary function to calculate a sum of two products.
+ * Auxiliary function to calculate a sum of two products.
  * It checks for integer overflows and throws an exception in this case.
  *
  * The result is actually an unreduced numerator of a sum of two fractions,
@@ -890,7 +898,7 @@ int Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(RationalE
 }
 
 /**
- * Auxilary function to calcuate a product of two integer numbers.
+ * Auxiliary function to calcuate a product of two integer numbers.
  * It checks for integer overflows and throws an exception in this case.
  *
  * @param first

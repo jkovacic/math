@@ -42,8 +42,8 @@ public:
     SqMatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
     
     // Several methods to create diagonal matrices
-    void setDiag(const T& scalar) throw(MatrixException);
-    void setUnit() throw(MatrixException);
+    MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
+    MatrixGeneric<T>& setUnit() throw(MatrixException);
 
     // Determinant of the matrix
     T determinant() const throw(MatrixException);
@@ -53,10 +53,10 @@ public:
 
     // The following functions inherited from the parent class
     // are not applicable for square matrices and throw an exception
-    void removeRow(unsigned int rowNr) throw (MatrixException);
-    void removeColumn(unsigned int colNr) throw (MatrixException);
-    void insertRow(unsigned int rowNr) throw (MatrixException);
-    void insertColumn(unsigned int colNr) throw (MatrixException);
+    MatrixGeneric<T>& removeRow(unsigned int rowNr) throw (MatrixException);
+    MatrixGeneric<T>& removeColumn(unsigned int colNr) throw (MatrixException);
+    MatrixGeneric<T>& insertRow(unsigned int rowNr) throw (MatrixException);
+    MatrixGeneric<T>& insertColumn(unsigned int colNr) throw (MatrixException);
 };
 
 // Matrices with elements of types float and double make most sense

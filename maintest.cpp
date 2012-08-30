@@ -265,8 +265,8 @@ void matrixTest()
     {
         // Create a matrix. f(1,0) should be set to 0 by constructor
         FMatrix f(2,3);
-        f.set(0, 0, 1.0f);      f.set(0, 1, 0.5f);      f.set(0, 2, 4.5f);
-        /*f(1,0)=*/             f.set(1, 1, 1.0f);      f.set(1, 2, 0.4f);
+        f.set(0, 0, 1.0f).set(0, 1, 0.5f).set(0, 2, 4.5f);
+        /*f(1,0)=0*/    f.set(1, 1, 1.0f).set(1, 2, 0.4f);
         cout << "f:" << endl;
         f.display();
 
@@ -340,8 +340,8 @@ void matrixTest()
         // Test of copy constructor
         // SqMatrix's copy constructor must accept generic matrices where rows == cols
         FMatrix sq(2, 2);
-        sq.set(0,0,1);      sq.set(0,1,2);
-        sq.set(1,0,3);      sq.set(1,1,4);
+        sq.set(0,0,1).set(0,1,2);
+        sq.set(1,0,3).set(1,1,4);
         FSqMatrix kv(sq);
         cout << "kv:" << endl;
         kv.display();
@@ -355,9 +355,9 @@ void matrixTest()
 
         // Square matrix to test determinant and inverse
         FSqMatrix a1(3);
-        a1.set(0, 0, 1.0f);     a1.set(0, 1, 2.0f);     a1.set(0, 2, 3.0f);
-        a1.set(1, 0, 4.0f);     a1.set(1, 1, 5.0f);     a1.set(1, 2, 6.0f);
-        a1.set(2, 0, 7.0f);     a1.set(2, 1, 9.0f);     a1.set(2, 2, 8.0f);
+        a1.set(0, 0, 1.0f).set(0, 1, 2.0f).set(0, 2, 3.0f);
+        a1.set(1, 0, 4.0f).set(1, 1, 5.0f).set(1, 2, 6.0f);
+        a1.set(2, 0, 7.0f).set(2, 1, 9.0f).set(2, 2, 8.0f);
 
         // Test calculation of the determinant
         float d = a1.determinant();

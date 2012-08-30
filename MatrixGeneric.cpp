@@ -29,7 +29,6 @@ limitations under the License.
 #include <new>
 #include <stdexcept>
 #include <limits.h>
-#include <iostream>
 
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"
@@ -198,10 +197,12 @@ T MatrixGeneric<T>::get(unsigned int row, unsigned int column) const throw (Matr
  * @param column  column of the element to modify
  * @param element value to be assigned at the requested location
  *
+ * @return reference to itself
+ *
  * @throw MatrixException if input parameters are out of range
  */
 template<class T>
-void MatrixGeneric<T>::set(unsigned int row, unsigned int column, const T& element) throw (MatrixException)
+MatrixGeneric<T>& MatrixGeneric<T>::set(unsigned int row, unsigned int column, const T& element) throw (MatrixException)
 {
     // Check of input parameters
     if ( row >= rows || column >= cols )
@@ -218,15 +219,19 @@ void MatrixGeneric<T>::set(unsigned int row, unsigned int column, const T& eleme
     {
         throw MatrixException(MatrixException::OUT_OF_RANGE);
     }
+
+    return *this;
 }  // MatrixGeneric::set
 
 /**
  * Display the matrix to stdout
  *
+ * @param str - output stream where the matrix will be displayed (default: cout)
+ *
  * @throw MatrixException if attempting to access an element out of allocated range
  */
 template<class T>
-void MatrixGeneric<T>::display() const throw (MatrixException)
+void MatrixGeneric<T>::display(std::ostream& str) const throw (MatrixException)
 {
     try
     {
@@ -237,7 +242,7 @@ void MatrixGeneric<T>::display() const throw (MatrixException)
         // This does not guarantee that elements of the same column will be
         // displayed under each other and in case of a long row (its output
         // is longer than terminal's line width), the overall output may look rather
-        // confusing. However, this is more or less "just" an auxilary function, mainly used for
+        // confusing. However, this is more or less "just" an auxiliary function, mainly used for
         // testing purposes, and the effort was focused to other functionalities.
         // Anyway, it would be nice to improve it in future.
         for ( r=0; r<rows; r++ )
@@ -245,10 +250,10 @@ void MatrixGeneric<T>::display() const throw (MatrixException)
             // display elements of the row r, separated by tabs
             for ( c=0; c<cols; c++ )
             {
-                std::cout << elems.at(POS(r, c)) << "\t";
+                str << elems.at(POS(r, c)) << "\t";
             }
             // the line must be terminated by a newline
-            std::cout << std::endl;
+            str << std::endl;
         } // for r
     } // try
     catch ( std::out_of_range& oor )
@@ -628,10 +633,12 @@ MatrixGeneric<T> MatrixGeneric<T>::transpose() const throw (MatrixException)
   *
   * @param rowNr - the row number to remove
   *
+  * @return reference to itself
+  *
   * @throw MatrixException if attempting to remove the nonexistent row
   */
 template<class T>
-void MatrixGeneric<T>::removeRow(unsigned int rowNr) throw (MatrixException)
+MatrixGeneric<T>& MatrixGeneric<T>::removeRow(unsigned int rowNr) throw (MatrixException)
 {
     // Check of input parameters.
     // The matrix must contain at least two rows (as the updated matrix must still
@@ -649,6 +656,8 @@ void MatrixGeneric<T>::removeRow(unsigned int rowNr) throw (MatrixException)
 
     // Elements have been removed, update the number of rows
     rows--;
+
+    return *this;
 }
 
  /**
@@ -657,10 +666,12 @@ void MatrixGeneric<T>::removeRow(unsigned int rowNr) throw (MatrixException)
   *
   * @param colNr - the column number to remove
   *
+  * @return reference to itself
+  *
   * @throw MatrixException if attempting to remove the nonexistent column
   */
 template<class T>
-void MatrixGeneric<T>::removeColumn(unsigned int colNr) throw (MatrixException)
+MatrixGeneric<T>& MatrixGeneric<T>::removeColumn(unsigned int colNr) throw (MatrixException)
 {
     // Checking of input parameters. The matrix must contain at least 2 columns
     // as the result must still contain at least one. colNr must be
@@ -683,6 +694,8 @@ void MatrixGeneric<T>::removeColumn(unsigned int colNr) throw (MatrixException)
 
     // All required elements have been removed, now update the number of columns
     cols--;
+
+    return *this;
 }
 
 /**
@@ -692,10 +705,12 @@ void MatrixGeneric<T>::removeColumn(unsigned int colNr) throw (MatrixException)
   *
   * @param rowNr - a row will be inserted in front of this row. Valid values between 0 and rows
   *
+  * @return reference to itself
+  *
   * @throw MatrixException if invalid rowNr or if reallocation fails
   */
 template<class T>
-void MatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixException)
+MatrixGeneric<T>& MatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixException)
 {
     // a valid rowNr value is between 0 and rows (incl.)
     if ( rowNr > rows )
@@ -726,6 +741,8 @@ void MatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixException)
 
     // Insertion was successful, update the number of rows
     rows++;
+
+    return *this;
 }
 
 /**
@@ -735,10 +752,12 @@ void MatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixException)
   *
   * @param colNr - a column will be inserted in front of this column. Valid values between 0 and cols
   *
+  * @return reference to itself
+  *
   * @throw MatrixException if invalid colNr or if reallocation fails
   */
 template<class T>
-void MatrixGeneric<T>::insertColumn(unsigned int colNr) throw (MatrixException)
+MatrixGeneric<T>& MatrixGeneric<T>::insertColumn(unsigned int colNr) throw (MatrixException)
 {
     // A valid colNr is between 0 and cols (incl.)
     if ( colNr > cols )
@@ -776,6 +795,8 @@ void MatrixGeneric<T>::insertColumn(unsigned int colNr) throw (MatrixException)
 
     // Insertion successful, update the number of columns
     cols++;
+
+    return *this;
 }
 
 /**

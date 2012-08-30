@@ -27,6 +27,8 @@ Declaration of the class MatrixGeneric, representing generic matrices.
 #define	_MATRIXGENERIC_H_
 
 #include <vector>
+#include <iostream>
+
 #include "MatrixException.h"
 
 // Templates are used to allow several types (T) of matrix elements.
@@ -75,10 +77,10 @@ public:
 
     // Get and set the element of the specified row and column
     T get(unsigned int row, unsigned int column) const throw (MatrixException);
-    void set(unsigned int row, unsigned int column, const T& element) throw (MatrixException);
+    MatrixGeneric<T>& set(unsigned int row, unsigned int column, const T& element) throw (MatrixException);
 
     // Display elements of the matrix
-    void display() const throw (MatrixException);
+    void display(std::ostream& str = std::cout) const throw (MatrixException);
 
     // Matrix arithmetics operators
     MatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
@@ -96,10 +98,10 @@ public:
     MatrixGeneric<T> transpose() const throw (MatrixException);
 
     // Insert or remove rows/columns.
-    virtual void removeRow(unsigned int rowNr) throw (MatrixException);
-    virtual void removeColumn(unsigned int colNr) throw (MatrixException);
-    virtual void insertRow(unsigned int rowNr) throw (MatrixException);
-    virtual void insertColumn(unsigned int colNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& removeRow(unsigned int rowNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& removeColumn(unsigned int colNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertRow(unsigned int rowNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertColumn(unsigned int colNr) throw (MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();

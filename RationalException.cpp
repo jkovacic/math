@@ -26,10 +26,6 @@ Implementation of the class RationalException
 
 #include "RationalException.h"
 
-#include <iostream>
-
-using namespace std;
-
 /**
  * Constructor
  *
@@ -42,30 +38,32 @@ RationalException::RationalException(err_codes err)
 
 /**
  * Outputs a short error description to stdout
+ *
+ * @param str - stream, the error description will be written in (default: cerr)
  */
-void RationalException::display() const
+void RationalException::display(std::ostream& str) const
 {
     switch (error)
     {
         case ZERO_DENOMINATOR:
-            cerr << "Zero denominator is forbidden.";
+            str << "Zero denominator is forbidden.";
             break;
         case UNINVERTIBLE:
-            cerr << "Uninvertible fraction.";
+            str << "Uninvertible fraction.";
             break;
         case DIVIDE_BY_ZERO:
-            cerr << "Attempt of division by zero.";
+            str << "Attempt of division by zero.";
             break;
         case OVERFLOW:
-            cerr << "Operation caused an integer overflow.";
+            str << "Operation caused an integer overflow.";
             break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and
             // this function hasn't been updated?
-            cerr << "Strange, unspecified error.";
+            str << "Strange, unspecified error.";
     }  // switch
 
     // Output a newline character at the end.
-    cerr << endl;
+    str << std::endl;
 }

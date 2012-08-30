@@ -42,7 +42,7 @@ struct RationalException : public IMathException
     // Constructor
     RationalException(err_codes err);
     // Output a short description of the error
-    void display() const;
+    void display(std::ostream& str = std::cerr) const;
 };
 
 #endif	/* RATIONALEXCEPTION_H */

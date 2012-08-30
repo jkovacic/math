@@ -114,10 +114,12 @@ SqMatrixGeneric<T>& SqMatrixGeneric<T>::operator= (const MatrixGeneric<T>& m) th
  *
  * @param scalar - value of diagonal elements
  *
+ * @return reference to itself
+ *
  * @throw MatrixException
  */
 template<class T>
-void SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixException)
+MatrixGeneric<T>& SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixException)
 {
     // A double for loop will traverse the matrix, its diagonal elements
     // (row == column) will be set to the scalar, others to 0
@@ -139,19 +141,25 @@ void SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixException)
     {
         throw MatrixException(MatrixException::OUT_OF_RANGE);
     }
+
+    return *this;
 }
 
 /**
  * Modifies the matrix into a unit matrix (a diagonal matrix with ones on the diagonal)
  *
+ * @return reference to itself
+ *
  * @throw MatrixException
  */
 template<class T>
-void SqMatrixGeneric<T>::setUnit() throw(MatrixException)
+MatrixGeneric<T>& SqMatrixGeneric<T>::setUnit() throw(MatrixException)
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal
     setDiag((T) 1);
+
+    return *this;
 }
 
 /**
@@ -458,25 +466,25 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
  * Therefore they will automatically throw an exception if called.
  */
 template<class T>
-void SqMatrixGeneric<T>::removeRow(unsigned int rowNr) throw (MatrixException)
+MatrixGeneric<T>& SqMatrixGeneric<T>::removeRow(unsigned int rowNr) throw (MatrixException)
 {
     throw MatrixException(MatrixException::FORBIDDEN);
 }
 
 template<class T>
-void SqMatrixGeneric<T>::removeColumn(unsigned int colNr) throw (MatrixException)
+MatrixGeneric<T>& SqMatrixGeneric<T>::removeColumn(unsigned int colNr) throw (MatrixException)
 {
     throw MatrixException(MatrixException::FORBIDDEN);
 }
 
 template<class T>
-void SqMatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixException)
+MatrixGeneric<T>& SqMatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixException)
 {
     throw MatrixException(MatrixException::FORBIDDEN);
 }
 
 template<class T>
-void SqMatrixGeneric<T>::insertColumn(unsigned int colNr) throw (MatrixException)
+MatrixGeneric<T>& SqMatrixGeneric<T>::insertColumn(unsigned int colNr) throw (MatrixException)
 {
     throw MatrixException(MatrixException::FORBIDDEN);
 }

@@ -25,10 +25,6 @@ Implementation of the class MatrixException
 
 #include "MatrixException.h"
 
-#include <iostream>
-
-using namespace std;
-
 /**
  * Constructor.
  *
@@ -41,38 +37,40 @@ MatrixException::MatrixException(err_codes err)
 
 /**
  * Outputs a short error description to stdout
+ *
+ * @param str - stream, the error description will be written in (default: cerr)
  */
-void MatrixException::display() const
+void MatrixException::display(std::ostream& str) const
 {
     switch (error)
     {
         case FORBIDDEN:
-            cerr << "Forbidden operation";
+            str << "Forbidden operation";
             break;
         case OUT_OF_MEMORY:
-            cerr << "Could not allocate enough memory";
+            str << "Could not allocate enough memory";
             break;
         case TOO_LARGE:
-            cerr << "Too many rows or columns";
+            str << "Too many rows or columns";
             break;
         case INVALID_DIMENSION:
-            cerr << "Invalid dimension of matrix";
+            str << "Invalid dimension of matrix";
             break;
         case OUT_OF_RANGE:
-            cerr << "Attempted to access elements out of valid range";
+            str << "Attempted to access elements out of valid range";
             break;
         case NOT_ENOUGH_ELEMENTS:
-            cerr << "Not enough elements";
+            str << "Not enough elements";
             break;
         case NON_INVERTIBLE_MATRIX:
-            cerr << "Matrix is not invertible";
+            str << "Matrix is not invertible";
             break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and
             // this function hasn't been updated?
-            cerr << "Strange, unspecified error";
+            str << "Strange, unspecified error";
     }  // switch
 
-    cerr << endl;
+    str << std::endl;
 }

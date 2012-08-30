@@ -53,10 +53,10 @@ public:
     // Returns simplified fraction's denominator
     unsigned int getDenominator() const;
     // Assigns fraction's numerator and denominator and simplifies the fraction
-    void set(int numerator = 0, int denominator = 1) throw(RationalException);
+    Rational& set(int numerator = 0, int denominator = 1) throw(RationalException);
 
     // Outputs the fraction to std::cout, optionally multiplies both members by a factor
-    void display(int factor = 1) const;
+    void display(int factor = 1, std::ostream& str = std::cout) const;
     // Converts the fraction into its float value
     float toFloat() const;
     // Converts the fraction into its double value
@@ -72,7 +72,7 @@ public:
     // Returns inverse value of the fraction
     Rational invert() const throw(RationalException);
     // Inverts (i.e. modifies) the fraction
-    void inverse() throw(RationalException);
+    Rational& inverse() throw(RationalException);
 
     // Operator =, copies values of fraction's numerator and denominator
     Rational& operator=(const Rational& fraction);
@@ -113,10 +113,10 @@ public:
 private:
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
     void reduce();
-    // Auxilary function that calculates unreduced numerator of difference of two fraction
+    // Auxiliary function that calculates unreduced numerator of difference of two fraction
     // Only its sign actually matters, so it returns -1, 0 or 1
     int sign(const Rational& fraction) const;
-    // Absolute value of an integer (just an auxilary function for others)
+    // Absolute value of an integer (just an auxiliary function for others)
     static unsigned int absolute(int a);
     static int auxSum(int num1, int denom2, int num2, int denom1) throw(RationalException);
     static int auxProd(int factor1, int factor2) throw(RationalException);

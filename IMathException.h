@@ -27,12 +27,16 @@ limitations under the License.
 #ifndef IMATHEXCEPTION_H
 #define	IMATHEXCEPTION_H
 
+#include <iostream>
+
 struct IMathException
 {
     /**
     * Outputs a short error description to stdout
+    *
+    * @param str - stream, the error description will be written in (default: cerr) 
     */
-    virtual void display() const = 0;
+    virtual void display(std::ostream& str = std::cerr) const = 0;
 };
 
 #endif	/* IMATHEXCEPTION_H */
