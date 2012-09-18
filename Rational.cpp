@@ -26,7 +26,7 @@ limitations under the License.
 
 #include "Rational.h"
 
-#include <limits.h>
+#include <limits>
 
 /**
  * Constructor.
@@ -889,7 +889,8 @@ int Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(RationalE
 {
     const long int sum = num1 * denom2 + num2 * denom1;
 
-    if ( sum > INT_MAX || sum < INT_MIN )
+    if ( sum > std::numeric_limits<int>::max() ||
+         sum < std::numeric_limits<int>::min() )
     {
         throw RationalException(RationalException::OVERFLOW);
     }
@@ -912,7 +913,8 @@ int Rational::auxProd(int first, int second) throw(RationalException)
 {
     const long int prod = first * second;
 
-    if ( prod > INT_MAX || prod < INT_MIN )
+    if ( prod > std::numeric_limits<int>::max() ||
+         prod < std::numeric_limits<int>::min() )
     {
         throw RationalException(RationalException::OVERFLOW);
     }
