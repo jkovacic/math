@@ -28,7 +28,7 @@ limitations under the License.
 
 #include <new>
 #include <stdexcept>
-#include <limits.h>
+#include <limits>
 
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"
@@ -65,7 +65,7 @@ MatrixGeneric<T>::MatrixGeneric(unsigned int rows, unsigned int columns) throw(M
     // problems with counter overflows. This is much much more than required
     // in most real life applications.
     const unsigned long int matSize = rows * columns;
-    if ( INT_MAX < matSize )
+    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
     {
         throw MatrixException(MatrixException::TOO_LARGE);
     }
@@ -99,7 +99,7 @@ template<class T>
 MatrixGeneric<T>::MatrixGeneric(const MatrixGeneric<T>& orig) throw (MatrixException)
 {
     copyElems(orig);
-}  
+}
 
 // Copy elements from one matrix into another. Used at copy constructors,
 // assignemt operators etc.
@@ -281,7 +281,7 @@ MatrixGeneric<T>& MatrixGeneric<T>::operator= (const MatrixGeneric<T>& orig) thr
     }
 
     copyElems(orig);
-    
+
     return *this;
 }
 
@@ -477,7 +477,7 @@ MatrixGeneric<T> MatrixGeneric<T>::operator-() const throw(MatrixException)
  * Number of coumns of this must be the same as number of rows of matrix,
  * otherwise multiplication is not possible. The resulting matrix will
  * have this.rows rows and matrix.cols columns.
- * 
+ *
  * Note that matrix multiplication is not comutative (A*B != B*A).
  *
  * @param matrix
@@ -498,7 +498,7 @@ MatrixGeneric<T> MatrixGeneric<T>::operator* (const MatrixGeneric<T>& matrix) co
     // Multiplication modifies dimensions, so make sure the product will contain
     // no more than INT_MAX elements
     const unsigned long int matSize = this->rows * matrix.cols;
-    if ( INT_MAX < matSize )
+    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
     {
         throw MatrixException(MatrixException::TOO_LARGE);
     }
@@ -721,7 +721,7 @@ MatrixGeneric<T>& MatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixE
     // Nr. of elements will increase, so make sure the product will contain
     // no more than INT_MAX elements
     const unsigned long int matSize = (rows + 1) * cols;
-    if ( INT_MAX < matSize )
+    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
     {
         throw MatrixException(MatrixException::TOO_LARGE);
     }
@@ -768,7 +768,7 @@ MatrixGeneric<T>& MatrixGeneric<T>::insertColumn(unsigned int colNr) throw (Matr
     // Nr. of elements will increase, so make sure the product will contain
     // no more than INT_MAX elements
     const unsigned long int matSize = rows * (cols + 1);
-    if ( INT_MAX < matSize )
+    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
     {
         throw MatrixException(MatrixException::TOO_LARGE);
     }
@@ -782,7 +782,7 @@ MatrixGeneric<T>& MatrixGeneric<T>::insertColumn(unsigned int colNr) throw (Matr
         // Elements will be inserted step by step, with ascending row cordinate.
         // The position of each such element can be calculated as r*(cols+1)+colNr.
         unsigned int r;
-        
+
         for ( r = 0; r < rows; r++ )
         {
             elems.insert(elems.begin()+r*(cols+1)+colNr, (T) 0);
@@ -813,6 +813,6 @@ MatrixGeneric<T>::~MatrixGeneric()
     // There are no other resources to release.
 }
 
-// This macro was defined especially for this file. To prevent any possible 
+// This macro was defined especially for this file. To prevent any possible
 // conflicts, it will be #undef'ed
 #undef POS
