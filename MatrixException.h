@@ -29,6 +29,9 @@ Declaration of the class MatrixException
 
 #include "IMathException.h"
 
+namespace math
+{
+
 struct MatrixException : public IMathException
 {
     /// Enum with possible error codes
@@ -48,5 +51,7 @@ struct MatrixException : public IMathException
     // Output a short description of the error
     void display(std::ostream& str = std::cerr) const;
 };
+
+} // namespace math
 
 #endif	/* _MATRIXEXCEPTION_H_ */

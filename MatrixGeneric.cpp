@@ -32,6 +32,10 @@ limitations under the License.
 
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"
+#include "MatrixGeneric.h"
+
+using math::MatrixGeneric;
+using math::MatrixException;
 
 // Matrix's element of the row r and column c is accessed as "r*cols+c"
 // (cols is a property of the class). This expression would be used
@@ -583,7 +587,7 @@ MatrixGeneric<T> MatrixGeneric<T>::operator* (const T& scalar) const throw (Matr
   * @return scalar * matrix
   */
 template<class T>
-MatrixGeneric<T> operator* (const T& scalar, const MatrixGeneric<T>& matrix)
+MatrixGeneric<T> math::operator* (const T& scalar, const MatrixGeneric<T>& matrix)
 {
     MatrixGeneric<T> retVal = matrix;
     return retVal*scalar;

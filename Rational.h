@@ -31,6 +31,14 @@ i.e. reduced fractions of two integers
 
 #include <iostream>
 
+namespace math
+{
+
+// Advance declaration of the class is necessary...
+class Rational;
+// to declare the class's friend function:
+std::ostream& operator<<(std::ostream& output, const Rational& fraction);
+
 class Rational
 {
     // a friend function to overload the operator << (used by std::cout and std::cerr)
@@ -121,5 +129,7 @@ private:
     static int auxSum(int num1, int denom2, int num2, int denom1) throw(RationalException);
     static int auxProd(int factor1, int factor2) throw(RationalException);
 };
+
+} // namespace math
 
 #endif	/* _RATIONAL_H_ */

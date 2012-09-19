@@ -30,6 +30,7 @@ limitations under the License.
 #include "SqMatrixGeneric.h"
 
 using namespace std;
+using namespace math;
 
 template class MatrixGeneric<float>;
 template class MatrixGeneric<Rational>;

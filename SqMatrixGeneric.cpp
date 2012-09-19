@@ -30,8 +30,13 @@ limitations under the License.
 #include "NumericUtil.h"
 #include "MatrixException.h"
 #include "MatrixGeneric.h"
+#include "SqMatrixGeneric.h"
 
 #include <stdexcept>
+
+using math::SqMatrixGeneric;
+using math::MatrixGeneric;
+using math::MatrixException;
 
 // Matrix's element of the row r and column c is accessed as "r*N+c"
 // (N must be additionaly declared as either this->rows or this->cols).
@@ -119,7 +124,7 @@ SqMatrixGeneric<T>& SqMatrixGeneric<T>::operator= (const MatrixGeneric<T>& m) th
  * @throw MatrixException
  */
 template<class T>
-MatrixGeneric<T>& SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixException)
+SqMatrixGeneric<T>& SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixException)
 {
     // A double for loop will traverse the matrix, its diagonal elements
     // (row == column) will be set to the scalar, others to 0
@@ -153,7 +158,7 @@ MatrixGeneric<T>& SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixExcep
  * @throw MatrixException
  */
 template<class T>
-MatrixGeneric<T>& SqMatrixGeneric<T>::setUnit() throw(MatrixException)
+SqMatrixGeneric<T>& SqMatrixGeneric<T>::setUnit() throw(MatrixException)
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal

@@ -25,6 +25,9 @@ Declaration of the class NumericUtil, a collection of some useful numerical util
 #ifndef NUMERICUTIL_H
 #define   NUMERICUTIL_H
 
+namespace math
+{
+
 template<class T>
 class NumericUtil
 {
@@ -38,6 +41,16 @@ public:
     // different meaning than in discrete mathematics (int etc.)
     static bool isZero(const T& value);
 };
+
+// Declaration of specialized methods inside the name space declaration
+// is essential if implemented elsewhere:
+template<> bool NumericUtil<float>::isZero(const float& value);
+template<> bool NumericUtil<double>::isZero(const double& value);
+template<> bool NumericUtil<Rational>::isZero(const Rational& value);
+
+// Definition could be included into the namespace declaraion, but it
+// would cause conflicts with some extra included stdlib header files.
+} // namespace math
 
 // DEFINITION
 

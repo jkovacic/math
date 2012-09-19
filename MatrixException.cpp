@@ -25,6 +25,8 @@ Implementation of the class MatrixException
 
 #include "MatrixException.h"
 
+using math::MatrixException;
+
 /**
  * Constructor.
  *

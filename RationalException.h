@@ -28,6 +28,9 @@ Declaration of the class RationalException
 
 #include "IMathException.h"
 
+namespace math
+{
+
 struct RationalException : public IMathException
 {
     /// Enum with possible error codes
@@ -44,5 +47,7 @@ struct RationalException : public IMathException
     // Output a short description of the error
     void display(std::ostream& str = std::cerr) const;
 };
+
+} // namespace math
 
 #endif	/* RATIONALEXCEPTION_H */

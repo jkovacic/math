@@ -31,6 +31,9 @@ Declaration of the class MatrixGeneric, representing generic matrices.
 
 #include "MatrixException.h"
 
+namespace math
+{
+
 // Templates are used to allow several types (T) of matrix elements.
 // Types must have implemented basic arithmetic operators (+, -, *, /),
 // otherwise build will fail (which is desired). In practise, types as float,
@@ -38,9 +41,10 @@ Declaration of the class MatrixGeneric, representing generic matrices.
 // acceptable (e.g. if the class is used to represent mathematical graphs, etc.)
 // but arithmetic operations (e.g. inversion of a square matrix) may return
 // incorrect results. This is true for unsigned types as well.
-template<class T>
-class MatrixGeneric;
 
+// Advance declaration of the class is necessary...
+template<class T> class MatrixGeneric;
+// to declare the class's friend function:
 template<class T>
 MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m);
 
@@ -92,7 +96,7 @@ public:
     MatrixGeneric<T> operator* (const T& sc) const throw (MatrixException);
     MatrixGeneric<T> operator- () const throw (MatrixException);
     // A friend function that multiplies a scalar and a matrix
-    friend MatrixGeneric<T> (::operator* <>) (const T& sc, const MatrixGeneric<T>& m);
+    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m);
 
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
@@ -112,6 +116,10 @@ public:
 // so these two types are predefined
 typedef MatrixGeneric<float> FMatrix;
 typedef MatrixGeneric<double> Matrix;
+
+// Definition could be included into the namespace declaraion, but it
+// would cause conflicts with some extra included stdlib header files.
+} // namespace math
 
 // DEFINITION
 

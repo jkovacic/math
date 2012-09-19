@@ -28,6 +28,9 @@ limitations under the License.
 
 #include <limits>
 
+using math::Rational;
+using math::RationalException;
+
 /**
  * Constructor.
  *
@@ -718,7 +721,7 @@ bool Rational::operator<=(const Rational& frac) const
  *
  * @return reference of output stream (same as output)
  */
-std::ostream& operator<<(std::ostream& output, const Rational& frac)
+std::ostream& math::operator<<(std::ostream& output, const Rational& frac)
 {
     // output the num and denom into the stream
     output << frac.num << '/' << frac.denom;

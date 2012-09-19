@@ -28,6 +28,8 @@ Instead it must be included after the class declaration in the .h file
 // Delibarately there is no #include "NumericUtil.h"
 #include "Rational.h"
 
+using math::NumericUtil;
+
 // Note that the optimal EPS depends on application requirements
 /*
  * Definition of EPS for type float
@@ -99,7 +101,7 @@ bool NumericUtil<double>::isZero(const double& value)
  * Implementation for Rational
  */
 template<>
-bool NumericUtil<Rational>::isZero(const Rational& value)
+bool NumericUtil<math::Rational>::isZero(const math::Rational& value)
 {
     // Rational already contains its own isZero()...
     return value.isZero();

@@ -30,6 +30,9 @@ for square matrices only
 
 #include "MatrixGeneric.h"
 
+namespace math
+{
+
 template<class T>
 class SqMatrixGeneric : public MatrixGeneric<T>
 {
@@ -42,8 +45,8 @@ public:
     SqMatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
     
     // Several methods to create diagonal matrices
-    MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
-    MatrixGeneric<T>& setUnit() throw(MatrixException);
+    SqMatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
+    SqMatrixGeneric<T>& setUnit() throw(MatrixException);
 
     // Determinant of the matrix
     T determinant() const throw(MatrixException);
@@ -63,6 +66,10 @@ public:
 // so these two types are predefined
 typedef SqMatrixGeneric<float> FSqMatrix;
 typedef SqMatrixGeneric<double> SqMatrix;
+
+// Definition could be included into the namespace declaraion, but it
+// would cause conflicts with some extra included stdlib header files.
+} // namespace math
 
 // DEFINITION
 

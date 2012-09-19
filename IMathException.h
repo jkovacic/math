@@ -29,6 +29,9 @@ limitations under the License.
 
 #include <iostream>
 
+namespace math
+{
+
 struct IMathException
 {
     /**
@@ -38,6 +41,8 @@ struct IMathException
     */
     virtual void display(std::ostream& str = std::cerr) const = 0;
 };
+
+} // namespace math
 
 #endif	/* IMATHEXCEPTION_H */
 

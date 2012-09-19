@@ -26,6 +26,8 @@ Implementation of the class RationalException
 
 #include "RationalException.h"
 
+using math::RationalException;
+
 /**
  * Constructor
  *
