@@ -52,7 +52,7 @@ T NumericUtil<T>::EPS = (T) 0;
  * does make sense and no comparison to EPS is necessary.
  */
 template<class T>
-bool NumericUtil<T>::isZero(T value)
+bool NumericUtil<T>::isZero(const T& value)
 {
     bool retVal = ( 0==value ? true : false );
 
@@ -71,7 +71,7 @@ bool NumericUtil<T>::isZero(T value)
 
 // float:
 template<>
-bool NumericUtil<float>::isZero(float value)
+bool NumericUtil<float>::isZero(const float& value)
 {
     bool retVal = false;
     // quick definition of an absolute value
@@ -84,7 +84,7 @@ bool NumericUtil<float>::isZero(float value)
 
 // and double:
 template<>
-bool NumericUtil<double>::isZero(double value)
+bool NumericUtil<double>::isZero(const double& value)
 {
     bool retVal = false;
     // quick definition of an absolute value
@@ -99,7 +99,7 @@ bool NumericUtil<double>::isZero(double value)
  * Implementation for Rational
  */
 template<>
-bool NumericUtil<Rational>::isZero(Rational value)
+bool NumericUtil<Rational>::isZero(const Rational& value)
 {
     // Rational already contains its own isZero()...
     return value.isZero();
