@@ -48,17 +48,47 @@ template<class T>
 T NumericUtil<T>::EPS = (T) 0;
 
 /*
- * This "general" implementation is valid for float and double.
- * In case of these two types, the equality operator (==) is useless.
- * In numerical mathematics, two numbers are considered "equal", when
- * absolute value of their difference does not exceed a reasonably set EPS.
+ * The implementation for integers et al. where the == operator
+ * does make sense and no comparison to EPS is necessary.
  */
 template<class T>
 bool NumericUtil<T>::isZero(T value)
 {
+    bool retVal = ( 0==value ? true : false );
+
+    return retVal;
+}
+
+
+/*
+ * Two specialized implementations for float and double.
+ * In case of these two types, the equality operator (==) is useless.
+ * In numerical mathematics, two numbers are considered "equal", when
+ * absolute value of their difference does not exceed a reasonably set EPS.
+ * Both specializations are very similar and only differ in types of an input value.
+ * TODO: would it make sense using #define ???
+ */
+
+// float:
+template<>
+bool NumericUtil<float>::isZero(float value)
+{
     bool retVal = false;
     // quick definition of an absolute value
-    T absValue = ( value>=0 ? value : -value );
+    float absValue = ( value>=0 ? value : -value );
+
+    retVal = (absValue < EPS ? true : false );
+
+    return retVal;
+}
+
+// and double:
+template<>
+bool NumericUtil<double>::isZero(double value)
+{
+    bool retVal = false;
+    // quick definition of an absolute value
+    double absValue = ( value>=0 ? value : -value );
 
     retVal = (absValue < EPS ? true : false );
 
@@ -66,20 +96,7 @@ bool NumericUtil<T>::isZero(T value)
 }
 
 /*
- * And a "specialized" implementation for integers.
- * In this case no comparing to EPS is necessary.
- */
-template<>
-bool NumericUtil<int>::isZero(int value)
-{
-    // Now the operator == does make sense....
-    bool retVal = ( 0==value ? true : false );
-
-    return retVal;
-}
-
-/*
- * Similar for Rational
+ * Implementation for Rational
  */
 template<>
 bool NumericUtil<Rational>::isZero(Rational value)
