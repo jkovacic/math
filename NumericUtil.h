@@ -23,7 +23,7 @@ Declaration of the class NumericUtil, a collection of some useful numerical util
 */
 
 #ifndef NUMERICUTIL_H
-#define	NUMERICUTIL_H
+#define   NUMERICUTIL_H
 
 template<class T>
 class NumericUtil
@@ -36,7 +36,7 @@ public:
     // Does the value equal zero? Note that in numerical mathematics
     // (where mostly float or double values are in use), "equals" has a
     // different meaning than in discrete mathematics (int etc.)
-    static bool isZero(T value);
+    static bool isZero(const T& value);
 };
 
 // DEFINITION
