@@ -28,8 +28,6 @@ limitations under the License.
 
 #include <limits>
 
-using math::Rational;
-using math::RationalException;
 
 /**
  * Constructor.
@@ -45,7 +43,7 @@ using math::RationalException;
  *
  * The possibility with one input parameter ensures that int will be
  * automatically correctly 'casted' to a/1 when necessary.
- * 
+ *
  * @param numerator - fraction's numerator (default: 0)
  * @param denominator - fraction's denominator (default: 1)
  *
@@ -53,7 +51,7 @@ using math::RationalException;
  *
  * @see set
  */
-Rational::Rational(int numerator, int denominator) throw(RationalException)
+math::Rational::Rational(int numerator, int denominator) throw(math::RationalException)
 {
     // Just call a function that actually sets both members.
     // It will throw a RationalException if the denominator
@@ -68,7 +66,7 @@ Rational::Rational(int numerator, int denominator) throw(RationalException)
  *
  * @param orig - a valid instance of Rational
  */
-Rational::Rational(const Rational& orig) : num(orig.num), denom(orig.denom)
+math::Rational::Rational(const math::Rational& orig) : num(orig.num), denom(orig.denom)
 {
     // num and denom are already set, nothing more to do here.
     // It is impossible to pass an invalid input parameter (orig.denom == 0)
@@ -85,7 +83,7 @@ Rational::Rational(const Rational& orig) : num(orig.num), denom(orig.denom)
  *
  * @see set
  */
-int Rational::getNumerator() const
+int math::Rational::getNumerator() const
 {
     return this->num;
 }
@@ -99,7 +97,7 @@ int Rational::getNumerator() const
  *
  * @see set
  */
-unsigned int Rational::getDenominator() const
+unsigned int math::Rational::getDenominator() const
 {
     return this->denom;
 }
@@ -122,13 +120,13 @@ unsigned int Rational::getDenominator() const
  *
  * @throw RationalException when attempting to set a zero denominator
  */
-Rational& Rational::set(int numerator, int denominator) throw(RationalException)
+math::Rational& math::Rational::set(int numerator, int denominator) throw(math::RationalException)
 {
     // Check for zero denominator
     if ( 0 == denominator )
     {
         // this is forbidden so throw an exception
-        throw RationalException(RationalException::ZERO_DENOMINATOR);
+        throw math::RationalException(math::RationalException::ZERO_DENOMINATOR);
     }
 
     // The fraction will be valid, so assign given parameters to fraction's members
@@ -158,7 +156,7 @@ Rational& Rational::set(int numerator, int denominator) throw(RationalException)
  * @param factor (default: 1): optional, if set, both members will be multiplied by it
  * @param str (default cout): output stream, the fraction will be dislayed
  */
-void Rational::display(int factor, std::ostream& str) const
+void math::Rational::display(int factor, std::ostream& str) const
 {
     str << num*factor << '/' << denom*factor;
 }
@@ -166,7 +164,7 @@ void Rational::display(int factor, std::ostream& str) const
 /**
  * @return fraction's value converted to float
  */
-float Rational::toFloat() const
+float math::Rational::toFloat() const
 {
     return ( (float) num)/( (float) denom);
 }
@@ -174,7 +172,7 @@ float Rational::toFloat() const
 /**
  * @return fraction's value converted to double
  */
-double Rational::toDouble() const
+double math::Rational::toDouble() const
 {
     return ( (double) num)/( (double) denom);
 }
@@ -184,7 +182,7 @@ double Rational::toDouble() const
  *
  * @return true if equal to zero, false otherwise
  */
-bool Rational::isZero() const
+bool math::Rational::isZero() const
 {
     bool retVal = false;
 
@@ -202,7 +200,7 @@ bool Rational::isZero() const
  *
  * @return true if positive, false otherwise
  */
-bool Rational::isPositive() const
+bool math::Rational::isPositive() const
 {
     bool retVal = false;
 
@@ -221,7 +219,7 @@ bool Rational::isPositive() const
  *
  * @return true if negative, false otherwise
  */
-bool Rational::isNegative() const
+bool math::Rational::isNegative() const
 {
     bool retVal = false;
 
@@ -243,18 +241,18 @@ bool Rational::isNegative() const
  *
  * @throw RationalException the fraction's value is equal to zero
  */
-Rational Rational::invert() const throw(RationalException)
+math::Rational math::Rational::invert() const throw(math::RationalException)
 {
     // Check if the numerator is equal to 0
     if ( 0 == num )
     {
         // In this case, inversion cannot be done, throw an exception
-        throw RationalException(RationalException::UNINVERTIBLE);
+        throw math::RationalException(math::RationalException::UNINVERTIBLE);
     }
 
     // inversion will be possible, return a fraction with with exchanged
     // numerator and denominator
-    return Rational(denom, num);
+    return math::Rational(denom, num);
 } //Rational::invert
 
 /**
@@ -262,16 +260,16 @@ Rational Rational::invert() const throw(RationalException)
  * If the numerator equals zero, this is not possible so an exception will be thrown.
  *
  * @return reference to itself
- * 
+ *
  * @throw RationalException if attempting to invert a fraction whose numerator equals zero
  */
-Rational& Rational::inverse() throw(RationalException)
+math::Rational& math::Rational::inverse() throw(math::RationalException)
 {
     // Check if inversion is possible (num!=0)
     if ( 0 == num )
     {
         // inversion is impossible, throw an exception
-        throw RationalException(RationalException::UNINVERTIBLE);
+        throw math::RationalException(math::RationalException::UNINVERTIBLE);
     }
 
     // inversion is possible, swap the fractions num. and denom.
@@ -285,7 +283,7 @@ Rational& Rational::inverse() throw(RationalException)
  *
  * @return reference to itself
  */
-Rational& Rational::operator=(const Rational& frac)
+math::Rational& math::Rational::operator=(const math::Rational& frac)
 {
     // The function's behaviour is similar to the copy constructor.
     // With one exception.
@@ -307,7 +305,7 @@ Rational& Rational::operator=(const Rational& frac)
  *
  * @return this + frac
  */
-Rational Rational::operator+(const Rational& frac) const throw(RationalException)
+math::Rational math::Rational::operator+(const math::Rational& frac) const throw(math::RationalException)
 {
     // Unreduced sum of two fractions:
     //
@@ -328,13 +326,13 @@ Rational Rational::operator+(const Rational& frac) const throw(RationalException
         numerator = auxSum(this->num, frac.denom, frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // int overflow is the only possible exception
         throw ex;
     }
 
-    return Rational(numerator, denominator);
+    return math::Rational(numerator, denominator);
     // the constructor will reduce the result
 }  // Rational::operator+
 
@@ -346,7 +344,7 @@ Rational Rational::operator+(const Rational& frac) const throw(RationalException
  *
  * @return reference to itself
  */
-Rational& Rational::operator+=(const Rational& frac) throw(RationalException)
+math::Rational& math::Rational::operator+=(const math::Rational& frac) throw(math::RationalException)
 {
     // See definition of fraction addition in operator+()
     // Result will be assigned to itself so use set
@@ -359,7 +357,7 @@ Rational& Rational::operator+=(const Rational& frac) throw(RationalException)
         numerator = auxSum(this->num, frac.denom, frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -378,7 +376,7 @@ Rational& Rational::operator+=(const Rational& frac) throw(RationalException)
  *
  * @return this - frac
  */
-Rational Rational::operator-(const Rational& frac) const throw(RationalException)
+math::Rational math::Rational::operator-(const math::Rational& frac) const throw(math::RationalException)
 {
     // Unreduced difference of two fractions:
     //
@@ -397,13 +395,13 @@ Rational Rational::operator-(const Rational& frac) const throw(RationalException
         numerator = auxSum(this->num, frac.denom, -frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // int overflow is the only possible exception
         throw ex;
     }
 
-    return Rational(numerator, denominator);
+    return math::Rational(numerator, denominator);
     // constructor will automatically reduce the result
 
     // NOTE: it would also be possible to multiply frac by -1 and add it to this
@@ -418,7 +416,7 @@ Rational Rational::operator-(const Rational& frac) const throw(RationalException
  *
  * @return reference to itself
  */
-Rational& Rational::operator-=(const Rational& frac) throw(RationalException)
+math::Rational& math::Rational::operator-=(const math::Rational& frac) throw(math::RationalException)
 {
     // See definition of fraction subtraction in operator-
     // Result will be assigned to itself so use set().
@@ -431,12 +429,12 @@ Rational& Rational::operator-=(const Rational& frac) throw(RationalException)
         numerator = auxSum(this->num, frac.denom, -frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // int overflow is the only possible exception
         throw ex;
     }
-    
+
     set(numerator, denominator);
     // set will reduce the result
 
@@ -450,7 +448,7 @@ Rational& Rational::operator-=(const Rational& frac) throw(RationalException)
  *
  * @return this * frac
  */
-Rational Rational::operator*(const Rational& frac) const throw (RationalException)
+math::Rational math::Rational::operator*(const math::Rational& frac) const throw (math::RationalException)
 {
     // Unreduced product of two fractions:
     //
@@ -469,13 +467,13 @@ Rational Rational::operator*(const Rational& frac) const throw (RationalExceptio
         numerator = auxProd(this->num, frac.num);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // The only possible exception is int overflow
         throw ex;
     }
 
-    return Rational(numerator, denominator);
+    return math::Rational(numerator, denominator);
     // constructor will reduce the result
 } // Rational::operator*
 
@@ -487,7 +485,7 @@ Rational Rational::operator*(const Rational& frac) const throw (RationalExceptio
  *
  * @return reference to itself
  */
-Rational& Rational::operator*=(const Rational& frac) throw(RationalException)
+math::Rational& math::Rational::operator*=(const math::Rational& frac) throw(math::RationalException)
 {
     // See definition of fraction multiplication in operator*.
     // Result will be assigned to itself so use set().
@@ -500,7 +498,7 @@ Rational& Rational::operator*=(const Rational& frac) throw(RationalException)
         numerator = auxProd(this->num, frac.num);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -521,7 +519,7 @@ Rational& Rational::operator*=(const Rational& frac) throw(RationalException)
  *
  * @throw RationalException when attempting to divide by zero
  */
-Rational Rational::operator/(const Rational& frac) const throw(RationalException)
+math::Rational math::Rational::operator/(const math::Rational& frac) const throw(math::RationalException)
 {
     // Unreduced quotient of two fractions:
     //
@@ -532,7 +530,7 @@ Rational Rational::operator/(const Rational& frac) const throw(RationalException
     // Check if frac's numerator equals 0
     if ( true == frac.isZero() )
     {
-        throw RationalException(RationalException::DIVIDE_BY_ZERO);
+        throw math::RationalException(RationalException::DIVIDE_BY_ZERO);
     }
 
     int numerator;
@@ -543,13 +541,13 @@ Rational Rational::operator/(const Rational& frac) const throw(RationalException
         numerator = auxProd(this->num, frac.denom);
         denominator = auxProd(frac.num, this->denom);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // int overflow is the only possible exception
         throw ex;
     }
 
-    return Rational(numerator, denominator);
+    return math::Rational(numerator, denominator);
 } // Rational::operator/
 
 /**
@@ -563,13 +561,13 @@ Rational Rational::operator/(const Rational& frac) const throw(RationalException
  *
  * @throw RationalException when attempting to divide by zero
  */
-Rational& Rational::operator/=(const Rational& frac) throw(RationalException)
+math::Rational& math::Rational::operator/=(const math::Rational& frac) throw(math::RationalException)
 {
     // See definition of fraction division in operator/.
     // Check if frac's numerator equals 0
     if ( true == frac.isZero() )
     {
-        throw RationalException(RationalException::DIVIDE_BY_ZERO);
+        throw math::RationalException(math::RationalException::DIVIDE_BY_ZERO);
     }
 
     // Result will be assigned to itself so use set()
@@ -581,7 +579,7 @@ Rational& Rational::operator/=(const Rational& frac) throw(RationalException)
         numerator = auxProd(this->num, frac.denom);
         denominator = auxProd(this->denom, frac.num);
     }
-    catch ( RationalException ex )
+    catch ( math::RationalException ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -597,11 +595,11 @@ Rational& Rational::operator/=(const Rational& frac) throw(RationalException)
  *
  * @return -this
  */
-Rational Rational::operator-() const
+math::Rational math::Rational::operator-() const
 {
     // One (doesn't matter which) member of the fraction must be negated.
     // Let it be the numerator
-    return Rational(-this->num, this->denom);
+    return math::Rational(-this->num, this->denom);
 }
 
 /**
@@ -611,7 +609,7 @@ Rational Rational::operator-() const
  *
  * @return true if both fractions are equal, false otherwise
  */
-bool Rational::operator==(const Rational& frac) const
+bool math::Rational::operator==(const math::Rational& frac) const
 {
     bool retVal = false;
     if ( 0 == sign(frac) )
@@ -629,7 +627,7 @@ bool Rational::operator==(const Rational& frac) const
  *
  * @return true, if fractions are not equal, false if they are equal
  */
-bool Rational::operator!=(const Rational& frac) const
+bool math::Rational::operator!=(const math::Rational& frac) const
 {
     bool retVal = false;
     if ( 0 != sign(frac) )
@@ -647,7 +645,7 @@ bool Rational::operator!=(const Rational& frac) const
  *
  * @return true if this is strictly greater than frac, false otherwise
  */
-bool Rational::operator>(const Rational& frac) const
+bool math::Rational::operator>(const math::Rational& frac) const
 {
     bool retVal = false;
     if ( 0 < sign(frac) )
@@ -665,7 +663,7 @@ bool Rational::operator>(const Rational& frac) const
  *
  * @return true if this is greater than or equal to frac, false otherwise
  */
-bool Rational::operator>=(const Rational& frac) const
+bool math::Rational::operator>=(const math::Rational& frac) const
 {
     bool retVal = false;
     if ( 0 <= sign(frac) )
@@ -683,7 +681,7 @@ bool Rational::operator>=(const Rational& frac) const
  *
  * @return true if this is strictly less than frac, false otherwise
  */
-bool Rational::operator<(const Rational& frac) const
+bool math::Rational::operator<(const math::Rational& frac) const
 {
     bool retVal = false;
     if ( 0 > sign(frac) )
@@ -701,7 +699,7 @@ bool Rational::operator<(const Rational& frac) const
  *
  * @return - true if this is less than or equal to frac, false otherwise
  */
-bool Rational::operator<=(const Rational& frac) const
+bool math::Rational::operator<=(const math::Rational& frac) const
 {
     bool retVal = false;
     if ( 0 >= sign(frac) )
@@ -721,7 +719,7 @@ bool Rational::operator<=(const Rational& frac) const
  *
  * @return reference of output stream (same as output)
  */
-std::ostream& math::operator<<(std::ostream& output, const Rational& frac)
+std::ostream& math::operator<<(std::ostream& output, const math::Rational& frac)
 {
     // output the num and denom into the stream
     output << frac.num << '/' << frac.denom;
@@ -733,7 +731,7 @@ std::ostream& math::operator<<(std::ostream& output, const Rational& frac)
  * An auxiliary function that reduces the fraction:
  * divides the numerator and denominator by their greatest common divisor
  */
-void Rational::reduce()
+void math::Rational::reduce()
 {
     // the GCD is not defined when numerator is equal to 0.
     // In that case just assign denominator to 1
@@ -764,7 +762,7 @@ void Rational::reduce()
  * @param a
  * @return absolute value of a
  */
-unsigned int Rational::absolute(int a)
+unsigned int math::Rational::absolute(int a)
 {
     return ( a>=0 ? a : -a );
 }
@@ -777,7 +775,7 @@ unsigned int Rational::absolute(int a)
  *
  * @return zero if any of the two input parameters equals zero, GCD otherwise
  */
-unsigned int Rational::greatestCommonDivisor(unsigned int first, unsigned int second)
+unsigned int math::Rational::greatestCommonDivisor(unsigned int first, unsigned int second)
 {
     // A well known Euclidean algorithm is utilized to find the greatest common divisor.
     // It is known to be efficient, more details about it are available, for instance,
@@ -815,7 +813,7 @@ unsigned int Rational::greatestCommonDivisor(unsigned int first, unsigned int se
  *
  * @return zero if any of the two input arguments equals zero, the LCM otherwise
  */
-unsigned int Rational::leastCommonMultiple(unsigned int first, unsigned int second)
+unsigned int math::Rational::leastCommonMultiple(unsigned int first, unsigned int second)
 {
     // The following mathematical relation can be proven easily:
     // LCM(a,b) * GCD(a,b) = a * b
@@ -841,10 +839,10 @@ unsigned int Rational::leastCommonMultiple(unsigned int first, unsigned int seco
  * It is only needed by comparison operators who actually only need to know its sign
  *
  * @param fraction
- * 
+ *
  * @return -1 if frac is greater, 0 if they are equal, 1 if this is greater
  */
-int Rational::sign(const Rational& frac) const
+int math::Rational::sign(const math::Rational& frac) const
 {
     // One approach to compare two objects is to calculate their difference
     // and check its sign. As denominators are always positive, it is
@@ -888,14 +886,14 @@ int Rational::sign(const Rational& frac) const
  *
  * @throw RationalException in case of an integer overflow
  */
-int Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(RationalException)
+int math::Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(math::RationalException)
 {
     const long int sum = num1 * denom2 + num2 * denom1;
 
     if ( sum > std::numeric_limits<int>::max() ||
          sum < std::numeric_limits<int>::min() )
     {
-        throw RationalException(RationalException::OVERFLOW);
+        throw math::RationalException(math::RationalException::OVERFLOW);
     }
 
     return (int) sum;
@@ -912,14 +910,14 @@ int Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(RationalE
  *
  * @throw RationalException in case of an integer overflow
  */
-int Rational::auxProd(int first, int second) throw(RationalException)
+int math::Rational::auxProd(int first, int second) throw(math::RationalException)
 {
     const long int prod = first * second;
 
     if ( prod > std::numeric_limits<int>::max() ||
          prod < std::numeric_limits<int>::min() )
     {
-        throw RationalException(RationalException::OVERFLOW);
+        throw math::RationalException(math::RationalException::OVERFLOW);
     }
 
     return (int) prod;
@@ -928,7 +926,7 @@ int Rational::auxProd(int first, int second) throw(RationalException)
 /**
  * Destructor
  */
-Rational::~Rational()
+math::Rational::~Rational()
 {
     // nothing to do, i.e. no dynamically allocated memory to free,
     // no resources to release, etc.

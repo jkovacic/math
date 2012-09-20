@@ -28,33 +28,32 @@ Instead it must be included after the class declaration in the .h file
 // Delibarately there is no #include "NumericUtil.h"
 #include "Rational.h"
 
-using math::NumericUtil;
 
 // Note that the optimal EPS depends on application requirements
 /*
  * Definition of EPS for type float
  */
 template<>
-float NumericUtil<float>::EPS = 1e-9f;
+float math::NumericUtil<float>::EPS = 1e-9f;
 
 /*
  * Double is a more accurate type...
  */
 template<>
-double NumericUtil<double>::EPS = 1e-16;
+double math::NumericUtil<double>::EPS = 1e-16;
 
 /*
  * In int and other types, EPS doesn't make sense, so set it to 0
  */
 template<class T>
-T NumericUtil<T>::EPS = (T) 0;
+T math::NumericUtil<T>::EPS = (T) 0;
 
 /*
  * The implementation for integers et al. where the == operator
  * does make sense and no comparison to EPS is necessary.
  */
 template<class T>
-bool NumericUtil<T>::isZero(const T& value)
+bool math::NumericUtil<T>::isZero(const T& value)
 {
     bool retVal = ( 0==value ? true : false );
 
@@ -73,7 +72,7 @@ bool NumericUtil<T>::isZero(const T& value)
 
 // float:
 template<>
-bool NumericUtil<float>::isZero(const float& value)
+bool math::NumericUtil<float>::isZero(const float& value)
 {
     bool retVal = false;
     // quick definition of an absolute value
@@ -86,7 +85,7 @@ bool NumericUtil<float>::isZero(const float& value)
 
 // and double:
 template<>
-bool NumericUtil<double>::isZero(const double& value)
+bool math::NumericUtil<double>::isZero(const double& value)
 {
     bool retVal = false;
     // quick definition of an absolute value
@@ -101,7 +100,7 @@ bool NumericUtil<double>::isZero(const double& value)
  * Implementation for Rational
  */
 template<>
-bool NumericUtil<math::Rational>::isZero(const math::Rational& value)
+bool math::NumericUtil<math::Rational>::isZero(const math::Rational& value)
 {
     // Rational already contains its own isZero()...
     return value.isZero();

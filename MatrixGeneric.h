@@ -46,7 +46,7 @@ namespace math
 template<class T> class MatrixGeneric;
 // to declare the class's friend function:
 template<class T>
-MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m);
+MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (math::MatrixException);
 
 template <class T>
 class MatrixGeneric
@@ -66,7 +66,7 @@ protected:
     // assignemt operators etc. It s also suitable for use in derived  classes,
     // so it should be 'protected' instead of 'private'
     void copyElems(const MatrixGeneric& orig) throw (MatrixException);
-    
+
 private:
 
 public:
@@ -96,7 +96,7 @@ public:
     MatrixGeneric<T> operator* (const T& sc) const throw (MatrixException);
     MatrixGeneric<T> operator- () const throw (MatrixException);
     // A friend function that multiplies a scalar and a matrix
-    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m);
+    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (math::MatrixException);
 
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);

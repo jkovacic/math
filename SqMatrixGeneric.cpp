@@ -34,9 +34,6 @@ limitations under the License.
 
 #include <stdexcept>
 
-using math::SqMatrixGeneric;
-using math::MatrixGeneric;
-using math::MatrixException;
 
 // Matrix's element of the row r and column c is accessed as "r*N+c"
 // (N must be additionaly declared as either this->rows or this->cols).
@@ -55,8 +52,8 @@ using math::MatrixException;
  *        input parameters (dim must be at least 1)
  */
 template<class T>
-SqMatrixGeneric<T>::SqMatrixGeneric(unsigned int dim) throw (MatrixException) :
-    MatrixGeneric<T>(dim, dim)
+math::SqMatrixGeneric<T>::SqMatrixGeneric(unsigned int dim) throw (math::MatrixException) :
+    math::MatrixGeneric<T>(dim, dim)
 {
     // Square matrices have the same number of rows and columns.
     // This is specified by the initializer list.
@@ -74,8 +71,8 @@ SqMatrixGeneric<T>::SqMatrixGeneric(unsigned int dim) throw (MatrixException) :
  * @throw MatrixException if orig has different number of rows and columns
  */
 template<class T>
-SqMatrixGeneric<T>::SqMatrixGeneric(const MatrixGeneric<T>& orig) throw(MatrixException) :
-    MatrixGeneric<T>(orig)
+math::SqMatrixGeneric<T>::SqMatrixGeneric(const math::MatrixGeneric<T>& orig) throw(math::MatrixException) :
+    math::MatrixGeneric<T>(orig)
 {
     // check of input parameters
     if ( orig.nrRows() != orig.nrColumns() )
@@ -94,7 +91,7 @@ SqMatrixGeneric<T>::SqMatrixGeneric(const MatrixGeneric<T>& orig) throw(MatrixEx
  * @throw MatrixException if memory allocation fails or attempting to assign a nonsquare matrix
  */
 template<class T>
-SqMatrixGeneric<T>& SqMatrixGeneric<T>::operator= (const MatrixGeneric<T>& m) throw (MatrixException)
+math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
     // Nothing to do, if attempting to assign itself
     if ( this == &m )
@@ -105,7 +102,7 @@ SqMatrixGeneric<T>& SqMatrixGeneric<T>::operator= (const MatrixGeneric<T>& m) th
     // m must be a "square" matrix, i.e. with equal number of rows and columns
     if ( m.nrRows() != m.nrColumns() )
     {
-        throw MatrixException(MatrixException::INVALID_DIMENSION);
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
     copyElems(m);
@@ -124,7 +121,7 @@ SqMatrixGeneric<T>& SqMatrixGeneric<T>::operator= (const MatrixGeneric<T>& m) th
  * @throw MatrixException
  */
 template<class T>
-SqMatrixGeneric<T>& SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixException)
+math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) throw(math::MatrixException)
 {
     // A double for loop will traverse the matrix, its diagonal elements
     // (row == column) will be set to the scalar, others to 0
@@ -144,7 +141,7 @@ SqMatrixGeneric<T>& SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixExc
     }  // try
     catch ( std::out_of_range& oor )
     {
-        throw MatrixException(MatrixException::OUT_OF_RANGE);
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
     return *this;
@@ -158,7 +155,7 @@ SqMatrixGeneric<T>& SqMatrixGeneric<T>::setDiag(const T& scalar) throw(MatrixExc
  * @throw MatrixException
  */
 template<class T>
-SqMatrixGeneric<T>& SqMatrixGeneric<T>::setUnit() throw(MatrixException)
+math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setUnit() throw(math::MatrixException)
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal
@@ -177,11 +174,11 @@ SqMatrixGeneric<T>& SqMatrixGeneric<T>::setUnit() throw(MatrixException)
  * @throw MatrixException
  */
 template<class T>
-T SqMatrixGeneric<T>::determinant() const throw(MatrixException)
+T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 {
     /*
      * The following properties of determinant will be utilized:
-     * 
+     *
      * - addition of one line with a multiple of another line does not affect
      *   the determinant
      * - swapping of two lines negates the determinant
@@ -212,7 +209,7 @@ T SqMatrixGeneric<T>::determinant() const throw(MatrixException)
             // another one (r; r>i) satisfying temp(r,i)!=0
             // Each swap multiplies the determinant by -1
 
-            if ( true == NumericUtil<T>::isZero(temp.at(ELM(i, i))) )
+            if ( true == math::NumericUtil<T>::isZero(temp.at(ELM(i, i))) )
             {
 
                 // Line swap will be necessary.
@@ -285,7 +282,7 @@ T SqMatrixGeneric<T>::determinant() const throw(MatrixException)
     } // try
     catch ( std::out_of_range& oor )
     {
-        throw MatrixException(MatrixException::OUT_OF_RANGE);
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
     return retVal;
@@ -297,7 +294,7 @@ T SqMatrixGeneric<T>::determinant() const throw(MatrixException)
  * If matrix's determinat equals 0, the matrix is not invertible
  *
  * @return inverse matrix
- * 
+ *
  * @throw MatrixException if the matrix is not invertible
  */
 // This macro was defined specifically for inversion function. It requires an
@@ -306,7 +303,7 @@ T SqMatrixGeneric<T>::determinant() const throw(MatrixException)
 #define TMPELM(r,c)    ( (r) * 2*N + (c) )
 
 template<class T>
-SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
+math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::MatrixException)
 {
     /*
      * Elements of the inverse matrix can be calculated as quotients of so called
@@ -322,7 +319,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
     const unsigned int N = this->rows;  // number of rows (and columns)
     // Result will be a matrix with the same dimensions.
     // Let it be instantiated now and later its elements will be set.
-    SqMatrixGeneric<T> retVal(N);
+    math::SqMatrixGeneric<T> retVal(N);
 
     try
     {
@@ -339,7 +336,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
         }
         catch (std::bad_alloc &ba)
         {
-            throw MatrixException(MatrixException::OUT_OF_MEMORY);
+            throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
         }
 
         // Fill the temp "matrix":
@@ -360,7 +357,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
         for ( i=0; i<N; i++ )
         {
             // first check if the diagonal element equals 0
-            if ( true == NumericUtil<T>::isZero(temp.at(TMPELM(i, i))) )
+            if ( true == math::NumericUtil<T>::isZero(temp.at(TMPELM(i, i))) )
             {
                 // if yes, try to find another row r where temp(r,i)!=0
                 for ( r=0; r<N; r++ )
@@ -371,7 +368,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
                         continue;  // for r
                     }
 
-                    if ( false == NumericUtil<T>::isZero(temp.at(TMPELM(r, i))) )
+                    if ( false == math::NumericUtil<T>::isZero(temp.at(TMPELM(r, i))) )
                     {
                         // found, no need to search further
                         break;  // out of for r
@@ -382,7 +379,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
                 {
                     // No temp(r,i)!=0 was found, the matrix is non-invertible.
                     // Throw an exception
-                    throw MatrixException(MatrixException::NON_INVERTIBLE_MATRIX);
+                    throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
                 }
 
                 // add the r^th line to the i^th one
@@ -405,7 +402,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
             for ( r=i+1; r<N; r++ )
             {
                 // Nothing to do if temp(r,i) is already 0.
-                if ( true == NumericUtil<T>::isZero(temp.at(TMPELM(r, i))) )
+                if ( true == math::NumericUtil<T>::isZero(temp.at(TMPELM(r, i))) )
                 {
                     continue;  // for r
                 }
@@ -427,7 +424,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
             for ( c=r+1; c<N; c++ )
             {
                 // Nothing to do if already 0
-                if ( true == NumericUtil<T>::isZero(temp.at(TMPELM(r, c))) )
+                if ( true == math::NumericUtil<T>::isZero(temp.at(TMPELM(r, c))) )
                 {
                     continue;  // for c
                 }
@@ -456,7 +453,7 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
     } // try
     catch ( std::out_of_range& oor )
     {
-        throw MatrixException(MatrixException::OUT_OF_RANGE);
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
     return retVal;
@@ -471,27 +468,27 @@ SqMatrixGeneric<T> SqMatrixGeneric<T>::inverse() const throw(MatrixException)
  * Therefore they will automatically throw an exception if called.
  */
 template<class T>
-MatrixGeneric<T>& SqMatrixGeneric<T>::removeRow(unsigned int rowNr) throw (MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeRow(unsigned int rowNr) throw (math::MatrixException)
 {
-    throw MatrixException(MatrixException::FORBIDDEN);
+    throw math::MatrixException(MatrixException::FORBIDDEN);
 }
 
 template<class T>
-MatrixGeneric<T>& SqMatrixGeneric<T>::removeColumn(unsigned int colNr) throw (MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeColumn(unsigned int colNr) throw (math::MatrixException)
 {
-    throw MatrixException(MatrixException::FORBIDDEN);
+    throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
 
 template<class T>
-MatrixGeneric<T>& SqMatrixGeneric<T>::insertRow(unsigned int rowNr) throw (MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(unsigned int rowNr) throw (math::MatrixException)
 {
-    throw MatrixException(MatrixException::FORBIDDEN);
+    throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
 
 template<class T>
-MatrixGeneric<T>& SqMatrixGeneric<T>::insertColumn(unsigned int colNr) throw (MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(unsigned int colNr) throw (math::MatrixException)
 {
-    throw MatrixException(MatrixException::FORBIDDEN);
+    throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
 
 // The macro was defined for implementation in this file only. Undef it now

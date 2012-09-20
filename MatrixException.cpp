@@ -25,14 +25,13 @@ Implementation of the class MatrixException
 
 #include "MatrixException.h"
 
-using math::MatrixException;
 
 /**
  * Constructor.
  *
  * @param error code
  */
-MatrixException::MatrixException(err_codes err)
+math::MatrixException::MatrixException(err_codes err)
 {
     this->error = err;
 }
@@ -42,7 +41,7 @@ MatrixException::MatrixException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void MatrixException::display(std::ostream& str) const
+void math::MatrixException::display(std::ostream& str) const
 {
     switch (error)
     {

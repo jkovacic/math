@@ -26,14 +26,13 @@ Implementation of the class RationalException
 
 #include "RationalException.h"
 
-using math::RationalException;
 
 /**
  * Constructor
  *
  * @param error code
  */
-RationalException::RationalException(err_codes err)
+math::RationalException::RationalException(err_codes err)
 {
     this->error = err;
 }
@@ -43,7 +42,7 @@ RationalException::RationalException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void RationalException::display(std::ostream& str) const
+void math::RationalException::display(std::ostream& str) const
 {
     switch (error)
     {
