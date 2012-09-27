@@ -135,7 +135,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         {
             for ( j=0; j<N; j++ )
             {
-                this->elems.at(ELM(i, j)) = ( 0 == i-j ? scalar : (T) 0 );
+                this->elems.at(ELM(i, j)) = ( 0 == i-j ? scalar : static_cast<T>(0) );
             } // for j
         } // for i
     }  // try
@@ -159,7 +159,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setUnit() throw(math::Matrix
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal
-    setDiag((T) 1);
+    setDiag(static_cast<T>(1));
 
     return *this;
 }
@@ -189,7 +189,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
     // Initial value. It will be negated each time two lines need to be swapped.
     // At the end of the algorithm it will be multiplied by all diagonal elements
-    T retVal = (T) 1;
+    T retVal = static_cast<T>(1);
 
     try
     {
@@ -230,7 +230,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // and the method is finished
                 if ( 0 == r - N )
                 {
-                    return (T) 0;
+                    return static_cast<T>(0);
                 }
 
                 // otherwise swap the lines one element by one
@@ -347,7 +347,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
             for ( c=0; c<N; c++ )
             {
                 temp.at(TMPELM(r, c)) = this->elems.at(ELM(r, c));
-                temp.at(TMPELM(r, c + N)) = ( 0 == r-c ? (T) 1 : (T) 0 );
+                temp.at(TMPELM(r, c + N)) = ( 0 == r-c ? static_cast<T>(1) : static_cast<T>(0) );
             }  // for c
         }  // for r
         // The temp matrix is filled accordingly

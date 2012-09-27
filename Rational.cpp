@@ -166,7 +166,7 @@ void math::Rational::display(int factor, std::ostream& str) const
  */
 float math::Rational::toFloat() const
 {
-    return ( (float) num)/( (float) denom);
+    return ( static_cast<float>(num))/( static_cast<float>(denom));
 }
 
 /**
@@ -174,7 +174,7 @@ float math::Rational::toFloat() const
  */
 double math::Rational::toDouble() const
 {
-    return ( (double) num)/( (double) denom);
+    return ( static_cast<double>(num))/( static_cast<double>(denom));
 }
 
 /**

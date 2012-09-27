@@ -79,7 +79,7 @@ math::MatrixGeneric<T>::MatrixGeneric(unsigned int rows, unsigned int columns) t
         // make sure, the vector will be empty
         elems.clear();
         // allocate memory for required number of elements, initialize each of them
-        elems.resize(rows*columns, (T) 0);
+        elems.resize(rows*columns, static_cast<T>(0));
     }
     catch ( std::bad_alloc &ba )
     {
@@ -104,7 +104,7 @@ math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw 
 }
 
 // Copy elements from one matrix into another. Used at copy constructors,
-// assignemt operators etc.
+// assignment operators etc.
 template <class T>
 void math::MatrixGeneric<T>::copyElems(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
@@ -518,7 +518,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
         {
             for ( c=0; c<matrix.cols; c++ )
             {
-                T sum = (T) 0;
+                T sum = static_cast<T>(0);
                 unsigned int i;
                 for ( i=0; i<cols; i++ )
                 {
@@ -735,7 +735,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(unsigned int rowNr) th
         elems.reserve( (rows+1)*cols );
         // a contiguous block of cols elements will be inserted
         // the position of rowNr*cols element.
-        elems.insert(elems.begin()+rowNr*cols, cols, (T) 0);
+        elems.insert(elems.begin()+rowNr*cols, cols, static_cast<T>(0));
     }
     catch ( std::bad_alloc& ba )
     {
@@ -789,7 +789,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(unsigned int colNr)
 
         for ( r = 0; r < rows; r++ )
         {
-            elems.insert(elems.begin()+r*(cols+1)+colNr, (T) 0);
+            elems.insert(elems.begin()+r*(cols+1)+colNr, static_cast<T>(0));
         }  // for r
     }  // try
     catch ( std::bad_alloc& ba )

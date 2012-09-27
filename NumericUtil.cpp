@@ -46,7 +46,7 @@ double math::NumericUtil<double>::EPS = 1e-16;
  * In int and other types, EPS doesn't make sense, so set it to 0
  */
 template<class T>
-T math::NumericUtil<T>::EPS = (T) 0;
+T math::NumericUtil<T>::EPS = static_cast<T>(0);
 
 /*
  * The implementation for integers et al. where the == operator
@@ -55,7 +55,7 @@ T math::NumericUtil<T>::EPS = (T) 0;
 template<class T>
 bool math::NumericUtil<T>::isZero(const T& value)
 {
-    bool retVal = ( 0==value ? true : false );
+    bool retVal = ( static_cast<T>(0)==value ? true : false );
 
     return retVal;
 }
@@ -76,7 +76,7 @@ bool math::NumericUtil<float>::isZero(const float& value)
 {
     bool retVal = false;
     // quick definition of an absolute value
-    float absValue = ( value>=0 ? value : -value );
+    float absValue = ( value>=0.0f ? value : -value );
 
     retVal = (absValue < EPS ? true : false );
 
@@ -89,7 +89,7 @@ bool math::NumericUtil<double>::isZero(const double& value)
 {
     bool retVal = false;
     // quick definition of an absolute value
-    double absValue = ( value>=0 ? value : -value );
+    double absValue = ( value>=0.0 ? value : -value );
 
     retVal = (absValue < EPS ? true : false );
 
