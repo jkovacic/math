@@ -67,7 +67,7 @@ math::MatrixGeneric<T>::MatrixGeneric(unsigned int rows, unsigned int columns) t
     // problems with counter overflows. This is much much more than required
     // in most real life applications.
     const unsigned long int matSize = rows * columns;
-    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
+    if ( matSize > static_cast<unsigned long int>(std::numeric_limits<int>::max() ) )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
