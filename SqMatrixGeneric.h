@@ -25,8 +25,8 @@ for square matrices only
 @author Jernej Kovacic
 */
 
-#ifndef _SQMATRIXGENERIC_H_
-#define	_SQMATRIXGENERIC_H_
+#ifndef _MATH_SQMATRIXGENERIC_H_
+#define	_MATH_SQMATRIXGENERIC_H_
 
 #include "MatrixGeneric.h"
 
@@ -78,4 +78,4 @@ typedef SqMatrixGeneric<double> SqMatrix;
 // Alternatively the definition can be included into this file.
 #include "SqMatrixGeneric.cpp"
 
-#endif	/* _SQMATRIXGENERIC_H_ */
+#endif	/* _MATH_SQMATRIXGENERIC_H_ */

@@ -24,8 +24,8 @@ Declaration of the class MatrixException
 */
 
 
-#ifndef _MATRIXEXCEPTION_H_
-#define	_MATRIXEXCEPTION_H_
+#ifndef _MATH_MATRIXEXCEPTION_H_
+#define	_MATH_MATRIXEXCEPTION_H_
 
 #include "IMathException.h"
 
@@ -54,4 +54,4 @@ struct MatrixException : public IMathException
 
 } // namespace math
 
-#endif	/* _MATRIXEXCEPTION_H_ */
+#endif	/* _MATH_MATRIXEXCEPTION_H_ */

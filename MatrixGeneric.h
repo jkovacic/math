@@ -23,8 +23,8 @@ Declaration of the class MatrixGeneric, representing generic matrices.
 @author Jernej Kovacic
 */
 
-#ifndef _MATRIXGENERIC_H_
-#define	_MATRIXGENERIC_H_
+#ifndef _MATH_MATRIXGENERIC_H_
+#define	_MATH_MATRIXGENERIC_H_
 
 #include <vector>
 #include <iostream>
@@ -128,4 +128,4 @@ typedef MatrixGeneric<double> Matrix;
 // Alternatively the definition can be included into this file.
 #include "MatrixGeneric.cpp"
 
-#endif	/* _MATRIXGENERIC_H_ */
+#endif	/* _MATH_MATRIXGENERIC_H_ */

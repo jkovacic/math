@@ -23,8 +23,8 @@ Declaration of the class RationalException
 @author Jernej Kovacic
 */
 
-#ifndef _RATIONALEXCEPTION_H_
-#define	_RATIONALEXCEPTION_H_
+#ifndef _MATH_RATIONALEXCEPTION_H_
+#define	_MATH_RATIONALEXCEPTION_H_
 
 #include "IMathException.h"
 
@@ -50,4 +50,4 @@ struct RationalException : public IMathException
 
 } // namespace math
 
-#endif	/* RATIONALEXCEPTION_H */
+#endif	/* _MATH_RATIONALEXCEPTION_H_ */

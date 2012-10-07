@@ -22,8 +22,8 @@ Declaration of the class NumericUtil, a collection of some useful numerical util
 @author Jernej Kovacic
 */
 
-#ifndef NUMERICUTIL_H
-#define   NUMERICUTIL_H
+#ifndef _MATH_NUMERICUTIL_H_
+#define _MATH_NUMERICUTIL_H_
 
 namespace math
 {
@@ -60,4 +60,4 @@ template<> bool NumericUtil<Rational>::isZero(const Rational& value);
 
 #include "NumericUtil.cpp"
 
-#endif	/* NUMERICUTIL_H */
+#endif	/* _MATH_NUMERICUTIL_H_ */

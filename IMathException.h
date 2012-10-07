@@ -24,8 +24,8 @@ limitations under the License.
 @author Jernej Kovacic
 */
 
-#ifndef IMATHEXCEPTION_H
-#define	IMATHEXCEPTION_H
+#ifndef _MATH_IMATHEXCEPTION_H_
+#define	_MATH_IMATHEXCEPTION_H_
 
 #include <iostream>
 
@@ -44,5 +44,5 @@ struct IMathException
 
 } // namespace math
 
-#endif	/* IMATHEXCEPTION_H */
+#endif	/* _MATH_IMATHEXCEPTION_H_ */
 

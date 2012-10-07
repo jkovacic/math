@@ -24,8 +24,8 @@ i.e. reduced fractions of two integers
 @author Jernej Kovacic
 */
 
-#ifndef _RATIONAL_H_
-#define	_RATIONAL_H_
+#ifndef _MATH_RATIONAL_H_
+#define	_MATH_RATIONAL_H_
 
 #include "RationalException.h"
 
@@ -132,4 +132,4 @@ private:
 
 } // namespace math
 
-#endif	/* _RATIONAL_H_ */
+#endif	/* _MATH_RATIONAL_H_ */
