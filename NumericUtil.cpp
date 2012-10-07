@@ -27,7 +27,6 @@ Instead it must be included after the class declaration in the .h file
 
 // Delibarately there is no #include "NumericUtil.h"
 #include "Rational.h"
-#include "NumericUtil.h"
 
 
 // Note that the optimal EPS depends on application requirements
