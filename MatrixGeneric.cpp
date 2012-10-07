@@ -29,6 +29,7 @@ limitations under the License.
 #include <new>
 #include <stdexcept>
 #include <limits>
+#include <vector>
 
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"
@@ -631,6 +632,58 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
 
     return retVal;
 }
+
+/**
+ * Transpose the matrix and write all changes into it
+ * (disregard the original matrix)
+ *
+ * @return reference to this
+ *
+ * @throw MatrixException if not enough memory to perform the operation
+ */
+template<class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::MatrixException)
+{
+    // TODO: find a memory efficient method for a general matrix!!
+    // Note: as the method is not memory efficient at the moment, the function
+    // is declared as virtual, allowing a more efficient implementation at
+    // SqMatrixGeneric.
+
+    // If dimension of this is (n,m), dimension of its transposed matrix is (m,n)
+    // T(r,c) = this(c,r)
+
+    std::vector<T> tempElems;
+    // reserve enough space for the temporary vector:
+    try
+    {
+        tempElems.resize(rows * cols);
+    }
+    catch (std::bad_alloc &ba)
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
+    }
+
+    unsigned int r;
+    unsigned int c;
+    for ( r=0; r<rows; r++ )
+    {
+        for ( c=0; c<cols; c++ )
+        {
+            tempElems.at(c*rows + r) = this->elems.at(POS(r, c));
+        }  // for c
+    }  // for r
+
+    // update the vector of elements:
+    this->elems = tempElems;
+
+    // and swap matrix's dimensions:
+    c = this->cols;
+    this->cols = this->rows;
+    this->rows = c;
+
+    return *this;
+}
+
  /**
   * Removes the specified row number from the matrix.
   * It also decreases the number of rows.

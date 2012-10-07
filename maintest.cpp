@@ -338,6 +338,10 @@ void matrixTest()
         m1.display();
         cout << endl;
 
+        cout << "transposed the previous matrix:" << endl;
+        m1.transposed().display();
+        cout << endl;
+
         // Test of copy constructor
         // SqMatrix's copy constructor must accept generic matrices where rows == cols
         FMatrix sq(2, 2);
@@ -379,6 +383,12 @@ void matrixTest()
         prodUnit = a1 * inv;
         cout << "a1 * inv   (must be a unit matrix):" << endl;
         prodUnit.display();
+        cout << endl;
+
+        // Test self transpose of a square matrix:
+        cout << "inv transposed:" << endl;
+        FMatrix* pinv = &inv;
+        pinv->transposed().display();
         cout << endl;
     }
     catch ( const MatrixException& ex )

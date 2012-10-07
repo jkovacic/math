@@ -100,6 +100,7 @@ public:
 
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
+    virtual MatrixGeneric<T>& transposed() throw (MatrixException);
 
     // Insert or remove rows/columns.
     virtual MatrixGeneric<T>& removeRow(unsigned int rowNr) throw (MatrixException);

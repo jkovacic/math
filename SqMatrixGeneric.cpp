@@ -461,6 +461,37 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
 // This macro was defined especially for the inverse function so it should be undef'ed
 #undef TMPELM
 
+/**
+ * Transpose the matrix and write all changes into it
+ * (disregard the original matrix)
+ *
+ * @return reference to this
+ *
+ * @throw MatrixException (never thrown at this implementation)
+ */
+template<class T>
+math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::MatrixException)
+{
+    const unsigned int N = this->rows;  // number of rows (and columns)
+    unsigned int r;
+    unsigned int c;
+    T temp;
+
+    // Traverse the upper diagonal part of the matrix,
+    // no need to transpose elements on the diagonal:
+    for ( r=0; r<N; r++ )
+    {
+        for ( c=r+1; c<N; c++ )
+        {
+            temp = this->elems.at(ELM(r, c));
+            this->elems.at(ELM(r, c)) = this->elems.at(ELM(c, r));
+            this->elems.at(ELM(c, r)) = temp;
+        }  // for c
+    }  // for r
+
+    return *this;
+}
+
 /*
  * The following functions are inherited from the base class, however they change
  * matrix dimensions so they should not be permitted in a square matrix.

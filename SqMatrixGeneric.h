@@ -54,6 +54,9 @@ public:
     // Inverse matrix
     SqMatrixGeneric<T> inverse() const throw(MatrixException);
 
+    // Special (memory efficient) reimplementation of a virtual method
+    SqMatrixGeneric<T>& transposed() throw(MatrixException);
+
     // The following functions inherited from the parent class
     // are not applicable for square matrices and throw an exception
     MatrixGeneric<T>& removeRow(unsigned int rowNr) throw (MatrixException);
