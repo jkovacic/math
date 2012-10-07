@@ -478,8 +478,9 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     T temp;
 
     // Traverse the upper diagonal part of the matrix,
+    // no need to reach the final row and
     // no need to transpose elements on the diagonal:
-    for ( r=0; r<N; r++ )
+    for ( r=0; r<N-1; r++ )
     {
         for ( c=r+1; c<N; c++ )
         {
