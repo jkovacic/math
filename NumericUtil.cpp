@@ -27,6 +27,7 @@ Instead it must be included after the class declaration in the .h file
 
 // Delibarately there is no #include "NumericUtil.h"
 #include "Rational.h"
+#include "NumericUtil.h"
 
 
 // Note that the optimal EPS depends on application requirements
@@ -62,39 +63,33 @@ bool math::NumericUtil<T>::isZero(const T& value)
 
 
 /*
- * Two specialized implementations for float and double.
+ * Float and double require specialized implementations of isZero().
  * In case of these two types, the equality operator (==) is useless.
  * In numerical mathematics, two numbers are considered "equal", when
  * absolute value of their difference does not exceed a reasonably set EPS.
  * Both specializations are very similar and only differ in types of an input value.
- * TODO: would it make sense using #define ???
+ * For easier maintainability, the specialization will be implemented
+ * only once using a parameterized #define
  */
 
-// float:
-template<>
-bool math::NumericUtil<float>::isZero(const float& value)
-{
-    bool retVal = false;
-    // quick definition of an absolute value
-    float absValue = ( value>=0.0f ? value : -value );
-
-    retVal = (absValue < EPS ? true : false );
-
-    return retVal;
+#define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(FD) \
+template<> \
+bool math::NumericUtil<FD>::isZero(const FD& value) \
+{ \
+    bool retVal = false; \
+    retVal = ( value>-EPS && value<EPS ? true : false ); \
+    return retVal; \
 }
+// end od #define
 
-// and double:
-template<>
-bool math::NumericUtil<double>::isZero(const double& value)
-{
-    bool retVal = false;
-    // quick definition of an absolute value
-    double absValue = ( value>=0.0 ? value : -value );
+// derive specialization for float:
+_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(float)
 
-    retVal = (absValue < EPS ? true : false );
+// ... and for double:
+_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(double)
 
-    return retVal;
-}
+// #definition of _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO not needed anymore, #undef it:
+#undef _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO
 
 /*
  * Implementation for Rational
