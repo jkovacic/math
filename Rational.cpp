@@ -896,7 +896,7 @@ int math::Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(mat
         throw math::RationalException(math::RationalException::OVERFLOW);
     }
 
-    return (int) sum;
+    return static_cast<int>(sum);
 }
 
 /**
@@ -920,7 +920,7 @@ int math::Rational::auxProd(int first, int second) throw(math::RationalException
         throw math::RationalException(math::RationalException::OVERFLOW);
     }
 
-    return (int) prod;
+    return static_cast<int>(prod);
 }
 
 /**

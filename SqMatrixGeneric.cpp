@@ -30,7 +30,6 @@ limitations under the License.
 #include "NumericUtil.h"
 #include "MatrixException.h"
 #include "MatrixGeneric.h"
-#include "SqMatrixGeneric.h"
 
 #include <stdexcept>
 

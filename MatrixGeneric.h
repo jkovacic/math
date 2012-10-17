@@ -96,7 +96,7 @@ public:
     MatrixGeneric<T> operator* (const T& sc) const throw (MatrixException);
     MatrixGeneric<T> operator- () const throw (MatrixException);
     // A friend function that multiplies a scalar and a matrix
-    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (math::MatrixException);
+    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
@@ -118,7 +118,7 @@ public:
 typedef MatrixGeneric<float> FMatrix;
 typedef MatrixGeneric<double> Matrix;
 
-// Definition could be included into the namespace declaraion, but it
+// Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.
 } // namespace math
 
