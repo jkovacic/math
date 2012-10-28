@@ -41,6 +41,18 @@ limitations under the License.
 // typing errors, this macro has been defined:
 #define ELM(r,c)    ( (r) * N + (c) )
 
+// A zero constant has already been defined in the parent class. Although its
+// visibility is protected, it can only be accessed as math::MatrixGeneric<T>::ZERO
+// As this notation is a bit long, this convenience macro is defined:
+#define ZERO math::MatrixGeneric<T>::ZERO
+
+/*
+ * A constant value with the T's representation of one (1)
+ */
+template<class T>
+const T math::SqMatrixGeneric<T>::ONE ( static_cast<T>(1) );
+
+
 /**
  * Constructor.
  * Creates an instance of a square matrix with the specified number of rows and columns.
@@ -134,7 +146,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         {
             for ( j=0; j<N; j++ )
             {
-                this->elems.at(ELM(i, j)) = ( 0 == i-j ? scalar : static_cast<T>(0) );
+                this->elems.at(ELM(i, j)) = ( 0 == i-j ? scalar : ZERO );
             } // for j
         } // for i
     }  // try
@@ -158,7 +170,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setUnit() throw(math::Matrix
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal
-    setDiag(static_cast<T>(1));
+    setDiag(ONE);
 
     return *this;
 }
@@ -188,7 +200,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
     // Initial value. It will be negated each time two lines need to be swapped.
     // At the end of the algorithm it will be multiplied by all diagonal elements
-    T retVal = static_cast<T>(1);
+    T retVal = ONE;
 
     try
     {
@@ -229,7 +241,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // and the method is finished
                 if ( 0 == r - N )
                 {
-                    return static_cast<T>(0);
+                    return ZERO;
                 }
 
                 // otherwise swap the lines one element by one
@@ -346,7 +358,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
             for ( c=0; c<N; c++ )
             {
                 temp.at(TMPELM(r, c)) = this->elems.at(ELM(r, c));
-                temp.at(TMPELM(r, c + N)) = ( 0 == r-c ? static_cast<T>(1) : static_cast<T>(0) );
+                temp.at(TMPELM(r, c + N)) = ( 0 == r-c ? ONE : ZERO );
             }  // for c
         }  // for r
         // The temp matrix is filled accordingly
@@ -522,5 +534,6 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(unsigned int colN
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
 
-// The macro was defined for implementation in this file only. Undef it now
+// The macros were defined for implementation in this file only. Undef them now
 #undef ELM
+#undef ZERO

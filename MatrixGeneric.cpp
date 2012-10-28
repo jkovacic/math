@@ -33,7 +33,6 @@ limitations under the License.
 
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"
-#include "MatrixGeneric.h"
 
 
 // Matrix's element of the row r and column c is accessed as "r*cols+c"
@@ -44,6 +43,12 @@ limitations under the License.
 // *this. To access elements of other matrices (this occurs less frequently),
 // the appropriate "version" of the above expression must be used
 #define POS(r,c)    ( (r) * cols + (c) )
+
+/*
+ * A constant value with the T's representation of zero (0)
+ */
+template<class T>
+const T math::MatrixGeneric<T>::ZERO ( static_cast<T>(0) );
 
 /**
  * Constructor.
@@ -80,7 +85,7 @@ math::MatrixGeneric<T>::MatrixGeneric(unsigned int rows, unsigned int columns) t
         // make sure, the vector will be empty
         elems.clear();
         // allocate memory for required number of elements, initialize each of them
-        elems.resize(rows*columns, static_cast<T>(0));
+        elems.resize(rows*columns, ZERO);
     }
     catch ( std::bad_alloc &ba )
     {
@@ -515,11 +520,12 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
     {
         unsigned int r;
         unsigned int c;
+
         for ( r=0; r<rows; r++ )
         {
             for ( c=0; c<matrix.cols; c++ )
             {
-                T sum = static_cast<T>(0);
+                T sum = ZERO;
                 unsigned int i;
                 for ( i=0; i<cols; i++ )
                 {
@@ -590,8 +596,8 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
 template<class T>
 math::MatrixGeneric<T> math::operator* (const T& scalar, const math::MatrixGeneric<T>& matrix) throw (math::MatrixException)
 {
-    MatrixGeneric<T> retVal = matrix;
-    return retVal*scalar;
+    MatrixGeneric<T> retVal = matrix * scalar;
+    return retVal;
 }
 
 /**
@@ -788,7 +794,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(unsigned int rowNr) th
         elems.reserve( (rows+1)*cols );
         // a contiguous block of cols elements will be inserted
         // the position of rowNr*cols element.
-        elems.insert(elems.begin()+rowNr*cols, cols, static_cast<T>(0));
+        elems.insert(elems.begin()+rowNr*cols, cols, ZERO);
     }
     catch ( std::bad_alloc& ba )
     {
@@ -842,7 +848,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(unsigned int colNr)
 
         for ( r = 0; r < rows; r++ )
         {
-            elems.insert(elems.begin()+r*(cols+1)+colNr, static_cast<T>(0));
+            elems.insert(elems.begin()+r*(cols+1)+colNr, ZERO);
         }  // for r
     }  // try
     catch ( std::bad_alloc& ba )

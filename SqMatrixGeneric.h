@@ -36,6 +36,11 @@ namespace math
 template<class T>
 class SqMatrixGeneric : public MatrixGeneric<T>
 {
+private:
+    // A constant (its value must be assigned outside the class declaration)
+    // offten used by the class's member functions. Visible only inside this class
+    static const T ONE; // = static_cast<T>(1);
+    
 public:
     // Constructor
     SqMatrixGeneric(unsigned int dim = 1) throw(MatrixException);
