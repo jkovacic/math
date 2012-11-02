@@ -752,7 +752,7 @@ void math::Rational::reduce()
     // ... and divide both members by it.
     // if both num (handled a few lines above)and denom (not permitted when seting)
     // are different than 0, the GCD is guaranteed to be a non-zero value
-    num /= (int) gcd;
+    num /= static_cast<int>(gcd);
     denom /= gcd;
 } // Rational::reduce
 
