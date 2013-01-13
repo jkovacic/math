@@ -51,12 +51,6 @@ MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (math:
 template <class T>
 class MatrixGeneric
 {
-    
-protected:
-    // A constant (its value must be assigned outside the class declaration)
-    // offten used by the class's member functions. It must be visible also
-    // in derived classes
-    static const T ZERO; // = static_cast<T>(0);
 
     // These properties must be accessible in inhereted classes
 protected:

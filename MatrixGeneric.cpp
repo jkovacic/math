@@ -33,6 +33,7 @@ limitations under the License.
 
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"
+#include "NumericUtil.h"
 
 
 // Matrix's element of the row r and column c is accessed as "r*cols+c"
@@ -44,11 +45,11 @@ limitations under the License.
 // the appropriate "version" of the above expression must be used
 #define POS(r,c)    ( (r) * cols + (c) )
 
-/*
- * A constant value with the T's representation of zero (0)
- */
-template<class T>
-const T math::MatrixGeneric<T>::ZERO ( static_cast<T>(0) );
+// A zero constant has already been defined in the class NumericUtil.
+// It can only be accessed as math::NumericUtil<T>::ZERO
+// As this notation is a bit long, this convenience macro is defined:
+#define ZERO math::NumericUtil<T>::ZERO
+
 
 /**
  * Constructor.
@@ -876,6 +877,7 @@ math::MatrixGeneric<T>::~MatrixGeneric()
     // There are no other resources to release.
 }
 
-// This macro was defined especially for this file. To prevent any possible
-// conflicts, it will be #undef'ed
+// These macros were defined especially for this file. To prevent any possible
+// conflicts, they will be #undef'ed
 #undef POS
+#undef ZERO

@@ -41,16 +41,11 @@ limitations under the License.
 // typing errors, this macro has been defined:
 #define ELM(r,c)    ( (r) * N + (c) )
 
-// A zero constant has already been defined in the parent class. Although its
-// visibility is protected, it can only be accessed as math::MatrixGeneric<T>::ZERO
-// As this notation is a bit long, this convenience macro is defined:
-#define ZERO math::MatrixGeneric<T>::ZERO
-
-/*
- * A constant value with the T's representation of one (1)
- */
-template<class T>
-const T math::SqMatrixGeneric<T>::ONE ( static_cast<T>(1) );
+// 'Zero' and 'one' constant have already been defined in the class NumericUtil.
+// They can only be accessed as math::NumericUtil<T>::ZERO or math::NumericUtil<T>::ONE, respectively
+// As this notation is a bit long, these convenience macro are defined:
+#define ZERO math::NumericUtil<T>::ZERO
+#define ONE  math::NumericUtil<T>::ONE
 
 
 /**
@@ -537,3 +532,4 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(unsigned int colN
 // The macros were defined for implementation in this file only. Undef them now
 #undef ELM
 #undef ZERO
+#undef ONE

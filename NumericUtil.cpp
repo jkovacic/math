@@ -48,6 +48,20 @@ double math::NumericUtil<double>::EPS = 1e-16;
 template<class T>
 T math::NumericUtil<T>::EPS = static_cast<T>(0);
 
+
+/**
+ * A constant value with the T's representation of zero (0)
+ */
+template<class T>
+const T math::NumericUtil<T>::ZERO ( static_cast<T>(0) );
+
+/**
+ * A constant value with the T's representation of one (1)
+ */
+template<class T>
+const T math::NumericUtil<T>::ONE ( static_cast<T>(1) );
+
+
 /*
  * The implementation for integers et al. where the == operator
  * does make sense and no comparison to EPS is necessary.
