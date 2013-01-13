@@ -68,8 +68,9 @@ protected:
     // so it should be 'protected' instead of 'private'
     void copyElems(const MatrixGeneric& orig) throw (MatrixException);
 
-private:
-
+    // position of the element within the internal vector
+    inline unsigned int pos(unsigned int row, unsigned int column) const;
+    
 public:
     // Constructor
     MatrixGeneric(unsigned int rows = 1, unsigned int columns = 1) throw (MatrixException);

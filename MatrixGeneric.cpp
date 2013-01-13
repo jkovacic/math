@@ -36,15 +36,6 @@ limitations under the License.
 #include "NumericUtil.h"
 
 
-// Matrix's element of the row r and column c is accessed as "r*cols+c"
-// (cols is a property of the class). This expression would be used
-// frequently inside this file. To improve readability, to simplify
-// code reviews and to eliminate possibilities of typing errors, this
-// macro has been defined. It should only be used to access elements of
-// *this. To access elements of other matrices (this occurs less frequently),
-// the appropriate "version" of the above expression must be used
-#define POS(r,c)    ( (r) * cols + (c) )
-
 // A zero constant has already been defined in the class NumericUtil.
 // It can only be accessed as math::NumericUtil<T>::ZERO
 // As this notation is a bit long, this convenience macro is defined:
@@ -54,6 +45,7 @@ limitations under the License.
 /**
  * Constructor.
  * Creates an instance of a matrix with the specified number of rows and columns.
+ * Elements of the matrix are set to the default value (zero).
  *
  * @param rows    - number of rows (default: 1)
  * @param columns - number of columns (default: 1)
@@ -108,6 +100,25 @@ template<class T>
 math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
     copyElems(orig);
+}
+
+/**
+ * A utility function that returns the postion of element's "coordinates"
+ * within the matrix's internal vector (r*cols+c). As this functionality
+ * is used often, the purpose of this function is to define it only once
+ * and to eliminate possibilities of typing errors. 
+ *
+ * As the function is simple (short) and called frequently, it is declared
+ * as an inline function to reduce overhead.
+ * 
+ * Note: no checks are performed inside the function. The results of the
+ * function are usually passed directly to std::vector.at() which throws
+ * an exception if pos is out of the vector's range.
+ */
+template <class T>
+unsigned int math::MatrixGeneric<T>::pos(unsigned int row, unsigned int column) const
+{
+    return ( row * this->cols + column );
 }
 
 // Copy elements from one matrix into another. Used at copy constructors,
@@ -187,7 +198,7 @@ T math::MatrixGeneric<T>::get(unsigned int row, unsigned int column) const throw
     T retVal;
     try
     {
-        retVal = elems.at(POS(row, column));
+        retVal = elems.at(pos(row, column));
     }
     catch ( std::out_of_range& oor )
     {
@@ -222,7 +233,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(unsigned int row, unsigned i
     // Attempt to modify the element
     try
     {
-        elems.at(POS(row, column)) = element;
+        elems.at(pos(row, column)) = element;
     }
     catch ( std::out_of_range& oor )
     {
@@ -259,7 +270,7 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
             // display elements of the row r, separated by tabs
             for ( c=0; c<cols; c++ )
             {
-                str << elems.at(POS(r, c)) << "\t";
+                str << elems.at(pos(r, c)) << "\t";
             }
             // the line must be terminated by a newline
             str << std::endl;
@@ -530,10 +541,10 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
                 unsigned int i;
                 for ( i=0; i<cols; i++ )
                 {
-                    sum += elems.at(POS(r, i))*matrix.elems.at(i*matrix.cols + c);
+                    sum += elems.at(pos(r, i)) * matrix.elems.at(matrix.pos(i, c));
                 }
 
-                temp.elems.at(r*matrix.cols + c) = sum;
+                temp.elems.at(matrix.pos(r, c)) = sum;
             }  // for c
         }  // for r
     }  // try
@@ -628,7 +639,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
             for ( c=0; c<cols; c++ )
             {
                 // and swap their "coordinates"
-                retVal.elems.at(c*rows + r) = elems.at(POS(r, c));
+                retVal.elems.at(retVal.pos(c, r)) = elems.at(pos(r, c));
             }
         }
     }  // try
@@ -676,7 +687,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     {
         for ( c=0; c<cols; c++ )
         {
-            tempElems.at(c*rows + r) = this->elems.at(POS(r, c));
+            tempElems.at(c*rows + r) = this->elems.at(pos(r, c));
         }  // for c
     }  // for r
 
@@ -877,7 +888,6 @@ math::MatrixGeneric<T>::~MatrixGeneric()
     // There are no other resources to release.
 }
 
-// These macros were defined especially for this file. To prevent any possible
-// conflicts, they will be #undef'ed
-#undef POS
+// This macro was defined especially for this file. To prevent any possible
+// conflicts, it will be #undef'ed
 #undef ZERO

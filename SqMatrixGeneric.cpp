@@ -33,13 +33,10 @@ limitations under the License.
 
 #include <stdexcept>
 
-
-// Matrix's element of the row r and column c is accessed as "r*N+c"
-// (N must be additionaly declared as either this->rows or this->cols).
-// This expression would be used frequently inside this file. To improve
-// readability, to simplify code reviews and to eliminate possibilities of
-// typing errors, this macro has been defined:
-#define ELM(r,c)    ( (r) * N + (c) )
+// The function 'pos', defined in the parent class, must be called as
+// this->pos. The following macro has been defined to shorten this and
+// to make the code a little bit more readable:
+#define POS(r, c)   this->pos((r), (c))
 
 // 'Zero' and 'one' constant have already been defined in the class NumericUtil.
 // They can only be accessed as math::NumericUtil<T>::ZERO or math::NumericUtil<T>::ONE, respectively
@@ -141,7 +138,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         {
             for ( j=0; j<N; j++ )
             {
-                this->elems.at(ELM(i, j)) = ( 0 == i-j ? scalar : ZERO );
+                this->elems.at(POS(i, j)) = ( i==j ? scalar : ZERO );
             } // for j
         } // for i
     }  // try
@@ -215,7 +212,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // another one (r; r>i) satisfying temp(r,i)!=0
             // Each swap multiplies the determinant by -1
 
-            if ( true == math::NumericUtil<T>::isZero(temp.at(ELM(i, i))) )
+            if ( true == math::NumericUtil<T>::isZero(temp.at(POS(i, i))) )
             {
 
                 // Line swap will be necessary.
@@ -224,7 +221,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
                 for ( r=i+1; r<N; r++ )
                 {
-                    if ( false == NumericUtil<T>::isZero(temp.at(ELM(r, i))) )
+                    if ( false == NumericUtil<T>::isZero(temp.at(POS(r, i))) )
                     {
                         // Found, no need to search further,
                         // so end the for (r) loop
@@ -234,7 +231,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
                 // if no appropriate row r was found, the determinant will be 0
                 // and the method is finished
-                if ( 0 == r - N )
+                if ( N == r )
                 {
                     return ZERO;
                 }
@@ -246,11 +243,11 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // BTW, all elements left of (i,i) and (r,i) should already be
                 // equal to 0 and it wouldn't be necessary to swap them.
                 // But a few extra "operations" shouldn't considerably affect complexity
-                for ( c=ELM(i,0); c<ELM(i+1,0); c++ )
+                for ( c=POS(i,0); c<POS(i+1,0); c++ )
                 {
                     const T tempElem = temp.at(c);
-                    temp.at(c) = temp.at(ELM(r, c));
-                    temp.at(ELM(r, c)) = tempElem;
+                    temp.at(c) = temp.at(POS(r, c));
+                    temp.at(POS(r, c)) = tempElem;
                 }
 
                 // finally, if two lines are swaped, det = -det
@@ -269,12 +266,12 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // temp(r,i) will be calculated to 0 immediately.
                 // However, its initial value is necessary to properly
                 // calculate all other elements of the r^th row
-                T ri = temp.at(ELM(r, i));
+                T ri = temp.at(POS(r, i));
 
                 for ( c=i; c<N; c++ )
                 {
                     // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                    temp.at(ELM(r, c)) -= temp.at(ELM(i, c)) * ri / temp.at(ELM(i, i));
+                    temp.at(POS(r, c)) -= temp.at(POS(i, c)) * ri / temp.at(POS(i, i));
                 }  // for c
             }  // for r
         }  // for i
@@ -283,7 +280,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // elements can be multipled
         for ( i=0; i<N; i++)
         {
-            retVal *= temp.at(ELM(i, i));
+            retVal *= temp.at(POS(i, i));
         }
     } // try
     catch ( std::out_of_range& oor )
@@ -304,7 +301,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
  * @throw MatrixException if the matrix is not invertible
  */
 // This macro was defined specifically for inversion function. It requires an
-// auxilary "matrix" (2*N, N) and its elements are accessed as "r*2*N+c". N must
+// auxiliary "matrix" (2*N, N) and its elements are accessed as "r*2*N+c". N must
 // be declared and be equal to number of rows of original matrix
 #define TMPELM(r,c)    ( (r) * 2*N + (c) )
 
@@ -352,7 +349,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
         {
             for ( c=0; c<N; c++ )
             {
-                temp.at(TMPELM(r, c)) = this->elems.at(ELM(r, c));
+                temp.at(TMPELM(r, c)) = this->elems.at(POS(r, c));
                 temp.at(TMPELM(r, c + N)) = ( 0 == r-c ? ONE : ZERO );
             }  // for c
         }  // for r
@@ -381,7 +378,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
                     }
                 }  // for r
 
-                if ( 0 == r-N )
+                if ( N == r )
                 {
                     // No temp(r,i)!=0 was found, the matrix is non-invertible.
                     // Throw an exception
@@ -453,7 +450,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
         {
             for ( c=0; c<N; c++ )
             {
-                retVal.elems.at(ELM(r, c)) = temp.at(TMPELM(r, c + N));
+                retVal.elems.at(POS(r, c)) = temp.at(TMPELM(r, c + N));
             } // for c
         }  // for r
     } // try
@@ -490,9 +487,9 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     {
         for ( c=r+1; c<N; c++ )
         {
-            temp = this->elems.at(ELM(r, c));
-            this->elems.at(ELM(r, c)) = this->elems.at(ELM(c, r));
-            this->elems.at(ELM(c, r)) = temp;
+            temp = this->elems.at(POS(r, c));
+            this->elems.at(POS(r, c)) = this->elems.at(POS(c, r));
+            this->elems.at(POS(c, r)) = temp;
         }  // for c
     }  // for r
 
@@ -530,6 +527,6 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(unsigned int colN
 }
 
 // The macros were defined for implementation in this file only. Undef them now
-#undef ELM
+#undef POS
 #undef ZERO
 #undef ONE
