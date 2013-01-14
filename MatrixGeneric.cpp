@@ -116,7 +116,7 @@ math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw 
  * an exception if pos is out of the vector's range.
  */
 template <class T>
-unsigned int math::MatrixGeneric<T>::pos(unsigned int row, unsigned int column) const
+inline unsigned int math::MatrixGeneric<T>::pos(unsigned int row, unsigned int column) const
 {
     return ( row * this->cols + column );
 }

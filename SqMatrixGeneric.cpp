@@ -350,7 +350,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
             for ( c=0; c<N; c++ )
             {
                 temp.at(TMPELM(r, c)) = this->elems.at(POS(r, c));
-                temp.at(TMPELM(r, c + N)) = ( 0 == r-c ? ONE : ZERO );
+                temp.at(TMPELM(r, c + N)) = ( r==c ? ONE : ZERO );
             }  // for c
         }  // for r
         // The temp matrix is filled accordingly
@@ -365,7 +365,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
                 // if yes, try to find another row r where temp(r,i)!=0
                 for ( r=0; r<N; r++ )
                 {
-                    if ( 0 == r-i )
+                    if ( r == i )
                     {
                         // it is known in advance, that temp(i,i)==0, so skip it
                         continue;  // for r
