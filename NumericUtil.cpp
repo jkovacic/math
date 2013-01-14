@@ -69,7 +69,7 @@ const T math::NumericUtil<T>::ONE ( static_cast<T>(1) );
 template<class T>
 bool math::NumericUtil<T>::isZero(const T& value)
 {
-    bool retVal = ( static_cast<T>(0)==value ? true : false );
+    bool retVal = ( ZERO==value ? true : false );
 
     return retVal;
 }
@@ -93,7 +93,7 @@ bool math::NumericUtil<FD>::isZero(const FD& value) \
     retVal = ( value>-EPS && value<EPS ? true : false ); \
     return retVal; \
 }
-// end od #define
+// end of #define
 
 // derive specialization for float:
 _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(float)

@@ -102,7 +102,7 @@ math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw 
     copyElems(orig);
 }
 
-/**
+/*
  * A utility function that returns the postion of element's "coordinates"
  * within the matrix's internal vector (r*cols+c). As this functionality
  * is used often, the purpose of this function is to define it only once
