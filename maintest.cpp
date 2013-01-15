@@ -28,12 +28,14 @@ limitations under the License.
 #include "Rational.h"
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
+#include "QuaternionGeneric.h"
 
 using namespace std;
 using namespace math;
 
 template class MatrixGeneric<float>;
 template class MatrixGeneric<Rational>;
+template class QuaternionGeneric<float>;
 
 /*
  * Test of the class Rational
@@ -452,14 +454,70 @@ void rationalMatrixTest()
 }
 
 /*
+ * Test of float quaternions
+ */
+void quaternionTest()
+{
+    try
+    {
+        FQuaternion zeroq;
+        FQuaternion q(1.0f, -0.5f, 1.2f, -2.3f);
+
+        cout << "zero: " << zeroq << endl;
+        cout << "q: " << q << endl;
+        cout << "q: 1: " << q.getOne() << "   i: " << q.getI() << "   j: " << q.getJ() << "   k: " << q.getK() << endl;
+
+        FQuaternion uq = q.unit();
+        cout << "U(q): " << uq << "\tnorm(U(q)): " << uq.norm() << endl;
+
+        FQuaternion o(1.0f);
+        FQuaternion i;   i.setI(1.0f);
+        FQuaternion j;   j.setJ(1.0f);
+        FQuaternion k;   k.setK(1.0f);
+
+        cout << "i*j: " << i*j << "\tj*i: " << j*i << endl;
+        cout << "j*k: " << j*k << "\tk*j: " << k*j << endl;
+        cout << "k*i: " << k*i << "\ti*k: " << i*k << endl;
+
+        FQuaternion p(1.0f, 2.0f, 3.0f, 4.0f);
+        FQuaternion sum = p+q;
+        FQuaternion dif = p-q;
+        cout << "p: " << p << "\tq: " << q << endl;
+        cout << "p+q: " << sum << "\tp-q: " << dif << endl;
+        // Must output (7.6-10.2i+6.8j+5.6k) and (7.6+13.2i+1.6j-2.2k), respectively
+        cout << "p*q: " << p*q << "\tq*p: " << q*p << endl;
+
+        FQuaternion qc = -0.5f*(q+i*q*i+j*q*j+k*q*k);
+        cout << "-0.5f*(q+i*q*i+j*q*j+k*q*k)=" << qc << "  q conj: " << qc << endl;
+        FQuaternion qrec = q.reciprocal();
+        cout << "qrec: " << qrec << "\tq*qrec=" << q*qrec << "\tqrec*q=" << qrec*q << endl;
+    } // try
+    catch ( const QuaternionException& qex )
+    {
+        cerr << "QuaternionException caught: '";
+        qex.display();
+        cerr << "'" << endl;
+    }
+    catch (...)
+    {
+        cerr << "Some other exception caught" << endl;
+    }
+}
+
+/*
  * Main function that starts three groups of unit tests
  */
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
-    cout << "R A T I O N A L   T E S T" << endl << endl;
+    cout << "Q U A T E R N I O N   T E S T" << endl << endl;
+    quaternionTest();
+
+    cout << endl << "R A T I O N A L   T E S T" << endl << endl;
     rationalTest();
+
     cout << endl << "M A T R I X   T E S T" << endl << endl;
     matrixTest();
+
     cout << endl << "R A T I O N A L   M A T R I X   T E S T" << endl << endl;
     rationalMatrixTest();
 
