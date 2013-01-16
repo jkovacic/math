@@ -699,6 +699,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     this->cols = this->rows;
     this->rows = c;
 
+    // tempElems not needed anymore, clean it
+    tempElems.clear();
+
     return *this;
 }
 
@@ -865,7 +868,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(unsigned int colNr)
     }  // try
     catch ( std::bad_alloc& ba )
     {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 
     // Insertion successful, update the number of columns

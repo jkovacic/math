@@ -282,6 +282,9 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         {
             retVal *= temp.at(POS(i, i));
         }
+
+        // temp not needed anymore, clean it
+        temp.clear();
     } // try
     catch ( std::out_of_range& oor )
     {
@@ -382,6 +385,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
                 {
                     // No temp(r,i)!=0 was found, the matrix is non-invertible.
                     // Throw an exception
+                    temp.clear();
                     throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
                 }
 
@@ -453,6 +457,9 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
                 retVal.elems.at(POS(r, c)) = temp.at(TMPELM(r, c + N));
             } // for c
         }  // for r
+
+        // temp not nneded anymore, clean it
+        temp.clear();
     } // try
     catch ( std::out_of_range& oor )
     {
