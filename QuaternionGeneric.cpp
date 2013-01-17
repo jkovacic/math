@@ -43,10 +43,10 @@ limitations under the License.
  * Constructor.
  * Creates an instance of a quaternion.
  *
- * @param o - scalar component of the quaternion
- * @param i - component i of the quaternion
- * @param j - component j of the quaternion
- * @param k - component j of the quaternion
+ * @param o - scalar component of the quaternion (default: 0)
+ * @param i - component i of the quaternion (default: 0)
+ * @param j - component j of the quaternion (default: 0)
+ * @param k - component j of the quaternion (default: 0)
  */
 template<class T>
 math::QuaternionGeneric<T>::QuaternionGeneric(const T& o, const T& i, const T& j, const T& k) :
@@ -76,7 +76,7 @@ math::QuaternionGeneric<T>::QuaternionGeneric(const math::QuaternionGeneric<T>& 
  * @return reference to this
  */
 template<class T>
-math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator=(const QuaternionGeneric<T>& q)
+math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator=(const math::QuaternionGeneric<T>& q)
 {
     // Nothing to do, if attempting to assign itself
     if ( this == &q )
@@ -268,11 +268,10 @@ void math::QuaternionGeneric<T>::display(std::ostream& str) const
 }
 
 /**
- * A friend function that outputs the quaternion to output stream
- * in form num/denom
+ * A friend function that outputs the quaternion to an output stream
  *
  * @param output - stream to write to
- * @param frac - quaternion to be displayed
+ * @param q - quaternion to be displayed
  *
  * @return reference of output stream (i.e. 'output')
  */
@@ -302,10 +301,10 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const math::Qua
         = ( (a1+a2) + (b1+b2)*i + (c1+c2)*j + (d1+d2)*k )
     */
 
-    return QuaternionGeneric<T>( quat_o + q.quat_o,
-                                 quat_i + q.quat_i,
-                                 quat_j + q.quat_j,
-                                 quat_k + q.quat_k );
+    return math::QuaternionGeneric<T>( quat_o + q.quat_o,
+                                       quat_i + q.quat_i,
+                                       quat_j + q.quat_j,
+                                       quat_k + q.quat_k );
 }
 
 /**
@@ -346,10 +345,10 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const math::Qua
         = ( (a1-a2) + (b1-b2)*i + (c1-c2)*j + (d1-d2)*k )
     */
 
-    return QuaternionGeneric<T>( quat_o - q.quat_o,
-                                 quat_i - q.quat_i,
-                                 quat_j - q.quat_j,
-                                 quat_k - q.quat_k );
+    return math::QuaternionGeneric<T>( quat_o - q.quat_o,
+                                       quat_i - q.quat_i,
+                                       quat_j - q.quat_j,
+                                       quat_k - q.quat_k );
 }
 
 /**
@@ -403,10 +402,11 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const math::Qua
         http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
     */
 
-    return QuaternionGeneric<T>( quat_o*q.quat_o - quat_i*q.quat_i - quat_j*q.quat_j - quat_k*q.quat_k,
-                                 quat_o*q.quat_i + quat_i*q.quat_o + quat_j*q.quat_k - quat_k*q.quat_j,
-                                 quat_o*q.quat_j - quat_i*q.quat_k + quat_j*q.quat_o + quat_k*q.quat_i,
-                                 quat_o*q.quat_k + quat_i*q.quat_j - quat_j*q.quat_i + quat_k*q.quat_o);
+    return math::QuaternionGeneric<T>(
+            quat_o*q.quat_o - quat_i*q.quat_i - quat_j*q.quat_j - quat_k*q.quat_k,
+            quat_o*q.quat_i + quat_i*q.quat_o + quat_j*q.quat_k - quat_k*q.quat_j,
+            quat_o*q.quat_j - quat_i*q.quat_k + quat_j*q.quat_o + quat_k*q.quat_i,
+            quat_o*q.quat_k + quat_i*q.quat_j - quat_j*q.quat_i + quat_k*q.quat_o );
 }
 
 /**
@@ -456,10 +456,10 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const T& scalar
           (a+ b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
     */
 
-    return QuaternionGeneric<T>( quat_o * scalar,
-                                 quat_i * scalar,
-                                 quat_j * scalar,
-                                 quat_k * scalar );
+    return math::QuaternionGeneric<T>( quat_o * scalar,
+                                       quat_i * scalar,
+                                       quat_j * scalar,
+                                       quat_k * scalar );
 }
 
 /**
@@ -496,10 +496,10 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-() const
         Negation of a quaternion is trivial: just negate each component.
     */
 
-    return QuaternionGeneric<T>( -quat_o,
-                                 -quat_i,
-                                 -quat_j,
-                                 -quat_k );
+    return math::QuaternionGeneric<T>( -quat_o,
+                                       -quat_i,
+                                       -quat_j,
+                                       -quat_k );
 }
 
 /**
@@ -520,7 +520,7 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::conj() const
         "vector" components are negated.
     */
 
-    return QuaternionGeneric<T>(quat_o, -quat_i, -quat_j, -quat_k);
+    return math::QuaternionGeneric<T>(quat_o, -quat_i, -quat_j, -quat_k);
 }
 
 /**
@@ -652,7 +652,7 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::unit() const throw (math:
     throw math::QuaternionException(math::QuaternionException::UNSUPPORTED_TYPE);
 
     // will never execute, but some compilers may produce a warning if nothing is returned
-    return QuaternionGeneric<T>();
+    return math::QuaternionGeneric<T>();
 }
 
 /*

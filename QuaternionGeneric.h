@@ -37,7 +37,7 @@ namespace math
 template<class T> class QuaternionGeneric;
 // to declare the class's friend function:
 template<class T>
-QuaternionGeneric<T> operator* (const T& scalar, const QuaternionGeneric<T>& m);
+QuaternionGeneric<T> operator* (const T& scalar, const QuaternionGeneric<T>& q);
 // and its friend << operator:
 template<class T>
 std::ostream& operator<<(std::ostream& output, const QuaternionGeneric<T>& q);
