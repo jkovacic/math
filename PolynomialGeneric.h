@@ -1,0 +1,128 @@
+/*
+Copyright 2013, Jernej Kovacic
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#ifndef _MATH_POLYNOMIALGENERIC_H_
+#define _MATH_POLYNOMIALGENERIC_H_
+
+#include <vector>
+#include <iostream>
+
+#include "NumericUtil.h"
+#include "PolynomialException.h"
+
+
+namespace math
+{
+
+// Advance declaration of the class is necessary...
+template<class T> class PolynomialGeneric;
+
+
+// to declare the class's friend function:
+template<class T>
+PolynomialGeneric<T> operator* (const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+// and its friend << operator:
+template<class T>
+std::ostream& operator<<(std::ostream& output, const PolynomialGeneric<T>& q);
+
+
+template<class T>
+class PolynomialGeneric
+{
+private:
+    /**
+     * Coefficients of the polynomial:
+     * p(x) = c0 + c1*x + c2*x^2 + ... + cn*x^n
+     */
+    std::vector<T> coef;
+
+    // A utility function that copies vector's coefficients
+    void copyCoefs(const std::vector<T>& cvect) throw (PolynomialException);
+    // A utility function that reduces zero-coeeficients from the highest terms
+    void reduce();
+
+public:
+    // Constructors
+    PolynomialGeneric(std::vector<T> cvect) throw (PolynomialException);
+    PolynomialGeneric(T* carray, unsigned int n) throw (PolynomialException);
+    PolynomialGeneric(unsigned int n = 1) throw (PolynomialException);
+    PolynomialGeneric(const PolynomialGeneric<T>& poly) throw (PolynomialException);
+
+    // Getters
+    std::vector<T> get() const throw (PolynomialException);
+    std::vector<T> getDesc() const throw (PolynomialException);
+    T get(unsigned int pos) const;
+
+    // Setters
+    PolynomialGeneric<T>& set(std::vector<T> cvect) throw (PolynomialException);
+    PolynomialGeneric<T>& set(unsigned int pos, const T& c = NumericUtil<T>::ZERO) throw (PolynomialException);
+
+    // Insert and remove coefficients
+    PolynomialGeneric<T>& insert(unsigned int pos, const T& c) throw (PolynomialException);
+    PolynomialGeneric<T>& remove(unsigned int pos);
+
+    // Degree of the polynomial
+    unsigned int degree() const;
+    // Value of the polynomial for given x
+    T value(const T& x) const;
+    // Derivative of the polynomial
+    PolynomialGeneric<T> deriv() const throw (PolynomialException);
+    // Indefinite integral of the polynomial
+    PolynomialGeneric<T> integ(const T& c = NumericUtil<T>::ZERO) const throw (PolynomialException);
+
+    // Display the polynomial
+    void display(char arg = 'x', std::ostream& str = std::cout) const;
+    // a friend function to overload the operator << (used by std::cout and std::cerr)
+    friend std::ostream& (math::operator<< <>) (std::ostream& output, const PolynomialGeneric<T>& poly);
+
+    // Assignment operator
+    PolynomialGeneric<T>& operator=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
+
+    // Operators
+    PolynomialGeneric<T> operator+(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
+    PolynomialGeneric<T>& operator+=(const PolynomialGeneric<T> poly) throw (PolynomialException);
+    PolynomialGeneric<T> operator-(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
+    PolynomialGeneric<T>& operator-=(const PolynomialGeneric<T> poly) throw (PolynomialException);
+    PolynomialGeneric<T> operator*(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
+    PolynomialGeneric<T>& operator*=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
+    PolynomialGeneric<T> operator-() const throw (PolynomialException);
+    PolynomialGeneric<T> operator*(const T& sc) const throw (PolynomialException);
+    friend PolynomialGeneric<T> (math::operator* <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+
+
+    // TODO roots()
+
+    // Destructor
+    virtual ~PolynomialGeneric();
+
+};  // class PolynomialGeneric
+
+// Polynomials with elements of types float and double make most sense
+// so the following two types are predefined:
+typedef PolynomialGeneric<float> FPolynomial;
+typedef PolynomialGeneric<double> Polynomial;
+
+}  // namespace math
+
+
+// DEFINITION
+
+// This is a templated class, so its definition must follow its declaration.
+// When building, THIS file must be compiled.
+// Alternatively the definition can be included into this file.
+#include "PolynomialGeneric.cpp"
+
+#endif // _MATH_POLYNOMIALGENERIC_H_

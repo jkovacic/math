@@ -33,6 +33,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/PolynomialException.o \
 	${OBJECTDIR}/QuaternionException.o \
 	${OBJECTDIR}/maintest.o \
 	${OBJECTDIR}/Rational.o \
@@ -63,6 +64,11 @@ LDLIBSOPTIONS=
 dist/Debug/Cygwin_4.x-Windows/math.exe: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/Cygwin_4.x-Windows
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/math ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/PolynomialException.o: PolynomialException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/PolynomialException.o PolynomialException.cpp
 
 ${OBJECTDIR}/QuaternionException.o: QuaternionException.cpp 
 	${MKDIR} -p ${OBJECTDIR}

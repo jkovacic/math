@@ -18,7 +18,8 @@ limitations under the License.
 /**
 * @file maintest.cpp
 *
-* Collection of basic unit tests for [Sq]MatrixGeneric and Rational
+* Collection of basic unit tests for [Sq]MatrixGeneric ,Rational,
+* QuaternionGeneric and PolynomialGeneric
 *
 * @author Jernej Kovacic
 */
@@ -29,6 +30,7 @@ limitations under the License.
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
 #include "QuaternionGeneric.h"
+#include "PolynomialGeneric.h"
 
 using namespace std;
 using namespace math;
@@ -36,6 +38,7 @@ using namespace math;
 template class MatrixGeneric<float>;
 template class MatrixGeneric<Rational>;
 template class QuaternionGeneric<float>;
+template class PolynomialGeneric<float>;
 
 /*
  * Test of the class Rational
@@ -505,10 +508,64 @@ void quaternionTest()
 }
 
 /*
+ * Test of polynomial algebra
+ */
+void polynomialTest()
+{
+    try
+    {
+        float a[] = { 2.1f, 1.0f, -0.72f, 1.0f, 0.0f };
+        FPolynomial t(a, 5);
+        cout << "t(x) = " << t << endl;
+        cout << "a0=" << t.get(0) << " a1=" << t.get(1) << " a2=" << t.get(2) << " a3=" << t.get(3) << endl;
+        cout << "Remove the 2nd coef. from t(x): " << t.remove(1) << endl;
+        cout << "Insert 0.2 to the 3rd pos. of t(x): " << t.insert(2, 0.2f) << endl;
+        cout << "Insert 5 to the 8th pos. of t(x): " << t.insert(7, 5.0f) << endl;
+
+        FPolynomial z(4);
+        z.set(3, 0.0f);
+        cout << "Zero polynomial: " << z << endl;
+
+        FPolynomial p(6), q(4);
+
+        p.set(0, 2.0f).set(1, 3.0f).set(2, -4.0f).set(3, -7.0f).set(4, 2.0f).set(5, 1.0f);
+        q.set(0, -1.0f).set(1, 5.0f).set(2, -3.0f).set(3, 1.0f);
+
+        cout << "p(x)=" << p << endl << "q(x)=" << q << endl;
+        cout << "p(-1.2) = " << p.value(-1.2f) << endl;
+        cout << "q(0.7) = " << q.value(0.7f) << endl;
+        cout << "p+q: " << p+q << endl << "q+p: " << q+p <<endl;
+        cout << "p-q: " << p-q << endl << "q-p: " << q-p << endl;
+        cout << "p*q: " << p*q << endl << "q*p: " << q*p << endl;
+
+        cout << "0.3 * p(x) = " << p*0.3f << endl;
+        cout << "0.5 * q(x) = " << 0.5f*q << endl;
+
+        cout << "p(x)' = " << p.deriv() << endl;
+        FPolynomial qint = q.integ();
+        cout << "I(q(x))dx = " << qint << endl;
+        cout << "int(q(x))' = " << qint.deriv() << endl;
+    }
+    catch ( const PolynomialException& pex )
+    {
+        cerr << "PolynomialException caught: '";
+        pex.display();
+        cerr << "'" << endl;
+    }
+    catch (...)
+    {
+        cerr << "Some other exception caught" << endl;
+    }
+
+}
+
+
+/*
  * Main function that starts three groups of unit tests
  */
 int main(int argc, const char* argv[])
 {
+
     cout << "Q U A T E R N I O N   T E S T" << endl << endl;
     quaternionTest();
 
@@ -520,6 +577,9 @@ int main(int argc, const char* argv[])
 
     cout << endl << "R A T I O N A L   M A T R I X   T E S T" << endl << endl;
     rationalMatrixTest();
+
+    cout << endl << "P O L Y N O M I A L   T E S T" << endl << endl;
+    polynomialTest();
 
     return 0;
 }
