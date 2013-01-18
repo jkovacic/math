@@ -220,7 +220,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::setK(const T& k)
 /**
  * Outputs the quaternion to the stream 'str' in form '(a+bi+cj+dk)'
  *
- * @param str (default cout): output stream, where the fraction will be dislayed
+ * @param str (default cout): output stream, where the quaternion will be dislayed
  */
 template<class T>
 void math::QuaternionGeneric<T>::display(std::ostream& str) const

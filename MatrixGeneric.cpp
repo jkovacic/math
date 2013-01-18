@@ -106,11 +106,11 @@ math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw 
  * A utility function that returns the postion of element's "coordinates"
  * within the matrix's internal vector (r*cols+c). As this functionality
  * is used often, the purpose of this function is to define it only once
- * and to eliminate possibilities of typing errors. 
+ * and to eliminate possibilities of typing errors.
  *
  * As the function is simple (short) and called frequently, it is declared
  * as an inline function to reduce overhead.
- * 
+ *
  * Note: no checks are performed inside the function. The results of the
  * function are usually passed directly to std::vector.at() which throws
  * an exception if pos is out of the vector's range.
@@ -594,7 +594,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
 }
  /**
   * Multiplication operator (*) of a scalar and a matrix.
-  * This operation is comutative and does the same as operator*(scalar).
+  * This operation is commutative and does the same as operator*(scalar).
   * Since the first operand is not a matrix, it must be implemented as
   * a friend function.
   *
@@ -603,7 +603,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
   *
   * @return scalar * matrix
   *
-  * @ŧhrow MatrixException if matrix does not contain enough elements
+  * @throw MatrixException if matrix does not contain enough elements
   */
 template<class T>
 math::MatrixGeneric<T> math::operator* (const T& scalar, const math::MatrixGeneric<T>& matrix) throw (math::MatrixException)

@@ -52,7 +52,7 @@ private:
     T quat_j;    /// element 'j'
     T quat_k;    /// element 'k'
 
-    // A utility function to acalculate a sum of all elements' squares,
+    // A utility function to calculate a sum of all elements' squares,
     // only called by some methods of the class
     inline T sqsum() const;
 
