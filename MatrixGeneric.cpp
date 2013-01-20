@@ -494,7 +494,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
 
 /**
  * Multiplication operator (*) of two matrices.
- * Number of coumns of this must be the same as number of rows of matrix,
+ * Number of columns of 'this' must be the same as number of rows of matrix,
  * otherwise multiplication is not possible. The resulting matrix will
  * have this.rows rows and matrix.cols columns.
  *
@@ -554,6 +554,42 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
     }
 
     return temp;
+}
+
+/**
+ * Subtraction operator (*=) that multiplies a matrix by this one and assigns
+ * the product to itself.
+ * Number of coumns of 'this' must be the same as number of rows of 'm',
+ * otherwise multiplication is not possible.
+ *
+ * @param m - matrix to be multiplied by this one
+ *
+ * @return reference to itself
+ *
+ * @throw MatrixException if dimensions do not match or if allocation of memory fails
+ */
+template<class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
+{
+    // for a definition of matrix multiplication, see operator*
+
+    // operator* will perform checking of numbers of rows/columns etc.
+    // and throw an appropriate exception if necessary
+    math::MatrixGeneric<T> temp = *this * m;
+
+    try
+    {
+        this->rows = temp.rows;   // not really necessary to do this...
+        this->cols = temp.cols;
+        this->elems.clear();
+        this->elems = temp.elems;
+    }
+    catch ( std::bad_alloc& ba )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
+    }
+
+    return *this;
 }
 
 /**

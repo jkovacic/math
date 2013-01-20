@@ -503,6 +503,35 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     return *this;
 }
 
+/**
+ * "Reimplementation" of operator*= that multiplies a matrix by this one
+ * and assigns the product to itself.
+ *
+ * The product must remain a square matrix, for that reason 'm' must
+ * be a square matrix (it can be declared as an "ordinary" matrix, though)
+ * with the same dimensions as 'this'
+ *
+ * @param m
+ *
+ * @return reference to itself
+ *
+ * @throw
+ */
+template<class T>
+math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
+{
+    // Check of addditional condition ('m' must have the same dimensions):
+    if ( m.nrRows()!=this->rows || m.nrColumns()!=this->rows )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    // If m's dimensions match, dimensoons of this will be preserved.
+    // Just apply the functionality od the parent class.
+    // Also cast the returning reference to SqMatrixGeneric.
+    return dynamic_cast<SqMatrixGeneric<T>&>(( MatrixGeneric<T>::operator*=(m) ));
+}
+
 /*
  * The following functions are inherited from the base class, however they change
  * matrix dimensions so they should not be permitted in a square matrix.

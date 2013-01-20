@@ -70,7 +70,7 @@ protected:
 
     // position of the element within the internal vector
     inline unsigned int pos(unsigned int row, unsigned int column) const;
-    
+
 public:
     // Constructor
     MatrixGeneric(unsigned int rows = 1, unsigned int columns = 1) throw (MatrixException);
@@ -95,6 +95,7 @@ public:
     MatrixGeneric<T> operator- (const MatrixGeneric<T>& m) const throw (MatrixException);
     MatrixGeneric<T>& operator-= (const MatrixGeneric<T>& m) throw (MatrixException);
     MatrixGeneric<T> operator* (const MatrixGeneric<T>& m) const throw (MatrixException);
+    virtual MatrixGeneric<T>& operator*= (const MatrixGeneric<T>&m ) throw (MatrixException);
     MatrixGeneric<T> operator* (const T& sc) const throw (MatrixException);
     MatrixGeneric<T> operator- () const throw (MatrixException);
     // A friend function that multiplies a scalar and a matrix

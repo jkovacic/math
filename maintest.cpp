@@ -437,6 +437,9 @@ void rationalMatrixTest()
         cout << "a + inv:" << endl;
         a.display();
         cout << endl;
+
+        inv *= a;
+        cout << "deteminant of inv * (a+inv): " << inv.determinant() << endl;
     }
     catch ( const RationalException& rex )
     {
