@@ -68,7 +68,7 @@ public:
 
     // Setters
     PolynomialGeneric<T>& set(const std::vector<T>& cvect) throw (PolynomialException);
-    PolynomialGeneric<T>& setDesc(const std::vector<T> cvect) throw (PolynomialException);
+    PolynomialGeneric<T>& setDesc(const std::vector<T>& cvect) throw (PolynomialException);
     PolynomialGeneric<T>& set(unsigned int pos, const T& c = NumericUtil<T>::ZERO) throw (PolynomialException);
 
     // Insert and remove coefficients

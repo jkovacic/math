@@ -367,7 +367,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(const std::vector<T>
  * @throw PolynomialException if 'cvect' is invalid or if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vector<T> cvect) throw (math::PolynomialException)
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vector<T>& cvect) throw (math::PolynomialException)
 {
     const unsigned int N = cvect.size();
 
