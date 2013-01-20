@@ -97,6 +97,7 @@ public:
     MatrixGeneric<T> operator* (const MatrixGeneric<T>& m) const throw (MatrixException);
     virtual MatrixGeneric<T>& operator*= (const MatrixGeneric<T>&m ) throw (MatrixException);
     MatrixGeneric<T> operator* (const T& sc) const throw (MatrixException);
+    MatrixGeneric<T>& operator*= (const T& scalar);
     MatrixGeneric<T> operator- () const throw (MatrixException);
     // A friend function that multiplies a scalar and a matrix
     friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);

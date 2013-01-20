@@ -628,6 +628,29 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
 
     return retVal;
 }
+
+/**
+ * Multiplication operator (*=) that multiplies a matrix by a scalar
+ * and assigns the product to itself.
+ *
+ * @param scalar
+ *
+ * @return reference to itself
+ */
+template<class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
+{
+    const unsigned int N = rows*cols;
+
+    // Multiply each element by the 'scalar'
+    for (unsigned int i=0; i<N; i++ )
+    {
+        elems.at(i) *= scalar;
+    }
+
+    return *this;
+}
+
  /**
   * Multiplication operator (*) of a scalar and a matrix.
   * This operation is commutative and does the same as operator*(scalar).

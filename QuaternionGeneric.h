@@ -95,6 +95,7 @@ public:
     QuaternionGeneric<T> operator*(const QuaternionGeneric<T>& q) const;
     QuaternionGeneric<T>& operator*=(const QuaternionGeneric<T>& q);
     QuaternionGeneric<T> operator*(const T& scalar) const;
+    QuaternionGeneric<T>& operator*=(const T& scalar);
     QuaternionGeneric<T> operator-() const;
     // A friend function that multiplies a scalar and a quaternion
     friend QuaternionGeneric<T> (math::operator* <>) (const T& scalar, const QuaternionGeneric<T>& q);

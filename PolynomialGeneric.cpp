@@ -1049,6 +1049,28 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const T& sc) co
 }
 
 /**
+ * Multiplication operator (*=) that multiplies a polynomial by a scalar
+ * and assigns the product to itself.
+ *
+ * @param sc - scalar
+ *
+ * @return reference to itself
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
+{
+    // Multiply each coefficient by the scalar
+    const unsigned int N = coef.size();
+    for ( unsigned int i=0; i<N; i++ )
+    {
+        coef.at(i) *= sc;
+    }
+
+    // applicable when the scalar is 0...
+    reduce();
+    return *this;
+}
+/**
   * Multiplication operator (*) of a scalar and a polynomial.
   * This operation is commutative and does the same as operator*(scalar).
   * Since the first operand is not a polynomial, it must be implemented as

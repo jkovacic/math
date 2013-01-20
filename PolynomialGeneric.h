@@ -101,6 +101,7 @@ public:
     PolynomialGeneric<T>& operator*=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T> operator-() const throw (PolynomialException);
     PolynomialGeneric<T> operator*(const T& sc) const throw (PolynomialException);
+    PolynomialGeneric<T>& operator*=(const T& sc);
     friend PolynomialGeneric<T> (math::operator* <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
 
 

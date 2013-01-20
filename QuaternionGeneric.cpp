@@ -463,6 +463,26 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const T& scalar
 }
 
 /**
+ * Multiplication operator (*=) that multiplies a quaternion by a scalar
+ * and assigns the product to itself.
+ * 
+ * @param scalar
+ *
+ * @return reference to itself
+ */
+template<class T>
+math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const T& sc)
+{
+    // Multiply each componet by the scalar
+    quat_o *= sc;
+    quat_i *= sc;
+    quat_j *= sc;
+    quat_k *= sc;
+
+    return *this;
+}
+
+/**
  * Multiplication operator (*) of a scalar and a quaternion.
  * In general ( if T represents a real number) this operation is comutative
  * and does the same as operator*(scalar).
