@@ -290,7 +290,7 @@ std::vector<T> math::PolynomialGeneric<T>::getDesc() const throw (math::Polynomi
 
         return retVal;
     }
-    catch ( std::bad_alloc &ba )
+    catch ( std::bad_alloc& ba )
     {
         // Memory allocation failed
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
@@ -339,7 +339,7 @@ unsigned int math::PolynomialGeneric<T>::degree() const
  * @throw PolynomialException if 'cvect' is invalid or if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(std::vector<T> cvect) throw (math::PolynomialException)
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(const std::vector<T>& cvect) throw (math::PolynomialException)
 {
     // sanity check
     if ( cvect.size() <= 0 )
@@ -355,6 +355,48 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(std::vector<T> cvect
     reduce();
 
     return *this;
+}
+
+/**
+ * Assigns polynomial's coefficients from 'cvect'
+ *
+ * @param cvect - vector of coefficients in descending order ([cn, ..., c2, c1, c0])
+ *
+ * @return reference to itself
+ *
+ * @throw PolynomialException if 'cvect' is invalid or if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vector<T> cvect) throw (math::PolynomialException)
+{
+    const unsigned int N = cvect.size();
+
+    // sanity check
+    if ( N<=0 )
+    {
+        throw math::PolynomialException(math::PolynomialException::INVALID_ARGUMENT);
+    }
+
+    try
+    {
+
+        coef.clear();
+        coef.resize(N);
+
+        for ( unsigned int i=0; i<N; i++ )
+        {
+            coef.at(i) = cvect.at(N-1-i);
+        }
+
+        reduce();
+        return *this;
+
+    }
+    catch ( std::bad_alloc& ba )
+    {
+        // Memory allocation failed
+        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
+    }
 }
 
 /**

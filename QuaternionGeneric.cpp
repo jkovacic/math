@@ -596,8 +596,8 @@ T math::QuaternionGeneric<T>::norm() const throw (math::QuaternionException)
 }
 
 /*
-    Specialization of norm() for float and double.
-    Both specializations are very similar and only differ in types of the
+    Specialization of norm() for float, double and long double.
+    All three specializations are very similar and only differ in types of the
     output value and internal variables.
     For easier maintainability, the specialization will be implemented
     only once using a parameterized #define.
@@ -614,8 +614,11 @@ FD math::QuaternionGeneric<FD>::norm() const throw (math::QuaternionException) \
 // the actual specialization for float:
 _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(float)
 
-// and for double:
+// for double:
 _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(double)
+
+// and for long double:
+_MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(long double)
 
 // definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM not needed anymore, #undef it
 #undef _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM
@@ -656,8 +659,8 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::unit() const throw (math:
 }
 
 /*
-    Specialization of unit() for float and double.
-    Both specializations are very similar and only differ in types of the
+    Specialization of unit() for float, double and long double.
+    All three specializations are very similar and only differ in types of the
     output value and internal variables.
     For easier maintainability, the specialization will be implemented
     only once using a parameterized #define.
@@ -679,8 +682,11 @@ math::QuaternionGeneric<FD> math::QuaternionGeneric<FD>::unit() const throw (mat
 // specialization for float:
 _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(float)
 
-// and for double:
+// for double:
 _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(double)
+
+// and for long double:
+_MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(long double)
 
 // definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT not needed anymore, #undef it
 #undef _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT

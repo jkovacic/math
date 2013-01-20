@@ -25,6 +25,10 @@ Declaration of the class NumericUtil, a collection of some useful numerical util
 #ifndef _MATH_NUMERICUTIL_H_
 #define _MATH_NUMERICUTIL_H_
 
+#include "Rational.h"
+
+#include <complex>
+
 namespace math
 {
 
@@ -46,13 +50,19 @@ public:
     // (where mostly float or double values are in use), "equals" has a
     // different meaning than in discrete mathematics (int etc.)
     static bool isZero(const T& value);
+
+    static T getEPS();
 };
 
 // Declaration of specialized methods inside the name space declaration
 // is essential if implemented elsewhere:
 template<> bool NumericUtil<float>::isZero(const float& value);
 template<> bool NumericUtil<double>::isZero(const double& value);
+template<> bool NumericUtil<long double>::isZero(const long double& value);
 template<> bool NumericUtil<Rational>::isZero(const Rational& value);
+template<> bool NumericUtil<std::complex<float> >::isZero(const std::complex<float>& value);
+template<> bool NumericUtil<std::complex<double> >::isZero(const std::complex<double>& value);
+template<> bool NumericUtil<std::complex<long double> >::isZero(const std::complex<long double>& value);
 
 // Definition could be included into the namespace declaraion, but it
 // would cause conflicts with some extra included stdlib header files.
