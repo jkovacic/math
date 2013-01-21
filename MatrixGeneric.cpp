@@ -573,7 +573,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
     // Multiplication modifies dimensions, so make sure the product will contain
     // no more than INT_MAX elements
     const unsigned long int matSize = this->rows * matrix.cols;
-    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
+    if ( matSize > static_cast<unsigned long int>(std::numeric_limits<int>::max() ) )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
