@@ -209,6 +209,61 @@ T math::MatrixGeneric<T>::get(unsigned int row, unsigned int column) const throw
 }  // MatrixGeneric::get
 
 /**
+ * Returns a read-write reference to the desired element od the matrix.
+ * @note The reference should be used immediately after this call before
+ *       the matrix is destroyed or its internal storage is reallocated.
+ *
+ * @param row - row number (starting with 0)
+ * @param column - column number (starting with 0)
+ *
+ * @return read-write reference to the element at the desired position
+ *
+ * @throw MatrixException if 'row' and/or 'column' are out of range
+ */
+template<class T>
+T& math::MatrixGeneric<T>::at(unsigned int row, unsigned int column) throw (math::MatrixException)
+{
+    // Check if input parameters are within the matrix's range
+    if ( row >= rows || column >= cols )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return elems.at(pos(row, column));
+}
+
+/**
+ * Returns a read-only (const) reference to the desired element od the matrix.
+ * @note The reference should be used immediately after this call before
+ *       the matrix is destroyed or its internal storage is reallocated.
+ *
+ * @param row - row number (starting with 0)
+ * @param column - column number (starting with 0)
+ *
+ * @return read-only reference to the element at the desired position
+ *
+ * @throw MatrixException if 'row' and/or 'column' are out of range
+ */
+template<class T>
+const T& math::MatrixGeneric<T>::at(unsigned int row, unsigned int column) const throw (MatrixException)
+{
+    /*
+        Implementation is actually the same as implenentation of another at()
+        with non-const signature. A single macro could be used for both
+        implementations, however both functions are short, simple and unlikely
+        to change often.
+     */
+
+    // Check if input parameters are within the matrix's range
+    if ( row >= rows || column >= cols )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return elems.at(pos(row, column));
+}
+
+/**
  * Assigns value at the requested location.
  * This is the only allowed method to modify values of matrix's elements
  * (except of class's internal functions)

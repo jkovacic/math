@@ -83,6 +83,8 @@ public:
 
     // Get and set the element of the specified row and column
     T get(unsigned int row, unsigned int column) const throw (MatrixException);
+    T& at(unsigned int row, unsigned int column) throw (MatrixException);
+    const T& at(unsigned int row, unsigned int column) const throw(MatrixException);
     MatrixGeneric<T>& set(unsigned int row, unsigned int column, const T& element) throw (MatrixException);
 
     // Display elements of the matrix
