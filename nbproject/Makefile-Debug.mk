@@ -17,24 +17,27 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=
+FC=gfortran
 AS=as
 
 # Macros
 CND_PLATFORM=Cygwin_4.x-Windows
+CND_DLIB_EXT=dll
 CND_CONF=Debug
 CND_DISTDIR=dist
+CND_BUILDDIR=build
 
 # Include project Makefile
 include Makefile
 
 # Object Directory
-OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
+OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/PolynomialException.o \
 	${OBJECTDIR}/QuaternionException.o \
+	${OBJECTDIR}/LinearEquationSolverException.o \
 	${OBJECTDIR}/maintest.o \
 	${OBJECTDIR}/Rational.o \
 	${OBJECTDIR}/MatrixException.o \
@@ -59,10 +62,10 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Debug.mk dist/Debug/Cygwin_4.x-Windows/math.exe
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/math.exe
 
-dist/Debug/Cygwin_4.x-Windows/math.exe: ${OBJECTFILES}
-	${MKDIR} -p dist/Debug/Cygwin_4.x-Windows
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/math.exe: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/math ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/PolynomialException.o: PolynomialException.cpp 
@@ -74,6 +77,11 @@ ${OBJECTDIR}/QuaternionException.o: QuaternionException.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/QuaternionException.o QuaternionException.cpp
+
+${OBJECTDIR}/LinearEquationSolverException.o: LinearEquationSolverException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/LinearEquationSolverException.o LinearEquationSolverException.cpp
 
 ${OBJECTDIR}/maintest.o: maintest.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -100,8 +108,8 @@ ${OBJECTDIR}/RationalException.o: RationalException.cpp
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r build/Debug
-	${RM} dist/Debug/Cygwin_4.x-Windows/math.exe
+	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/math.exe
 
 # Subprojects
 .clean-subprojects:

@@ -30,6 +30,8 @@ limitations under the License.
 #include "NumericUtil.h"
 #include "MatrixException.h"
 #include "MatrixGeneric.h"
+#include "LinearEquationSolverGeneric.h"
+#include "LinearEquationSolverException.h"
 
 #include <stdexcept>
 
@@ -51,7 +53,7 @@ limitations under the License.
  *
  * @param dim  - number of rows and columns (default: 1)
  *
- * @throw MatrixException when allocation ofmemory fails or in case of incorrect
+ * @throw MatrixException when allocation of memory fails or in case of incorrect
  *        input parameters (dim must be at least 1)
  */
 template<class T>
@@ -91,7 +93,7 @@ math::SqMatrixGeneric<T>::SqMatrixGeneric(const math::MatrixGeneric<T>& orig) th
  *
  * @return reference to this
  *
- * @throw MatrixException if memory allocation fails or attempting to assign a nonsquare matrix
+ * @throw MatrixException if memory allocation fails or attempting to assign a non-square matrix
  */
 template<class T>
 math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
@@ -250,7 +252,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                     temp.at(POS(r, c)) = tempElem;
                 }
 
-                // finally, if two lines are swaped, det = -det
+                // finally, if two lines are swapped, det = -det
                 retVal = -retVal;
             } // if temp(i,i) equals 0
 
@@ -277,7 +279,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         }  // for i
 
         // Now temp is an upper triangular matrix so all its diagonal
-        // elements can be multipled
+        // elements can be multiplied
         for ( i=0; i<N; i++)
         {
             retVal *= temp.at(POS(i, i));
@@ -297,17 +299,12 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 /**
  * Matrix inversion.
  * R = A^(-1) if R*A = A*R = I
- * If matrix's determinat equals 0, the matrix is not invertible
+ * If matrix's determinant equals 0, the matrix is not invertible
  *
  * @return inverse matrix
  *
  * @throw MatrixException if the matrix is not invertible
  */
-// This macro was defined specifically for inversion function. It requires an
-// auxiliary "matrix" (2*N, N) and its elements are accessed as "r*2*N+c". N must
-// be declared and be equal to number of rows of original matrix
-#define TMPELM(r,c)    ( (r) * 2*N + (c) )
-
 template<class T>
 math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::MatrixException)
 {
@@ -320,156 +317,39 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
      * - multiples of lines are added to lines (similar as solving a set of linear
      *   equations) until a unit matrix appears in the left half: [I|B]
      * - B is inverse matrix of A: B = A^(-1)
+     * 
+     * This functionality is already implemented by the class LinearEquationSolverGeneric.
      */
-
-    const unsigned int N = this->rows;  // number of rows (and columns)
-    // Result will be a matrix with the same dimensions.
-    // Let it be instantiated now and later its elements will be set.
-    math::SqMatrixGeneric<T> retVal(N);
 
     try
     {
-        std::vector<T> temp;
-        unsigned int i;
-        unsigned int r;
-        unsigned int c;
-        T el;
+        // prepare an identity matrix NxN...
+        SqMatrixGeneric<T> id(this->rows);
+        id.setUnit();
+        // ... and instantiate LinearEquationSolverGeneric
+        LinearEquationSolverGeneric<T> leq(*this, id);
 
-        // reserve enough space for the temporary "matrix" N x 2*N
-        try
+        // inverse matrix is a solution (if it exists) of the equation:
+        // this * inv = id
+        SqMatrixGeneric<T> retVal = leq.solve();
+
+        return retVal;
+    }
+    catch ( LinearEquationSolverException& leqex )
+    {
+        // is *this an uninvertible matrix? (determinant()=0):
+        if ( math::LinearEquationSolverException::NO_UNIQUE_SOLUTION == leqex.error )
         {
-            temp.resize(2*N*N);
+            throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
         }
-        catch (std::bad_alloc &ba)
+        else
         {
+            // other than a case of non-invertible matrix, exception can only
+            // be thrown if allocation of memory failed.
             throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
         }
-
-        // Fill the temp "matrix":
-        // its left half is the actual matrix, the right half will be an identity matrix
-
-        for ( r=0; r<N; r++ )
-        {
-            for ( c=0; c<N; c++ )
-            {
-                temp.at(TMPELM(r, c)) = this->elems.at(POS(r, c));
-                temp.at(TMPELM(r, c + N)) = ( r==c ? ONE : ZERO );
-            }  // for c
-        }  // for r
-        // The temp matrix is filled accordingly
-
-        // Finally try to convert the left half into an identity matrix
-        // by appropriate adding multiples of other lines to each line
-        for ( i=0; i<N; i++ )
-        {
-            // first check if the diagonal element equals 0
-            if ( true == math::NumericUtil<T>::isZero(temp.at(TMPELM(i, i))) )
-            {
-                // if yes, try to find another row r where temp(r,i)!=0
-                for ( r=0; r<N; r++ )
-                {
-                    if ( r == i )
-                    {
-                        // it is known in advance, that temp(i,i)==0, so skip it
-                        continue;  // for r
-                    }
-
-                    if ( false == math::NumericUtil<T>::isZero(temp.at(TMPELM(r, i))) )
-                    {
-                        // found, no need to search further
-                        break;  // out of for r
-                    }
-                }  // for r
-
-                if ( N == r )
-                {
-                    // No temp(r,i)!=0 was found, the matrix is non-invertible.
-                    // Throw an exception
-                    temp.clear();
-                    throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
-                }
-
-                // add the r^th line to the i^th one
-                for ( c=0; c<2*N; c++ )
-                {
-                    temp.at(TMPELM(i, c)) += temp.at(TMPELM(r, c));
-                }  // for c
-            }  // if temp(i,i)==0
-
-            // Let the diag element be 1. So divide the whole row by temp(i,i)
-            //  (columns smaller than i are already 0)
-            el = temp.at(TMPELM(i, i));
-            for ( c=i; c<2*N; c++ )
-            {
-                temp.at(TMPELM(i, c)) /= el;
-            }  // for c
-
-            // set the i^th column of all other rows (r>i) to 0 by
-            // adding the appropriate multiple of the i^th row
-            for ( r=i+1; r<N; r++ )
-            {
-                // Nothing to do if temp(r,i) is already 0.
-                if ( true == math::NumericUtil<T>::isZero(temp.at(TMPELM(r, i))) )
-                {
-                    continue;  // for r
-                }
-
-                // Subtract a multiple of the i^th row. Note that temp(i,i) is already 1.
-                el = temp.at(TMPELM(r, i));
-                for ( c=i; c<2*N; c++ )
-                {
-                    temp.at(TMPELM(r, c)) -= el * temp.at(TMPELM(i, c));
-                }  // for c
-            }  // for r
-        }  // for i
-
-        // Now the lower triangle (below diag excl.) is 0, the diagonal consists of 1,
-        // The upper triangle (above the diag) must be set to 0 as well.
-
-        for ( r=0; r<N; r++ )
-        {
-            for ( c=r+1; c<N; c++ )
-            {
-                // Nothing to do if already 0
-                if ( true == math::NumericUtil<T>::isZero(temp.at(TMPELM(r, c))) )
-                {
-                    continue;  // for c
-                }
-
-                // To set temp(r,c) to 0 it is a good idea to add the c^th row to it.
-                // temp(c,i); i<c are already 0 (i.e. will not affect anything left of temp(i,c)
-                // and temp(c,c) is already 1.
-
-                el = temp.at(TMPELM(r, c));
-                for ( i=c; i<2*N; i++ )
-                {
-                    temp.at(TMPELM(r, i)) -= el * temp.at(TMPELM(c, i));
-                }  // for i
-            }  // for c
-        }  // for r
-
-        // The right half is now the inverse matrix.
-        // Copy it into retVal.
-        for ( r=0; r<N; r++ )
-        {
-            for ( c=0; c<N; c++ )
-            {
-                retVal.elems.at(POS(r, c)) = temp.at(TMPELM(r, c + N));
-            } // for c
-        }  // for r
-
-        // temp not nneded anymore, clean it
-        temp.clear();
-    } // try
-    catch ( std::out_of_range& oor )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
-
-    return retVal;
 }
-// This macro was defined especially for the inverse function so it should be undef'ed
-#undef TMPELM
 
 /**
  * Transpose the matrix and write all changes into it
@@ -526,8 +406,8 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::Matr
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    // If m's dimensions match, dimensoons of this will be preserved.
-    // Just apply the functionality od the parent class.
+    // If m's dimensions match, dimensions of this will be preserved.
+    // Just apply the functionality of the parent class.
     // Also cast the returning reference to SqMatrixGeneric.
     return dynamic_cast<SqMatrixGeneric<T>&>(( MatrixGeneric<T>::operator*=(m) ));
 }

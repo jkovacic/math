@@ -24,13 +24,15 @@ limitations under the License.
 * @author Jernej Kovacic
 */
 
-#include <iostream>
-
 #include "Rational.h"
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
 #include "QuaternionGeneric.h"
 #include "PolynomialGeneric.h"
+#include "LinearEquationSolverGeneric.h"
+
+#include <iostream>
+#include <complex>
 
 using namespace std;
 using namespace math;
@@ -395,8 +397,8 @@ void matrixTest()
         FMatrix* pinv = &inv;
         pinv->transposed().display();
         cout << endl;
-        
-        cout << "Add 0.5 to inv'(2, 0): " << endl;
+
+        cout << "Add 0.5 to inv(2, 0):" << endl;
         inv.at(2, 0) += 0.5f;
         inv.display();
         cout << endl;
@@ -567,6 +569,51 @@ void polynomialTest()
 
 }
 
+/*
+ * Test of the solver of a system of linear equations
+ */
+void lineqSolverTest()
+{
+    try
+    {
+        SqMatrixGeneric<complex<float> > a(3);
+        MatrixGeneric<complex<float> > b(3, 1);
+        
+        a.set(0, 0, complex<float>(1, 1)).set(0, 1, complex<float>(2, -1)).set(0, 2, complex<float>(-1, 0.5));
+        a.set(1, 0, complex<float>(0, 1)).set(1, 1, complex<float>(0.25, 3)).set(1, 2, complex<float>(-2, -0.5));
+        a.set(2, 0, complex<float>(3, 0)).set(2, 1, complex<float>(2, -3)).set(2, 2, complex<float>(-0.5, 1));
+        
+        b.set(0, 0, complex<float>(1, 0.2)).set(1, 0, complex<float>(-2, -1)).set(2, 0, complex<float>(1, 0));
+
+        cout << "Matrix of coefficients:" << endl;
+        a.display();
+        cout << endl;
+        
+        cout << "Vector of constant terms:" << endl;
+        b.display();
+        cout << endl;
+        
+        LinearEquationSolverGeneric<complex<float> > solver;
+        solver.setCoef(a).setTerm(b);
+        
+        /* Exact solution of the linear equation system a*x=b:
+         * x  = [-0.6631640-0.3626125i, 0.1630189+1.050566i, -0.2240929+0.6002903i]'  
+         */
+        MatrixGeneric<complex<float> > x = solver.solve();
+        cout << "Solution:" << endl;
+        x.display();
+    }
+    catch ( const LinearEquationSolverException& leqex )
+    {
+        cerr << "LinearEquationSolverException caught: '";
+        leqex.display();
+        cerr << "'" << endl;
+    }
+    catch (...)
+    {
+        cerr << "Some other exception caught" << endl;
+    }
+}
 
 /*
  * Main function that starts three groups of unit tests
@@ -586,6 +633,9 @@ int main(int argc, const char* argv[])
     cout << endl << "R A T I O N A L   M A T R I X   T E S T" << endl << endl;
     rationalMatrixTest();
 
+    cout << endl << "L I N E A R   E Q U A T I O N   S O L V E R   T E S T" << endl << endl;
+    lineqSolverTest();
+    
     cout << endl << "P O L Y N O M I A L   T E S T" << endl << endl;
     polynomialTest();
 

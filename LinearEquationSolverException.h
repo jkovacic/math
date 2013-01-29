@@ -1,5 +1,5 @@
 /*
-Copyright 2011, Jernej Kovacic
+Copyright 2013, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,18 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 /**
-@file MatrixException.h
+@file LinearEquationSolverException.h
 
-Declaration of the class MatrixException
+Declaration of the class LinearEquationSolverException
 
 @author Jernej Kovacic
 */
 
-
-#ifndef _MATH_MATRIXEXCEPTION_H_
-#define	_MATH_MATRIXEXCEPTION_H_
+#ifndef _MATH_LINEAREQUATIONSOLVEREXCEPTION_H_
+#define _MATH_LINEAREQUATIONSOLVEREXCEPTION_H_
 
 #include <iostream>
 
@@ -34,26 +32,23 @@ Declaration of the class MatrixException
 namespace math
 {
 
-struct MatrixException : public IMathException
+struct LinearEquationSolverException : public IMathException
 {
     /// Enum with possible error codes
     enum err_codes {
-        FORBIDDEN,                  /// Operation is forbidden for this type of a matrix
         OUT_OF_MEMORY,              /// Could not allocate enough memory
-        TOO_LARGE,                  /// Matrix is too large
         INVALID_DIMENSION,          /// Dimension is not valid for the operation
-        OUT_OF_RANGE,               /// Attempt to access an element out of defined range
-        NOT_ENOUGH_ELEMENTS,        /// Not enough elements
-        NON_INVERTIBLE_MATRIX       /// Matrix cannot be inverted
+        NO_UNIQUE_SOLUTION          /// Unique solution of the system of linear equations does not exist
     };
 
     err_codes error;     /// Type of an error
     // Constructor
-    MatrixException(err_codes err);
+    LinearEquationSolverException(err_codes err);
     // Output a short description of the error
     void display(std::ostream& str = std::cerr) const;
 };
 
-} // namespace math
+}  // namespace math
 
-#endif	/* _MATH_MATRIXEXCEPTION_H_ */
+
+#endif // _MATH_LINEAREQUATIONSOLVEREXCEPTION_H_
