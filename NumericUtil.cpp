@@ -166,10 +166,25 @@ bool math::NumericUtil<math::Rational>::isZero(const math::Rational& value)
 }
 
 /**
- * @return internally hardcoded value of 'eps'
+ * @return value of 'eps' for the desired type
  */
 template<class T>
 T math::NumericUtil<T>::getEPS()
 {
     return EPS;
+}
+
+/**
+ * Sets the new value of 'eps' for the desired type if the default one does
+ * not meet application's requirements.
+ * 
+ * @note There is no check of input so make sure a sensible value
+ *       (typically a very small positive number) is entered.
+ * 
+ * @param eps - new value of EPS
+ */
+template<class T>
+void math::NumericUtil<T>::setEPS(const T& eps)
+{
+    EPS = eps;
 }

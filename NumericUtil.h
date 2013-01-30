@@ -51,7 +51,9 @@ public:
     // different meaning than in discrete mathematics (int etc.)
     static bool isZero(const T& value);
 
+    // Get or set the internal value of 'eps'
     static T getEPS();
+    static void setEPS(const T& eps);
 };
 
 // Declaration of specialized methods inside the name space declaration
