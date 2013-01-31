@@ -25,7 +25,7 @@ Instead it must be included after the class declaration in the .h file
 @author Jernej Kovacic
 */
 
-// Delibarately there is no #include "NumericUtil.h"
+// Deliberately there is no #include "NumericUtil.h"
 #include "Rational.h"
 
 #include <complex>
@@ -45,9 +45,9 @@ template<>
 double math::NumericUtil<double>::EPS = 1e-16;
 
 /*
- * and long double is even more accuarte
+ * and long double is even more accurate
  */
- template<>
+template<>
 long double math::NumericUtil<long double>::EPS = 1e-22L;
 
 /*

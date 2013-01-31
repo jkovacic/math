@@ -69,6 +69,8 @@ public:
     float toFloat() const;
     // Converts the fraction into its double value
     double toDouble() const;
+    // Converts the fraction into its long double value
+    long double toLongDouble() const;
 
     // Returns true if the fraction equals 0
     bool isZero() const;

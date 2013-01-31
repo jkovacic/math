@@ -154,7 +154,7 @@ math::Rational& math::Rational::set(int numerator, int denominator) throw(math::
  * Outputs the fraction to stdout in form 'num/den'
  *
  * @param factor (default: 1): optional, if set, both members will be multiplied by it
- * @param str (default cout): output stream, the fraction will be dislayed
+ * @param str (default cout): output stream, the fraction will be displayed
  */
 void math::Rational::display(int factor, std::ostream& str) const
 {
@@ -166,7 +166,7 @@ void math::Rational::display(int factor, std::ostream& str) const
  */
 float math::Rational::toFloat() const
 {
-    return ( static_cast<float>(num))/( static_cast<float>(denom));
+    return ( static_cast<float>(num)/static_cast<float>(denom) );
 }
 
 /**
@@ -174,7 +174,15 @@ float math::Rational::toFloat() const
  */
 double math::Rational::toDouble() const
 {
-    return ( static_cast<double>(num))/( static_cast<double>(denom));
+    return ( static_cast<double>(num)/static_cast<double>(denom) );
+}
+
+/**
+ * @return fraction's value converted to long double
+ */
+long double math::Rational::toLongDouble() const
+{
+    return ( static_cast<long double>(num)/static_cast<long double>(denom) );
 }
 
 /**
@@ -314,7 +322,7 @@ math::Rational math::Rational::operator+(const math::Rational& frac) const throw
     //   b     d       b * d
 
     // both fractions are valid which always results in a valid sum, so
-    // no check is necesseary. Integer overflow is possible but it is
+    // no check is necessary. Integer overflow is possible but it is
     // not checked right now.
 
     // Just construct an unreduced fraction as shown above:
@@ -370,9 +378,9 @@ math::Rational& math::Rational::operator+=(const math::Rational& frac) throw(mat
 }  // Rational::operator+=
 
 /**
- * Binary subtraction operator (-) for substraction of two fractions
+ * Binary subtraction operator (-) for subtraction of two fractions
  *
- * @param frac - a fraction to be substracted from this
+ * @param frac - a fraction to be subtracted from this
  *
  * @return this - frac
  */
@@ -385,7 +393,7 @@ math::Rational math::Rational::operator-(const math::Rational& frac) const throw
     //   b     d       b * d
 
     // both fractions are valid which always results in a valid difference, so
-    // no check is necesseary.
+    // no check is necessary.
 
     int numerator;
     int denominator;
@@ -444,7 +452,7 @@ math::Rational& math::Rational::operator-=(const math::Rational& frac) throw(mat
 /**
  * Binary multiplication operator (*) for multiplication of two fractions.
  *
- * @param frac - a fraction, this will be multilied by
+ * @param frac - a fraction, this will be multiplied by
  *
  * @return this * frac
  */
@@ -481,7 +489,7 @@ math::Rational math::Rational::operator*(const math::Rational& frac) const throw
  * Multiplication operator (*=) that multiplies frac and this and assigns the resulting value to itself.
  * a *= b  ---> a -> a * b
  *
- * @param frac - a fraction, this will be mltiplied by
+ * @param frac - a fraction, this will be multiplied by
  *
  * @return reference to itself
  */
@@ -727,7 +735,7 @@ std::ostream& math::operator<<(std::ostream& output, const math::Rational& frac)
     return output;
 }
 
-/**
+/*
  * An auxiliary function that reduces the fraction:
  * divides the numerator and denominator by their greatest common divisor
  */
@@ -750,13 +758,13 @@ void math::Rational::reduce()
     const unsigned int gcd = greatestCommonDivisor(absNum, denom);
 
     // ... and divide both members by it.
-    // if both num (handled a few lines above)and denom (not permitted when seting)
+    // if both num (handled a few lines above)and denom (not permitted when setting)
     // are different than 0, the GCD is guaranteed to be a non-zero value
     num /= static_cast<int>(gcd);
     denom /= gcd;
 } // Rational::reduce
 
-/**
+/*
  * A simple integer implementation of abs
  *
  * @param a
@@ -834,7 +842,7 @@ unsigned int math::Rational::leastCommonMultiple(unsigned int first, unsigned in
     return (first*second)/gcd;
 } // Rational::leastCommonMultiple
 
-/**
+/*
  * An auxiliary function that calculates (unreduced) numerator of (this-frac).
  * It is only needed by comparison operators who actually only need to know its sign
  *
@@ -870,7 +878,7 @@ int math::Rational::sign(const math::Rational& frac) const
     return retVal;
 }
 
-/**
+/*
  * Auxiliary function to calculate a sum of two products.
  * It checks for integer overflows and throws an exception in this case.
  *
@@ -899,8 +907,8 @@ int math::Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(mat
     return static_cast<int>(sum);
 }
 
-/**
- * Auxiliary function to calcuate a product of two integer numbers.
+/*
+ * Auxiliary function to calculate a product of two integer numbers.
  * It checks for integer overflows and throws an exception in this case.
  *
  * @param first
