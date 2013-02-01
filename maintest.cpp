@@ -1,5 +1,5 @@
 /*
-Copyright 2011, Jernej Kovacic
+Copyright 2011, 2013 Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,13 +16,12 @@ limitations under the License.
 
 
 /**
-* @file maintest.cpp
-*
-* Collection of basic unit tests for [Sq]MatrixGeneric ,Rational,
-* QuaternionGeneric and PolynomialGeneric
-*
-* @author Jernej Kovacic
-*/
+ * @file maintest.cpp
+ *
+ * Collection of basic unit tests for all mathematical classes
+ *
+ * @author Jernej Kovacic
+ */
 
 #include "Rational.h"
 #include "MatrixGeneric.h"
@@ -30,6 +29,8 @@ limitations under the License.
 #include "QuaternionGeneric.h"
 #include "PolynomialGeneric.h"
 #include "LinearEquationSolverGeneric.h"
+#include "PolynomialRegressionGeneric.h"
+#include "PolynomialInterpolationGeneric.h"
 
 #include <iostream>
 #include <complex>
@@ -578,26 +579,26 @@ void lineqSolverTest()
     {
         SqMatrixGeneric<complex<float> > a(3);
         MatrixGeneric<complex<float> > b(3, 1);
-        
+
         a.set(0, 0, complex<float>(1, 1)).set(0, 1, complex<float>(2, -1)).set(0, 2, complex<float>(-1, 0.5));
         a.set(1, 0, complex<float>(0, 1)).set(1, 1, complex<float>(0.25, 3)).set(1, 2, complex<float>(-2, -0.5));
         a.set(2, 0, complex<float>(3, 0)).set(2, 1, complex<float>(2, -3)).set(2, 2, complex<float>(-0.5, 1));
-        
+
         b.set(0, 0, complex<float>(1, 0.2)).set(1, 0, complex<float>(-2, -1)).set(2, 0, complex<float>(1, 0));
 
         cout << "Matrix of coefficients:" << endl;
         a.display();
         cout << endl;
-        
+
         cout << "Vector of constant terms:" << endl;
         b.display();
         cout << endl;
-        
+
         LinearEquationSolverGeneric<complex<float> > solver;
         solver.setCoef(a).setTerm(b);
-        
+
         /* Exact solution of the linear equation system a*x=b:
-         * x  = [-0.6631640-0.3626125i, 0.1630189+1.050566i, -0.2240929+0.6002903i]'  
+         * x  = [-0.6631640-0.3626125i, 0.1630189+1.050566i, -0.2240929+0.6002903i]'
          */
         MatrixGeneric<complex<float> > x = solver.solve();
         cout << "Solution:" << endl;
@@ -608,6 +609,145 @@ void lineqSolverTest()
         cerr << "LinearEquationSolverException caught: '";
         leqex.display();
         cerr << "'" << endl;
+    }
+    catch (...)
+    {
+        cerr << "Some other exception caught" << endl;
+    }
+}
+
+/*
+ * Test of curve fitting algorithms
+ */
+void curveFittingTest()
+{
+    try
+    {
+        // 1st, 2nd and 3rd degree regression polynomials, respectively,
+        // of y=exp(-x) for x=0..5:
+        FPolynomialRegression fprexp1;
+        FPolynomialRegression fprexp2;
+        FPolynomialRegression fprexp3;
+
+        // exp(-x), points in a random order:
+        fprexp1.enterPoint(1.0f, 0.367879441f);
+        fprexp1.enterPoint(0.0f, 1.0f);
+        fprexp1.enterPoint(5.0f, 0.006737947f);
+        fprexp1.enterPoint(4.0f, 0.018315639f);
+        fprexp1.enterPoint(2.0f, 0.135335283f);
+        fprexp1.enterPoint(3.0f, 0.049787068f);
+
+        // copy points to other classes:
+        fprexp2 = fprexp1;
+        fprexp3 = fprexp1;
+
+        // Checking of bounds
+        cout << "Lower bound: " << fprexp2.lowerBound() << endl;
+        cout << "Upper bound: " << fprexp2.upperBound() << endl;
+
+        fprexp1.generateCurve(1);
+        fprexp2.generateCurve(2);
+        fprexp3.generateCurve(3);
+
+        /*
+         Correct regression polynomials as calculated by R:
+
+            > x <- c(0,1,2,3,4,5)
+            > y <- exp(-x)
+            > print(x)
+            [1] 0 1 2 3 4 5
+
+            > print(y)
+            [1] 1.000000000 0.367879441 0.135335283 0.049787068 0.018315639 0.006737947
+
+            > p1 <- lm(y ~ x)
+            > p2 <- lm(y ~ x + I(x^2))
+            > p3 <- lm(y ~ x + I(x^2) + I(x^3))
+            > print(p1)
+
+            Call:
+            lm(formula = y ~ x)
+
+            Coefficients:
+            (Intercept)            x
+                 0.6988      -0.1743
+
+            > print(p2)
+
+            Call:
+            lm(formula = y ~ x + I(x^2))
+
+            Coefficients:
+            (Intercept)            x       I(x^2)
+                0.93132     -0.52314      0.06977
+
+            > print(p3)
+
+            Call:
+            lm(formula = y ~ x + I(x^2) + I(x^3))
+
+            Coefficients:
+            (Intercept)            x       I(x^2)       I(x^3)
+                0.99180     -0.79932      0.22096     -0.02016
+        */
+
+        cout << "1st degree polynomial: ";
+        fprexp1.getPolynomial().display();
+        cout << endl << "2nd degree polynomial: ";
+        fprexp2.getPolynomial().display();
+        cout << endl << "3rd degree polynomial: ";
+        fprexp3.getPolynomial().display();
+        cout << endl;
+
+        /*
+             Example from: http://en.wikipedia.org/wiki/Newton_polynomial#Example
+             
+             y=tan(x) for x=-1.5, -0.75, 0, 0.75, 1.5
+         
+             This time, 3rd degree regression and the same degree interpolation 
+             polynomial (as this is an odd function, all its even coefficients 
+             equal 0) are compared.
+         */
+        FPolynomialInterpolation fpitan;
+        FPolynomialRegression fprtan3;
+
+        fpitan.enterPoint(-1.5f, -14.1014f);
+        fpitan.enterPoint(-0.75f, -0.931596f);
+        fpitan.enterPoint(0.0f, 0.0f);
+        fpitan.enterPoint(0.75f, 0.931596);
+        fpitan.enterPoint(1.5f, 14.1014f);
+
+        fpitan.generateCurve();
+        fprtan3.copy(&fpitan);
+        fprtan3.generateCurve(3);
+
+        cout << "Interpolation polynomial: ";
+        fpitan.getPolynomial().display();
+        cout << endl << "3rd degree regression polynomial: ";
+        fprtan3.getPolynomial().display();
+        cout << endl;
+
+        /*
+             Finally compare 5th degree interpolation and regression polynomials
+             for the points from the first test: 
+         */
+        FPolynomialRegression fprexp5;
+        FPolynomialInterpolation fpiexp;
+        fprexp5.copy(&fprexp1);
+        fpiexp.copy(&fprexp5);
+        fprexp5.generateCurve(5);
+        fpiexp.generateCurve();
+        cout << "Exp's regression polynomial: ";
+        fprexp5.getPolynomial().display();
+        cout << endl << "Exp's interpolation polynomial: ";
+        fpiexp.getPolynomial().display();
+        cout << endl;
+    }
+    catch ( const CurveFittingException& cfex )
+    {
+        cerr << "CurveFittingException caught: ";
+        cfex.display();
+        cerr << endl;
     }
     catch (...)
     {
@@ -635,9 +775,12 @@ int main(int argc, const char* argv[])
 
     cout << endl << "L I N E A R   E Q U A T I O N   S O L V E R   T E S T" << endl << endl;
     lineqSolverTest();
-    
+
     cout << endl << "P O L Y N O M I A L   T E S T" << endl << endl;
     polynomialTest();
+
+    cout << endl << "C U R V E   F I T T I N G   T E S T" << endl << endl;
+    curveFittingTest();
 
     return 0;
 }
