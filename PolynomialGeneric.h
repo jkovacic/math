@@ -14,6 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
+/**
+ * @file PolynomialGeneric.h
+ *
+ * Declaration of the class PolynomialGeneric, representing polynomials.
+ *
+ * @author Jernej Kovacic
+ */
+
 #ifndef _MATH_POLYNOMIALGENERIC_H_
 #define _MATH_POLYNOMIALGENERIC_H_
 
