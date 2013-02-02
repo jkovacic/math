@@ -80,7 +80,7 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
              a(r,c) = ------------------------
                            y(r) - y(r-c)
        
-              for r = 1..n, c>0 && c<=r
+              for c = 1..n, r=c..n
       
          - when this procedure is completed, the interpolation polynomial
            is expressed as:
@@ -106,23 +106,24 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
         
         // hiding idx from the rest of the function
         {
-        // As iterators are the fastest way to access linked list elements,
-        // traverse the list only once and populate appropriate elements of a and b
-        unsigned int idx = 0;
-        for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin();
-                    it!=this->points.end(); it++, idx++ )
-            {
-                x.set(idx, 0, it->p_x);
-                a.set(idx, 0, it->p_y);
-            }  // for it
-        }  // scope to
+            // As iterators are the fastest way to access linked list elements,
+            // traverse the list only once and populate appropriate elements of a and b
+            unsigned int idx = 0;
+            for ( 
+              typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin();
+                        it!=this->points.end(); it++, idx++ )
+                {
+                    x.set(idx, 0, it->p_x);
+                    a.set(idx, 0, it->p_y);
+                }  // for it
+        }  // hiding idx from the rest of the code
         
         // Populate lower diagonal elements of matrix a as described above
-        for ( unsigned int r=1; r<N; r++ )
+        for ( unsigned int c=1; c<N; c++ )
         {
-            for ( unsigned int c=1; c<=r; c++)
+            for ( unsigned int r=c; r<N; r++)
             {
-                a.at(r, c) = (a.at(r, c-1)-a.at(r-1, c-1)) / (x.at(r, 0)-x.at(r-c , 0));
+                a.at(r, c) = (a.at(r, c-1)-a.at(r-1, c-1)) / (x.at(r, 0)-x.at(r-c, 0));
             }
         }
 
