@@ -41,6 +41,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/maintest.o \
 	${OBJECTDIR}/Rational.o \
 	${OBJECTDIR}/MatrixException.o \
+	${OBJECTDIR}/CurveFittingException.o \
 	${OBJECTDIR}/RationalException.o
 
 
@@ -97,6 +98,11 @@ ${OBJECTDIR}/MatrixException.o: MatrixException.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/MatrixException.o MatrixException.cpp
+
+${OBJECTDIR}/CurveFittingException.o: CurveFittingException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/CurveFittingException.o CurveFittingException.cpp
 
 ${OBJECTDIR}/RationalException.o: RationalException.cpp 
 	${MKDIR} -p ${OBJECTDIR}
