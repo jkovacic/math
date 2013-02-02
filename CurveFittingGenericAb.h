@@ -78,7 +78,8 @@ public:
     CurveFittingGenericAb<T>& copy(const CurveFittingGenericAb<T>* porig) throw (CurveFittingException);
     
     // enter a point
-    CurveFittingGenericAb<T>& enterPoint(const T& x, const T& y) throw (CurveFittingException);
+    // Note: the function is virtual as derived classes may perform a sort of input control
+    virtual CurveFittingGenericAb<T>& enterPoint(const T& x, const T& y) throw (CurveFittingException);
 
     // Number of points entered
     unsigned int nrPoints() const;
