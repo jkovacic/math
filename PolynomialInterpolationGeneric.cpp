@@ -162,6 +162,10 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
             sum += a.at(0) * temp;
         } // for c
         
+        // vectors are not needed anymore
+        x.clear();
+        a.clear();
+                
         // The algorithm is finished, assign the interpolation polynomial to poly:
         this->poly = sum;
         
