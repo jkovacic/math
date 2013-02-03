@@ -29,8 +29,10 @@ limitations under the License.
  */
 
 // Deliberately there is no #include "PolynomialInterpolationGeneric.h"
-#include "MatrixGeneric.h"
 #include "PolynomialGeneric.h"
+
+#include <vector>
+#include <new>
 
 
 /**
@@ -97,12 +99,17 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
 
     try
     {
+        // As it turns out, the algorithm above can be further optimized.
+        // It is sufficient to use a 1D vector (storing just the current "column") 
+        // instead of a 2D matrix. It is also possible to update polynomials 
+        // concurrently when updating "columns". 
+        
         // number of points
         const unsigned int N = this->points.size();
 
-        // create matrices as described above:
-        math::MatrixGeneric<T> a(N, N);
-        math::MatrixGeneric<T> x(N, 1);
+        // create vectors to store temporary results:
+        std::vector<T> a(N);
+        std::vector<T> x(N);
         
         // hiding idx from the rest of the function
         {
@@ -113,22 +120,12 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
               typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin();
                         it!=this->points.end(); it++, idx++ )
                 {
-                    x.set(idx, 0, it->p_x);
-                    a.set(idx, 0, it->p_y);
+                    x.at(idx) = it->p_x;
+                    a.at(idx) = it->p_y;
                 }  // for it
         }  // hiding idx from the rest of the code
         
-        // Populate lower diagonal elements of matrix a as described above
-        for ( unsigned int c=1; c<N; c++ )
-        {
-            for ( unsigned int r=c; r<N; r++)
-            {
-                a.at(r, c) = (a.at(r, c-1)-a.at(r-1, c-1)) / (x.at(r, 0)-x.at(r-c, 0));
-            }
-        }
-
-        // and create the polynomial as described above:
-        
+        // Polynomials:
         // (x-y0)*(x-y1)*...*(x-yi)
         math::PolynomialGeneric<T> temp(1);
         // partial polynomial sum (sum of temp*a(i,i))
@@ -137,38 +134,47 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
         math::PolynomialGeneric<T> term(2);
 
         // Initialize the polynomials:
-        
-        // term will always be of form (x-yi), hence term(1)
-        // is always equal to 1, while term(0) will be set depending on i
+
+        // term will always be of form (x-xi), hence term(1)
+        // is always equal to 1, while term(0) will be set depending on c
         term.set(1, math::NumericUtil<T>::ONE);
 
         // initial value of temp: 1 
         temp.set(0, math::NumericUtil<T>::ONE);
         // initial value of sum: a(0,0)
-        sum.set(0, a.get(0, 0));
+        sum.set(0, a.at(0));
         
-        // finally implement the last section of the description above
-        for (unsigned int i=1; i<N; i++ )
+        // recalculate vector's element as differential quotients:
+        // a(i) = (a(i+1)-a(i))/ (appropriate difference of x)
+        for (unsigned int c=0; c<(N-1); c++ )
         {
-            term.set(0, -x.at(i-1, 0));
+            for ( unsigned int i=0; i<(N-1-c); i++ )
+            {
+                a.at(i) = (a.at(i+1)-a.at(i)) / (x.at(i+c+1)-x.at(i));
+            }  // for i
+  
+            // the last element of a not needed anymore
+            a.pop_back();
+            
+            // finally update the polynomials as described in the last section above
+            term.set(0, -x.at(c));
             temp *= term;
-            sum += a.at(i, i) * temp;
-        }  // for i
-
+            sum += a.at(0) * temp;
+        } // for c
+        
         // The algorithm is finished, assign the interpolation polynomial to poly:
         this->poly = sum;
         
         // the curve can be marked as generated
         this->curveGenerated = true;
     }  // try
-    catch ( const math::MatrixException& mex )
-    {
-        // the only possible MatrixException is out of memory
-        throw math::CurveFittingException(math::CurveFittingException::OUT_OF_MEMORY);
-    }
     catch ( const math::PolynomialException& pex )
     {
         // the only possible PolynomialException is out of memory
+        throw math::CurveFittingException(math::CurveFittingException::OUT_OF_MEMORY);
+    }
+    catch ( const std::bad_alloc& ba )
+    {
         throw math::CurveFittingException(math::CurveFittingException::OUT_OF_MEMORY);
     }
 }
