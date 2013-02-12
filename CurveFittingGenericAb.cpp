@@ -36,8 +36,8 @@ limitations under the License.
  * Implementation of internal class's operator< (required for sort)
  *
  * @param p - instance of point whose abscissa will be compared to this one's
- * 
- * @return whether this's abscissa is smaller than p's 
+ *
+ * @return whether this's abscissa is smaller than p's
  */
 template<class T>
 bool math::CurveFittingGenericAb<T>::CPoint::operator<(const math::CurveFittingGenericAb<T>::CPoint& p) const
@@ -48,7 +48,7 @@ bool math::CurveFittingGenericAb<T>::CPoint::operator<(const math::CurveFittingG
 
 /*
  * As an abstract class cannot have constructors, this function performs
- * some initialization tasks, common to all derived classes. 
+ * some initialization tasks, common to all derived classes.
  */
 template<class T>
 void math::CurveFittingGenericAb<T>::init()
@@ -61,11 +61,11 @@ void math::CurveFittingGenericAb<T>::init()
 
 /**
  * Assignment operator (=). It is only applicable for instances of the same class.
- * 
+ *
  * @param orig - instance of a derived class, whose points will be copied to this one
- * 
+ *
  * @return reference to itself
- * 
+ *
  * @throw CurveFittingException if allocation of memory fails
  */
 template<class T>
@@ -96,9 +96,9 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::operator=(const 
  * A convenience function that copies points from 'porig' to 'this'.
  * Unlike operator=(), 'porig' can be a pointer to any instance that is derived
  * from CurveFittingGenericAb.
- *  
+ *
  * @param porig - a pointer to an instance whose points will be copied to 'this'
- * 
+ *
  * @throw CurveFittingException if 'porig' is invalid or if allocation of memory fails
  */
 template<class T>
@@ -123,18 +123,18 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::copy(const math:
 
 /**
  * Adds a point to be used for generation of the best fitting curve.
- * 
+ *
  * @note Points can be entered in an arbitrary order.
  * @note No "duplicate" points (with the same abscissa) are allowed. This
  *       check is  not performed at this time but later the generation of
  *       the curve will fail.
  * @note Once a point has been entered, it cannot be removed.
- * 
+ *
  * @param x - point's abscissa
  * @param y - point's ordinate
- * 
+ *
  * @return reference to itself
- * 
+ *
  * @throw CurveFittingException if the curve has already been generated or if allocation of memory fails
  */
 template<class T>
@@ -162,7 +162,7 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::enterPoint(const
 }
 
 /**
- * @return Number of all points entered 
+ * @return Number of all points entered
  */
 template<class T>
 unsigned int math::CurveFittingGenericAb<T>::nrPoints() const
@@ -171,7 +171,7 @@ unsigned int math::CurveFittingGenericAb<T>::nrPoints() const
 }
 
 /**
- * @return has the curve already been generated? 
+ * @return has the curve already been generated?
  */
 template<class T>
 bool math::CurveFittingGenericAb<T>::curveReady() const
@@ -181,7 +181,7 @@ bool math::CurveFittingGenericAb<T>::curveReady() const
 
 /**
  * @return the smallest abscissa of all points entered till this moment
- * 
+ *
  * @throw CurveFittingException if no points have been entered
  */
 template<class T>
@@ -202,7 +202,7 @@ T math::CurveFittingGenericAb<T>::lowerBound() const throw (math::CurveFittingEx
 
     // traverse the list and find the smallest abscissa
     typename std::list< typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator currMin = points.begin();
-    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); 
+    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin();
                it!=points.end(); it++ )
     {
         if ( currMin->p_x > it->p_x )
@@ -216,7 +216,7 @@ T math::CurveFittingGenericAb<T>::lowerBound() const throw (math::CurveFittingEx
 
 /**
  * @return the highest abscissa of all points entered till this moment
- * 
+ *
  * @throw CurveFittingException if no points have been entered
  */
 template<class T>
@@ -234,7 +234,7 @@ T math::CurveFittingGenericAb<T>::upperBound() const throw (math::CurveFittingEx
     {
         return points.back().p_x;
     }
-    
+
     // traverse the list and find the highest abscissa
     typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator currMax = points.begin();
     for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); it!=points.end(); it++ )
@@ -249,12 +249,12 @@ T math::CurveFittingGenericAb<T>::upperBound() const throw (math::CurveFittingEx
 }
 
 /*
- * A convenience function to detect if any "duplicate" (with the same abscissa) 
+ * A convenience function to detect if any "duplicate" (with the same abscissa)
  * points have been entered.
- * 
+ *
  * @note In order for this function to work properly, list of points must be sorted beforehand!
- * 
- * @return true/false 
+ *
+ * @return true/false
  */
 template<class T>
 bool math::CurveFittingGenericAb<T>::duplicatePoints() const
@@ -299,11 +299,26 @@ bool math::CurveFittingGenericAb<T>::duplicatePoints() const
 }
 
 /*
+ * Sort entered points by points' abscissa values in ascending order.
+ * CPoint's 'operaator<' method is used as the comparison criteria.
+ */
+template<class T>
+void math::CurveFittingGenericAb<T>::sortPoints()
+{
+    // Nothing to do if no points have been entered yet
+    if ( false==this->points.empty() )
+    {
+        // apply list's sort method
+        this->points.sort();
+    }
+}
+
+/*
  * Performs some necessary checks prior curve generation. If any check
  * fails, the appropriate exception will be thrown.
- * 
+ *
  * @note The function also sorts entered points
- * 
+ *
  * @throw appropriate CurveFittingException if any check is not passed
  */
 template<class T>
@@ -314,16 +329,16 @@ void math::CurveFittingGenericAb<T>::curveGenerationCheck() throw (math::CurveFi
     {
         throw math::CurveFittingException(math::CurveFittingException::CURVE_ALREADY_GENERATED);
     }
-    
+
     // At least one point must be entered
     if ( true==this->points.empty() )
     {
         throw math::CurveFittingException(math::CurveFittingException::NO_POINTS);
     }
 
-    // sort the points by abscissae's values in ascending order 
-    points.sort();
-    
+    // sort the points by abscissae's values in ascending order
+    sortPoints();
+
     // and detect any "duplicate" points
     if ( true==duplicatePoints() )
     {

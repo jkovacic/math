@@ -18,8 +18,8 @@ limitations under the License.
 /**
  * @file CurveFittingGenericAb.h
  *
- * Declaration of the class CurveFittingGenericAb.h. This is an 
- * abstract class, its derived classes implement various 
+ * Declaration of the class CurveFittingGenericAb.h. This is an
+ * abstract class, its derived classes implement various
  * curve fitting algorithms.
  *
  * @author Jernej Kovacic
@@ -48,7 +48,7 @@ protected:
     {
         T p_x;          // abscissa
         T p_y;          // ordinate
-        // sorting algorithms require this:
+        // required by sort algorithms:
         bool operator<(const CPoint& p) const;
     };
 
@@ -67,7 +67,10 @@ protected:
     bool duplicatePoints() const;
     // some necessary checks prior to generation of the curve. It also sorts points
     void curveGenerationCheck() throw (CurveFittingException);
-    
+
+    // sorts entered points
+    void sortPoints();
+
     // some constructor-like functionality
     void init();
 
@@ -76,7 +79,7 @@ public:
     virtual CurveFittingGenericAb<T>& operator=(const CurveFittingGenericAb<T>& orig) throw (CurveFittingException);
     // copies points from porig to this (applicable for all types derived from this one)
     CurveFittingGenericAb<T>& copy(const CurveFittingGenericAb<T>* porig) throw (CurveFittingException);
-    
+
     // enter a point
     // Note: the function is virtual as derived classes may perform a sort of input control
     virtual CurveFittingGenericAb<T>& enterPoint(const T& x, const T& y) throw (CurveFittingException);
@@ -86,14 +89,14 @@ public:
 
     // has the curve been generated?
     bool curveReady() const;
-    
+
     // The lowest and highest abscissa value of all entered points
     T lowerBound() const throw (CurveFittingException);
     T upperBound() const throw (CurveFittingException);
 
     // generate a curve that fits entered points best
     virtual void generateCurve(unsigned int degree) throw (CurveFittingException) = 0;
-    
+
     // value of the curve at the given abscissa
     virtual T valueAt(const T& x, bool strict=true) const throw (CurveFittingException) = 0;
 
