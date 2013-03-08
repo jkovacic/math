@@ -21,7 +21,7 @@ limitations under the License.
  *
  * Please note that quaternions make sense if T represents a real-number type
  * (e.g. float or double), in case of any other type, results of many methods
- * do not make much sense, some methods even throw an exception imediately.
+ * do not make much sense, some methods even throw an exception immediately.
  * If you wish to template it with any "officially" unsupported type, you should
  * specialize those methods (i.e. introduce your own implementation of sqrt for the
  * desired type).
@@ -95,7 +95,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator=(const math::Qu
 }
 
 /**
- * @return scalar componet ('1') of the quaternion
+ * @return scalar component ('1') of the quaternion
  */
 template<class T>
 T math::QuaternionGeneric<T>::getOne() const
@@ -220,7 +220,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::setK(const T& k)
 /**
  * Outputs the quaternion to the stream 'str' in form '(a+bi+cj+dk)'
  *
- * @param str (default cout): output stream, where the quaternion will be dislayed
+ * @param str (default cout): output stream, where the quaternion will be displayed
  */
 template<class T>
 void math::QuaternionGeneric<T>::display(std::ostream& str) const
@@ -237,7 +237,7 @@ void math::QuaternionGeneric<T>::display(std::ostream& str) const
     str << quat_o;
 
     /*
-        For the other components, display '+' if the component is positive (ot zero).
+        For the other components, display '+' if the component is positive (or zero).
         If the component's value is negative, '-' will be displayed automatically.
         After the numeric value append the component's name ('i', 'j' or 'k').
     */
@@ -308,6 +308,22 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const math::Qua
 }
 
 /**
+ * Addition operator (+) of a quaternion and a scalar
+ * 
+ * @param scalar - scalar to be added to this quaternion
+ * 
+ * @return *this + scalar
+ */
+template<class T>
+math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const T& scalar) const
+{
+    return math::QuaternionGeneric<T>( quat_o + scalar,
+                                       quat_i,
+                                       quat_j,
+                                       quat_k );
+}
+
+/**
  * Addition operator (+=) that adds a quaternion to this and assigns the sum to itself.
  *
  * @param q - quaternion to be added to this one
@@ -326,6 +342,21 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator+=(const math::Q
     this->quat_k += q.quat_k;
 
     // return the reference to itself
+    return *this;
+}
+
+/**
+ * Addition operator (+=) that adds a scalar to this and assigns the sum to itself.
+ *
+ * @param scalar - scalar to be added to this one
+ *
+ * @return reference to this 
+ */
+template<class T>
+math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator+=(const T& scalar)
+{
+    this->quat_o += scalar;
+    
     return *this;
 }
 
@@ -352,6 +383,22 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const math::Qua
 }
 
 /**
+ * Subtraction operator (-) of a quaternion and a scalar
+ * 
+ * @param scalar - scalar to be subtracted from this quaternion
+ * 
+ * @return *this - scalar
+ */
+template<class T>
+math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const T& scalar) const
+{
+    return QuaternionGeneric<T>( quat_o - scalar,
+                                 quat_i,
+                                 quat_j,
+                                 quat_k );
+}
+
+/**
  * Subtraction operator (-=) that subtracts a quaternion from this and assigns the difference to itself.
  *
  * @param q - quaternion to be subtracted from this one
@@ -374,9 +421,25 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator-=(const math::Q
 }
 
 /**
+ * Subtraction operator (-=) that subtracts a scalar from this and assigns 
+ * the difference to itself.
+ *
+ * @param scalar - scalar to be subtracted from this quaternion
+ *
+ * @return reference to this 
+ */
+template<class T>
+math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator-=(const T& scalar)
+{
+    this->quat_o -= scalar;
+    
+    return *this;
+}
+
+/**
  * Multiplication operator (*) of two quaternions.
  *
- * Note that quaternion multiplication is not comutative (q*p != p*q).
+ * Note that quaternion multiplication is not commutative (q*p != p*q).
  *
  * @param q- quaternion to be multiplied by this
  *
@@ -412,7 +475,7 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const math::Qua
 /**
  * Multiplication operator (*=) that multiplies a quaternion to this and assigns the product to itself.
  *
- * Note that quaternion multiplication is not comutative (q*p != p*q).
+ * Note that quaternion multiplication is not commutative (q*p != p*q).
  *
  * @param q - quaternion to be multiplied by this one
  *
@@ -424,7 +487,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const math::Q
     // For a definition of quaternion multiplication, see operator*
 
     /*
-        Any method would require storing componets' values in 4 variables. Just performing
+        Any method would require storing components' values in 4 variables. Just performing
         a general quaternion multiplication (by operator*) and instantiation of a temporary
         variable consumes the same amount of memory. Additionally it improves maintainability
         and reduces the risk of typing errors.
@@ -473,7 +536,7 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const T& scalar
 template<class T>
 math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const T& sc)
 {
-    // Multiply each componet by the scalar
+    // Multiply each component by the scalar
     quat_o *= sc;
     quat_i *= sc;
     quat_j *= sc;
@@ -484,7 +547,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const T& sc)
 
 /**
  * Multiplication operator (*) of a scalar and a quaternion.
- * In general ( if T represents a real number) this operation is comutative
+ * In general ( if T represents a real number) this operation is commutative
  * and does the same as operator*(scalar).
  * Since the first operand is not a quaternion, it must be implemented as
  * a friend function.
@@ -498,10 +561,47 @@ template<class T>
 math::QuaternionGeneric<T> math::operator*(const T& scalar, const math::QuaternionGeneric<T>& q)
 {
     /*
-        In general multiplication of a scalar and quaternion is comutative.
+        In general, multiplication of a scalar and quaternion is commutative.
         If this is not a case, implement a specialization.
     */
     return (q * scalar);
+}
+
+/**
+ * Addition operator (+) of a scalar and a quaternion.
+ * In general ( if T represents a real number) this operation is commutative
+ * and does the same as operator+(scalar).
+ * Since the first operand is not a quaternion, it must be implemented as
+ * a friend function.
+ *
+ * @param scalar
+ * @param q - quaternion
+ *
+ * @return scalar + q
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator+(const T& scalar, const math::QuaternionGeneric<T>& q)
+{
+    // Addition is commutative
+    return (q + scalar);
+}
+
+/**
+ * Subtraction operator (-) of a scalar and a quaternion.
+ * Since the first operand is not a quaternion, it must be implemented as
+ * a friend function.
+ *
+ * @param scalar
+ * @param q - quaternion
+ *
+ * @return scalar - q
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator-(const T& scalar, const math::QuaternionGeneric<T>& q)
+{
+    // Subtraction is not commutative!
+    return math::QuaternionGeneric<T>
+            ( scalar - q.quat_o, -q.quat_i, -q.quat_j, -q.quat_k );
 }
 
 /**
@@ -566,10 +666,10 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::conjugated()
 }
 
 /*
- * A utilty function that calculates a sum of components' squares.
- * The function is caled  by other public methods, such as norm, reciprocal, unit, etc.
+ * A utility function that calculates a sum of components' squares.
+ * The function is called  by other public methods, such as norm, reciprocal, unit, etc.
  *
- * As the function is hort, it is declared as inline to slightly reduce overhead
+ * As the function is short, it is declared as inline to slightly reduce overhead
  *
  * @return sum of all components' squares
  */
@@ -594,7 +694,7 @@ T math::QuaternionGeneric<T>::norm() const throw (math::QuaternionException)
 
         ||q|| = sqrt( q*conj(q) ) = sqrt( conj(q)*q )
 
-        From the definition of quatenion multiplication,
+        From the definition of quaternion multiplication,
         one can quickly derive the following simplified formula:
 
         ||(a+b*i+c*j+d*k)|| = sqrt(a*a + b*b + c*c + d*d)
