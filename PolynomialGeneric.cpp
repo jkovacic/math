@@ -743,6 +743,59 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
 }
 
 /**
+ * Addition operator (+) of a polynomial and a scalar.
+ *
+ * @param sc - scalar to be added to "this" polynomial
+ *
+ * @return *this + sc
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator+(const T& sc) const throw (math::PolynomialException)
+{
+    math::PolynomialGeneric<T> retVal(*this);
+
+    retVal.coef.at(0) += sc;
+    retVal.reduce();
+    return retVal;
+}
+
+/**
+ * Addition operator (+=) that adds a scalar to 'this' and assigns the sum to itself.
+ *
+ * @param sc - scalar to be added to "this" polynomial
+ *
+ * @return reference to itself
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const T& sc)
+{
+    this->coef.at(0) += sc;
+    reduce();
+    return *this;
+}
+
+/**
+ * Addition operator (+) of a scalar and a polynomial.
+ * This operation is commutative and does the same as operator+(scalar).
+ * Since the first operand is not a polynomial, it must be implemented as
+ * a friend function.
+ *
+ * @param sc - scalar
+ * @param poly - polynomial
+ *
+ * @return sc + poly
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator+(const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+{
+    return (poly + sc);
+}
+
+/**
  * Subtraction operator (-) of two polynomials.
  *
  * @note Polynomials can be of different degrees.
@@ -848,6 +901,58 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
 
     reduce();
     return *this;
+}
+
+/**
+ * Subtraction operator (-) of a polynomial and a scalar.
+ *
+ * @param sc - scalar to be subtracted from "this" polynomial
+ *
+ * @return *this - sc
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-(const T& sc) const throw (math::PolynomialException)
+{
+    math::PolynomialGeneric<T> retVal(*this);
+
+    retVal.coef.at(0) -= sc;
+    retVal.reduce();
+    return retVal;
+}
+
+/**
+ * Subtraction operator (-=) that subtracts a scalar from 'this' and assigns the difference to itself.
+ *
+ * @param sc - scalar to be subtracted from "this" polynomial
+ *
+ * @return reference to itself
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const T& sc)
+{
+    this->coef.at(0) -= sc;
+    reduce();
+    return *this;
+}
+
+/**
+ * Subtraction operator (-) of a scalar and a polynomial.
+ * Since the first operand is not a polynomial, it must be implemented as
+ * a friend function.
+ *
+ * @param sc - scalar
+ * @param poly - polynomial
+ *
+ * @return sc - poly
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator-(const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+{
+    return (-poly + sc);
 }
 
 /**

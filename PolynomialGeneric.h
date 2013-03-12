@@ -40,9 +40,17 @@ namespace math
 template<class T> class PolynomialGeneric;
 
 
-// to declare the class's friend function:
+// to declare the class's friend functions:
 template<class T>
-PolynomialGeneric<T> operator* (const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+PolynomialGeneric<T> operator*(const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator+(const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator-(const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
+
+
 // and its friend << operator:
 template<class T>
 std::ostream& operator<<(std::ostream& output, const PolynomialGeneric<T>& q);
@@ -111,7 +119,14 @@ public:
     PolynomialGeneric<T> operator-() const throw (PolynomialException);
     PolynomialGeneric<T> operator*(const T& sc) const throw (PolynomialException);
     PolynomialGeneric<T>& operator*=(const T& sc);
+    PolynomialGeneric<T> operator+(const T& sc) const throw (PolynomialException);
+    PolynomialGeneric<T>& operator+=(const T& sc);
+    PolynomialGeneric<T> operator-(const T& sc) const throw (PolynomialException);
+    PolynomialGeneric<T>& operator-=(const T& sc);
+
     friend PolynomialGeneric<T> (math::operator* <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+    friend PolynomialGeneric<T> (math::operator+ <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+    friend PolynomialGeneric<T> (math::operator- <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
 
 
     // TODO roots()

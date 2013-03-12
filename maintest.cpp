@@ -557,6 +557,14 @@ void polynomialTest()
 
         cout << "0.3 * p(x) = " << p*0.3f << endl;
         cout << "0.5 * q(x) = " << 0.5f*q << endl;
+        cout << "p(x) + 2 = " << p+2.0f << endl;
+        cout << "2 + p(x) = " << 2.0f+p << endl;
+        cout << "q(x) - 3 = " << q-3.0f << endl;
+        cout << "4 - q(x) = " << 4.0f-q << endl;
+        p +=10.0f;
+        cout << "p(x) + 10 = " << p << endl;
+        p -= 10.0f;
+        cout << "p(x) + 10 - 10 = " << p << endl;
 
         cout << "p(x)' = " << p.deriv() << endl;
         FPolynomial qint = q.integ();
@@ -707,11 +715,11 @@ void curveFittingTest()
 
         /*
              Example from: http://en.wikipedia.org/wiki/Newton_polynomial#Example
-             
+
              y=tan(x) for x=-1.5, -0.75, 0, 0.75, 1.5
-         
-             This time, 3rd degree regression and the same degree interpolation 
-             polynomial (as this is an odd function, all its even coefficients 
+
+             This time, 3rd degree regression and the same degree interpolation
+             polynomial (as this is an odd function, all its even coefficients
              equal 0) are compared.
          */
         FPolynomialInterpolation fpitan;
@@ -735,7 +743,7 @@ void curveFittingTest()
 
         /*
              Finally compare 5th degree interpolation and regression polynomials
-             for the points from the first test: 
+             for the points from the first test:
          */
         FPolynomialRegression fprexp5;
         FPolynomialInterpolation fpiexp;
