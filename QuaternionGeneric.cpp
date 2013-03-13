@@ -236,33 +236,15 @@ void math::QuaternionGeneric<T>::display(std::ostream& str) const
     // output he first component ('1')
     str << quat_o;
 
-    /*
-        For the other components, display '+' if the component is positive (or zero).
-        If the component's value is negative, '-' will be displayed automatically.
-        After the numeric value append the component's name ('i', 'j' or 'k').
-    */
+    // For the other components, display each component's sign
+    
+    str << std::showpos;
 
-    // Start with 'i':
-    if ( quat_i >= math::NumericUtil<T>::ZERO )
-    {
-        str << '+';
-    }
     str << quat_i << 'i';
-
-    // do the same for 'j':
-    if ( quat_j >= math::NumericUtil<T>::ZERO )
-    {
-        str << '+';
-    }
     str << quat_j << 'j';
-
-    // and finally the same for 'k':
-    if ( quat_k >= math::NumericUtil<T>::ZERO )
-    {
-        str << '+';
-    }
     str << quat_k << 'k';
 
+    str << std::noshowpos;
     // finish with a closing bracket
     str << ')';
 }

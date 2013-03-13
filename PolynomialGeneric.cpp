@@ -1219,18 +1219,16 @@ void math::PolynomialGeneric<T>::display(char arg, std::ostream& str) const
         if ( i>0 )
         {
             str << ' ';
-        }
-
-        /*
-            If the coefficient is negative, '-' will be displayed automatically.
-            This is not true for '+' that must must be displayed explicitly.
-        */
-        if ( i>0 && coef.at(i)>=0 )
-        {
-            str << '+';
+            
+            /*
+              Display signs of all coefficients except of the first one
+              (if it is positive).
+            */
+            str << std::showpos;
         }
 
         str << coef.at(i);
+        str << std::noshowpos;
 
         // Display '*' between a coefficient and a variable (not necessary for i=0)
         if ( i>0 )
