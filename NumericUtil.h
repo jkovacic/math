@@ -54,6 +54,9 @@ public:
     // Get or set the internal value of 'eps'
     static T getEPS();
     static void setEPS(const T& eps);
+    
+    // Efficient calculation of base^n:
+    static T power(const T& base, unsigned int n);
 };
 
 // Declaration of specialized methods inside the name space declaration
