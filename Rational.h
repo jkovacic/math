@@ -30,6 +30,7 @@ i.e. reduced fractions of two integers
 #include "RationalException.h"
 
 #include <iostream>
+#include <string>
 
 namespace math
 {
@@ -45,12 +46,24 @@ class Rational
     friend std::ostream& operator<<(std::ostream& output, const Rational& fraction);
 
 private:
+    // Some constants (their values must be assigned outside the class declaration)
+    // for checking of integer ranges
+    static const unsigned int  UINT_MAX;
+    static const int INT_MAX;
+    static const int INT_MIN;
+    static const unsigned long int ULONGINT_MAX;
+    static const long int LONGINT_MAX;
+    static const long int LONGINT_MIN;
+
+private:
     int num;                /// fraction's numerator
     unsigned int denom;     /// fraction's denominator (will be always assigned a positive value, cannot be 0)
 
 public:
     //Constructor, assigns fraction's numerator and denominator
     Rational(int numerator = 0, int denominator = 1) throw(RationalException);
+    // Constructor from a string
+    Rational(const std::string& str, unsigned int repSeqLen=0) throw (RationalException);
     // Copy constructor
     Rational(const Rational& orig);
     // Destructor
@@ -62,6 +75,8 @@ public:
     unsigned int getDenominator() const;
     // Assigns fraction's numerator and denominator and simplifies the fraction
     Rational& set(int numerator = 0, int denominator = 1) throw(RationalException);
+    // Parses the fraction from its decimal representation
+    Rational& set(const std::string& str, unsigned int repSeqLen=0) throw (RationalException);
 
     // Outputs the fraction to std::cout, optionally multiplies both members by a factor
     void display(int factor = 1, std::ostream& str = std::cout) const;
@@ -114,7 +129,7 @@ public:
 
     // The following two functions are public and static as they
     // may also be useful elsewhere:
-    
+
     //  The greatest common divisor of two integer values
     static unsigned int greatestCommonDivisor(unsigned int first, unsigned int second);
     // The least common multiple of two integer values
@@ -130,6 +145,10 @@ private:
     static unsigned int absolute(int a);
     static int auxSum(int num1, int denom2, int num2, int denom1) throw(RationalException);
     static int auxProd(int factor1, int factor2) throw(RationalException);
+    // 10^n
+    static unsigned long int pow10(unsigned int n) throw (RationalException);
+    // parses a string into a long long value
+    static long long int str2ll(const std::string& str) throw (RationalException);
 };
 
 } // namespace math

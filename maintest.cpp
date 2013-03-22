@@ -54,6 +54,17 @@ void rationalTest()
 {
     try
     {
+        // Parsing test
+        Rational s("-12");
+        cout << "s = -12 = " << s << "\texpected -12/1" << endl;
+        s.set("34.824");
+        cout << "s = 34.824 = " << s << "\texpected 4353/125" << endl;
+        s.set("-4.285714", 6);
+        cout << "s = -4.|285714 = " << s << "\texpected -30/7" << endl;
+        s.set("3,5167", 3);
+        cout << "s = 3.5|167 = " << s << "\texpected 17566/4995" << endl;
+        cout << endl;
+        
         // Constructor test:
 
         Rational a(15, 20);
@@ -852,7 +863,6 @@ void intExponentiaorTest()
  */
 int main(int argc, const char* argv[])
 {
-
     cout << "Q U A T E R N I O N   T E S T" << endl << endl;
     quaternionTest();
 
@@ -876,6 +886,6 @@ int main(int argc, const char* argv[])
     
     cout << endl << "I N T E X P O N E N T I A T O R   T E S T" << endl << endl;
     intExponentiaorTest();
-    
+ 
     return 0;
 }

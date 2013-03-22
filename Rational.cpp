@@ -27,7 +27,16 @@ limitations under the License.
 #include "Rational.h"
 
 #include <limits>
+#include <cstdio>
+#include <new>
 
+// definition of class constants
+const unsigned int  math::Rational::UINT_MAX (std::numeric_limits<unsigned int>::max() );
+const int math::Rational::INT_MAX (std::numeric_limits<int>::max() );
+const int math::Rational::INT_MIN (std::numeric_limits<int>::min() );
+const unsigned long int math::Rational::ULONGINT_MAX (std::numeric_limits<unsigned long int>::max() );
+const long int math::Rational::LONGINT_MAX (std::numeric_limits<long int>::max() );
+const long int math::Rational::LONGINT_MIN (std::numeric_limits<long int>::min() );
 
 /**
  * Constructor.
@@ -57,6 +66,23 @@ math::Rational::Rational(int numerator, int denominator) throw(math::RationalExc
     // It will throw a RationalException if the denominator
     // is attempted to be set to 0
     set(numerator, denominator);
+}
+
+/**
+ * Constructor from a decimal representation in a string.
+ *
+ * @see set(std::string, unsigned int) for more details.
+ * 
+ * @param str - decimal representation of a fraction
+ * @param repSeqLen - length of the repeating sequence if applicable (default: 0)
+ *
+ * @throw RationalException if input argument is invalid
+ */
+math::Rational::Rational(const std::string& str, unsigned int repSeqLen) throw (math::RationalException)
+{
+    // Just call a function that actually sets both members.
+    // It will throw a RationalException if 'str' is invalid etc.
+    set(str, repSeqLen);
 }
 
 /**
@@ -103,7 +129,7 @@ unsigned int math::Rational::getDenominator() const
 }
 
 /**
- * Sets the fractions numerator and denominator.
+ * Sets the fraction's numerator and denominator.
  * It will also check if the denominator is zero (this is not permitted and
  * will throw an exception), it will reduce the fraction (divide the numerator
  * and denominator by their greatest common divisor) and make sure the denominator
@@ -149,6 +175,167 @@ math::Rational& math::Rational::set(int numerator, int denominator) throw(math::
 
     return *this;
 } // Rational::set
+
+/**
+ * Parses a string with a decimal number into a fraction.
+ * 
+ * Each rational number can be represented by a decimal number, either with a
+ * finite number of digits or ending with a finite length repeating sequence of digits.
+ *
+ * @note Only decimal system is supported. The string may start with a sign
+ *       ('+' or '-'), it may contain no more than one decimal point (either '.' or ','),
+ *       all other characters must be decimal digits (from '0' to '9'). Scientific
+ *       and engineering formats are not supported. Any separators of thousands
+ *       in the integer part are also not allowed. Additionally, 'repSeqLen' must not
+ *       include the decimal point, in other words, the whole repeating sequence
+ *       must comprise the fractional part only.
+ *   
+ *                       __
+ * For instance, for 12.345 (45 is the repeating sequence), enter:
+ *   set("12.345", 2) 
+ * 
+ * @param str - string to be parsed
+ * @param repSeqLen - length of the repeating sequence if applicable (default: 0)
+ *
+ * @return reference to itself
+ *
+ * @throw RationalException if input argument is invalid
+ */
+math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqLen) throw (math::RationalException)
+{
+    const unsigned int LEN = str.length();
+    unsigned int decPoint = LEN; // position of the decimal point. LEN represents no decimal point.
+    bool hasDigits = false; // does the string contain at least one decimal digit
+
+    // Check if 'str' is a proper decimal representation
+    for ( unsigned int i=0; i<LEN; i++ )
+    {
+        const char ch = str.at(i);
+        
+        if ('+' == ch || '-' == ch)
+        {
+            // the first (and only the first) character may be a sign
+            if ( i>0 )
+            {
+                throw math::RationalException(math::RationalException::INVALID_INPUT);
+            }
+        }
+        else if ( '.' == ch || ',' == ch )
+        {
+            // only one decimal point is allowed
+            if ( decPoint < LEN )
+            {
+                // if less than LEN, a decimal point already exists
+                throw math::RationalException(math::RationalException::INVALID_INPUT);
+            }
+
+            decPoint = i;
+        }
+        else if ( ch>='0' && ch <='9' )
+        {
+            // at least one digit found
+            hasDigits = true;
+        }
+        else
+        {
+            // an invalid character
+            throw math::RationalException(math::RationalException::INVALID_INPUT);
+        }
+    } // for i
+
+    if ( false==hasDigits || (decPoint<LEN && repSeqLen>(LEN-decPoint-1)) )
+    {
+        throw math::RationalException(math::RationalException::INVALID_INPUT);
+    }
+
+    // the string does represent a decimal number, parse it
+    try
+    {
+        // Note: if RationalException is thrown by str2ll or pow10, it will not be
+        // caught by this try, instead it will be thrown to the caller. 
+        
+        std::string buf = str;
+        
+        /*
+         * Temporary terms are declared as longer integers than supported.
+         * This still allows the possibility that their difference will
+         * probably still be within supported ranges. Of course the differences'
+         * values are carefully checked and casted to integers of appropriate length
+         * prior to passing them to set(int, unsigned int).
+         * 
+         * Sensible default values are also assigned to the temporary variables.
+         */
+        long long int num1 = 0LL;
+        long long int num2 = 0LL;
+        unsigned int den1 = 1;
+        unsigned int den2 = 0;
+
+        if ( 0 == repSeqLen )
+        {
+            /*
+             * No repeating sequence.
+             * In that case, simply "multiply" the number by a power of 10
+             * (i.e. remove the decimal point from the string) and set the 
+             * denominator to that power of 10.
+             */
+            if ( LEN != decPoint )
+            {
+                buf.erase(decPoint, 1);
+            }
+
+            num1 = str2ll(buf);
+            den1 = ( LEN==decPoint ? 1 : pow10(LEN-decPoint-1) );
+        }
+        else
+        {
+            /*
+             * Repeating sequence.
+             * "Multiply" the number (denoted by x) by a power of 10 (10^n) to 
+             * eliminate the decimal point and also include one repeating sequence.
+             * Then remove the repeating sequence which is equal to multiplying
+             * the original number by 10^(n-repSeqLen). When the second product is
+             * subtracted from the first one, all repeating sequences except one are
+             * eliminated and the fraction can be simply set.
+             * 
+             *                 ___
+             * Example: x = 3.5167
+             *                           ___
+             *          10^4 * x = 35167.167
+             *                      ___
+             *          10 * x = 35.167
+             * 
+             *     (10^4-10)*x = (35167-35)
+             * 
+             *                   35132
+             *              x = -------
+             *                   9990   
+             */
+            buf.erase(decPoint, 1);
+            num1 = str2ll(buf);
+            buf.erase(LEN-1-repSeqLen, repSeqLen);
+            num2 = str2ll(buf);  
+            
+            den1 = pow10(LEN-1-decPoint);
+            den2 = pow10(LEN-1-decPoint-repSeqLen);
+        }
+        
+        const long long int dnum = num1 - num2;
+        const unsigned long int dden = den1 - den2;
+
+        if ( dnum<INT_MIN || dnum>INT_MAX || dden>UINT_MAX )
+        {
+            throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
+        }
+
+        set(static_cast<int>(dnum), static_cast<unsigned int>(dden));
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::RationalException(math::RationalException::OUT_OF_MEMORY);
+    }
+
+    return *this;
+}
 
 /**
  * Outputs the fraction to stdout in form 'num/den'
@@ -898,8 +1085,7 @@ int math::Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(mat
 {
     const long int sum = num1 * denom2 + num2 * denom1;
 
-    if ( sum > std::numeric_limits<int>::max() ||
-         sum < std::numeric_limits<int>::min() )
+    if ( sum > INT_MAX || sum < INT_MIN )
     {
         throw math::RationalException(math::RationalException::OVERFLOW);
     }
@@ -922,13 +1108,73 @@ int math::Rational::auxProd(int first, int second) throw(math::RationalException
 {
     const long int prod = first * second;
 
-    if ( prod > std::numeric_limits<int>::max() ||
-         prod < std::numeric_limits<int>::min() )
+    if ( prod > INT_MAX || prod < INT_MIN )
     {
         throw math::RationalException(math::RationalException::OVERFLOW);
     }
 
     return static_cast<int>(prod);
+}
+
+/*
+ * Positive integer power of 10. Additionally, the result's range is checked
+ * to prevent an overflow.
+ *
+ * @param n - exponent (a positive integer number)
+ *
+ * @return 10^n
+ * 
+ * @throw RationalException if the result exceeds unsigned long's range
+ */
+unsigned long int math::Rational::pow10(unsigned int n) throw (math::RationalException)
+{
+    // simply multiply 10 by itself n times
+    unsigned long long int temp = 1;
+    for ( unsigned int i=0; i<n; i++ )
+    {
+        temp *= 10;
+        if ( temp>ULONGINT_MAX )
+        {
+            throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
+        }
+    }
+
+    return static_cast<unsigned long int>(temp);
+}
+
+/*
+ * Parses a string into a long long integer value and also prevents
+ * an integer overflow
+ * 
+ * @param str - string to be parsed
+ * 
+ * @return long long value of 'str'
+ * 
+ * @throw RationalException if absolute value of 'str' exceeds long long's range
+ */
+long long int math::Rational::str2ll(const std::string& str) throw (math::RationalException)
+{
+    // sanity check already performed by the caller function
+    
+    unsigned int lmax = std::numeric_limits<long long int>::digits10;
+    if ( '+'==str.at(0) || '-'==str.at(0) )
+    {
+        // if the string starts with a sign, the allowed number
+        // of string's characters may be increased by 1.
+        lmax++;
+    }
+
+    if ( str.length()>lmax )
+    {
+        throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
+    }
+
+    // std::atoll from <cstdlib> would be a more elegant option, however
+    // it may not be supported by older compilers not supporting C++11
+
+    long long int retVal = 0LL;
+    std::sscanf(str.c_str(), "%lld", &retVal);
+    return retVal;
 }
 
 /**

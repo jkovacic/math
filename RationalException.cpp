@@ -58,6 +58,15 @@ void math::RationalException::display(std::ostream& str) const
         case OVERFLOW:
             str << "Operation caused an integer overflow.";
             break;
+        case INVALID_INPUT:
+            str << "Invalid input argument.";
+            break;
+        case INPUT_OUT_OF_RANGE:
+            str << "Input argument out of range.";
+            break;
+        case OUT_OF_MEMORY:
+            str << "Allocation of memory failed.";
+            break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and
