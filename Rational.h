@@ -45,15 +45,6 @@ class Rational
     // a friend function to overload the operator << (used by std::cout and std::cerr)
     friend std::ostream& operator<<(std::ostream& output, const Rational& fraction);
 
-private:
-    // Some constants (their values must be assigned outside the class declaration)
-    // for checking of integer ranges
-    static const unsigned int  UINT_MAX;
-    static const int INT_MAX;
-    static const int INT_MIN;
-    static const unsigned long int ULONGINT_MAX;
-    static const long int LONGINT_MAX;
-    static const long int LONGINT_MIN;
 
 private:
     int num;                /// fraction's numerator

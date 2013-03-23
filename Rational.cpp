@@ -26,17 +26,11 @@ limitations under the License.
 
 #include "Rational.h"
 
+#include <climits>
 #include <limits>
 #include <cstdio>
 #include <new>
 
-// definition of class constants
-const unsigned int  math::Rational::UINT_MAX (std::numeric_limits<unsigned int>::max() );
-const int math::Rational::INT_MAX (std::numeric_limits<int>::max() );
-const int math::Rational::INT_MIN (std::numeric_limits<int>::min() );
-const unsigned long int math::Rational::ULONGINT_MAX (std::numeric_limits<unsigned long int>::max() );
-const long int math::Rational::LONGINT_MAX (std::numeric_limits<long int>::max() );
-const long int math::Rational::LONGINT_MIN (std::numeric_limits<long int>::min() );
 
 /**
  * Constructor.
@@ -1027,6 +1021,8 @@ unsigned int math::Rational::leastCommonMultiple(unsigned int first, unsigned in
 
     // so it's safe to divide
     return (first*second)/gcd;
+    
+    //TODO check ranges
 } // Rational::leastCommonMultiple
 
 /*
@@ -1133,7 +1129,7 @@ unsigned long int math::Rational::pow10(unsigned int n) throw (math::RationalExc
     for ( unsigned int i=0; i<n; i++ )
     {
         temp *= 10;
-        if ( temp>ULONGINT_MAX )
+        if ( temp>ULONG_MAX )
         {
             throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
         }

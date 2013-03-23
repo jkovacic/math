@@ -293,12 +293,10 @@ T math::NumericUtil<T>::power(const T& base, unsigned int n)
     T factor = base;
     
     // Obtain coefficients ai from the exponent's binary form.
-    // Note: "i>>=1" is a bitwise equivalent bitwise equivalent of "i/=2"
-    for ( unsigned int i=n; i>0; i>>=1 )
+    for ( unsigned int i=n; i>0; i/=2 )
     {
         // Check the coefficient ai (no need to multiply retVal by 1 if ai is 0)
-        // Note: "i&1" is a bitwise equivalent of "i%2"
-        if ( 0!=(i & static_cast<unsigned int>(1) ) )
+        if ( 0!=(i%2) )
         {
             retVal *= factor;
         }
