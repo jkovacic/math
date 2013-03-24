@@ -289,14 +289,20 @@ T math::NumericUtil<T>::power(const T& base, unsigned int n)
      * division by 2 
      */
     
+    // Note: it is safe to use bitwise operators for arithmetic operations 
+    // on unsigned int values as they do not depend on endianess:
+    // http://stackoverflow.com/questions/7184789/does-bit-shift-depends-on-endianness
+    
     T retVal = math::getunit::getUnit(base);
     T factor = base;
     
     // Obtain coefficients ai from the exponent's binary form.
-    for ( unsigned int i=n; i>0; i/=2 )
+    // Note: "i>>=1" is a bitwise equivalent bitwise equivalent of "i/=2"
+    for ( unsigned int i=n; i>0; i>>=1 )
     {
         // Check the coefficient ai (no need to multiply retVal by 1 if ai is 0)
-        if ( 0!=(i%2) )
+        // Note: "i&1" is a bitwise equivalent of "i%2"
+        if ( 0!=(i & static_cast<unsigned int>(1) ) )
         {
             retVal *= factor;
         }
