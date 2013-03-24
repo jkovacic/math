@@ -47,12 +47,12 @@ class Rational
 
 
 private:
-    int num;                /// fraction's numerator
-    unsigned int denom;     /// fraction's denominator (will be always assigned a positive value, cannot be 0)
+    long int num;                /// fraction's numerator
+    unsigned long int denom;     /// fraction's denominator (will be always assigned a positive value, cannot be 0)
 
 public:
     //Constructor, assigns fraction's numerator and denominator
-    Rational(int numerator = 0, int denominator = 1) throw(RationalException);
+    Rational(long int numerator = 0L, long int denominator = 1L) throw(RationalException);
     // Constructor from a string
     Rational(const std::string& str, unsigned int repSeqLen=0) throw (RationalException);
     // Copy constructor
@@ -61,16 +61,16 @@ public:
     ~Rational();
 
     // Returns simplified fraction's numerator
-    int getNumerator() const;
+    long int getNumerator() const;
     // Returns simplified fraction's denominator
-    unsigned int getDenominator() const;
+    unsigned long int getDenominator() const;
     // Assigns fraction's numerator and denominator and simplifies the fraction
-    Rational& set(int numerator = 0, int denominator = 1) throw(RationalException);
+    Rational& set(long int numerator = 0L, long int denominator = 1L) throw(RationalException);
     // Parses the fraction from its decimal representation
     Rational& set(const std::string& str, unsigned int repSeqLen=0) throw (RationalException);
 
     // Outputs the fraction to std::cout, optionally multiplies both members by a factor
-    void display(int factor = 1, std::ostream& str = std::cout) const;
+    void display(long int factor = 1L, std::ostream& str = std::cout) const;
     // Converts the fraction into its float value
     float toFloat() const;
     // Converts the fraction into its double value
@@ -122,22 +122,22 @@ public:
     // may also be useful elsewhere:
 
     //  The greatest common divisor of two integer values
-    static unsigned int greatestCommonDivisor(unsigned int first, unsigned int second);
+    static unsigned long int greatestCommonDivisor(unsigned long int first, unsigned long int second);
     // The least common multiple of two integer values
-    static unsigned int leastCommonMultiple(unsigned int first, unsigned int second);
+    static unsigned long int leastCommonMultiple(unsigned long int first, unsigned long int second);
 
 private:
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
     void reduce();
     // Auxiliary function that calculates unreduced numerator of difference of two fraction
     // Only its sign actually matters, so it returns -1, 0 or 1
-    int sign(const Rational& fraction) const;
+    short int sign(const Rational& fraction) const;
     // Absolute value of an integer (just an auxiliary function for others)
-    static unsigned int absolute(int a);
-    static int auxSum(int num1, int denom2, int num2, int denom1) throw(RationalException);
-    static int auxProd(int factor1, int factor2) throw(RationalException);
+    static unsigned long int absolute(long int a);
+    static long int auxSum(long int num1, long int denom2, long int num2, long int denom1) throw(RationalException);
+    static long int auxProd(long int factor1, long int factor2) throw(RationalException);
     // 10^n
-    static unsigned long int pow10(unsigned int n) throw (RationalException);
+    static unsigned long long int pow10(unsigned int n) throw (RationalException);
     // parses a string into a long long value
     static long long int str2ll(const std::string& str) throw (RationalException);
 };

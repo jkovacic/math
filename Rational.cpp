@@ -16,12 +16,12 @@ limitations under the License.
 
 
 /**
-* @file Rational.cpp
-*
-* Implementation of the class Rational
-*
-* @author Jernej Kovacic
-*/
+ * @file Rational.cpp
+ *
+ * Implementation of the class Rational
+ *
+ * @author Jernej Kovacic
+ */
 
 
 #include "Rational.h"
@@ -54,7 +54,7 @@ limitations under the License.
  *
  * @see set
  */
-math::Rational::Rational(int numerator, int denominator) throw(math::RationalException)
+math::Rational::Rational(long int numerator, long int denominator) throw(math::RationalException)
 {
     // Just call a function that actually sets both members.
     // It will throw a RationalException if the denominator
@@ -66,7 +66,7 @@ math::Rational::Rational(int numerator, int denominator) throw(math::RationalExc
  * Constructor from a decimal representation in a string.
  *
  * @see set(std::string, unsigned int) for more details.
- * 
+ *
  * @param str - decimal representation of a fraction
  * @param repSeqLen - length of the repeating sequence if applicable (default: 0)
  *
@@ -103,7 +103,7 @@ math::Rational::Rational(const math::Rational& orig) : num(orig.num), denom(orig
  *
  * @see set
  */
-int math::Rational::getNumerator() const
+long int math::Rational::getNumerator() const
 {
     return this->num;
 }
@@ -117,7 +117,7 @@ int math::Rational::getNumerator() const
  *
  * @see set
  */
-unsigned int math::Rational::getDenominator() const
+unsigned long int math::Rational::getDenominator() const
 {
     return this->denom;
 }
@@ -140,7 +140,7 @@ unsigned int math::Rational::getDenominator() const
  *
  * @throw RationalException when attempting to set a zero denominator
  */
-math::Rational& math::Rational::set(int numerator, int denominator) throw(math::RationalException)
+math::Rational& math::Rational::set(long int numerator, long int denominator) throw(math::RationalException)
 {
     // Check for zero denominator
     if ( 0 == denominator )
@@ -172,7 +172,7 @@ math::Rational& math::Rational::set(int numerator, int denominator) throw(math::
 
 /**
  * Parses a string with a decimal number into a fraction.
- * 
+ *
  * Each rational number can be represented by a decimal number, either with a
  * finite number of digits or ending with a finite length repeating sequence of digits.
  *
@@ -183,11 +183,11 @@ math::Rational& math::Rational::set(int numerator, int denominator) throw(math::
  *       in the integer part are also not allowed. Additionally, 'repSeqLen' must not
  *       include the decimal point, in other words, the whole repeating sequence
  *       must comprise the fractional part only.
- *   
+ *
  *                       __
  * For instance, for 12.345 (45 is the repeating sequence), enter:
- *   set("12.345", 2) 
- * 
+ *   set("12.345", 2)
+ *
  * @param str - string to be parsed
  * @param repSeqLen - length of the repeating sequence if applicable (default: 0)
  *
@@ -197,6 +197,12 @@ math::Rational& math::Rational::set(int numerator, int denominator) throw(math::
  */
 math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqLen) throw (math::RationalException)
 {
+    // 'str' must not be too long
+    if ( str.length()>UINT_MAX )
+    {
+        throw math::RationalException(math::RationalException::INVALID_INPUT);
+    }
+
     const unsigned int LEN = str.length();
     unsigned int decPoint = LEN; // position of the decimal point. LEN represents no decimal point.
     bool hasDigits = false; // does the string contain at least one decimal digit
@@ -205,7 +211,7 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
     for ( unsigned int i=0; i<LEN; i++ )
     {
         const char ch = str.at(i);
-        
+
         if ('+' == ch || '-' == ch)
         {
             // the first (and only the first) character may be a sign
@@ -246,30 +252,30 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
     try
     {
         // Note: if RationalException is thrown by str2ll or pow10, it will not be
-        // caught by this try, instead it will be thrown to the caller. 
-        
+        // caught by this try, instead it will be thrown to the caller.
+
         std::string buf = str;
-        
+
         /*
          * Temporary terms are declared as longer integers than supported.
          * This still allows the possibility that their difference will
          * probably still be within supported ranges. Of course the differences'
          * values are carefully checked and casted to integers of appropriate length
          * prior to passing them to set(int, unsigned int).
-         * 
+         *
          * Sensible default values are also assigned to the temporary variables.
          */
         long long int num1 = 0LL;
         long long int num2 = 0LL;
-        unsigned int den1 = 1;
-        unsigned int den2 = 0;
+        unsigned long long int den1 = 1L;
+        unsigned long long int den2 = 0L;
 
         if ( 0 == repSeqLen )
         {
             /*
              * No repeating sequence.
              * In that case, simply "multiply" the number by a power of 10
-             * (i.e. remove the decimal point from the string) and set the 
+             * (i.e. remove the decimal point from the string) and set the
              * denominator to that power of 10.
              */
             if ( LEN != decPoint )
@@ -284,44 +290,52 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
         {
             /*
              * Repeating sequence.
-             * "Multiply" the number (denoted by x) by a power of 10 (10^n) to 
+             * "Multiply" the number (denoted by x) by a power of 10 (10^n) to
              * eliminate the decimal point and also include one repeating sequence.
              * Then remove the repeating sequence which is equal to multiplying
              * the original number by 10^(n-repSeqLen). When the second product is
              * subtracted from the first one, all repeating sequences except one are
              * eliminated and the fraction can be simply set.
-             * 
+             *
              *                 ___
              * Example: x = 3.5167
              *                           ___
              *          10^4 * x = 35167.167
              *                      ___
              *          10 * x = 35.167
-             * 
+             *
              *     (10^4-10)*x = (35167-35)
-             * 
+             *
              *                   35132
              *              x = -------
-             *                   9990   
+             *                   9990
              */
             buf.erase(decPoint, 1);
             num1 = str2ll(buf);
             buf.erase(LEN-1-repSeqLen, repSeqLen);
-            num2 = str2ll(buf);  
-            
+            num2 = str2ll(buf);
+
             den1 = pow10(LEN-1-decPoint);
             den2 = pow10(LEN-1-decPoint-repSeqLen);
         }
-        
-        const long long int dnum = num1 - num2;
-        const unsigned long int dden = den1 - den2;
 
-        if ( dnum<INT_MIN || dnum>INT_MAX || dden>UINT_MAX )
+        /*
+         * Make sure, differences will not exceed long long's ranges.
+         * Note that 'num1' and 'num2' always have the same signs and that
+         * 'num1' is always greater than 'num2' by their absolute values.
+         * The same also applies for 'den1' and 'den2'
+         * From these facts it is not difficult to conclude, that differences cannot
+         * exceed ranges of (unsigned) long long.
+         */
+        const long long int dnum = num1 - num2;
+        const unsigned long long int dden = den1 - den2;
+
+        if ( dnum<LONG_MIN || dnum>LONG_MAX || dden>UINT_MAX )
         {
             throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
         }
 
-        set(static_cast<int>(dnum), static_cast<unsigned int>(dden));
+        set(static_cast<long int>(dnum), static_cast<unsigned long int>(dden));
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -336,8 +350,10 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
  *
  * @param factor (default: 1): optional, if set, both members will be multiplied by it
  * @param str (default cout): output stream, the fraction will be displayed
+ *
+ * @note There is no check whether multiplied members exceed integer range.
  */
-void math::Rational::display(int factor, std::ostream& str) const
+void math::Rational::display(long int factor, std::ostream& str) const
 {
     str << num*factor << '/' << denom*factor;
 }
@@ -507,8 +523,8 @@ math::Rational math::Rational::operator+(const math::Rational& frac) const throw
     // not checked right now.
 
     // Just construct an unreduced fraction as shown above:
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -538,8 +554,8 @@ math::Rational& math::Rational::operator+=(const math::Rational& frac) throw(mat
     // See definition of fraction addition in operator+()
     // Result will be assigned to itself so use set
 
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -576,8 +592,8 @@ math::Rational math::Rational::operator-(const math::Rational& frac) const throw
     // both fractions are valid which always results in a valid difference, so
     // no check is necessary.
 
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -610,8 +626,8 @@ math::Rational& math::Rational::operator-=(const math::Rational& frac) throw(mat
     // See definition of fraction subtraction in operator-
     // Result will be assigned to itself so use set().
 
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -648,8 +664,8 @@ math::Rational math::Rational::operator*(const math::Rational& frac) const throw
     // Multiplication of two valid fractions always results in a valid
     // fraction, so no need for further checks.
 
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -679,8 +695,8 @@ math::Rational& math::Rational::operator*=(const math::Rational& frac) throw(mat
     // See definition of fraction multiplication in operator*.
     // Result will be assigned to itself so use set().
 
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -722,8 +738,8 @@ math::Rational math::Rational::operator/(const math::Rational& frac) const throw
         throw math::RationalException(RationalException::DIVIDE_BY_ZERO);
     }
 
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -760,8 +776,8 @@ math::Rational& math::Rational::operator/=(const math::Rational& frac) throw(mat
     }
 
     // Result will be assigned to itself so use set()
-    int numerator;
-    int denominator;
+    long int numerator;
+    long int denominator;
 
     try
     {
@@ -933,15 +949,15 @@ void math::Rational::reduce()
 
     // The GCD algorithm requires both integers to be positive.
     // The numerator is allowed to be negative, so get its absolute value.
-    const unsigned int absNum = absolute(num);  // absolute value of num
+    const unsigned long int absNum = absolute(num);  // absolute value of num
 
     // finally obtain the greatest common divisor...
-    const unsigned int gcd = greatestCommonDivisor(absNum, denom);
+    const unsigned long int gcd = greatestCommonDivisor(absNum, denom);
 
     // ... and divide both members by it.
     // if both num (handled a few lines above)and denom (not permitted when setting)
     // are different than 0, the GCD is guaranteed to be a non-zero value
-    num /= static_cast<int>(gcd);
+    num /= static_cast<long int>(gcd);
     denom /= gcd;
 } // Rational::reduce
 
@@ -951,7 +967,7 @@ void math::Rational::reduce()
  * @param a
  * @return absolute value of a
  */
-unsigned int math::Rational::absolute(int a)
+unsigned long int math::Rational::absolute(long int a)
 {
     return ( a>=0 ? a : -a );
 }
@@ -964,24 +980,25 @@ unsigned int math::Rational::absolute(int a)
  *
  * @return zero if any of the two input parameters equals zero, GCD otherwise
  */
-unsigned int math::Rational::greatestCommonDivisor(unsigned int first, unsigned int second)
+unsigned long int math::Rational::greatestCommonDivisor(unsigned long int first, unsigned long int second)
 {
-    // A well known Euclidean algorithm is utilized to find the greatest common divisor.
-    // It is known to be efficient, more details about it are available, for instance,
-    // at http://en.wikipedia.org/wiki/Euclidean_algorithm
-
+    /*
+     * The well known Euclidean algorithm is utilized to find the greatest common divisor.
+     * It is known to be efficient, more details about it are available, for instance,
+     * at http://en.wikipedia.org/wiki/Euclidean_algorithm
+     */
 
     // If any of both arguments is 0, the algorithm may "end up" in an infinite loop
-    // or division by zero can occur. In such a case return 0 immediately.
+    // or division by zero can occur. In such a case, return 0 immediately.
     if ( 0 == first || 0 == second )
     {
         return 0;
     }
 
     // Now it is guaranteed to converge towards the GCD (or 1)
-    unsigned int a = first;
-    unsigned int b = second;
-    unsigned int t;
+    unsigned long int a = first;
+    unsigned long int b = second;
+    unsigned long int t;
 
     while ( 0 != b )
     {
@@ -1002,12 +1019,14 @@ unsigned int math::Rational::greatestCommonDivisor(unsigned int first, unsigned 
  *
  * @return zero if any of the two input arguments equals zero, the LCM otherwise
  */
-unsigned int math::Rational::leastCommonMultiple(unsigned int first, unsigned int second)
+unsigned long int math::Rational::leastCommonMultiple(unsigned long int first, unsigned long int second)
 {
-    // The following mathematical relation can be proven easily:
-    // LCM(a,b) * GCD(a,b) = a * b
-    // So, knowing that an efficient algorithm for the GCD exists, the LCM can be derived:
-    // LCM(a,b) = (a*b)/GCD(a,b)
+    /*
+     * The following mathematical relation can be proven easily:
+     * LCM(a,b) * GCD(a,b) = a * b
+     * So, knowing that an efficient algorithm for the GCD exists, the LCM can be derived:
+     * LCM(a,b) = (a*b)/GCD(a,b)
+     */
 
     // If any of the two input values equals zero, neither GCD
     // nor LCM doesn't make any sense, return 0 in such cases
@@ -1017,12 +1036,14 @@ unsigned int math::Rational::leastCommonMultiple(unsigned int first, unsigned in
     }
 
     // At this point the GCD will be no less than 1, definitely not 0
-    const unsigned int gcd = greatestCommonDivisor(first, second);
+    const unsigned long int gcd = greatestCommonDivisor(first, second);
 
     // so it's safe to divide
-    return (first*second)/gcd;
-    
-    //TODO check ranges
+    const unsigned long long int retVal = first*second/gcd;
+
+    // ensure, that the LCM is not out of range
+    return ( retVal<ULONG_MAX ? retVal : 0 );
+
 } // Rational::leastCommonMultiple
 
 /*
@@ -1033,17 +1054,17 @@ unsigned int math::Rational::leastCommonMultiple(unsigned int first, unsigned in
  *
  * @return -1 if frac is greater, 0 if they are equal, 1 if this is greater
  */
-int math::Rational::sign(const math::Rational& frac) const
+short int math::Rational::sign(const math::Rational& frac) const
 {
     // One approach to compare two objects is to calculate their difference
     // and check its sign. As denominators are always positive, it is
     // sufficient to calculate just the numerator of the difference.
     // See operator- for definition of fraction difference.
 
-    int retVal = 0;
+    short int retVal = 0;
 
     // long prevents theoretically possible int overflow
-    const long int diff = this->num * frac.denom - frac.num * this->denom;
+    const long long int diff = this->num * frac.denom - frac.num * this->denom;
 
     if ( diff > 0 )
     {
@@ -1077,16 +1098,16 @@ int math::Rational::sign(const math::Rational& frac) const
  *
  * @throw RationalException in case of an integer overflow
  */
-int math::Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(math::RationalException)
+long int math::Rational::auxSum(long int num1, long int denom2, long int num2, long int denom1) throw(math::RationalException)
 {
-    const long int sum = num1 * denom2 + num2 * denom1;
+    const long long int sum = num1 * denom2 + num2 * denom1;
 
-    if ( sum > INT_MAX || sum < INT_MIN )
+    if ( sum > LONG_MAX || sum < LONG_MIN )
     {
         throw math::RationalException(math::RationalException::OVERFLOW);
     }
 
-    return static_cast<int>(sum);
+    return static_cast<long int>(sum);
 }
 
 /*
@@ -1100,16 +1121,16 @@ int math::Rational::auxSum(int num1, int denom2, int num2, int denom1) throw(mat
  *
  * @throw RationalException in case of an integer overflow
  */
-int math::Rational::auxProd(int first, int second) throw(math::RationalException)
+long int math::Rational::auxProd(long int first, long int second) throw(math::RationalException)
 {
-    const long int prod = first * second;
+    const long long int prod = first * second;
 
-    if ( prod > INT_MAX || prod < INT_MIN )
+    if ( prod > LONG_MAX || prod < LONG_MIN )
     {
         throw math::RationalException(math::RationalException::OVERFLOW);
     }
 
-    return static_cast<int>(prod);
+    return static_cast<long int>(prod);
 }
 
 /*
@@ -1119,39 +1140,45 @@ int math::Rational::auxProd(int first, int second) throw(math::RationalException
  * @param n - exponent (a positive integer number)
  *
  * @return 10^n
- * 
+ *
  * @throw RationalException if the result exceeds unsigned long's range
  */
-unsigned long int math::Rational::pow10(unsigned int n) throw (math::RationalException)
+unsigned long long int math::Rational::pow10(unsigned int n) throw (math::RationalException)
 {
+#define POW10_BASE      10LL
     // simply multiply 10 by itself n times
-    unsigned long long int temp = 1;
+    unsigned long long int temp = 1LL;
+    const unsigned long long int MAX_FACTOR = ULLONG_MAX / POW10_BASE;
+
     for ( unsigned int i=0; i<n; i++ )
     {
-        temp *= 10;
-        if ( temp>ULONG_MAX )
+        // prevent a possible integer overflow
+        if ( temp > MAX_FACTOR )
         {
             throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
         }
+
+        temp *= POW10_BASE;
     }
 
-    return static_cast<unsigned long int>(temp);
+    return temp;
+#undef POW10_BASE
 }
 
 /*
  * Parses a string into a long long integer value and also prevents
  * an integer overflow
- * 
+ *
  * @param str - string to be parsed
- * 
+ *
  * @return long long value of 'str'
- * 
+ *
  * @throw RationalException if absolute value of 'str' exceeds long long's range
  */
 long long int math::Rational::str2ll(const std::string& str) throw (math::RationalException)
 {
     // sanity check already performed by the caller function
-    
+
     unsigned int lmax = std::numeric_limits<long long int>::digits10;
     if ( '+'==str.at(0) || '-'==str.at(0) )
     {
