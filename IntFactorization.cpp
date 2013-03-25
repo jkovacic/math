@@ -287,46 +287,42 @@ unsigned long int math::IntFactorization::nextPrime(unsigned long int n) throw(m
  * Finds the highest integer that does not exceed sqrt(n).
  * If 'n' is a perfect int square, its exact square root will be returned.
  * 
- * @param n - integer input argument whose 2square root" will be calculated
+ * @param n - integer input argument whose "square root" will be calculated
  * 
  * @return floor(sqrt(n)) 
  */
 unsigned long int math::IntFactorization::intSqrt(unsigned long int n)
 {
-    if ( 0==n )
+    /*
+     * Integer square root can be efficiently calculated using the
+     * C. Woo's algorithm, described and implemented at:
+     * http://medialab.freaknet.org/martin/src/sqrt/
+     */
+    unsigned long int res = 0;
+    unsigned long int bit = 1L << (8*sizeof(unsigned long int)-2);
+    unsigned long sq = n;
+    
+    while ( bit > sq )
     {
-        return 0;
+        bit >>= 2;
     }
     
-    // To find a rough approximate of sqrt(n), determine the position
-    // of the most significant non-zero bit. When found, 
-    // shift ceil(max1/2) to right.
-    unsigned long int msb = 1;
-    unsigned short int max1 = 0;
-    
-    const unsigned int Nbits = 8*sizeof(unsigned long int);
-    for ( unsigned int i=1, msb=1; i<Nbits; i++, msb*=2 )
+    while ( bit != 0 ) 
     {
-        if ( 0!=(msb&n) )
+        if (sq >= res + bit) 
         {
-            max1 = i;
+            sq -= res + bit;
+            res = (res>>1) + bit;
         }
+        else
+        {
+            res >>= 1;
+        }
+        
+        bit >>= 2;
     }
-
-    // integer implementation of "ceil"
-    if ( 1 == (max1%2) )
-    {
-        max1++;
-    }
     
-    unsigned long int retVal = n >> (max1/2);
-    
-    // when the rough approximation is found, increase it as long its square
-    // does not exceed n:
-    for ( ; retVal*retVal<=n; retVal++ );
-    
-    // Note that retVal^2 exceeds n, so decrease it by 1:
-    return --retVal;
+    return res;
 }
 
 /**

@@ -37,12 +37,22 @@ struct IntFactorization
 {
 public:
     static bool isPrime(unsigned long int n);
+    
+    // greatest common divisor
     static unsigned long int gcd(unsigned long int first, unsigned long int second) throw(IntFactorizationException);
+    
+    // least common multiple
     static unsigned long int lcm(unsigned long int first, unsigned long int second) throw(IntFactorizationException);
+    
     static unsigned long int nextPrime(unsigned long int n) throw(IntFactorizationException);
-
+    
+    // the largest integer not exceeding sqrt(n)
     static unsigned long int intSqrt(unsigned long int n);
+    
+    // prime factorization
     static std::map<unsigned long int, unsigned int> factor(unsigned long int n) throw(IntFactorizationException);
+    
+    // list of all divisors of 'n'
     static std::set<unsigned long int> divisors(unsigned long int n) throw(IntFactorizationException);
 };
 
