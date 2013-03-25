@@ -35,8 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/IntFactorizationException.o \
 	${OBJECTDIR}/PolynomialException.o \
 	${OBJECTDIR}/QuaternionException.o \
+	${OBJECTDIR}/IntFactorization.o \
 	${OBJECTDIR}/LinearEquationSolverException.o \
 	${OBJECTDIR}/maintest.o \
 	${OBJECTDIR}/Rational.o \
@@ -69,6 +71,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/math.exe: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/math ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/IntFactorizationException.o: IntFactorizationException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/IntFactorizationException.o IntFactorizationException.cpp
+
 ${OBJECTDIR}/PolynomialException.o: PolynomialException.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -78,6 +85,11 @@ ${OBJECTDIR}/QuaternionException.o: QuaternionException.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/QuaternionException.o QuaternionException.cpp
+
+${OBJECTDIR}/IntFactorization.o: IntFactorization.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/IntFactorization.o IntFactorization.cpp
 
 ${OBJECTDIR}/LinearEquationSolverException.o: LinearEquationSolverException.cpp 
 	${MKDIR} -p ${OBJECTDIR}
