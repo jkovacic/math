@@ -16,14 +16,14 @@ limitations under the License.
 
 
 /**
-@file NumericUtil.cpp
-
-Implementation  of the class NumericUtil, a collection of some useful
-numerical utilities. This is a templated class and must not be compiled.
-Instead it must be included after the class declaration in the .h file
-
-@author Jernej Kovacic
-*/
+ * @file NumericUtil.cpp
+ *
+ * Implementation  of the class NumericUtil, a collection of some useful
+ * numerical utilities. This is a templated class and must not be compiled.
+ * Instead it must be included after the class declaration in the .h file
+ *
+ * @author Jernej Kovacic
+ */
 
 // Deliberately there is no #include "NumericUtil.h"
 #include "Rational.h"
@@ -31,29 +31,32 @@ Instead it must be included after the class declaration in the .h file
 #include "PolynomialGeneric.h"
 
 #include <complex>
+#include <limits>
 
 
-// Note that the optimal EPS depends on application requirements
+// Note that the optimal EPS depends on application's requirements
+
+// For float, double and long double, a suggested value for EPS can be
+// obtained by std::numeric_limits<type>::epsilon().
+#define _MATH_NUMERICUTIL_SPECIALIZED_EPS(FDL) \
+template<> \
+FDL math::NumericUtil<FDL>::EPS = std::numeric_limits<FDL>::epsilon();
+// end of #define
+
+// definition of EPS for float:
+_MATH_NUMERICUTIL_SPECIALIZED_EPS(float)
+
+// double is a more accurate type:
+_MATH_NUMERICUTIL_SPECIALIZED_EPS(double)
+
+// ... and long double is even more accurate:
+_MATH_NUMERICUTIL_SPECIALIZED_EPS(long double)
+
+// #definition of _MATH_NUMERICUTIL_SPECIALIZED_EPS not needed anymore, #undef it:
+#undef _MATH_NUMERICUTIL_SPECIALIZED_EPS
+
 /*
- * Definition of EPS for type float
- */
-template<>
-float math::NumericUtil<float>::EPS = 1e-9f;
-
-/*
- * Double is a more accurate type...
- */
-template<>
-double math::NumericUtil<double>::EPS = 1e-16;
-
-/*
- * and long double is even more accurate
- */
-template<>
-long double math::NumericUtil<long double>::EPS = 1e-22L;
-
-/*
- * In int and other types, EPS doesn't make sense, so set it to 0
+ * For int and other types, EPS doesn't make sense, so set it to 0
  */
 template<class T>
 T math::NumericUtil<T>::EPS = static_cast<T>(0);
@@ -80,7 +83,7 @@ const T math::NumericUtil<T>::ONE ( static_cast<T>(1) );
  *
  * @param value
  *
- @ @return true or false
+ * @return true or false
  */
 template<class T>
 bool math::NumericUtil<T>::isZero(const T& value)
