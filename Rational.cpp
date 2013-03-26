@@ -25,6 +25,7 @@ limitations under the License.
 
 
 #include "Rational.h"
+#include "IntFactorization.h"
 
 #include <climits>
 #include <limits>
@@ -181,8 +182,7 @@ math::Rational& math::Rational::set(long int numerator, long int denominator) th
  *       all other characters must be decimal digits (from '0' to '9'). Scientific
  *       and engineering formats are not supported. Any separators of thousands
  *       in the integer part are also not allowed. Additionally, 'repSeqLen' must not
- *       include the decimal point, in other words, the whole repeating sequence
- *       must comprise the fractional part only.
+ *       include the decimal point or any digit of the whole-part.
  *
  *                       __
  * For instance, for 12.345 (45 is the repeating sequence), enter:
@@ -952,7 +952,9 @@ void math::Rational::reduce()
     const unsigned long int absNum = absolute(num);  // absolute value of num
 
     // finally obtain the greatest common divisor...
-    const unsigned long int gcd = greatestCommonDivisor(absNum, denom);
+    // Note: since neither 'absNum' nor 'denom' cannot be zero (handled before),
+    // IntFactorization::gcd will never throw an exception
+    const unsigned long int gcd = IntFactorization::gcd(absNum, denom);
 
     // ... and divide both members by it.
     // if both num (handled a few lines above)and denom (not permitted when setting)
@@ -971,80 +973,6 @@ unsigned long int math::Rational::absolute(long int a)
 {
     return ( a>=0 ? a : -a );
 }
-
-/**
- * Greatest common divisor of first and second, calculated using the Euclidean algorithm.
- *
- * @param first
- * @param second
- *
- * @return zero if any of the two input parameters equals zero, GCD otherwise
- */
-unsigned long int math::Rational::greatestCommonDivisor(unsigned long int first, unsigned long int second)
-{
-    /*
-     * The well known Euclidean algorithm is utilized to find the greatest common divisor.
-     * It is known to be efficient, more details about it are available, for instance,
-     * at http://en.wikipedia.org/wiki/Euclidean_algorithm
-     */
-
-    // If any of both arguments is 0, the algorithm may "end up" in an infinite loop
-    // or division by zero can occur. In such a case, return 0 immediately.
-    if ( 0 == first || 0 == second )
-    {
-        return 0;
-    }
-
-    // Now it is guaranteed to converge towards the GCD (or 1)
-    unsigned long int a = first;
-    unsigned long int b = second;
-    unsigned long int t;
-
-    while ( 0 != b )
-    {
-        t = b;
-        b = a % b;
-        a = t;
-    }  // while
-
-    return a;
-}  // Rational::gretestCommonDivisor
-
-/**
- * Least common multiple of first and second.
- * It only makes sense when both arguments are not zero.
- *
- * @param first
- * @param second
- *
- * @return zero if any of the two input arguments equals zero, the LCM otherwise
- */
-unsigned long int math::Rational::leastCommonMultiple(unsigned long int first, unsigned long int second)
-{
-    /*
-     * The following mathematical relation can be proven easily:
-     * LCM(a,b) * GCD(a,b) = a * b
-     * So, knowing that an efficient algorithm for the GCD exists, the LCM can be derived:
-     * LCM(a,b) = (a*b)/GCD(a,b)
-     */
-
-    // If any of the two input values equals zero, neither GCD
-    // nor LCM doesn't make any sense, return 0 in such cases
-    if ( 0 == first || 0 == second )
-    {
-        return 0;
-    }
-
-    // At this point the GCD will be no less than 1, definitely not 0
-    const unsigned long int gcd = greatestCommonDivisor(first, second);
-
-    // so it's safe to divide
-    const unsigned long long int retVal = first*second/gcd;
-
-    // ensure, that the LCM is not out of range
-    return ( retVal<ULONG_MAX ? retVal : 0 );
-
-} // Rational::leastCommonMultiple
 
 /*
  * An auxiliary function that calculates (unreduced) numerator of (this-frac).

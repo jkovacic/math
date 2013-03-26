@@ -121,11 +121,6 @@ public:
     // The following two functions are public and static as they
     // may also be useful elsewhere:
 
-    //  The greatest common divisor of two integer values
-    static unsigned long int greatestCommonDivisor(unsigned long int first, unsigned long int second);
-    // The least common multiple of two integer values
-    static unsigned long int leastCommonMultiple(unsigned long int first, unsigned long int second);
-
 private:
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
     void reduce();
