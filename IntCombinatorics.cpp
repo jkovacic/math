@@ -332,12 +332,13 @@ unsigned long long int math::IntCombinatorics::binom(unsigned long long int N, u
     // so the integer overflow of 'i' is not possible.
     for ( unsigned long long int i=1; i<=k; i++ )
     {
-        if ( ULLONG_MAX/retVal < i )
+        const unsigned long long int factor = N-k+i; 
+        if ( ULLONG_MAX/retVal < factor )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
         
-        retVal *= (N-k+i);
+        retVal *= factor;
         retVal /= i;
     }
     
