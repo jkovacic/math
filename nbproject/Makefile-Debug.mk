@@ -38,11 +38,13 @@ OBJECTFILES= \
 	${OBJECTDIR}/IntFactorizationException.o \
 	${OBJECTDIR}/PolynomialException.o \
 	${OBJECTDIR}/QuaternionException.o \
-	${OBJECTDIR}/IntFactorization.o \
 	${OBJECTDIR}/LinearEquationSolverException.o \
+	${OBJECTDIR}/IntFactorization.o \
 	${OBJECTDIR}/maintest.o \
 	${OBJECTDIR}/Rational.o \
+	${OBJECTDIR}/IntCombinatorics.o \
 	${OBJECTDIR}/MatrixException.o \
+	${OBJECTDIR}/CombinatoricsException.o \
 	${OBJECTDIR}/CurveFittingException.o \
 	${OBJECTDIR}/RationalException.o
 
@@ -86,15 +88,15 @@ ${OBJECTDIR}/QuaternionException.o: QuaternionException.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/QuaternionException.o QuaternionException.cpp
 
-${OBJECTDIR}/IntFactorization.o: IntFactorization.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/IntFactorization.o IntFactorization.cpp
-
 ${OBJECTDIR}/LinearEquationSolverException.o: LinearEquationSolverException.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/LinearEquationSolverException.o LinearEquationSolverException.cpp
+
+${OBJECTDIR}/IntFactorization.o: IntFactorization.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/IntFactorization.o IntFactorization.cpp
 
 ${OBJECTDIR}/maintest.o: maintest.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -106,10 +108,20 @@ ${OBJECTDIR}/Rational.o: Rational.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/Rational.o Rational.cpp
 
+${OBJECTDIR}/IntCombinatorics.o: IntCombinatorics.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/IntCombinatorics.o IntCombinatorics.cpp
+
 ${OBJECTDIR}/MatrixException.o: MatrixException.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/MatrixException.o MatrixException.cpp
+
+${OBJECTDIR}/CombinatoricsException.o: CombinatoricsException.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/CombinatoricsException.o CombinatoricsException.cpp
 
 ${OBJECTDIR}/CurveFittingException.o: CurveFittingException.cpp 
 	${MKDIR} -p ${OBJECTDIR}
