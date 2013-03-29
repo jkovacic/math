@@ -28,7 +28,6 @@ limitations under the License.
 
 #include <new>
 #include <stdexcept>
-#include <limits>
 #include <vector>
 
 // Deliberately there is no #include "MatrixGeneric.h" !
@@ -50,11 +49,11 @@ limitations under the License.
  * @param rows    - number of rows (default: 1)
  * @param columns - number of columns (default: 1)
  *
- * @throw MatrixException when allocation ofmemory fails or in case of incorrect
+ * @throw MatrixException when allocation of memory fails or in case of incorrect
  *        input parameters (both must be at least 1)
  */
 template<class T>
-math::MatrixGeneric<T>::MatrixGeneric(unsigned int rows, unsigned int columns) throw(math::MatrixException)
+math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::MatrixException)
 {
     // Matrix must contain at least 1 row and at least 1 column
     if ( rows < 1 || columns < 1 )
@@ -62,11 +61,8 @@ math::MatrixGeneric<T>::MatrixGeneric(unsigned int rows, unsigned int columns) t
         throw math::MatrixException(MatrixException::INVALID_DIMENSION);
     }
 
-    // Max. INT_MAX (typically cca. 2e+9) elements will be allowed to prevent
-    // problems with counter overflows. This is much much more than required
-    // in most real life applications.
-    const unsigned long int matSize = rows * columns;
-    if ( matSize > static_cast<unsigned long int>(std::numeric_limits<int>::max() ) )
+    // even theoretically the number of vector's elements is limited
+    if ( columns > elems.max_size()/rows )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
@@ -80,7 +76,7 @@ math::MatrixGeneric<T>::MatrixGeneric(unsigned int rows, unsigned int columns) t
         // allocate memory for required number of elements, initialize each of them
         elems.resize(rows*columns, ZERO);
     }
-    catch ( std::bad_alloc &ba )
+    catch ( const std::bad_alloc& ba )
     {
         // Memory allocation failed
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
@@ -103,7 +99,7 @@ math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw 
 }
 
 /*
- * A utility function that returns the postion of element's "coordinates"
+ * A utility function that returns the position of element's "coordinates"
  * within the matrix's internal vector (r*cols+c). As this functionality
  * is used often, the purpose of this function is to define it only once
  * and to eliminate possibilities of typing errors.
@@ -113,10 +109,10 @@ math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw 
  *
  * Note: no checks are performed inside the function. The results of the
  * function are usually passed directly to std::vector.at() which throws
- * an exception if pos is out of the vector's range.
+ * an exception if 'pos' is out of the vector's range.
  */
 template <class T>
-inline unsigned int math::MatrixGeneric<T>::pos(unsigned int row, unsigned int column) const
+inline unsigned int math::MatrixGeneric<T>::pos(size_t row, size_t column) const
 {
     return ( row * this->cols + column );
 }
@@ -144,7 +140,7 @@ void math::MatrixGeneric<T>::copyElems(const math::MatrixGeneric<T>& orig) throw
         // constructors, if applicable)
         elems = orig.elems;
     }
-    catch (std::bad_alloc &ba )
+    catch ( const std::bad_alloc& ba )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
@@ -160,7 +156,7 @@ void math::MatrixGeneric<T>::copyElems(const math::MatrixGeneric<T>& orig) throw
  * @return number of rows
  */
 template<class T>
-unsigned int math::MatrixGeneric<T>::nrRows() const
+size_t math::MatrixGeneric<T>::nrRows() const
 {
     return this->rows;
 }
@@ -169,7 +165,7 @@ unsigned int math::MatrixGeneric<T>::nrRows() const
  * @return number of columns
  */
 template<class T>
-unsigned int math::MatrixGeneric<T>::nrColumns() const
+size_t math::MatrixGeneric<T>::nrColumns() const
 {
     return this->cols;
 }
@@ -185,7 +181,7 @@ unsigned int math::MatrixGeneric<T>::nrColumns() const
  * @throw MatrixException if input parameters are out of range
  */
 template<class T>
-T math::MatrixGeneric<T>::get(unsigned int row, unsigned int column) const throw (math::MatrixException)
+T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::MatrixException)
 {
     // Check of input parameters
     if ( row >= rows || column >= cols )
@@ -200,7 +196,7 @@ T math::MatrixGeneric<T>::get(unsigned int row, unsigned int column) const throw
     {
         retVal = elems.at(pos(row, column));
     }
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -221,7 +217,7 @@ T math::MatrixGeneric<T>::get(unsigned int row, unsigned int column) const throw
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template<class T>
-T& math::MatrixGeneric<T>::at(unsigned int row, unsigned int column) throw (math::MatrixException)
+T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixException)
 {
     // Check if input parameters are within the matrix's range
     if ( row >= rows || column >= cols )
@@ -245,10 +241,10 @@ T& math::MatrixGeneric<T>::at(unsigned int row, unsigned int column) throw (math
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template<class T>
-const T& math::MatrixGeneric<T>::at(unsigned int row, unsigned int column) const throw (MatrixException)
+const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math::MatrixException)
 {
     /*
-        Implementation is actually the same as implenentation of another at()
+        Implementation is actually the same as implementation of another at()
         with non-const signature. A single macro could be used for both
         implementations, however both functions are short, simple and unlikely
         to change often.
@@ -277,7 +273,7 @@ const T& math::MatrixGeneric<T>::at(unsigned int row, unsigned int column) const
  * @throw MatrixException if input parameters are out of range
  */
 template<class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(unsigned int row, unsigned int column, const T& element) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(size_t row, size_t column, const T& element) throw (math::MatrixException)
 {
     // Check of input parameters
     if ( row >= rows || column >= cols )
@@ -310,9 +306,6 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
 {
     try
     {
-        unsigned int r;
-        unsigned int c;
-
         // Elements of each row are separated by tabs.
         // This does not guarantee that elements of the same column will be
         // displayed under each other and in case of a long row (its output
@@ -320,10 +313,10 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
         // confusing. However, this is more or less "just" an auxiliary function, mainly used for
         // testing purposes, and the effort was focused to other functionalities.
         // Anyway, it would be nice to improve it in future.
-        for ( r=0; r<rows; r++ )
+        for ( size_t r=0; r<rows; r++ )
         {
             // display elements of the row r, separated by tabs
-            for ( c=0; c<cols; c++ )
+            for ( size_t c=0; c<cols; c++ )
             {
                 str << elems.at(pos(r, c)) << "\t";
             }
@@ -331,7 +324,7 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
             str << std::endl;
         } // for r
     } // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -388,13 +381,12 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator+ (const math::MatrixGene
     {
         // Matrices have the same number of elements, just traverse
         // them linearly and perform addition of elements at the same position
-        unsigned int i;
-        for ( i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; i++ )
         {
             temp.elems.at(i) = elems.at(i) + matrix.elems.at(i);
         }
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -424,13 +416,12 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     // For a definition of matrix addition, see operator+
     try
     {
-        unsigned int i;
-        for ( i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; i++ )
         {
             elems.at(i) += m.elems.at(i);
         }
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -463,13 +454,12 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator- (const math::MatrixGene
 
     try
     {
-        unsigned int i;
-        for ( i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; i++ )
         {
             temp.elems.at(i) = elems.at(i) - m.elems.at(i);
         }
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -500,13 +490,12 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
 
     try
     {
-        unsigned int i;
-        for ( i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; i++ )
         {
             elems.at(i) -= matrix.elems.at(i);
         }
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -532,14 +521,12 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
     math::MatrixGeneric<T> temp(rows, cols);
     try
     {
-        unsigned int i;
-
-        for ( i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; i++ )
         {
             temp.elems.at(i) = -elems.at(i);
         }
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -553,7 +540,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
  * otherwise multiplication is not possible. The resulting matrix will
  * have this.rows rows and matrix.cols columns.
  *
- * Note that matrix multiplication is not comutative (A*B != B*A).
+ * Note that matrix multiplication is not commutative (A*B != B*A).
  *
  * @param matrix
  *
@@ -571,9 +558,8 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
     }
 
     // Multiplication modifies dimensions, so make sure the product will contain
-    // no more than INT_MAX elements
-    const unsigned long int matSize = this->rows * matrix.cols;
-    if ( matSize > static_cast<unsigned long int>(std::numeric_limits<int>::max() ) )
+    // more elements than allowed by vector:
+    if ( matrix.cols > elems.max_size()/this->rows )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
@@ -585,16 +571,12 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
 
     try
     {
-        unsigned int r;
-        unsigned int c;
-
-        for ( r=0; r<rows; r++ )
+        for ( size_t r=0; r<rows; r++ )
         {
-            for ( c=0; c<matrix.cols; c++ )
+            for ( size_t c=0; c<matrix.cols; c++ )
             {
                 T sum = ZERO;
-                unsigned int i;
-                for ( i=0; i<cols; i++ )
+                for ( size_t i=0; i<cols; i++ )
                 {
                     sum += elems.at(pos(r, i)) * matrix.elems.at(matrix.pos(i, c));
                 }
@@ -603,7 +585,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
             }  // for c
         }  // for r
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -614,7 +596,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
 /**
  * Subtraction operator (*=) that multiplies a matrix by this one and assigns
  * the product to itself.
- * Number of coumns of 'this' must be the same as number of rows of 'm',
+ * Number of columns of 'this' must be the same as number of rows of 'm',
  * otherwise multiplication is not possible.
  *
  * @param m - matrix to be multiplied by this one
@@ -639,7 +621,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGe
         this->elems.clear();
         this->elems = temp.elems;
     }
-    catch ( std::bad_alloc& ba )
+    catch ( const std::bad_alloc& ba )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
@@ -648,7 +630,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGe
 }
 
 /**
- * Multiplication operator (*) for multiplication of a matrix and scalar.
+ * Multiplication operator (*) for multiplication of a matrix and a scalar.
  * There are no restrictions about matrix dimensions.
  *
  * @param scalar
@@ -661,7 +643,7 @@ template<class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const throw (math::MatrixException)
 {
     // The operation is possible on matrices with any dimension
-    // so no need to check input parameters
+    // so no need to check input arguments
 
     // Just multiply each element by the scalar:
     // P(r,c) = scalar * this(r,c)
@@ -669,14 +651,13 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
 
     try
     {
-        unsigned int i;
-
-        for ( i=0; i<rows*cols; i++ )
+        const size_t N = rows*cols;
+        for ( size_t i=0; i<N; i++ )
         {
             retVal.elems.at(i) = elems.at(i) * scalar;
         }
     }  //try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -695,10 +676,10 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
 template<class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
 {
-    const unsigned int N = rows*cols;
+    const size_t N = rows*cols;
 
     // Multiply each element by the 'scalar'
-    for (unsigned int i=0; i<N; i++ )
+    for ( size_t i=0; i<N; i++ )
     {
         elems.at(i) *= scalar;
     }
@@ -745,19 +726,16 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     try
     {
         // "collect" all elements of this
-        unsigned int r;
-        unsigned int c;
-
-        for ( r=0; r<rows; r++ )
+        for ( size_t r=0; r<rows; r++ )
         {
-            for ( c=0; c<cols; c++ )
+            for ( size_t c=0; c<cols; c++ )
             {
                 // and swap their "coordinates"
                 retVal.elems.at(retVal.pos(c, r)) = elems.at(pos(r, c));
             }
         }
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -790,16 +768,14 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     {
         tempElems.resize(rows * cols);
     }
-    catch (std::bad_alloc &ba)
+    catch ( const std::bad_alloc& ba )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 
-    unsigned int r;
-    unsigned int c;
-    for ( r=0; r<rows; r++ )
+    for ( size_t r=0; r<rows; r++ )
     {
-        for ( c=0; c<cols; c++ )
+        for ( size_t c=0; c<cols; c++ )
         {
             tempElems.at(c*rows + r) = this->elems.at(pos(r, c));
         }  // for c
@@ -809,7 +785,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     this->elems = tempElems;
 
     // and swap matrix's dimensions:
-    c = this->cols;
+    size_t c = this->cols;
     this->cols = this->rows;
     this->rows = c;
 
@@ -830,7 +806,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
   * @throw MatrixException if attempting to remove the nonexistent row
   */
 template<class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(unsigned int rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (math::MatrixException)
 {
     // Check of input parameters.
     // The matrix must contain at least two rows (as the updated matrix must still
@@ -840,10 +816,10 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(unsigned int rowNr) th
         throw math::MatrixException(MatrixException::OUT_OF_RANGE);
     }
 
-    // Elements od the r^th row are located between r*cols and (r+1)*cols-1.
+    // Elements of the r^th row are located between r*cols and (r+1)*cols-1.
     // The first element of the next row is located at (r+1)*cols.
     // Row elements are contiguous and can be removed with one vector.erase() call.
-    // It will also relocate remainng elements if applicable.
+    // It will also relocate remaining elements if applicable.
     elems.erase(elems.begin()+rowNr*cols, elems.begin()+(rowNr+1)*cols);
 
     // Elements have been removed, update the number of rows
@@ -863,7 +839,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(unsigned int rowNr) th
   * @throw MatrixException if attempting to remove the nonexistent column
   */
 template<class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(unsigned int colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
 {
     // Checking of input parameters. The matrix must contain at least 2 columns
     // as the result must still contain at least one. colNr must be
@@ -878,8 +854,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(unsigned int colNr)
     // the first one (row=0). This way the position of the element to be removed
     // is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
     // move remaining elements appropriately
-    unsigned int i;
-    for ( i=1; i<=rows; i++ )
+    for ( size_t i=1; i<=rows; i++ )
     {
         elems.erase(elems.begin()+(rows-i)*cols+colNr);
     }
@@ -902,7 +877,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(unsigned int colNr)
   * @throw MatrixException if invalid rowNr or if reallocation fails
   */
 template<class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(unsigned int rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr) throw (math::MatrixException)
 {
     // a valid rowNr value is between 0 and rows (incl.)
     if ( rowNr > rows )
@@ -911,9 +886,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(unsigned int rowNr) th
     }
 
     // Nr. of elements will increase, so make sure the product will contain
-    // no more than INT_MAX elements
-    const unsigned long int matSize = (rows + 1) * cols;
-    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
+    // more elements than max. possible size of a vector.
+    if ( rows > (elems.max_size()/cols - 1) )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
@@ -925,7 +899,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(unsigned int rowNr) th
         // the position of rowNr*cols element.
         elems.insert(elems.begin()+rowNr*cols, cols, ZERO);
     }
-    catch ( std::bad_alloc& ba )
+    catch ( const std::bad_alloc& ba )
     {
         // it is possible that reallocation failed
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
@@ -949,7 +923,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(unsigned int rowNr) th
   * @throw MatrixException if invalid colNr or if reallocation fails
   */
 template<class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(unsigned int colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr) throw (math::MatrixException)
 {
     // A valid colNr is between 0 and cols (incl.)
     if ( colNr > cols )
@@ -960,7 +934,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(unsigned int colNr)
     // Nr. of elements will increase, so make sure the product will contain
     // no more than INT_MAX elements
     const unsigned long int matSize = rows * (cols + 1);
-    if ( matSize > (unsigned long int) std::numeric_limits<int>::max() )
+    if ( cols > (elems.max_size()/rows - 1) )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
@@ -971,16 +945,14 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(unsigned int colNr)
         // First reserve enough memory for smoother reallocations
         elems.reserve( rows*(cols+1) );
 
-        // Elements will be inserted step by step, with ascending row cordinate.
+        // Elements will be inserted step by step, with ascending row coordinate.
         // The position of each such element can be calculated as r*(cols+1)+colNr.
-        unsigned int r;
-
-        for ( r = 0; r < rows; r++ )
+        for ( size_t r = 0; r < rows; r++ )
         {
             elems.insert(elems.begin()+r*(cols+1)+colNr, ZERO);
         }  // for r
     }  // try
-    catch ( std::bad_alloc& ba )
+    catch ( const std::bad_alloc& ba )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }

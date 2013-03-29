@@ -171,9 +171,9 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
      * unique solution of a system of linear equations. More details about
      * the algorithm at: http://en.wikipedia.org/wiki/Gaussian_elimination
      */
-    const unsigned int N = m_coef.nrColumns();  // Nr. of unknowns
-    const unsigned int NT = m_term.nrColumns(); // Nr. of terms' columns
-    const unsigned int Nmax = (N>=NT ? N : NT); // max. of both values
+    const size_t N = m_coef.nrColumns();  // Nr. of unknowns
+    const size_t NT = m_term.nrColumns(); // Nr. of terms' columns
+    const size_t Nmax = (N>=NT ? N : NT); // max. of both values
 
     // Check of dimensions
     if ( N!=m_term.nrRows() )
@@ -186,16 +186,14 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
         SqMatrixGeneric<T> temp(m_coef);
         MatrixGeneric<T> retVal(m_term);
 
-        unsigned int i;
-        unsigned int r;
-        unsigned int c;
+        size_t r;
         T el;
 
         // Try to convert the 'temp' into an identity matrix
         // by appropriate adding multiples of other lines to each line
         // (incl. lines of 'retVal')
 
-        for ( i=0; i<N; i++ )
+        for ( size_t i=0; i<N; i++ )
         {
             // first check if the diagonal element equals 0
             if ( true == math::NumericUtil<T>::isZero(temp.at(i, i)) )
@@ -224,7 +222,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
                 }
 
                 // add the r^th line to the i^th one:
-                for ( c=0; c<Nmax; c++ )
+                for ( size_t c=0; c<Nmax; c++ )
                 {
                     if ( c<N )
                     {
@@ -243,12 +241,12 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
             //  (columns smaller than i are already 0)
             el = temp.get(i, i);
 
-            for ( c=i; c<N; c++)
+            for ( size_t c=i; c<N; c++)
             {
                 temp.at(i, c) /= el;
             }
 
-            for ( c=0; c<NT; c++ )
+            for ( size_t c=0; c<NT; c++ )
             {
                 retVal.at(i, c) /= el;
             }
@@ -267,12 +265,12 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
                 // Subtract a multiple of the i^th row. Note that temp(i,i) is already 1.
                 el = temp.get(r, i);
 
-                for ( c=i; c<N; c++ )
+                for ( size_t c=i; c<N; c++ )
                 {
                     temp.at(r, c) -= el*temp.at(i, c);
                 }
 
-                for ( c=0; c<NT; c++ )
+                for ( size_t c=0; c<NT; c++ )
                 {
                     retVal.at(r, c) -= el*retVal.at(i, c);
                 }
@@ -284,7 +282,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
         for ( r=0; r<N; r++ )
         {
-            for ( c=r+1; c<N; c++ )
+            for ( size_t c=r+1; c<N; c++ )
             {
                 // Nothing to do if already 0
                 if ( true == math::NumericUtil<T>::isZero(temp.at(r, c)) )
@@ -298,12 +296,12 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
                 el = temp.get(r, c);
 
-                for ( i=c; i<N; i++ )
+                for ( size_t i=c; i<N; i++ )
                 {
                     temp.at(r, i) -= el*temp.at(c, i);
                 }
 
-                for ( i=0; i<NT; i++ )
+                for ( size_t i=0; i<NT; i++ )
                 {
                     retVal.at(r, i) -= el*retVal.at(c, i);
                 }

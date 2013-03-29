@@ -36,7 +36,7 @@ namespace math
 
 // Templates are used to allow several types (T) of matrix elements.
 // Types must have implemented basic arithmetic operators (+, -, *, /),
-// otherwise build will fail (which is desired). In practise, types as float,
+// otherwise build will fail (which is desired). In practice, types as float,
 // double, Rational, Complex make most sense. Integer types may be conditionally
 // acceptable (e.g. if the class is used to represent mathematical graphs, etc.)
 // but arithmetic operations (e.g. inversion of a square matrix) may return
@@ -54,8 +54,8 @@ class MatrixGeneric
 
     // These properties must be accessible in inhereted classes
 protected:
-    unsigned int rows;      /// Number of rows
-    unsigned int cols;      /// Number of columns
+    size_t rows;      /// Number of rows
+    size_t cols;      /// Number of columns
     // STL Vector has several advantages over arrays, allocated by new[],
     // e.g. elements can be accessed via at() which checks for range and throws
     // an exception when attempting to access sth. outside the allocated range
@@ -69,23 +69,23 @@ protected:
     void copyElems(const MatrixGeneric& orig) throw (MatrixException);
 
     // position of the element within the internal vector
-    inline unsigned int pos(unsigned int row, unsigned int column) const;
+    inline size_t pos(size_t row, size_t column) const;
 
 public:
     // Constructor
-    MatrixGeneric(unsigned int rows = 1, unsigned int columns = 1) throw (MatrixException);
+    MatrixGeneric(size_t rows = 1, size_t columns = 1) throw (MatrixException);
     // Copy constructor
     MatrixGeneric(const MatrixGeneric& orig) throw (MatrixException);
 
     // Number of rows and columns
-    unsigned int nrRows() const;
-    unsigned int nrColumns() const;
+    size_t nrRows() const;
+    size_t nrColumns() const;
 
     // Get and set the element of the specified row and column
-    T get(unsigned int row, unsigned int column) const throw (MatrixException);
-    T& at(unsigned int row, unsigned int column) throw (MatrixException);
-    const T& at(unsigned int row, unsigned int column) const throw(MatrixException);
-    MatrixGeneric<T>& set(unsigned int row, unsigned int column, const T& element) throw (MatrixException);
+    T get(size_t row, size_t column) const throw (MatrixException);
+    T& at(size_t row, size_t column) throw (MatrixException);
+    const T& at(size_t row, size_t column) const throw(MatrixException);
+    MatrixGeneric<T>& set(size_t row, size_t column, const T& element) throw (MatrixException);
 
     // Display elements of the matrix
     void display(std::ostream& str = std::cout) const throw (MatrixException);
@@ -109,10 +109,10 @@ public:
     virtual MatrixGeneric<T>& transposed() throw (MatrixException);
 
     // Insert or remove rows/columns.
-    virtual MatrixGeneric<T>& removeRow(unsigned int rowNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& removeColumn(unsigned int colNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertRow(unsigned int rowNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertColumn(unsigned int colNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& removeRow(size_t rowNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& removeColumn(size_t colNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertRow(size_t rowNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertColumn(size_t colNr) throw (MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();

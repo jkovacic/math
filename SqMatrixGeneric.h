@@ -39,7 +39,7 @@ class SqMatrixGeneric : public MatrixGeneric<T>
 
 public:
     // Constructor
-    SqMatrixGeneric(unsigned int dim = 1) throw(MatrixException);
+    SqMatrixGeneric(size_t dim = 1) throw(MatrixException);
     // Copy constructor
     SqMatrixGeneric(const MatrixGeneric<T>& orig) throw(MatrixException);
     // operator= (it must be reimplemnted as it is not inherited from the base class)
@@ -65,10 +65,10 @@ public:
 
     // The following functions inherited from the parent class
     // are not applicable for square matrices and throw an exception
-    MatrixGeneric<T>& removeRow(unsigned int rowNr) throw (MatrixException);
-    MatrixGeneric<T>& removeColumn(unsigned int colNr) throw (MatrixException);
-    MatrixGeneric<T>& insertRow(unsigned int rowNr) throw (MatrixException);
-    MatrixGeneric<T>& insertColumn(unsigned int colNr) throw (MatrixException);
+    MatrixGeneric<T>& removeRow(size_t rowNr) throw (MatrixException);
+    MatrixGeneric<T>& removeColumn(size_t colNr) throw (MatrixException);
+    MatrixGeneric<T>& insertRow(size_t rowNr) throw (MatrixException);
+    MatrixGeneric<T>& insertColumn(size_t colNr) throw (MatrixException);
 };
 
 // Matrices with elements of types float and double make most sense

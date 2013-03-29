@@ -57,7 +57,7 @@ limitations under the License.
  *        input parameters (dim must be at least 1)
  */
 template<class T>
-math::SqMatrixGeneric<T>::SqMatrixGeneric(unsigned int dim) throw (math::MatrixException) :
+math::SqMatrixGeneric<T>::SqMatrixGeneric(size_t dim) throw (math::MatrixException) :
     math::MatrixGeneric<T>(dim, dim)
 {
     // Square matrices have the same number of rows and columns.
@@ -67,13 +67,13 @@ math::SqMatrixGeneric<T>::SqMatrixGeneric(unsigned int dim) throw (math::MatrixE
 
 /**
  * Copy constructor.
- * Creates an instance of a matrix with the same dimensions as orig
- * and copies its elements. Orig must have the same number of rows and columns,
+ * Creates an instance of a matrix with the same dimensions as 'orig'
+ * and copies its elements. 'orig' must have the same number of rows and columns,
  * otherwise an exception is thrown.
  *
  * @param orig - original matrix to be copied into this one
  *
- * @throw MatrixException if orig has different number of rows and columns
+ * @throw MatrixException if 'orig' has different number of rows and columns
  */
 template<class T>
 math::SqMatrixGeneric<T>::SqMatrixGeneric(const math::MatrixGeneric<T>& orig) throw(math::MatrixException) :
@@ -132,19 +132,17 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
     // (row == column) will be set to the scalar, others to 0
     try
     {
-        unsigned int i;
-        unsigned int j;
-        const unsigned int N = this->rows;
+        const size_t N = this->rows;
 
-        for ( i=0; i<N; i++ )
+        for ( size_t i=0; i<N; i++ )
         {
-            for ( j=0; j<N; j++ )
+            for ( size_t j=0; j<N; j++ )
             {
                 this->elems.at(POS(i, j)) = ( i==j ? scalar : ZERO );
             } // for j
         } // for i
     }  // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -202,13 +200,11 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // elements will be copied into a temporary one where any modifications
         // are permitted
         std::vector<T> temp = this->elems;
-        unsigned int i;
-        unsigned int r;
-        unsigned int c;
+        size_t r;
+        
+        const size_t N = this->rows;  // number of rows (and columns)
 
-        const unsigned int N = this->rows;  // number of rows (and columns)
-
-        for ( i=0; i<N-1; i++ )
+        for ( size_t i=0; i<N-1; i++ )
         {
             // if temp(i,i) equals zero, swap the i^th line with
             // another one (r; r>i) satisfying temp(r,i)!=0
@@ -245,7 +241,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // BTW, all elements left of (i,i) and (r,i) should already be
                 // equal to 0 and it wouldn't be necessary to swap them.
                 // But a few extra "operations" shouldn't considerably affect complexity
-                for ( c=POS(i,0); c<POS(i+1,0); c++ )
+                for ( size_t c=POS(i,0); c<POS(i+1,0); c++ )
                 {
                     const T tempElem = temp.at(c);
                     temp.at(c) = temp.at(POS(r, c));
@@ -263,14 +259,14 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // a multiplier of one line (i in this algorithm)
             // is added to another line (r; r>i)
 
-            for ( r=i+1; r<N; r++ )
+            for ( size_t r=i+1; r<N; r++ )
             {
                 // temp(r,i) will be calculated to 0 immediately.
                 // However, its initial value is necessary to properly
                 // calculate all other elements of the r^th row
                 T ri = temp.at(POS(r, i));
 
-                for ( c=i; c<N; c++ )
+                for ( size_t c=i; c<N; c++ )
                 {
                     // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
                     temp.at(POS(r, c)) -= temp.at(POS(i, c)) * ri / temp.at(POS(i, i));
@@ -280,7 +276,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
         // Now temp is an upper triangular matrix so all its diagonal
         // elements can be multiplied
-        for ( i=0; i<N; i++)
+        for ( size_t i=0; i<N; i++)
         {
             retVal *= temp.at(POS(i, i));
         }
@@ -288,7 +284,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // temp not needed anymore, clean it
         temp.clear();
     } // try
-    catch ( std::out_of_range& oor )
+    catch ( const std::out_of_range& oor )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -335,7 +331,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
 
         return retVal;
     }
-    catch ( LinearEquationSolverException& leqex )
+    catch ( const LinearEquationSolverException& leqex )
     {
         // is *this an uninvertible matrix? (determinant()=0):
         if ( math::LinearEquationSolverException::NO_UNIQUE_SOLUTION == leqex.error )
@@ -362,17 +358,15 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
 template<class T>
 math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::MatrixException)
 {
-    const unsigned int N = this->rows;  // number of rows (and columns)
-    unsigned int r;
-    unsigned int c;
+    const size_t N = this->rows;  // number of rows (and columns)
     T temp;
 
     // Traverse the upper diagonal part of the matrix,
     // no need to reach the final row and
     // no need to transpose elements on the diagonal:
-    for ( r=0; r<N-1; r++ )
+    for ( size_t r=0; r<N-1; r++ )
     {
-        for ( c=r+1; c<N; c++ )
+        for ( size_t c=r+1; c<N; c++ )
         {
             temp = this->elems.at(POS(r, c));
             this->elems.at(POS(r, c)) = this->elems.at(POS(c, r));
@@ -400,7 +394,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
 template<class T>
 math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
-    // Check of addditional condition ('m' must have the same dimensions):
+    // Check of additional condition ('m' must have the same dimensions):
     if ( m.nrRows()!=this->rows || m.nrColumns()!=this->rows )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
@@ -419,25 +413,25 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::Matr
  * Therefore they will automatically throw an exception if called.
  */
 template<class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeRow(unsigned int rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeRow(size_t rowNr) throw (math::MatrixException)
 {
     throw math::MatrixException(MatrixException::FORBIDDEN);
 }
 
 template<class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeColumn(unsigned int colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
 
 template<class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(unsigned int rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(size_t rowNr) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
 
 template<class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(unsigned int colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
