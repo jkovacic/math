@@ -30,6 +30,7 @@ limitations under the License.
 #include <new>
 
 #include "NumericUtil.h"
+#include "CurveFittingException.h"
 
 
 /*
@@ -146,6 +147,12 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::enterPoint(const
         throw math::CurveFittingException(math::CurveFittingException::ADD_POINT_NOT_ALLOWED);
     }
 
+    // Check that the nr. of points would not exceed tha max. allowed list's size
+    if ( points.size()==points.max_size() )
+    {
+        throw math::CurveFittingException(math::CurveFittingException::ADD_POINT_NOT_ALLOWED);
+    }
+    
     try
     {
         CPoint p;
@@ -165,7 +172,7 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::enterPoint(const
  * @return Number of all points entered
  */
 template<class T>
-unsigned int math::CurveFittingGenericAb<T>::nrPoints() const
+size_t math::CurveFittingGenericAb<T>::nrPoints() const
 {
     return points.size();
 }

@@ -85,7 +85,7 @@ public:
     virtual CurveFittingGenericAb<T>& enterPoint(const T& x, const T& y) throw (CurveFittingException);
 
     // Number of points entered
-    unsigned int nrPoints() const;
+    size_t nrPoints() const;
 
     // has the curve been generated?
     bool curveReady() const;
@@ -95,7 +95,7 @@ public:
     T upperBound() const throw (CurveFittingException);
 
     // generate a curve that fits entered points best
-    virtual void generateCurve(unsigned int degree) throw (CurveFittingException) = 0;
+    virtual void generateCurve(size_t degree) throw (CurveFittingException) = 0;
 
     // value of the curve at the given abscissa
     virtual T valueAt(const T& x, bool strict=true) const throw (CurveFittingException) = 0;

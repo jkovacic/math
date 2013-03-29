@@ -32,6 +32,9 @@ limitations under the License.
 #include "SqMatrixGeneric.h"
 #include "LinearEquationSolverGeneric.h"
 #include "NumericUtil.h"
+#include "CurveFittingException.h"
+
+#include <limits>
 
 
 /**
@@ -54,7 +57,7 @@ math::PolynomialRegressionGeneric<T>::PolynomialRegressionGeneric()
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
 template<class T>
-void math::PolynomialRegressionGeneric<T>::generateCurve(unsigned int degree) throw (math::CurveFittingException)
+void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
     this->curveGenerationCheck();
@@ -89,8 +92,13 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(unsigned int degree) th
     
     try
     {
+        if ( degree>=(std::numeric_limits<size_t>::max()/2-1) )
+        {
+            throw math::CurveFittingException(math::CurveFittingException::CURVE_GENERATION_FAILED);    
+        }
+        
         // number of polynomial's coefficients
-        const unsigned int N = degree + 1;
+        const size_t N = degree + 1;
 
         math::SqMatrixGeneric<T> a(N);
         math::MatrixGeneric<T> b(N, 1);
@@ -107,11 +115,11 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(unsigned int degree) th
             T bterm = it->p_y;
 
             // i actually determines a position inside both matrices: i = r+c             
-            for ( unsigned int i=0; i<(2*N-1); i++ )
+            for ( size_t i=0; i<(2*N-1); i++ )
             {
                 // find all possible rows satisfying the condition above
-                const unsigned int Rmax = ( i<=degree ? i : degree );
-                for ( unsigned int r=0; r<=Rmax; r++ )
+                const size_t Rmax = ( i<=degree ? i : degree );
+                for ( size_t r=0; r<=Rmax; r++ )
                 {
                     // do not update anything if any element 
                     // is out of matrix's range
@@ -142,7 +150,7 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(unsigned int degree) th
         math::MatrixGeneric<T> x = leq.solve();
 
         // And finally fill the regression polynomial
-        for ( unsigned int i=0; i<N; i++ )
+        for ( size_t i=0; i<N; i++ )
         {
             this->poly.set(i, x.at(i, 0));
         }

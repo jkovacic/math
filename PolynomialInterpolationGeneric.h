@@ -41,7 +41,7 @@ public:
     PolynomialInterpolationGeneric();
 
     // inherited as an abstract function from the base class
-    void generateCurve(unsigned int degree = 0) throw (CurveFittingException);
+    void generateCurve(size_t degree = 0) throw (CurveFittingException);
 };
 
 // Interpolation classes with elements of types float and double make most sense

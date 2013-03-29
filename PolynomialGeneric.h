@@ -74,26 +74,26 @@ private:
 public:
     // Constructors
     PolynomialGeneric(std::vector<T> cvect) throw (PolynomialException);
-    PolynomialGeneric(T* carray, unsigned int n) throw (PolynomialException);
-    PolynomialGeneric(unsigned int n = 1) throw (PolynomialException);
+    PolynomialGeneric(T* carray, size_t n) throw (PolynomialException);
+    PolynomialGeneric(size_t n = 1) throw (PolynomialException);
     PolynomialGeneric(const PolynomialGeneric<T>& poly) throw (PolynomialException);
 
     // Getters
     std::vector<T> get() const throw (PolynomialException);
     std::vector<T> getDesc() const throw (PolynomialException);
-    T get(unsigned int pos) const;
+    T get(size_t pos) const;
 
     // Setters
     PolynomialGeneric<T>& set(const std::vector<T>& cvect) throw (PolynomialException);
     PolynomialGeneric<T>& setDesc(const std::vector<T>& cvect) throw (PolynomialException);
-    PolynomialGeneric<T>& set(unsigned int pos, const T& c = NumericUtil<T>::ZERO) throw (PolynomialException);
+    PolynomialGeneric<T>& set(size_t pos, const T& c = NumericUtil<T>::ZERO) throw (PolynomialException);
 
     // Insert and remove coefficients
-    PolynomialGeneric<T>& insert(unsigned int pos, const T& c) throw (PolynomialException);
-    PolynomialGeneric<T>& remove(unsigned int pos);
+    PolynomialGeneric<T>& insert(size_t pos, const T& c) throw (PolynomialException);
+    PolynomialGeneric<T>& remove(size_t pos);
 
     // Degree of the polynomial
-    unsigned int degree() const;
+    size_t degree() const;
     // Value of the polynomial for given x
     T value(const T& x) const;
     // Derivative of the polynomial

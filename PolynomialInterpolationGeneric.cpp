@@ -30,6 +30,7 @@ limitations under the License.
 
 // Deliberately there is no #include "PolynomialInterpolationGeneric.h"
 #include "PolynomialGeneric.h"
+#include "CurveFittingException.h"
 
 #include <vector>
 #include <new>
@@ -56,7 +57,7 @@ math::PolynomialInterpolationGeneric<T>::PolynomialInterpolationGeneric()
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
 template<class T>
-void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree) throw (math::CurveFittingException)
+void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
     this->curveGenerationCheck();
@@ -105,17 +106,25 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
         // concurrently when updating "columns". 
         
         // number of points
-        const unsigned int N = this->points.size();
+        const size_t N = this->points.size();
 
         // create vectors to store temporary results:
-        std::vector<T> a(N);
-        std::vector<T> x(N);
+        std::vector<T> a;
+        std::vector<T> x;
+        
+        if ( N > a.max_size() )
+        {
+            throw math::CurveFittingException(math::CurveFittingException::CURVE_GENERATION_FAILED);
+        }
+        
+        a.resize(N);
+        x.resize(N);
         
         // hiding idx from the rest of the function
         {
             // As iterators are the fastest way to access linked list elements,
             // traverse the list only once and populate appropriate elements of a and b
-            unsigned int idx = 0;
+            size_t idx = 0;
             for ( 
               typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin();
                         it!=this->points.end(); it++, idx++ )
@@ -146,9 +155,9 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(unsigned int degree)
         
         // recalculate vector's element as differential quotients:
         // a(i) = (a(i+1)-a(i))/ (appropriate difference of x)
-        for (unsigned int c=0; c<(N-1); c++ )
+        for ( size_t c=0; c<(N-1); c++ )
         {
-            for ( unsigned int i=0; i<(N-1-c); i++ )
+            for ( size_t i=0; i<(N-1-c); i++ )
             {
                 a.at(i) = (a.at(i+1)-a.at(i)) / (x.at(i+c+1)-x.at(i));
             }  // for i
