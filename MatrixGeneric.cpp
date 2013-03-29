@@ -868,16 +868,16 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw
 /**
   * Inserts a row in front of the rowNr^th row.
   * It also increases the number of rows.
-  * Elements of the new row will be set to a default value (typically 0).
   *
   * @param rowNr - a row will be inserted in front of this row. Valid values between 0 and rows
+  * @param el - value to be assigned to all inserted elements (default: 0)
   *
   * @return reference to itself
   *
   * @throw MatrixException if invalid rowNr or if reallocation fails
   */
 template<class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T& el) throw (math::MatrixException)
 {
     // a valid rowNr value is between 0 and rows (incl.)
     if ( rowNr > rows )
@@ -897,7 +897,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr) throw (m
         elems.reserve( (rows+1)*cols );
         // a contiguous block of cols elements will be inserted
         // the position of rowNr*cols element.
-        elems.insert(elems.begin()+rowNr*cols, cols, ZERO);
+        elems.insert(elems.begin()+rowNr*cols, cols, el);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -914,16 +914,16 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr) throw (m
 /**
   * Inserts a column in front of the colNr^th column.
   * It also increases the number of columns.
-  * Elements of the new column will be set to a default value (typically 0).
   *
   * @param colNr - a column will be inserted in front of this column. Valid values between 0 and cols
-  *
+  * @param el - value to be assigned to all inserted elements (default: 0)
+  * 
   * @return reference to itself
   *
   * @throw MatrixException if invalid colNr or if reallocation fails
   */
 template<class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
 {
     // A valid colNr is between 0 and cols (incl.)
     if ( colNr > cols )
@@ -949,7 +949,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr) throw
         // The position of each such element can be calculated as r*(cols+1)+colNr.
         for ( size_t r = 0; r < rows; r++ )
         {
-            elems.insert(elems.begin()+r*(cols+1)+colNr, ZERO);
+            elems.insert(elems.begin()+r*(cols+1)+colNr, el);
         }  // for r
     }  // try
     catch ( const std::bad_alloc& ba )

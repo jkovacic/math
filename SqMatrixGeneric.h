@@ -67,8 +67,8 @@ public:
     // are not applicable for square matrices and throw an exception
     MatrixGeneric<T>& removeRow(size_t rowNr) throw (MatrixException);
     MatrixGeneric<T>& removeColumn(size_t colNr) throw (MatrixException);
-    MatrixGeneric<T>& insertRow(size_t rowNr) throw (MatrixException);
-    MatrixGeneric<T>& insertColumn(size_t colNr) throw (MatrixException);
+    MatrixGeneric<T>& insertRow(size_t rowNr, const T& el=NumericUtil<T>::ZERO) throw (MatrixException);
+    MatrixGeneric<T>& insertColumn(size_t colNr, const T& el=NumericUtil<T>::ZERO) throw (MatrixException);
 };
 
 // Matrices with elements of types float and double make most sense

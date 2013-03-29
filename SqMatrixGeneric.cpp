@@ -425,13 +425,13 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeColumn(size_t colNr) thr
 }
 
 template<class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(size_t rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(size_t rowNr, const T& el) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
 
 template<class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
 }
