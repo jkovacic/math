@@ -30,6 +30,7 @@ Declaration of the class MatrixGeneric, representing generic matrices.
 #include <iostream>
 
 #include "MatrixException.h"
+#include "NumericUtil.h"
 
 namespace math
 {
