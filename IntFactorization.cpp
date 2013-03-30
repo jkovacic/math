@@ -118,7 +118,7 @@ bool math::IntFactorization::isPrime(unsigned long int n)
  * 
  * @throw IntFactorizationException if any of input arguments is zero
  */
-unsigned long int math::IntFactorization::gcd(unsigned long int first, unsigned long int second) throw(math::IntFactorizationException)
+unsigned long int math::IntFactorization::greatestCommonDivisor(unsigned long int first, unsigned long int second) throw(math::IntFactorizationException)
 {
     /*
      * The well known Euclidean algorithm is utilized to find the greatest common divisor.
@@ -159,7 +159,7 @@ unsigned long int math::IntFactorization::gcd(unsigned long int first, unsigned 
  * 
  * @throw IntFactorizationException if any of input arguments is zero or if the LCM exceeds the integer range
  */
-unsigned long int math::IntFactorization::lcm(unsigned long int first, unsigned long int second) throw(math::IntFactorizationException)
+unsigned long int math::IntFactorization::leastCommonMultiple(unsigned long int first, unsigned long int second) throw(math::IntFactorizationException)
 {
     /*
      * 'first' and 'second' can be expressed as:
@@ -192,7 +192,7 @@ unsigned long int math::IntFactorization::lcm(unsigned long int first, unsigned 
     }
 
     // At this point the GCD will be no less than 1, definitely not 0
-    const unsigned long int GCD = gcd(first, second);
+    const unsigned long int GCD = greatestCommonDivisor(first, second);
 
     // so it's safe to divide
     unsigned long long int retVal = first*second/GCD;

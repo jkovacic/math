@@ -961,8 +961,8 @@ void intFactorizationTest()
         {
             const unsigned long int n1 = c[2*i];
             const unsigned long int n2 = c[2*i+1];
-            unsigned long int gcd = IntFactorization::gcd(n1, n2);
-            unsigned long int lcm = IntFactorization::lcm(n1, n2);
+            unsigned long int gcd = IntFactorization::greatestCommonDivisor(n1, n2);
+            unsigned long int lcm = IntFactorization::leastCommonMultiple(n1, n2);
 
             cout << "n1 = " << n1 << ", n2 = " << n2 << ": ";
             cout << "gcd = " << gcd << ", lcm = " << lcm << ", ";

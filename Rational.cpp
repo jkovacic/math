@@ -954,7 +954,7 @@ void math::Rational::reduce()
     // finally obtain the greatest common divisor...
     // Note: since neither 'absNum' nor 'denom' cannot be zero (handled before),
     // IntFactorization::gcd will never throw an exception
-    const unsigned long int gcd = math::IntFactorization::gcd(absNum, denom);
+    const unsigned long int gcd = math::IntFactorization::greatestCommonDivisor(absNum, denom);
 
     // ... and divide both members by it.
     // if both num (handled a few lines above)and denom (not permitted when setting)
