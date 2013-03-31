@@ -221,17 +221,21 @@ void math::PolynomialGeneric<T>::copyCoefs(const std::vector<T>& cvect) throw (m
 template<class T>
 void math::PolynomialGeneric<T>::reduce()
 {
-    const size_t N = coef.size();
-
+    const size_t N = coef.size() - 1;
+    size_t f = 0;
+    
     /*
-        If all coefficients equal zero, coef(0) will be preserved.
-        This is allowed.
-    */
-    for ( size_t i=N-1; i>0 && true==NumericUtil<T>::isZero(coef.at(i)); i-- )
+     * Find the first coefficient (i.e. of the highest order) that is not
+     * equal to zero. If necessary, delete all coefficients of higher order,
+     * excluding the first non-zero coefficient. The first coefficient (coef[0])
+     * must never be deleted even if it also equals zero.
+     */
+    for ( f=N; f>0 && true==math::NumericUtil<T>::isZero(coef.at(f)); f-- );
+    
+    if ( f<N )
     {
-        coef.erase(coef.begin()+i);
+        coef.erase(coef.begin()+f+1, coef.end());
     }
-
 }
 
 /**
