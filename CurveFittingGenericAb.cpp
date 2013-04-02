@@ -147,7 +147,7 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::enterPoint(const
         throw math::CurveFittingException(math::CurveFittingException::ADD_POINT_NOT_ALLOWED);
     }
 
-    // Check that the nr. of points would not exceed tha max. allowed list's size
+    // Check that the nr. of points would not exceed the max. allowed list's size
     if ( points.size()==points.max_size() )
     {
         throw math::CurveFittingException(math::CurveFittingException::ADD_POINT_NOT_ALLOWED);
@@ -210,7 +210,7 @@ T math::CurveFittingGenericAb<T>::lowerBound() const throw (math::CurveFittingEx
     // traverse the list and find the smallest abscissa
     typename std::list< typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator currMin = points.begin();
     for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin();
-               it!=points.end(); it++ )
+               it!=points.end(); ++it )
     {
         if ( currMin->p_x > it->p_x )
         {
@@ -244,7 +244,7 @@ T math::CurveFittingGenericAb<T>::upperBound() const throw (math::CurveFittingEx
 
     // traverse the list and find the highest abscissa
     typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator currMax = points.begin();
-    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); it!=points.end(); it++ )
+    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); it!=points.end(); ++it )
     {
         if ( currMax->p_x < it->p_x )
         {
@@ -277,7 +277,7 @@ bool math::CurveFittingGenericAb<T>::duplicatePoints() const
         to the next point's abscissa. This is why the list must be sorted.
      */
     bool retVal = false;
-    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); it!=points.end(); it++ )
+    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); it!=points.end(); ++it )
     {
         /*
             The function also requires a pointer to the next element. As operator+ is not defined
@@ -285,7 +285,7 @@ bool math::CurveFittingGenericAb<T>::duplicatePoints() const
             it, then its operator++ (which is defined) is called immediately.
         */
         typename std::list< typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator next = it;
-        next++;
+        ++next;
 
         // the last point, nothing else to compare its abscissa to
         if ( points.end()==next )

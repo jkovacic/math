@@ -127,7 +127,7 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
             size_t idx = 0;
             for ( 
               typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin();
-                        it!=this->points.end(); it++, idx++ )
+                        it!=this->points.end(); ++it, ++idx )
                 {
                     x.at(idx) = it->p_x;
                     a.at(idx) = it->p_y;

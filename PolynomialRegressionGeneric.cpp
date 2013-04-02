@@ -108,7 +108,7 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
              traversed once and the appropriate terms will be added to 
              matrices' elements
          */
-        for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin(); it!=this->points.end(); it++ )
+        for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin(); it!=this->points.end(); ++it )
         {
             // initial values of summands
             T aterm = math::NumericUtil<T>::ONE;

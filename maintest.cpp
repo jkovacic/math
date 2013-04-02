@@ -915,7 +915,7 @@ void intFactorizationTest()
             f = IntFactorization::factor(nf[i]);
             cout << nf[i] << " = ";
             for ( map<unsigned long int, unsigned int>::iterator it=f.begin();
-                  it!=f.end(); it++ )
+                  it!=f.end(); ++it )
             {
                 if ( it!=f.begin() )
                 {
@@ -933,7 +933,7 @@ void intFactorizationTest()
             set<unsigned long int> d;
             d = IntFactorization::divisors(nf[i]);
             cout << "\tdivisors: ";
-            for ( set<unsigned long int>::iterator it=d.begin(); it!=d.end(); it++ )
+            for ( set<unsigned long int>::iterator it=d.begin(); it!=d.end(); ++it )
             {
                 if ( it!=d.begin() )
                 {
