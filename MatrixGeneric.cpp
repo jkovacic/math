@@ -313,10 +313,10 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
         // confusing. However, this is more or less "just" an auxiliary function, mainly used for
         // testing purposes, and the effort was focused to other functionalities.
         // Anyway, it would be nice to improve it in future.
-        for ( size_t r=0; r<rows; r++ )
+        for ( size_t r=0; r<rows; ++r )
         {
             // display elements of the row r, separated by tabs
-            for ( size_t c=0; c<cols; c++ )
+            for ( size_t c=0; c<cols; ++c )
             {
                 str << elems.at(pos(r, c)) << "\t";
             }
@@ -381,7 +381,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator+ (const math::MatrixGene
     {
         // Matrices have the same number of elements, just traverse
         // them linearly and perform addition of elements at the same position
-        for ( size_t i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; ++i )
         {
             temp.elems.at(i) = elems.at(i) + matrix.elems.at(i);
         }
@@ -416,7 +416,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     // For a definition of matrix addition, see operator+
     try
     {
-        for ( size_t i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; ++i )
         {
             elems.at(i) += m.elems.at(i);
         }
@@ -454,7 +454,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator- (const math::MatrixGene
 
     try
     {
-        for ( size_t i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; ++i )
         {
             temp.elems.at(i) = elems.at(i) - m.elems.at(i);
         }
@@ -490,7 +490,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
 
     try
     {
-        for ( size_t i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; ++i )
         {
             elems.at(i) -= matrix.elems.at(i);
         }
@@ -521,7 +521,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
     math::MatrixGeneric<T> temp(rows, cols);
     try
     {
-        for ( size_t i=0; i<rows*cols; i++ )
+        for ( size_t i=0; i<rows*cols; ++i )
         {
             temp.elems.at(i) = -elems.at(i);
         }
@@ -571,12 +571,12 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
 
     try
     {
-        for ( size_t r=0; r<rows; r++ )
+        for ( size_t r=0; r<rows; ++r )
         {
-            for ( size_t c=0; c<matrix.cols; c++ )
+            for ( size_t c=0; c<matrix.cols; ++c )
             {
                 T sum = ZERO;
-                for ( size_t i=0; i<cols; i++ )
+                for ( size_t i=0; i<cols; ++i )
                 {
                     sum += elems.at(pos(r, i)) * matrix.elems.at(matrix.pos(i, c));
                 }
@@ -652,7 +652,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
     try
     {
         const size_t N = rows*cols;
-        for ( size_t i=0; i<N; i++ )
+        for ( size_t i=0; i<N; ++i )
         {
             retVal.elems.at(i) = elems.at(i) * scalar;
         }
@@ -679,7 +679,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
     const size_t N = rows*cols;
 
     // Multiply each element by the 'scalar'
-    for ( size_t i=0; i<N; i++ )
+    for ( size_t i=0; i<N; ++i )
     {
         elems.at(i) *= scalar;
     }
@@ -726,9 +726,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     try
     {
         // "collect" all elements of this
-        for ( size_t r=0; r<rows; r++ )
+        for ( size_t r=0; r<rows; ++r )
         {
-            for ( size_t c=0; c<cols; c++ )
+            for ( size_t c=0; c<cols; ++c )
             {
                 // and swap their "coordinates"
                 retVal.elems.at(retVal.pos(c, r)) = elems.at(pos(r, c));
@@ -773,9 +773,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 
-    for ( size_t r=0; r<rows; r++ )
+    for ( size_t r=0; r<rows; ++r )
     {
-        for ( size_t c=0; c<cols; c++ )
+        for ( size_t c=0; c<cols; ++c )
         {
             tempElems.at(c*rows + r) = this->elems.at(pos(r, c));
         }  // for c
@@ -823,7 +823,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (m
     elems.erase(elems.begin()+rowNr*cols, elems.begin()+(rowNr+1)*cols);
 
     // Elements have been removed, update the number of rows
-    rows--;
+    --rows;
 
     return *this;
 }
@@ -854,13 +854,13 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw
     // the first one (row=0). This way the position of the element to be removed
     // is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
     // move remaining elements appropriately
-    for ( size_t i=1; i<=rows; i++ )
+    for ( size_t i=1; i<=rows; ++i )
     {
         elems.erase(elems.begin()+(rows-i)*cols+colNr);
     }
 
     // All required elements have been removed, now update the number of columns
-    cols--;
+    --cols;
 
     return *this;
 }
@@ -906,7 +906,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T&
     }
 
     // Insertion was successful, update the number of rows
-    rows++;
+    ++rows;
 
     return *this;
 }
@@ -947,7 +947,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
 
         // Elements will be inserted step by step, with ascending row coordinate.
         // The position of each such element can be calculated as r*(cols+1)+colNr.
-        for ( size_t r = 0; r < rows; r++ )
+        for ( size_t r = 0; r < rows; ++r )
         {
             elems.insert(elems.begin()+r*(cols+1)+colNr, el);
         }  // for r
@@ -958,7 +958,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
     }
 
     // Insertion successful, update the number of columns
-    cols++;
+    ++cols;
 
     return *this;
 }

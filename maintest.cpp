@@ -874,7 +874,7 @@ void intFactorizationTest()
         unsigned long int s[NS] = { 12, 100, 37423 };
 
         // Expected results: 3, 10 and 193
-        for ( unsigned int i=0; i<NS; i++ )
+        for ( unsigned int i=0; i<NS; ++i )
         {
             cout << "Int sqrt of " << s[i] << ": " << IntFactorization::intSqrt(s[i]) << endl;
         }
@@ -889,7 +889,7 @@ void intFactorizationTest()
          * (T, 5), (F, 7), (F, 17), (T, 41), (T, 263), (F, 709), (T, 911)
          * (F, 101863), (F, 102607), (T, 104623)
          */
-        for ( unsigned int i=0; i<NP; i++ )
+        for ( unsigned int i=0; i<NP; ++i )
         {
             cout << p[i] << " is ";
             cout << ( true==IntFactorization::isPrime(p[i]) ? "" : "not ");
@@ -909,7 +909,7 @@ void intFactorizationTest()
          * 195327 = 3^2 * 11 * 1973     [1, 3, 9, 11, 33, 99, 1973, 5919, 17757, 21703, 65109, 195327]
          * 3428543 = 17 * 41 * 4919     [1, 17, 41, 697, 4919, 83623, 201679, 3428543]
          */
-        for ( unsigned int i=0; i<NF; i++ )
+        for ( unsigned int i=0; i<NF; ++i )
         {
             map<unsigned long int, unsigned int> f;
             f = IntFactorization::factor(nf[i]);
@@ -957,7 +957,7 @@ void intFactorizationTest()
          * n1 = 3, n2 = 57: gcd = 3, lcm = 57
          * n1 = 234, n2 = 7643: gcd = 1, lcm = 1788462
          */
-        for ( unsigned int i=0; i<NC/2; i++ )
+        for ( unsigned int i=0; i<NC/2; ++i )
         {
             const unsigned long int n1 = c[2*i];
             const unsigned long int n2 = c[2*i+1];

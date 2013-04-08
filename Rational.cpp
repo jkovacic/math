@@ -208,7 +208,7 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
     bool hasDigits = false; // does the string contain at least one decimal digit
 
     // Check if 'str' is a proper decimal representation
-    for ( unsigned int i=0; i<LEN; i++ )
+    for ( unsigned int i=0; i<LEN; ++i )
     {
         const char ch = str.at(i);
 
@@ -1078,7 +1078,7 @@ unsigned long long int math::Rational::pow10(unsigned int n) throw (math::Ration
     unsigned long long int temp = 1LL;
     const unsigned long long int MAX_FACTOR = ULLONG_MAX / POW10_BASE;
 
-    for ( unsigned int i=0; i<n; i++ )
+    for ( unsigned int i=0; i<n; ++i )
     {
         // prevent a possible integer overflow
         if ( temp > MAX_FACTOR )
@@ -1112,7 +1112,7 @@ long long int math::Rational::str2ll(const std::string& str) throw (math::Ration
     {
         // if the string starts with a sign, the allowed number
         // of string's characters may be increased by 1.
-        lmax++;
+        ++lmax;
     }
 
     if ( str.length()>lmax )

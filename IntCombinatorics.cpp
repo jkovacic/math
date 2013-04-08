@@ -73,7 +73,7 @@ unsigned long long int math::IntCombinatorics::fallingFactorial(unsigned long lo
      * Since K cannot be greater than N, the loop will terminate before
      * i reaches 0 and an integer overflow is not possible.
      */
-    for ( unsigned long long int i=N; i>=N-K+1; i-- )
+    for ( unsigned long long int i=N; i>=N-K+1; --i )
     {
         if ( ULLONG_MAX/retVal < i )
         {
@@ -330,7 +330,7 @@ unsigned long long int math::IntCombinatorics::binom(unsigned long long int N, u
     
     // Since k is min (K, N-K), it can never be equal to ULLONG_MAX,
     // so the integer overflow of 'i' is not possible.
-    for ( unsigned long long int i=1; i<=k; i++ )
+    for ( unsigned long long int i=1; i<=k; ++i )
     {
         const unsigned long long int factor = N-k+i; 
         if ( ULLONG_MAX/retVal < factor )

@@ -124,7 +124,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(T* carray, size_t n) throw (math::
         coef.resize(n);
 
         // And copy all elements from the array.
-        for ( size_t i=0; i<n; i++ )
+        for ( size_t i=0; i<n; ++i )
         {
             coef.at(i) = carray[i];
         }
@@ -230,7 +230,7 @@ void math::PolynomialGeneric<T>::reduce()
      * excluding the first non-zero coefficient. The first coefficient (coef[0])
      * must never be deleted even if it also equals zero.
      */
-    for ( f=N; f>0 && true==math::NumericUtil<T>::isZero(coef.at(f)); f-- );
+    for ( f=N; f>0 && true==math::NumericUtil<T>::isZero(coef.at(f)); --f );
     
     if ( f<N )
     {
@@ -299,7 +299,7 @@ std::vector<T> math::PolynomialGeneric<T>::getDesc() const throw (math::Polynomi
         std::vector<T> retVal(N);
 
         // copy elements from coef to retVal in reverse order:
-        for ( size_t i=0; i<N; i++ )
+        for ( size_t i=0; i<N; ++i )
         {
             retVal.at(i) = this->coef.at(N-1-i);
         }
@@ -401,7 +401,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vecto
         coef.clear();
         coef.resize(N);
 
-        for ( size_t i=0; i<N; i++ )
+        for ( size_t i=0; i<N; ++i )
         {
             coef.at(i) = cvect.at(N-1-i);
         }
@@ -584,7 +584,7 @@ T math::PolynomialGeneric<T>::value(const T& x) const
     size_t i = coef.size() - 1;
     T retVal = coef.at(i);
 
-    for ( ; i>0; i-- )
+    for ( ; i>0; --i )
     {
         retVal = retVal*x + coef.at(i-1);
     }
@@ -625,7 +625,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
     }
 
     // For polynomials of higher degree (>0) apply the formula above:
-    for ( size_t i=0; i<DEG; i++ )
+    for ( size_t i=0; i<DEG; ++i )
     {
         retVal.coef.at(i) = static_cast<T>(i+1)*coef.at(i+1);
     }
@@ -669,7 +669,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
     retVal.coef.at(0) = c;
 
     // for other coefficients, apply the formula above:
-    for ( size_t i=0; i<N; i++ )
+    for ( size_t i=0; i<N; ++i )
     {
         retVal.coef.at(i+1) = coef.at(i)/static_cast<T>(i+1);
     }
@@ -721,7 +721,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator+(const math::Pol
             Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its i^th coefficient as 0 (already set above)
         */
-        for ( size_t i=0; i<nmax; i++ )
+        for ( size_t i=0; i<nmax; ++i )
         {
             if ( i<nthis )
             {
@@ -771,7 +771,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
-        for ( size_t i=0; i<npoly; i++ )
+        for ( size_t i=0; i<npoly; ++i )
         {
             coef.at(i) += poly.coef.at(i);
         }
@@ -882,7 +882,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-(const math::Pol
             Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its ith coefficient as 0 (already set above)
         */
-        for ( size_t i=0; i<nmax; i++ )
+        for ( size_t i=0; i<nmax; ++i )
         {
             if ( i<nthis )
             {
@@ -932,7 +932,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
-        for ( size_t i=0; i<npoly; i++ )
+        for ( size_t i=0; i<npoly; ++i )
         {
             coef.at(i) -= poly.coef.at(i);
         }
@@ -1024,7 +1024,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-() const throw (
         math::PolynomialGeneric<T> retVal(*this);
 
         // Just negate each coefficient:
-        for ( size_t i=0; i<coef.size(); i++ )
+        for ( size_t i=0; i<coef.size(); ++i )
         {
             retVal.coef.at(i) = -coef.at(i);
         }
@@ -1100,11 +1100,11 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const math::Pol
         math::PolynomialGeneric<T> retVal(N);
 
         // Each product's coefficient...
-        for ( size_t i=0; i<N; i++ )
+        for ( size_t i=0; i<N; ++i )
         {
             // ... is a sum of products as specified above
             T temp = math::NumericUtil<T>::ZERO;
-            for ( size_t j=0; j<N; j++ )
+            for ( size_t j=0; j<N; ++j )
             {
                 // if any index would point out of respective polynomial's range,
                 // treat it as a zero (i.e. skip this iteration)
@@ -1183,7 +1183,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const T& sc) co
     const size_t N = this->coef.size();
     math::PolynomialGeneric<T> retVal(*this);
 
-    for ( size_t i=0; i<N; i++ )
+    for ( size_t i=0; i<N; ++i )
     {
         retVal.coef.at(i) *= sc;
     }
@@ -1206,7 +1206,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
 {
     // Multiply each coefficient by the scalar
     const size_t N = coef.size();
-    for ( size_t i=0; i<N; i++ )
+    for ( size_t i=0; i<N; ++i )
     {
         coef.at(i) *= sc;
     }
@@ -1250,7 +1250,7 @@ void math::PolynomialGeneric<T>::display(char arg, std::ostream& str) const
     */
 
     // Display coefficients with powers of the variable in ascending order:
-    for ( size_t i=0; i<coef.size(); i++ )
+    for ( size_t i=0; i<coef.size(); ++i )
     {
         /*
             A space will be displayed between terms to better distinguish them.

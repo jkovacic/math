@@ -155,9 +155,9 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
         
         // recalculate vector's element as differential quotients:
         // a(i) = (a(i+1)-a(i))/ (appropriate difference of x)
-        for ( size_t c=0; c<(N-1); c++ )
+        for ( size_t c=0; c<(N-1); ++c )
         {
-            for ( size_t i=0; i<(N-1-c); i++ )
+            for ( size_t i=0; i<(N-1-c); ++i )
             {
                 a.at(i) = (a.at(i+1)-a.at(i)) / (x.at(i+c+1)-x.at(i));
             }  // for i

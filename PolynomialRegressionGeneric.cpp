@@ -115,11 +115,11 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
             T bterm = it->p_y;
 
             // i actually determines a position inside both matrices: i = r+c             
-            for ( size_t i=0; i<(2*N-1); i++ )
+            for ( size_t i=0; i<(2*N-1); ++i )
             {
                 // find all possible rows satisfying the condition above
                 const size_t Rmax = ( i<=degree ? i : degree );
-                for ( size_t r=0; r<=Rmax; r++ )
+                for ( size_t r=0; r<=Rmax; ++r )
                 {
                     // do not update anything if any element 
                     // is out of matrix's range
@@ -150,7 +150,7 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
         math::MatrixGeneric<T> x = leq.solve();
 
         // And finally fill the regression polynomial
-        for ( size_t i=0; i<N; i++ )
+        for ( size_t i=0; i<N; ++i )
         {
             this->poly.set(i, x.at(i, 0));
         }

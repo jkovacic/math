@@ -372,7 +372,7 @@ std::map<unsigned long int, unsigned int> math::IntFactorization::factor(unsigne
             while ( pf<=comp && 0==comp%pf )
             {
                 // For each successful division, update the key's (pf) value:
-                retVal[pf]++;
+                ++retVal[pf];
                 // and divide comp by pf:
                 comp /= pf;
             }
@@ -416,7 +416,7 @@ std::set<unsigned long int> math::IntFactorization::divisors(unsigned long int n
          * 'n' by it. If 'n' is divisible by 'i', insert 'i' and 'n/i'
          * into the set.
          */
-        for ( unsigned long int i=1; i*i<=n; i++ )
+        for ( unsigned long int i=1; i*i<=n; ++i )
         {
             // Check divisibility by 'i':
             if ( 0==n%i )

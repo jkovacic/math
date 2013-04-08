@@ -134,9 +134,9 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
     {
         const size_t N = this->rows;
 
-        for ( size_t i=0; i<N; i++ )
+        for ( size_t i=0; i<N; ++i )
         {
-            for ( size_t j=0; j<N; j++ )
+            for ( size_t j=0; j<N; ++j )
             {
                 this->elems.at(POS(i, j)) = ( i==j ? scalar : ZERO );
             } // for j
@@ -204,7 +204,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         
         const size_t N = this->rows;  // number of rows (and columns)
 
-        for ( size_t i=0; i<N-1; i++ )
+        for ( size_t i=0; i<N-1; ++i )
         {
             // if temp(i,i) equals zero, swap the i^th line with
             // another one (r; r>i) satisfying temp(r,i)!=0
@@ -217,7 +217,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // Find the r^th line meeting the criteria above
                 // If not found, the determinant will be 0.
 
-                for ( r=i+1; r<N; r++ )
+                for ( r=i+1; r<N; ++r )
                 {
                     if ( false == NumericUtil<T>::isZero(temp.at(POS(r, i))) )
                     {
@@ -241,7 +241,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // BTW, all elements left of (i,i) and (r,i) should already be
                 // equal to 0 and it wouldn't be necessary to swap them.
                 // But a few extra "operations" shouldn't considerably affect complexity
-                for ( size_t c=POS(i,0); c<POS(i+1,0); c++ )
+                for ( size_t c=POS(i,0); c<POS(i+1,0); ++c )
                 {
                     const T tempElem = temp.at(c);
                     temp.at(c) = temp.at(POS(r, c));
@@ -259,14 +259,14 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // a multiplier of one line (i in this algorithm)
             // is added to another line (r; r>i)
 
-            for ( size_t r=i+1; r<N; r++ )
+            for ( size_t r=i+1; r<N; ++r )
             {
                 // temp(r,i) will be calculated to 0 immediately.
                 // However, its initial value is necessary to properly
                 // calculate all other elements of the r^th row
                 T ri = temp.at(POS(r, i));
 
-                for ( size_t c=i; c<N; c++ )
+                for ( size_t c=i; c<N; ++c )
                 {
                     // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
                     temp.at(POS(r, c)) -= temp.at(POS(i, c)) * ri / temp.at(POS(i, i));
@@ -276,7 +276,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
         // Now temp is an upper triangular matrix so all its diagonal
         // elements can be multiplied
-        for ( size_t i=0; i<N; i++)
+        for ( size_t i=0; i<N; ++i )
         {
             retVal *= temp.at(POS(i, i));
         }
@@ -364,9 +364,9 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     // Traverse the upper diagonal part of the matrix,
     // no need to reach the final row and
     // no need to transpose elements on the diagonal:
-    for ( size_t r=0; r<N-1; r++ )
+    for ( size_t r=0; r<N-1; ++r )
     {
-        for ( size_t c=r+1; c<N; c++ )
+        for ( size_t c=r+1; c<N; ++c )
         {
             temp = this->elems.at(POS(r, c));
             this->elems.at(POS(r, c)) = this->elems.at(POS(c, r));
