@@ -36,6 +36,7 @@ limitations under the License.
 #include "PolynomialInterpolationGeneric.h"
 #include "IntFactorization.h"
 #include "IntCombinatorics.h"
+#include "PermutationGeneric.h"
 
 #include <iostream>
 #include <cmath>
@@ -1031,7 +1032,53 @@ void intCombinatoricsTest()
 }
 
 /*
- * Main function that starts three groups of unit tests
+ * Test of classes that list all permutations and combinations of a sequence
+ */
+void combinatoricsTest()
+{
+    try
+    {
+        cout << "Permutations:" << endl;
+        
+        vector<char> ptvect;
+        for ( char ch='a'; ch<='e'; ++ch )
+        {
+            ptvect.push_back(ch);
+        }
+        
+        PermutationGeneric<char> peng(ptvect);
+        size_t cnt = 1;
+        while ( true==peng.hasNext() )
+        {
+            list<list<char> > lp = peng.next(25);
+            for ( list<list<char> >::const_iterator lit=lp.begin(); lit!=lp.end(); ++lit )
+            {
+                cout << cnt++ << ": ";
+                for ( list<char>::const_iterator cit=lit->begin(); cit!=lit->end(); ++cit )
+                {
+                    cout << *cit;
+                }
+                cout << endl;
+            }
+        }
+        
+        cout << endl;
+        // TBD Combinations when implemented
+    }
+    catch ( const CombinatoricsException& ex )
+    {
+        cerr << "Combinatorics exception caught: ";
+        ex.display();
+        cerr << endl;
+    }
+    catch (...)
+    {
+        cerr << "Other exception caught.";
+    }
+}
+
+/*
+ * Main function that starts several groups of unit tests
  */
 int main(int argc, const char* argv[])
 {
@@ -1064,6 +1111,9 @@ int main(int argc, const char* argv[])
 
     cout << endl << "I N T   C O M B I N A T O R I C S   T E S T" << endl << endl;
     intCombinatoricsTest();
+    
+    cout << endl << "C O M B I N A T O R I C S   T E S T" << endl << endl;
+    combinatoricsTest();
     
     return 0;
 }

@@ -38,7 +38,8 @@ struct CombinatoricsException : public IMathException
     /// Enum with possible error codes
     enum err_codes {
         OUT_OF_RANGE,       /// result is out of integer range
-        INVALID_INPUT       /// operation does not make any sense with this input argument
+        INVALID_INPUT,      /// operation does not make any sense with this input argument
+        OUT_OF_MEMORY       /// allocation of memory failed
     };
 
     err_codes error;    /// type of an error
