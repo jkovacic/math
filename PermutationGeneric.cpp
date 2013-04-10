@@ -129,6 +129,82 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::set<T>& el) throw (ma
     }
 }
 
+/**
+ * Constructor.
+ * 
+ * @param el - a deque of elements to be permutated
+ * 
+ * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
+ */
+template<class T>
+math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (math::CombinatoricsException)
+{
+    try
+    {
+        const size_t N = el.size();
+        if ( 0==N )
+        {
+            throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
+        }
+        
+        // copy elements of 'el' into 'elems'
+        elems.clear();
+        elems.reserve(N);
+        for ( typename std::deque<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
+        {
+            elems.push_back(*it);
+        }
+        
+        init();
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_MEMORY);
+    }
+}
+
+/**
+ *  Constructor.
+ * 
+ * @note Usage of this constructor may be dangerous if 'len' is larger then the actual size of the array.
+ *       Use it carefully and double check both input arguments!
+ * 
+ * @param elarray - array of elements
+ * @param len - number of elements in the array
+ * 
+ * @throw CombinatoricsException if input arguments are invalid or if allocation of memory fails
+ */
+template<class T>
+math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) throw (math::CombinatoricsException)
+{
+    try
+    {
+        // sanity check
+        if ( len<=0 || NULL==elarray )
+        {
+            throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
+        }
+        
+        if ( len>elems.max_size() )
+        {
+            throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
+        }
+        
+        elems.clear();
+        elems.reserve(len);
+        for ( size_t i=0; i<len; ++i )
+        {
+            elems.push_back(elarray[i]);
+        }
+        
+        init();
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_MEMORY);
+    }
+}
+    
 /*
  * Initialization of class's internal data to initial values
  * 

@@ -32,6 +32,7 @@ limitations under the License.
 #include <vector>
 #include <list>
 #include <set>
+#include <deque>
 
 namespace math
 {
@@ -73,7 +74,8 @@ public:
     PermutationGeneric(const std::vector<T>& el) throw (CombinatoricsException);
     PermutationGeneric(const std::list<T>& el) throw (CombinatoricsException);
     PermutationGeneric(const std::set<T>& el) throw (CombinatoricsException);
-    // TODO add constructors from other data structures         
+    PermutationGeneric(const std::deque<T>& el) throw (CombinatoricsException);
+    PermutationGeneric(const T* elarray, size_t len) throw (CombinatoricsException);       
     
     // Retrieves next n permutations
     std::list<std::list<T> > next(size_t n=1) throw (CombinatoricsException);
