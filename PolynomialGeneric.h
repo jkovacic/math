@@ -74,7 +74,7 @@ private:
 public:
     // Constructors
     PolynomialGeneric(std::vector<T> cvect) throw (PolynomialException);
-    PolynomialGeneric(T* carray, size_t n) throw (PolynomialException);
+    PolynomialGeneric(const T* carray, size_t n) throw (PolynomialException);
     PolynomialGeneric(size_t n = 1) throw (PolynomialException);
     PolynomialGeneric(const PolynomialGeneric<T>& poly) throw (PolynomialException);
 

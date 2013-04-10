@@ -103,7 +103,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const PolynomialGeneric<T>& poly) 
  * @throw PolynomialException if input arguments are invalid or if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>::PolynomialGeneric(T* carray, size_t n) throw (math::PolynomialException)
+math::PolynomialGeneric<T>::PolynomialGeneric(const T* carray, size_t n) throw (math::PolynomialException)
 {
     // sanity check
     if ( NULL==carray || n<=0 )
