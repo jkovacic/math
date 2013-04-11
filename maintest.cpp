@@ -37,6 +37,7 @@ limitations under the License.
 #include "IntFactorization.h"
 #include "IntCombinatorics.h"
 #include "PermutationGeneric.h"
+#include "CombinationGeneric.h"
 
 #include <iostream>
 #include <cmath>
@@ -1040,17 +1041,17 @@ void combinatoricsTest()
     {
         cout << "Permutations:" << endl;
         
-        vector<char> ptvect;
+        vector<char> chvect;
         for ( char ch='a'; ch<='e'; ++ch )
         {
-            ptvect.push_back(ch);
+            chvect.push_back(ch);
         }
         
-        PermutationGeneric<char> peng(ptvect);
+        PermutationGeneric<char> perm(chvect);
         size_t cnt = 1;
-        while ( true==peng.hasNext() )
+        while ( true==perm.hasNext() )
         {
-            list<list<char> > lp = peng.next(25);
+            list<list<char> > lp = perm.next(25);
             for ( list<list<char> >::const_iterator lit=lp.begin(); lit!=lp.end(); ++lit )
             {
                 cout << cnt++ << ": ";
@@ -1062,8 +1063,29 @@ void combinatoricsTest()
             }
         }
         
+        cout << endl << "Combinations:" << endl;
+        CombinationGeneric<char> comb(chvect);
+        for ( size_t k=1; k<=chvect.size(); ++k )
+        {
+            cout << endl << "K = " << k << " : " << endl << endl;
+            comb.setK(k);
+            cnt = 1;
+            while ( true==comb.hasNext() )
+            {
+                list<set<char> > lc = comb.next(5);
+                for ( list<set<char> >::const_iterator lit=lc.begin(); lit!=lc.end(); ++lit )
+                {
+                    cout << cnt++ << ": ";
+                    for ( set<char>::const_iterator cit=lit->begin(); cit!=lit->end(); ++cit )
+                    {
+                        cout << *cit;
+                    }
+                    cout << endl;
+                }
+            }
+        }
+        
         cout << endl;
-        // TBD Combinations when implemented
     }
     catch ( const CombinatoricsException& ex )
     {
