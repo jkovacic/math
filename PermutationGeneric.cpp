@@ -217,12 +217,12 @@ void math::PermutationGeneric<T>::init() throw (math::CombinatoricsException)
     {
         morePermutations = true;
         started = false;
-        const size_t N = elems.size();
+        N_len = elems.size();
         
         // Initially 'addr' is filled by consecutive integers from 0 to N-1
         addr.clear();
-        addr.reserve(N);
-        for ( size_t i=0; i<N; ++i )
+        addr.reserve(N_len);
+        for ( size_t i=0; i<N_len; ++i )
         {
             addr.push_back(i);
         }
@@ -239,7 +239,7 @@ void math::PermutationGeneric<T>::init() throw (math::CombinatoricsException)
  * The class is stateful, i.e. only those permutations are returned that have not
  * been returned by previous calls of next() on the same instance of the class.
  * 
- * Order of permutations is determined. Sequences of indexes are lexicographically 
+ * Order of permutations is deterministic. Sequences of indexes are lexicographically 
  * sorted in ascending order, for instance:
  * 
  *     a(1)a(2)a(3) -> a(1)a(3)a(2) -> a(2)a(1)a(3) ->
@@ -261,7 +261,9 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
     
     try
     {
-        const size_t N = elems.size();
+        // N_len is used frequently inside this function. As it is intended to
+        // remain constant, a const ref. is used to prevent unintentional modifications.
+        const size_t& N = N_len;
         std::list<std::list<T> > retVal;
         retVal.clear();
         

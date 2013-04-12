@@ -59,6 +59,9 @@ private:
     // Current sequence of elements' addresses for the current permutation  
     std::vector<size_t> addr;
     
+    // Size of elems
+    size_t N_len;
+    
     // More permutations available?
     bool morePermutations;
     
