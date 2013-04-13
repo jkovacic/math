@@ -66,6 +66,27 @@ math::PolynomialGeneric<T>::PolynomialGeneric(std::vector<T> cvect) throw (math:
     }
 }
 
+/**
+ * Constructor that assigns a scalar value to a zero-degree polynomial
+ * 
+ * @param c0 - scalar value of the polynomial (default: 0)
+ * 
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T>::PolynomialGeneric(const T& c0) throw (math::PolynomialException)
+{
+    try
+    {
+        coef.resize(1);
+        coef.at(0) = c0;
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        // Memory allocation failed
+        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
+    }
+}
 
 /**
  * Copy constructor.
@@ -147,12 +168,13 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T* carray, size_t n) throw (
  * Allocates memory for 'n' coefficients. All coefficients are assigned a zero value except the
  * highest order coefficients that is assigned '1' to prevent immediate reduction.
  *
+ * @param ignored - ignored, its sole purpose is to distinguish the constructor from PolynomialGeneric(const T&)
  * @param n - number of all coefficients (default: 1)
  *
  * @throw PolynomialException if 'n' is invalid or if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>::PolynomialGeneric(size_t n) throw (math::PolynomialException)
+math::PolynomialGeneric<T>::PolynomialGeneric(bool ignored, size_t n) throw (math::PolynomialException)
 {
     // sanity check:
     if ( n<=0 )
@@ -612,7 +634,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
 
     // if 'this' is already a constant (degree==0), its derivative will also be a constant with value 0:
     const size_t DEG = (1==N ? 1 : N-1);
-    math::PolynomialGeneric<T> retVal(DEG);
+    math::PolynomialGeneric<T> retVal(true, DEG);
 
     if ( 1==N )
     {
@@ -663,7 +685,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
         throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
     }
     
-    math::PolynomialGeneric<T> retVal(N+1);
+    math::PolynomialGeneric<T> retVal(true, N+1);
 
     // coef(0) is an arbitrary value, given as c:
     retVal.coef.at(0) = c;
@@ -712,7 +734,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator+(const math::Pol
         */
         const size_t nmax = ( nthis>=npoly ? nthis : npoly );
 
-        math::PolynomialGeneric<T> retVal(nmax);
+        math::PolynomialGeneric<T> retVal(true, nmax);
 
         // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
         retVal.coef.at(nmax-1) = NumericUtil<T>::ZERO;
@@ -873,7 +895,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-(const math::Pol
 
         const size_t nmax = ( nthis>=npoly ? nthis : npoly );
 
-        math::PolynomialGeneric<T> retVal(nmax);
+        math::PolynomialGeneric<T> retVal(true, nmax);
 
         // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
         retVal.coef.at(nmax-1) = math::NumericUtil<T>::ZERO;
@@ -1097,7 +1119,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const math::Pol
         // Size of the product polynomial:
         const size_t N = nthis + npoly - 1;
 
-        math::PolynomialGeneric<T> retVal(N);
+        math::PolynomialGeneric<T> retVal(true, N);
 
         // Each product's coefficient...
         for ( size_t i=0; i<N; ++i )

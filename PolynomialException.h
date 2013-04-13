@@ -33,6 +33,9 @@ Declaration of the class PolynomialException
 namespace math
 {
 
+/**
+ * @brief An exception, typically  thrown by functions of PolynomialGeneric
+ */
 struct PolynomialException : public IMathException
 {
     /// Enum with possible error codes

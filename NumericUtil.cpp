@@ -203,7 +203,7 @@ void math::NumericUtil<T>::setEPS(const T& eps)
  * 
  * At the moment, getUnit() is only used by power(). Until it is changed,
  * getUnit() will be defined in this file as a templated standalone function.
- * Additionlly, implementations of the function are "hidden" in the namespace
+ * Additionally, implementations of the function are "hidden" in the namespace
  * math::getunit which is not supposed to be known to other members of math::
  */
 namespace math
@@ -228,7 +228,7 @@ namespace math
          * @param t - an arbitrary instance of a square matrix to determine 
          *            dimensions of the returned unit matrix
          *
-         * @return a unit nxn square matrix where n is a dimension of 't'
+         * @return a unit n x n square matrix where n is a dimension of 't'
          */
         template<class T>
         math::SqMatrixGeneric<T> getUnit(const math::SqMatrixGeneric<T>& t)
@@ -241,18 +241,17 @@ namespace math
 
         /*
          * Specialization for generic class math::PolynomialGeneric<T>
-         * 
+         *
          * @param t - ignored
-         * 
-         * @return a unit polynomial p(x) = (T)1 
+         *
+         * @return a unit polynomial p(x) = (T)1
          */
         template<class T>
         math::PolynomialGeneric<T> getUnit(const math::PolynomialGeneric<T>& t)
         {
-            math::PolynomialGeneric<T> retVal(1);
-            retVal.set(0, math::NumericUtil<T>::ONE);
-            return retVal;
+            return math::PolynomialGeneric<T>(math::NumericUtil<T>::ONE);
         }
+        
     } // namespace units
 } // namespace math
 

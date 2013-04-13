@@ -56,6 +56,14 @@ template<class T>
 std::ostream& operator<<(std::ostream& output, const PolynomialGeneric<T>& q);
 
 
+/**
+ * A class representing monovariable polynomials and their basic operators.
+ * 
+ * Additional functionalities, such as polynomial derivation and integration,
+ * are implemented.
+ * 
+ * Root finding algorithm is not implemented yet.
+ */
 template<class T>
 class PolynomialGeneric
 {
@@ -74,8 +82,9 @@ private:
 public:
     // Constructors
     PolynomialGeneric(std::vector<T> cvect) throw (PolynomialException);
+    PolynomialGeneric(const T& c0=math::NumericUtil<T>::ZERO) throw (PolynomialException);
     PolynomialGeneric(const T* carray, size_t n) throw (PolynomialException);
-    PolynomialGeneric(size_t n = 1) throw (PolynomialException);
+    PolynomialGeneric(bool ignored, size_t n = 1) throw (PolynomialException);
     PolynomialGeneric(const PolynomialGeneric<T>& poly) throw (PolynomialException);
 
     // Getters

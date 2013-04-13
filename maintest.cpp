@@ -560,11 +560,11 @@ void polynomialTest()
         cout << "Insert 0.2 to the 3rd pos. of t(x): " << t.insert(2, 0.2f) << endl;
         cout << "Insert 5 to the 8th pos. of t(x): " << t.insert(7, 5.0f) << endl;
 
-        FPolynomial z(4);
+        FPolynomial z(true, 4);
         z.set(3, 0.0f);
         cout << "Zero polynomial: " << z << endl;
 
-        FPolynomial p(6), q(4);
+        FPolynomial p(true, 6), q(true, 4);
 
         p.set(0, 2.0f).set(1, 3.0f).set(2, -4.0f).set(3, -7.0f).set(4, 2.0f).set(5, 1.0f);
         q.set(0, -1.0f).set(1, 5.0f).set(2, -3.0f).set(3, 1.0f);
@@ -842,7 +842,7 @@ void intExponentiaorTest()
         cout << "f^7 = " << NumericUtil<Rational>::power(f, 7) << endl;
         cout << endl;
         
-        FPolynomial p(3);
+        FPolynomial p(true, 3);
         p.set(0, 0.2f).set(1, -0.5f);
         cout << "p(x) = " << p << endl;
         cout << "p(x)^0 = " << NumericUtil<FPolynomial>::power(p, 0) << endl;

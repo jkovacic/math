@@ -136,11 +136,11 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
         
         // Polynomials:
         // (x-y0)*(x-y1)*...*(x-yi)
-        math::PolynomialGeneric<T> temp(1);
+        math::PolynomialGeneric<T> temp(true, 1);
         // partial polynomial sum (sum of temp*a(i,i))
-        math::PolynomialGeneric<T> sum(1);
+        math::PolynomialGeneric<T> sum(true, 1);
         // 1st degree term (x-y) that will be multiplied by temp
-        math::PolynomialGeneric<T> term(2);
+        math::PolynomialGeneric<T> term(true, 2);
 
         // Initialize the polynomials:
 
