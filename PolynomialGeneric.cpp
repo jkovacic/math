@@ -535,7 +535,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::insert(size_t pos, const
         else
         {
             // 'pos' does not exceed the polynomial's degree, just insert the 'c' into coef.
-            // Prior to that, check that the exppanded coef would not exceed max. allowed size:
+            // Prior to that, check that the expanded coef would not exceed max. allowed size:
             if ( N==coef.max_size() )
             {
                 throw math::PolynomialException(math::PolynomialException::TOO_LARGE);

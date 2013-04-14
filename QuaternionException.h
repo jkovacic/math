@@ -31,6 +31,9 @@ Declaration of the class QuaternionException
 namespace math
 {
 
+/**
+ * An exception, typically thrown by functions of QuaternionGeneric
+ */
 struct QuaternionException : public IMathException
 {
     /// Enum with possible error codes

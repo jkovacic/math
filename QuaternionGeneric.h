@@ -49,6 +49,16 @@ QuaternionGeneric<T> operator- (const T& scalar, const QuaternionGeneric<T>& q);
 template<class T>
 std::ostream& operator<<(std::ostream& output, const QuaternionGeneric<T>& q);
 
+
+/**
+ * A class representing quaternions and their basic operations.
+ * 
+ * Quaternions are a convenient tool to calculate spatial rotations and 
+ * as such very handy at computer graphics, robotics, etc.
+ * 
+ * For more details about quaternions, see:
+ * http://en.wikipedia.org/wiki/Quaternion
+ */
 template <class T>
 class QuaternionGeneric
 {
