@@ -33,6 +33,14 @@ for square matrices only
 namespace math
 {
 
+/**
+ * @brief A class representing square matrices (number of rows is equal to number of columns).
+ * 
+ * The class is derived from a more general class MatrixGeneric.
+ * 
+ * Additional functionalities, e.g. determinant, inverse matrix etc., are implemented.
+ * Eigen values and vectors are not implemented yet.
+ */
 template<class T>
 class SqMatrixGeneric : public MatrixGeneric<T>
 {
@@ -42,7 +50,7 @@ public:
     SqMatrixGeneric(size_t dim = 1) throw(MatrixException);
     // Copy constructor
     SqMatrixGeneric(const MatrixGeneric<T>& orig) throw(MatrixException);
-    // operator= (it must be reimplemnted as it is not inherited from the base class)
+    // operator= (it must be reimplemented as it is not inherited from the base class)
     SqMatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
 
     // Several methods to create diagonal matrices
@@ -87,4 +95,4 @@ typedef SqMatrixGeneric<double> SqMatrix;
 // Alternatively the definition can be included into this file.
 #include "SqMatrixGeneric.cpp"
 
-#endif	/* _MATH_SQMATRIXGENERIC_H_ */
+#endif	// _MATH_SQMATRIXGENERIC_H_

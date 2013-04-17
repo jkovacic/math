@@ -31,6 +31,9 @@ Declaration of the class RationalException
 namespace math
 {
 
+/**
+ * @brief An exception, typically  thrown by functions of Rational.
+ */
 struct RationalException : public IMathException
 {
     /// Enum with possible error codes
@@ -53,4 +56,4 @@ struct RationalException : public IMathException
 
 } // namespace math
 
-#endif	/* _MATH_RATIONALEXCEPTION_H_ */
+#endif	// _MATH_RATIONALEXCEPTION_H_ 

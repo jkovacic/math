@@ -32,6 +32,9 @@ Declaration of the class LinearEquationSolverException
 namespace math
 {
 
+/**
+ * @brief An exception, typically  thrown by functions of LinearEquationSolverGeneric.
+ */
 struct LinearEquationSolverException : public IMathException
 {
     /// Enum with possible error codes

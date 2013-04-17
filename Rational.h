@@ -40,6 +40,12 @@ class Rational;
 // to declare the class's friend function:
 std::ostream& operator<<(std::ostream& output, const Rational& fraction);
 
+
+/**
+ * @brief A class representing rational numbers, i.e. fractions of integer numbers.
+ * 
+ * Rationals are automatically reduced as soon as its nominator or denominator are modified.
+ */
 class Rational
 {
     // a friend function to overload the operator << (used by std::cout and std::cerr)
@@ -139,4 +145,4 @@ private:
 
 } // namespace math
 
-#endif	/* _MATH_RATIONAL_H_ */
+#endif	// _MATH_RATIONAL_H_

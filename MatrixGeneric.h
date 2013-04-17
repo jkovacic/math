@@ -49,11 +49,14 @@ template<class T> class MatrixGeneric;
 template<class T>
 MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (math::MatrixException);
 
+/**
+ * @brief A class representing general matrices and their basic operators.
+ */
 template <class T>
 class MatrixGeneric
 {
 
-    // These properties must be accessible in inhereted classes
+    // These properties must be accessible in inherited classes
 protected:
     size_t rows;      /// Number of rows
     size_t cols;      /// Number of columns
@@ -65,7 +68,7 @@ protected:
     std::vector<T> elems;   /// Elements of the matrix
 
     // Copy elements from one matrix into another. Used at copy constructors,
-    // assignemt operators etc. It s also suitable for use in derived  classes,
+    // assignment operators etc. It s also suitable for use in derived  classes,
     // so it should be 'protected' instead of 'private'
     void copyElems(const MatrixGeneric& orig) throw (MatrixException);
 
@@ -136,4 +139,4 @@ typedef MatrixGeneric<double> Matrix;
 // Alternatively the definition can be included into this file.
 #include "MatrixGeneric.cpp"
 
-#endif	/* _MATH_MATRIXGENERIC_H_ */
+#endif	// _MATH_MATRIXGENERIC_H_

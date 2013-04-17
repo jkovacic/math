@@ -34,6 +34,10 @@ Declaration of the class MatrixException
 namespace math
 {
 
+/**
+ * @brief An exception, typically  thrown by functions of MatrixGeneric and
+ * its derived classes.
+ */
 struct MatrixException : public IMathException
 {
     /// Enum with possible error codes
@@ -56,4 +60,4 @@ struct MatrixException : public IMathException
 
 } // namespace math
 
-#endif	/* _MATH_MATRIXEXCEPTION_H_ */
+#endif	// _MATH_MATRIXEXCEPTION_H_

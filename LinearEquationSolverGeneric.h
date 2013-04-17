@@ -36,6 +36,9 @@ systems of linear equations
 namespace math
 {
 
+/**
+ * @brief A class with functionality for solving systems of linear equation.
+ */
 template<class T>
 class LinearEquationSolverGeneric
 {

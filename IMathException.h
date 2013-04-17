@@ -32,6 +32,9 @@ limitations under the License.
 namespace math
 {
 
+/**
+ * @brief An "interface" class for all mathematical exceptions
+ */
 struct IMathException
 {
     /**
@@ -44,5 +47,5 @@ struct IMathException
 
 } // namespace math
 
-#endif	/* _MATH_IMATHEXCEPTION_H_ */
+#endif	// _MATH_IMATHEXCEPTION_H_
 

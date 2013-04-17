@@ -32,6 +32,12 @@ Declaration of the class NumericUtil, a collection of some useful numerical util
 namespace math
 {
 
+/**
+ * @brief A class with some common functionality, e.g. determination whether
+ *        a numeric value is close enough to zero, efficient exponention, etc.
+ * 
+ * Note that all functions are static so instantiation of this class is not necessary.
+ */
 template<class T>
 class NumericUtil
 {
@@ -69,7 +75,7 @@ template<> bool NumericUtil<std::complex<float> >::isZero(const std::complex<flo
 template<> bool NumericUtil<std::complex<double> >::isZero(const std::complex<double>& value);
 template<> bool NumericUtil<std::complex<long double> >::isZero(const std::complex<long double>& value);
 
-// Definition could be included into the namespace declaraion, but it
+// Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.
 } // namespace math
 
@@ -81,4 +87,4 @@ template<> bool NumericUtil<std::complex<long double> >::isZero(const std::compl
 
 #include "NumericUtil.cpp"
 
-#endif	/* _MATH_NUMERICUTIL_H_ */
+#endif	// _MATH_NUMERICUTIL_H_
