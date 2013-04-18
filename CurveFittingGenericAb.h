@@ -36,6 +36,12 @@ limitations under the License.
 namespace math
 {
 
+/**
+ * @brief Common functionality for all curve fitting/interpolation algorithms.
+ * 
+ * The class is abstract and cannot be instantiated. More specialized algorithms
+ * are implemented by its derived classes.
+ */
 template<class T>
 class CurveFittingGenericAb
 {
@@ -77,7 +83,7 @@ protected:
 public:
     // assignment operator (only applicable for variables of the same type)
     virtual CurveFittingGenericAb<T>& operator=(const CurveFittingGenericAb<T>& orig) throw (CurveFittingException);
-    // copies points from porig to this (applicable for all types derived from this one)
+    // copies points from 'porig' to this (applicable for all types derived from this one)
     CurveFittingGenericAb<T>& copy(const CurveFittingGenericAb<T>* porig) throw (CurveFittingException);
 
     // enter a point

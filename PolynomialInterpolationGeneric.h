@@ -33,6 +33,12 @@ limitations under the License.
 namespace math
 {
 
+/**
+ * @brief A class that finds a polynomial that exactly fits an input series of points.
+ * 
+ * The algorithm takes N+1 points and calculates a N-degree polynomial exactly
+ * fitting all input points.
+ */
 template<class T>
 class PolynomialInterpolationGeneric : public PolynomialFittingGenericAb<T>
 {

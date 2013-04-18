@@ -36,6 +36,14 @@ limitations under the License.
 namespace math
 {
 
+/**
+ * @brief A class implementing a polynomial regression algorithm, satisfying
+ *        the least sum of squares criteria.
+ * 
+ * The algorithm accepts an arbitrary number of input points and finds a
+ * polynomial of the desired degree that best fits to the points and whose
+ * sum of square deviations is minimized.
+ */
 template<class T>
 class PolynomialRegressionGeneric : public PolynomialFittingGenericAb<T>
 {

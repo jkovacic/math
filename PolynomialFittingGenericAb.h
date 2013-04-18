@@ -34,6 +34,13 @@ limitations under the License.
 namespace math
 {
 
+/**
+ * @brief Common functionality for curve fitting/interpolation algorithms that
+ *        find the best fitting polynomial.
+ * 
+ * The class is abstract and cannot be instantiated. More specialized algorithms
+ * are implemented by its derived classes.
+ */
 template<class T>
 class PolynomialFittingGenericAb : public CurveFittingGenericAb<T>
 {

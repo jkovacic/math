@@ -32,6 +32,11 @@ Declaration of the class CurveFittingException
 namespace math
 {
 
+/**
+ * @brief An exception, typically thrown by functions of various curve 
+ * fitting/interpolation classes, implemented by inherited classes of
+ * CurveFittingGenericAb.
+ */
 struct CurveFittingException
 {
     /// Enum with possible error codes
