@@ -31,6 +31,12 @@ limitations under the License.
 namespace math
 {
 
+/**
+ * @brief A class with some combinatorics related functions for calculation of
+ *        various factorials, binomial coefficients, etc.
+ *  
+ * All functions are static, so instantiation of the class is not necessary.
+ */
 struct IntCombinatorics
 {
 public:

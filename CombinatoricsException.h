@@ -33,6 +33,10 @@ Declaration of the class CombinatoricsException
 namespace math
 {
 
+/**
+ * @brief An exception, typically thrown by functions of combinatorics
+ *        related classes: IntCombinatorics, CombinationGeneric, PermutationGeneric.
+ */
 struct CombinatoricsException : public IMathException
 {
     /// Enum with possible error codes

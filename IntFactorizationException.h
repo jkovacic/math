@@ -33,6 +33,9 @@ Declaration of the class IntFactorizationException
 namespace math
 {
 
+/**
+ * @brief An exception, typically thrown by functions of IntFactorization
+ */
 struct IntFactorizationException : public IMathException
 {
     /// Enum with possible error codes

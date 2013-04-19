@@ -32,7 +32,13 @@ limitations under the License.
 
 namespace math
 {
- 
+
+/**
+ * @brief A class with some integer factorization functions for prime factorization,
+ *        calculation of the least common multiple, greatest common divisor, etc.
+ *  
+ * All functions are static, so instantiation of the class is not necessary.
+ */
 struct IntFactorization
 {
 public:
