@@ -97,7 +97,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T& c0) throw (math::Polynomi
  * @throw PolynomialException if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>::PolynomialGeneric(const PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<T>::PolynomialGeneric(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
 {
     try
     {
