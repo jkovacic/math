@@ -7,7 +7,7 @@ documentation about the API.
 ##Usage
 Only a few classes can be compiled into a static or dynamic library and
 linked to an application. All other classes are templated and cannot be
-compiled separately. Instead you should only include their corresponding
+compiled separately. Instead you should just include their corresponding
 header files (*.h) into an application. See _Makefile_ for more info about
 templated classes.
 

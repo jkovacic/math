@@ -233,7 +233,7 @@ namespace math
         template<class T>
         math::SqMatrixGeneric<T> getUnit(const math::SqMatrixGeneric<T>& t)
         {
-            const unsigned int N = t.nrRows();
+            const size_t N = t.nrRows();
             math::SqMatrixGeneric<T> retVal(N);
             retVal.setUnit();
             return retVal;

@@ -110,7 +110,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator= (const math::Matri
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    copyElems(m);
+    this->copyElems(m);
 
     return *this;
 }
