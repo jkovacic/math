@@ -1,128 +1,183 @@
+# Copyright 2014, Jernej Kovacic
 #
-#  There exist several targets which are by default empty and which can be 
-#  used for execution of your targets. These targets are usually executed 
-#  before and after some main targets. They are: 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-#     .build-pre:              called before 'build' target
-#     .build-post:             called after 'build' target
-#     .clean-pre:              called before 'clean' target
-#     .clean-post:             called after 'clean' target
-#     .clobber-pre:            called before 'clobber' target
-#     .clobber-post:           called after 'clobber' target
-#     .all-pre:                called before 'all' target
-#     .all-post:               called after 'all' target
-#     .help-pre:               called before 'help' target
-#     .help-post:              called after 'help' target
+# http://www.apache.org/licenses/LICENSE-2.0
 #
-#  Targets beginning with '.' are not intended to be called on their own.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# If necessary, add a path to compiler commands.
+# Useful for cross compiling.
+TOOLCHAIN =
+
+# Compiler commands.
+# The commands are set for the GCC compiler.
+# If any other compiler is used, the commands must be modified appropriately.
+CC = $(TOOLCHAIN)gcc
+CPP = $(TOOLCHAIN)g++
+LINKER = $(TOOLCHAIN)g++
+AS = $(TOOLCHAIN)as
+OBJCOPY = $(TOOLCHAIN)objcopy
+AR = $(TOOLCHAIN)ar
+
+# Optional compiler flags
+CPPFLAGS =
+
+# Typical file sufixes
+OBJSUFFIX = .o
+CPPSUFFIX = .cpp
+HEADERSUFFIX = .h
+
+# Directory for all *.o and other intermediate files:
+OBJDIR = obj/
+
+# Directory for the target binary
+BUILDDIR = build/
+
+# Target binary, without any prefixes and suffixes
+TARGETROOT = maintest
+
+
+# Exception class names. Any nonapplicable classes may be commented out.
+# Note that appropriate file sufixes will be appended later.
+EXCEPTIONCLASS =
+EXCEPTIONCLASS += MatrixException
+EXCEPTIONCLASS += PolynomialException
+EXCEPTIONCLASS += RationalException
+EXCEPTIONCLASS += QuaternionException
+EXCEPTIONCLASS += LinearEquationSolverException
+EXCEPTIONCLASS += CurveFittingException
+EXCEPTIONCLASS += CombinatoricsException
+EXCEPTIONCLASS += IntFactorizationException
+
+# Nontemplated classes, i.e. their source files will be compiled.
+# Note that appropriate file sufixes will be appended later.
+COMPILECLASS =
+COMPILECLASS += Rational
+COMPILECLASS += IntCombinatorics
+COMPILECLASS += IntFactorization
+
+# Templated classes. These classes are not compiled directly, instead 
+# their source code will be included into files that need it.
+# Note that appropriate file sufixes will be appended later.
+GENERICCLASS =
+GENERICCLASS += NumericUtil
+GENERICCLASS += MatrixGeneric
+GENERICCLASS += SqMatrixGeneric
+GENERICCLASS += PolynomialGeneric
+GENERICCLASS += QuaternionGeneric
+GENERICCLASS += CurveFittingGenericAb
+GENERICCLASS += PolynomialFittingGenericAb
+GENERICCLASS += PolynomialInterpolationGeneric
+GENERICCLASS += PolynomialRegressionGeneric
+GENERICCLASS += LinearEquationSolverGeneric
+GENERICCLASS += CombinationGeneric
+GENERICCLASS += PermutationGeneric
+
+
+# Append file name extensions to exception classes
+EXCEPTIONHEADER = $(addsuffix $(HEADERSUFFIX), $(EXCEPTIONCLASS) )
+EXCEPTIONSRC = $(addsuffix $(CPPSUFFIX), $(EXCEPTIONCLASS) )
+EXCEPTIONOBJ = $(addsuffix $(OBJSUFFIX), $(EXCEPTIONCLASS) )
+
+# Append file name extensions to nontemplated (compiled) classes
+COMPILEHEADER = $(addsuffix $(HEADERSUFFIX), $(COMPILECLASS) )
+COMPILESRC = $(addsuffix $(CPPSUFFIX), $(COMPILECLASS) )
+COMPILEOBJ = $(addsuffix $(OBJSUFFIX), $(COMPILECLASS) )
+
+# Append file name extensions to templated classes.
+# Note that these classes are not compiled so no *.o filenames are created
+GENERICHEADER = $(addsuffix $(HEADERSUFFIX), $(GENERICCLASS) )
+GENERICSRC = $(addsuffix $(CPPSUFFIX), $(GENERICCLASS) )
+
+# Append file name extensions and a prefix to the final binary
+TARGETSRC = $(addsuffix $(CPPSUFFIX), $(TARGETROOT) )
+TARGETOBJ = $(addsuffix $(OBJSUFFIX), $(TARGETROOT) )
+TARGET = $(addprefix $(BUILDDIR), $(TARGETROOT) )
+
+
+#Join all desired *.o files into a single variable... 
+OBJS = $(EXCEPTIONOBJ) $(COMPILEOBJ) $(TARGETOBJ)
+# and append OBJDIR to each one.
+OBJS := $(addprefix $(OBJDIR), $(OBJS) )
+
+# Join all source files to be compiled into a single variable.
+SRC = $(EXCEPTIONSRC) $(COMPILESRC) $(TARGETSRC)
+
+
 #
-#  Main targets can be executed directly, and they are:
-#  
-#     build                    build a specific configuration
-#     clean                    remove built files from a configuration
-#     clobber                  remove all built files
-#     all                      build all configurations
-#     help                     print help mesage
-#  
-#  Targets .build-impl, .clean-impl, .clobber-impl, .all-impl, and
-#  .help-impl are implemented in nbproject/makefile-impl.mk.
+# Make rules:
 #
-#  Available make variables:
-#
-#     CND_BASEDIR                base directory for relative paths
-#     CND_DISTDIR                default top distribution directory (build artifacts)
-#     CND_BUILDDIR               default top build directory (object files, ...)
-#     CONF                       name of current configuration
-#     CND_PLATFORM_${CONF}       platform name (current configuration)
-#     CND_ARTIFACT_DIR_${CONF}   directory of build artifact (current configuration)
-#     CND_ARTIFACT_NAME_${CONF}  name of build artifact (current configuration)
-#     CND_ARTIFACT_PATH_${CONF}  path to build artifact (current configuration)
-#     CND_PACKAGE_DIR_${CONF}    directory of package (current configuration)
-#     CND_PACKAGE_NAME_${CONF}   name of package (current configuration)
-#     CND_PACKAGE_PATH_${CONF}   path to package (current configuration)
-#
-# NOCDDL
+
+all : $(TARGET)
+
+rebuild : clean all
+
+$(OBJDIR) :
+	mkdir -p $@
+
+$(BUILDDIR) :
+	mkdir -p $@
+
+#Build rules for exception classes
+$(OBJDIR)MatrixException$(OBJSUFFIX) : MatrixException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)PolynomialException$(OBJSUFFIX) : PolynomialException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)RationalException$(OBJSUFFIX) : RationalException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)QuaternionException$(OBJSUFFIX) : QuaternionException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)LinearEquationSolverException$(OBJSUFFIX) : LinearEquationSolverException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)CurveFittingException$(OBJSUFFIX) : CurveFittingException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)CombinatoricsException$(OBJSUFFIX) : CombinatoricsException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)IntFactorizationException$(OBJSUFFIX) : IntFactorizationException.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
 
 
-# Environment 
-MKDIR=mkdir
-CP=cp
-CCADMIN=CCadmin
+# Build rules for nontemplated classes
+$(OBJDIR)Rational$(OBJSUFFIX) : Rational.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)IntCombinatorics$(OBJSUFFIX) : IntCombinatorics.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
+
+$(OBJDIR)IntFactorization$(OBJSUFFIX) : IntFactorization.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
 
 
-# build
-build: .build-post
-
-.build-pre:
-# Add your pre 'build' code here...
-
-.build-post: .build-impl
-# Add your post 'build' code here...
+# Build rule for the application that uses the library
+$(OBJDIR)maintest$(OBJSUFFIX) : maintest.cpp
+	$(CPP) -c $(CPPFLAGS) $< -o $@
 
 
-# clean
-clean: .clean-post
+# Build rule for the final binary
+$(TARGET) : $(OBJDIR) $(BUILDDIR) $(OBJS) $(GENERICHEADER) $(GENERICSRC)
+	$(LINKER) $(CPPFLAGS) $(OBJS) -o $@ 
 
-.clean-pre:
-# Add your pre 'clean' code here...
+# Cleanup directives:
 
-.clean-post: .clean-impl
-# Add your post 'clean' code here...
+clean_intermediate :
+	rm -rf $(OBJDIR)
 
+clean : clean_intermediate
+	rm -rf $(BUILDDIR)
 
-# clobber
-clobber: .clobber-post
-
-.clobber-pre:
-# Add your pre 'clobber' code here...
-
-.clobber-post: .clobber-impl
-# Add your post 'clobber' code here...
-
-
-# all
-all: .all-post
-
-.all-pre:
-# Add your pre 'all' code here...
-
-.all-post: .all-impl
-# Add your post 'all' code here...
-
-
-# build tests
-build-tests: .build-tests-post
-
-.build-tests-pre:
-# Add your pre 'build-tests' code here...
-
-.build-tests-post: .build-tests-impl
-# Add your post 'build-tests' code here...
-
-
-# run tests
-test: .test-post
-
-.test-pre:
-# Add your pre 'test' code here...
-
-.test-post: .test-impl
-# Add your post 'test' code here...
-
-
-# help
-help: .help-post
-
-.help-pre:
-# Add your pre 'help' code here...
-
-.help-post: .help-impl
-# Add your post 'help' code here...
-
-
-
-# include project implementation makefile
-include nbproject/Makefile-impl.mk
-
-# include project make variables
-include nbproject/Makefile-variables.mk
+.PHONY : all rebuild clean clean_intermediate
