@@ -30,6 +30,9 @@ AR = $(TOOLCHAIN)ar
 # Optional compiler flags
 CPPFLAGS =
 
+# Optional linker flags
+LDFLAGS =
+
 # Typical file sufixes
 OBJSUFFIX = .o
 CPPSUFFIX = .cpp
@@ -168,9 +171,9 @@ $(OBJDIR)maintest$(OBJSUFFIX) : maintest.cpp
 	$(CPP) -c $(CPPFLAGS) $< -o $@
 
 
-# Build rule for the final binary
+# Build rule for linking the final binary
 $(TARGET) : $(OBJDIR) $(BUILDDIR) $(OBJS) $(GENERICHEADER) $(GENERICSRC)
-	$(LINKER) $(CPPFLAGS) $(OBJS) -o $@ 
+	$(LINKER) $(LDFLAGS) $(OBJS) -o $@ 
 
 # Cleanup directives:
 
