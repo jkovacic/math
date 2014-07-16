@@ -45,8 +45,8 @@ OPENMP_FLAG = -fopenmp
 #
 # Note: you should edit these variables if you
 # use any other compiler than gcc.
-DEBUG_MACRO = -DDEBUG
-OPENMP_MACRO = -DOPENMP
+DEBUG_MACRO = -D_DEBUG
+OPENMP_MACRO = -D_OPENMP
 
 # Optional compiler flags
 CPPFLAGS =
@@ -171,11 +171,12 @@ _debug_flags :
 
 _openmp_flags :
 	$(eval CPPFLAGS += $(OPENMP_FLAG))
-	
-	# Typicaly a C++ compiler should automatically
-	# predefine the _OPENMP macro if OpenMP is enabled.
-	# If this is not the case, the line below must be uncommented:
-	#$(eval MACROS += $(DEBUG_MACRO))
+#	
+#	Typicaly a C++ compiler should automatically
+#	predefine the _OPENMP macro if OpenMP is enabled.
+#	If this is not the case, the line below must be uncommented:
+#	
+#	$(eval MACROS += $(OPENMP_MACRO))
 
 
 #Build rules for exception classes
