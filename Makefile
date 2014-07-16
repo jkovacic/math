@@ -74,7 +74,7 @@ TARGETROOT = maintest
 
 # Exception class names. Any nonapplicable classes may be commented out.
 # Note that appropriate file sufixes will be appended later.
-EXCEPTIONCLASS =
+EXCEPTIONCLASS = IMathException
 EXCEPTIONCLASS += MatrixException
 EXCEPTIONCLASS += PolynomialException
 EXCEPTIONCLASS += RationalException
@@ -181,6 +181,9 @@ _openmp_flags :
 
 
 #Build rules for exception classes
+$(OBJDIR)IMathException$(OBJSUFFIX) : IMathException.cpp
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+
 $(OBJDIR)MatrixException$(OBJSUFFIX) : MatrixException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 

@@ -14,40 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 /**
 @file IMathException.h
 
-Common interface (pure virtual class) for various mathematical exceptions,
-e.g. MatrixException, RationalException, etc.
+Implementation of an empty destructor to
+suppress warnings in derived classes.
+
+For more info, see:
+http://stackoverflow.com/questions/127426/gnu-compiler-warning-class-has-virtual-functions-but-non-virtual-destructor
 
 @author Jernej Kovacic
 */
 
-#ifndef _MATH_IMATHEXCEPTION_H_
-#define	_MATH_IMATHEXCEPTION_H_
 
-#include <iostream>
-
-namespace math
-{
+#include "IMathException.h"
 
 /**
- * @brief An "interface" class for all mathematical exceptions
+ * Destructor
  */
-struct IMathException
+math::IMathException::~IMathException()
 {
-    /**
-    * Outputs a short error description to stdout
-    *
-    * @param str - stream, the error description will be written in (default: cerr) 
-    */
-    virtual void display(std::ostream& str = std::cerr) const = 0;
-
-    virtual ~IMathException();
-};
-
-} // namespace math
-
-#endif	// _MATH_IMATHEXCEPTION_H_
-
+    // Empty function
+}
