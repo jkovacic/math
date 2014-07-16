@@ -171,6 +171,7 @@ _debug_flags :
 
 _openmp_flags :
 	$(eval CPPFLAGS += $(OPENMP_FLAG))
+	$(eval LDFLAGS += $(OPENMP_FLAG))
 #	
 #	Typicaly a C++ compiler should automatically
 #	predefine the _OPENMP macro if OpenMP is enabled.
