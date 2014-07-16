@@ -421,24 +421,30 @@ template<class T>
 math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeRow(size_t rowNr) throw (math::MatrixException)
 {
     throw math::MatrixException(MatrixException::FORBIDDEN);
+    (void) rowNr;
 }
 
 template<class T>
 math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
+    (void) colNr;
 }
 
 template<class T>
 math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(size_t rowNr, const T& el) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
+    (void) rowNr;
+    (void) el;
 }
 
 template<class T>
 math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
+    (void) colNr;
+    (void) el;
 }
 
 // The macros were defined for implementation in this file only. Undef them now

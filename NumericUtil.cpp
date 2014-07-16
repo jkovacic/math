@@ -223,6 +223,7 @@ namespace math
         template<class T>
         T getUnit(const T& t)
         {
+            (void) t;
             return T(math::NumericUtil<T>::ONE);
         }
 
@@ -253,6 +254,7 @@ namespace math
         template<class T>
         math::PolynomialGeneric<T> getUnit(const math::PolynomialGeneric<T>& t)
         {
+            (void) t;
             return math::PolynomialGeneric<T>(math::NumericUtil<T>::ONE);
         }
         

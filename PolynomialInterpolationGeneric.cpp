@@ -194,4 +194,6 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
     {
         throw math::CurveFittingException(math::CurveFittingException::OUT_OF_MEMORY);
     }
+
+    (void) degree;
 }

@@ -1143,4 +1143,7 @@ int main(int argc, const char* argv[])
     combinatoricsTest();
     
     return 0;
+
+    (void) argc;
+    (void) argv;
 }

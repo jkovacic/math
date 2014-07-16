@@ -210,6 +210,8 @@ math::PolynomialGeneric<T>::PolynomialGeneric(bool ignored, size_t n) throw (mat
         // Memory allocation failed
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
+
+    (void) ignored;
 }
 
 /*
@@ -569,7 +571,7 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::remove(size_t pos)
 {
     // Nothing to do if 'pos' exceeds the polynomial's degree
-    if ( pos<0 || pos>=coef.size() || coef.size()<=1 )
+    if ( pos>=coef.size() || coef.size()<=1 )
     {
         return *this;
     }

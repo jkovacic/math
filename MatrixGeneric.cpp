@@ -936,8 +936,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
     }
 
     // Nr. of elements will increase, so make sure the product will contain
-    // no more than INT_MAX elements
-    const unsigned long int matSize = rows * (cols + 1);
+    // no more than MAX_SIZE_T elements
     if ( cols > (elems.max_size()/rows - 1) )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);

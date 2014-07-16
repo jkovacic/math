@@ -350,7 +350,7 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
             retVal.push_back(temp);
             
             // And update 'addr' for the next iteration as described above:
-            for ( size_t i = Klen-1; i>=0; --i )
+            for ( size_t i = Klen-1; /* i>=0 */ ; --i )
             {
                 if ( addr.at(i) < (N-Klen+i) )
                 {

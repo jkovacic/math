@@ -49,7 +49,7 @@ DEBUG_MACRO = -D_DEBUG
 OPENMP_MACRO = -D_OPENMP
 
 # Optional compiler flags
-CPPFLAGS =
+CPPFLAGS = -Wall -Wextra
 
 # Optional preprocesor macros
 MACROS =
