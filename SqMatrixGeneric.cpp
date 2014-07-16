@@ -35,6 +35,11 @@ limitations under the License.
 
 #include <stdexcept>
 
+#ifdef OPENMP
+#    include <omp.h>
+#endif
+
+
 // The function 'pos', defined in the parent class, must be called as
 // this->pos. The following macro has been defined to shorten this and
 // to make the code a little bit more readable:

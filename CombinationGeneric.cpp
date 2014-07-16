@@ -29,6 +29,10 @@ limitations under the License.
 // deliberately there is no #include "CombinationGeneric.h" !
 #include <new>
 
+#ifdef OPENMP
+#    include <omp.h>
+#endif
+
 
 /**
  * Constructor.

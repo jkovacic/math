@@ -30,6 +30,10 @@ limitations under the License.
 #include <stdexcept>
 #include <vector>
 
+#ifdef OPENMP
+#    include <omp.h>
+#endif
+
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"
 #include "NumericUtil.h"

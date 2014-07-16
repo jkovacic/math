@@ -33,7 +33,11 @@ limitations under the License.
 #include <climits>
 #include <new>
 
-    
+#ifdef OPENMP
+#    include <omp.h>
+#endif
+
+
 /**
  * @param n - integer to be checked
  * 

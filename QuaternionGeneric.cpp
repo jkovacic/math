@@ -35,6 +35,10 @@ limitations under the License.
 
 #include <cmath>
 
+#ifdef OPENMP
+#    include <omp.h>
+#endif
+
 // Deliberately there is no #include "QuaternionGeneric.h" !
 #include "NumericUtil.h"
 

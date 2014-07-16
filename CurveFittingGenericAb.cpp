@@ -29,6 +29,10 @@ limitations under the License.
 // Deliberately there is no #include "CurveFittingGenericAb.h" !
 #include <new>
 
+#ifdef OPENMP
+#    include <omp.h>
+#endif
+
 #include "NumericUtil.h"
 #include "CurveFittingException.h"
 

@@ -13,6 +13,10 @@
 # limitations under the License.
 
 
+#
+# Type "make help" for more details.
+#
+
 # If necessary, add a path to compiler commands.
 # Useful for cross compiling.
 TOOLCHAIN =
@@ -22,13 +26,33 @@ TOOLCHAIN =
 # If any other compiler is used, the commands must be modified appropriately.
 CC = $(TOOLCHAIN)gcc
 CPP = $(TOOLCHAIN)g++
+FC = $(TOOLCHAIN)gfortran
 LINKER = $(TOOLCHAIN)g++
 AS = $(TOOLCHAIN)as
 OBJCOPY = $(TOOLCHAIN)objcopy
 AR = $(TOOLCHAIN)ar
 
+# Compiler flags to produce deugging symbols and
+# support OpenMP, respectively.
+#
+# Note: you should edit these variables if you
+# use any other compiler than gcc.
+DEBUG_FLAG = -g
+OPENMP_FLAG = -fopenmp
+
+# These preprocessor macros are predefined to build
+# targets 'debug' and/or 'openmp'.
+#
+# Note: you should edit the macros if your compiler
+# does not use -D to define macros.
+DEBUG_MACRO = -DDEBUG
+OPENMP_MACRO = -DOPENMP
+
 # Optional compiler flags
 CPPFLAGS =
+
+# Optional preprocesor macros
+MACROS =
 
 # Optional linker flags
 LDFLAGS =
@@ -129,46 +153,67 @@ $(OBJDIR) :
 $(BUILDDIR) :
 	mkdir -p $@
 
+debug : _debug_flags all
+
+debug_rebuild : _debug_flags rebuild
+
+openmp : _openmp_flags all
+
+openmp_rebuild : _openmp_flags rebuild
+
+debug_openmp : _debug_flags _openmp_flags all
+
+debug_openmp_rebuild : _debug_flags _openmp_flags rebuild 
+
+_debug_flags :
+	$(eval CPPFLAGS += $(DEBUG_FLAG))
+	$(eval MACROS += $(DEBUG_MACRO))
+
+_openmp_flags :
+	$(eval CPPFLAGS += $(OPENMP_FLAG))
+	$(eval MACROS += $(OPENMP_MACRO))
+
+
 #Build rules for exception classes
 $(OBJDIR)MatrixException$(OBJSUFFIX) : MatrixException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)PolynomialException$(OBJSUFFIX) : PolynomialException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)RationalException$(OBJSUFFIX) : RationalException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)QuaternionException$(OBJSUFFIX) : QuaternionException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)LinearEquationSolverException$(OBJSUFFIX) : LinearEquationSolverException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)CurveFittingException$(OBJSUFFIX) : CurveFittingException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)CombinatoricsException$(OBJSUFFIX) : CombinatoricsException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)IntFactorizationException$(OBJSUFFIX) : IntFactorizationException.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 
 # Build rules for nontemplated classes
 $(OBJDIR)Rational$(OBJSUFFIX) : Rational.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)IntCombinatorics$(OBJSUFFIX) : IntCombinatorics.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)IntFactorization$(OBJSUFFIX) : IntFactorization.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 
 # Build rule for the application that uses the library
 $(OBJDIR)maintest$(OBJSUFFIX) : maintest.cpp
-	$(CPP) -c $(CPPFLAGS) $< -o $@
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 
 # Build rule for linking the final binary
@@ -178,9 +223,30 @@ $(TARGET) : $(OBJDIR) $(BUILDDIR) $(OBJS) $(GENERICHEADER) $(GENERICSRC)
 # Cleanup directives:
 
 clean_intermediate :
-	rm -rf $(OBJDIR)
+	$(RM) -r $(OBJDIR)
 
 clean : clean_intermediate
-	rm -rf $(BUILDDIR)
+	$(RM) -r $(BUILDDIR)
 
-.PHONY : all rebuild clean clean_intermediate
+# Short help instructions:
+
+help :
+	@echo
+	@echo Valid targets:
+	@echo - all: builds missing dependencies and creates the target executable \'$(TARGET)\'.
+	@echo - rebuild: rebuilds all dependencies and creates the target executable \'$(TARGET)\'.
+	@echo - debug: same as \'all\', also includes debugging symbols to \'$(TARGET)\'.
+	@echo - debug_rebuild: same as \'rebuild\', also includes debugging symbols to \'$(TARGET)\'.
+	@echo - openmp: same as \'all\', also enables support for OpenMP.
+	@echo - openmp_rebuild: same as \'rebuild\', also enables support for OpenMP.
+	@echo - debug_openmp: same as \'all\', also includes debuging symbols to \'$(TARGET)\' and enables support for OpenMP.
+	@echo - debug_openmp_rebuild: same as \'rebuild\', also includes debuging symbols to \'$(TARGET)\' and enables support for OpenMP.
+	@echo - clean_intermediate: deletes all intermediate binaries, only keeps the target executable \'$(TARGET)\'.
+	@echo - clean: deletes all intermediate binaries, incl. the target executable \'$(TARGET)\'.
+	@echo - help: displays these help instructions.
+	@echo
+
+
+.PHONY : all rebuild debug debug_rebuild openmp openmp_rebuild \
+         debug_openmp debug_openmp_rebuild clean clean_intermediate \
+         _debug_flags _openmp_flags help

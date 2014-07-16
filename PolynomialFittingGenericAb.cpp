@@ -29,6 +29,9 @@ limitations under the License.
  */
 
 // Deliberately there is no #include "PolynomialFittingGenericAb.h"
+#ifdef OPENMP
+#    include <omp.h>
+#endif
 
 
 /**

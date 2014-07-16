@@ -33,6 +33,10 @@ limitations under the License.
 #include <complex>
 #include <limits>
 
+#ifdef OPENMP
+#    include <omp.h>
+#endif
+
 
 // Note that the optimal EPS depends on application's requirements
 
