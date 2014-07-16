@@ -45,7 +45,7 @@ limitations under the License.
 #include <map>
 #include <set>
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #    include <omp.h>
 #endif
 

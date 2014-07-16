@@ -35,7 +35,7 @@ limitations under the License.
 #include <vector>
 #include <new>
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #    include <omp.h>
 #endif
 

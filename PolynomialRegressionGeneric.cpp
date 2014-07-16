@@ -36,7 +36,7 @@ limitations under the License.
 
 #include <limits>
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #    include <omp.h>
 #endif
 

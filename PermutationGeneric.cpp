@@ -29,7 +29,7 @@ limitations under the License.
 // deliberately there is no #include "PermutationGeneric.h" !
 #include <new>
 
-#ifdef OPENMP
+#ifdef _OPENMP
 #    include <omp.h>
 #endif
 

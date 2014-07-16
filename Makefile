@@ -40,11 +40,11 @@ AR = $(TOOLCHAIN)ar
 DEBUG_FLAG = -g
 OPENMP_FLAG = -fopenmp
 
-# These preprocessor macros are predefined to build
-# targets 'debug' and/or 'openmp'.
+# Compiler flags to produce deugging symbols and
+# support OpenMP, respectively.
 #
-# Note: you should edit the macros if your compiler
-# does not use -D to define macros.
+# Note: you should edit these variables if you
+# use any other compiler than gcc.
 DEBUG_MACRO = -DDEBUG
 OPENMP_MACRO = -DOPENMP
 
@@ -171,7 +171,11 @@ _debug_flags :
 
 _openmp_flags :
 	$(eval CPPFLAGS += $(OPENMP_FLAG))
-	$(eval MACROS += $(OPENMP_MACRO))
+	
+	# Typicaly a C++ compiler should automatically
+	# predefine the _OPENMP macro if OpenMP is enabled.
+	# If this is not the case, the line below must be uncommented:
+	#$(eval MACROS += $(DEBUG_MACRO))
 
 
 #Build rules for exception classes
