@@ -535,7 +535,7 @@ math::Rational math::Rational::operator+(const math::Rational& frac) const throw
         numerator = auxSum(this->num, frac.denom, frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -566,7 +566,7 @@ math::Rational& math::Rational::operator+=(const math::Rational& frac) throw(mat
         numerator = auxSum(this->num, frac.denom, frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -604,7 +604,7 @@ math::Rational math::Rational::operator-(const math::Rational& frac) const throw
         numerator = auxSum(this->num, frac.denom, -frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -638,7 +638,7 @@ math::Rational& math::Rational::operator-=(const math::Rational& frac) throw(mat
         numerator = auxSum(this->num, frac.denom, -frac.num, this->denom);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -676,7 +676,7 @@ math::Rational math::Rational::operator*(const math::Rational& frac) const throw
         numerator = auxProd(this->num, frac.num);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // The only possible exception is int overflow
         throw ex;
@@ -707,7 +707,7 @@ math::Rational& math::Rational::operator*=(const math::Rational& frac) throw(mat
         numerator = auxProd(this->num, frac.num);
         denominator = auxProd(this->denom, frac.denom);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -750,7 +750,7 @@ math::Rational math::Rational::operator/(const math::Rational& frac) const throw
         numerator = auxProd(this->num, frac.denom);
         denominator = auxProd(frac.num, this->denom);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // int overflow is the only possible exception
         throw ex;
@@ -788,7 +788,7 @@ math::Rational& math::Rational::operator/=(const math::Rational& frac) throw(mat
         numerator = auxProd(this->num, frac.denom);
         denominator = auxProd(this->denom, frac.num);
     }
-    catch ( math::RationalException ex )
+    catch ( math::RationalException& ex )
     {
         // int overflow is the only possible exception
         throw ex;
