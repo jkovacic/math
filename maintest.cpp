@@ -326,7 +326,7 @@ void matrixTest()
         prod.display();
         cout << endl;
 
-        // product is not comutative...
+        // product is not commutative...
         prod = f*t;
         cout << "f * t:" << endl;
         prod.display();

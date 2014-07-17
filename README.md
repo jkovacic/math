@@ -15,11 +15,30 @@ templated classes.
 An example _Makefile_ with instructions to build a simple demo application
 is provided. It assumes you have GCC installed and in your path. You are
 free to modify a few variables to use another C++ compiler or toolchain.
+For more details about official _make_ targets, please type:
+
+`make help`
+
+##OpenMP support
+Mathematical algorithms in classes are currently being rewritten to support
+OpenMP (parallelization using multiple threads on multicore processors).
+Please note that OpenMP is currently disabled by default. To enable it,
+build the application as:
+
+`make openmp`
+
+For more details, type
+
+`make help`
+
+Build instructions assume that GCC is used as a compiler. If you wish to
+use any other compiler, you should edit _Makefile_ and modify appropriate
+variables and/or build rules.
 
 ##License
-The library is licenced under the Apache 2.0 license. See LICENSE.txt and
-[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
-for more details.
+The library is licenced under the
+[Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
+See LICENSE.txt for more details.
 
 ##Author
 The author of the library is Jernej Kova&#x010d;i&#x010d;.
