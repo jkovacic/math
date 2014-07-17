@@ -32,10 +32,6 @@ limitations under the License.
 #include <cstdio>
 #include <new>
 
-#ifdef _OPENMP
-#    include <omp.h>
-#endif
-
 
 /**
  * Constructor.

@@ -31,10 +31,6 @@ limitations under the License.
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
 
-#ifdef _OPENMP
-#    include <omp.h>
-#endif
-
 
 /**
  * Constructor.

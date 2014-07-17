@@ -45,10 +45,6 @@ limitations under the License.
 #include <map>
 #include <set>
 
-#ifdef _OPENMP
-#    include <omp.h>
-#endif
-
 
 using namespace std;
 using namespace math;

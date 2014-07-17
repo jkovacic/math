@@ -31,10 +31,6 @@ limitations under the License.
 
 #include <climits>
 
-#ifdef _OPENMP
-#    include <omp.h>
-#endif
-
 
 /**                                  -
  * Calculates the falling factorial power:
