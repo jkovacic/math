@@ -398,7 +398,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator+ (const math::MatrixGene
         // Matrices have the same number of elements, just traverse
         // them linearly and perform addition of elements at the same position
 
-    	#pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
+    	#pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
         for ( size_t i=0; i<N; ++i )
         {
             temp.elems.at(i) = this->elems.at(i) + matrix.elems.at(i);
@@ -437,7 +437,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     {
         const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
         for ( size_t i=0; i<N; ++i )
         {
             this->elems.at(i) += m.elems.at(i);
@@ -479,7 +479,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator- (const math::MatrixGene
     try
     {
 
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
         for ( size_t i=0; i<N; ++i )
         {
             temp.elems.at(i) = this->elems.at(i) - m.elems.at(i);
@@ -519,7 +519,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
     {
     	const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
         for ( size_t i=0; i<N; ++i )
         {
             this->elems.at(i) -= matrix.elems.at(i);
@@ -554,7 +554,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
     {
     	const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
         for ( size_t i=0; i<N; ++i )
         {
             temp.elems.at(i) = -(this->elems.at(i));
@@ -696,7 +696,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
     {
         const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
         for ( size_t i=0; i<N; ++i )
         {
             retVal.elems.at(i) = this->elems.at(i) * scalar;
@@ -725,7 +725,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
     const size_t N = this->rows * this->cols;
 
     // Multiply each element by the 'scalar'
-    #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
+    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
     for ( size_t i=0; i<N; ++i )
     {
         this->elems.at(i) *= scalar;
@@ -774,14 +774,13 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
 
     try
     {
-        size_t idx;
         size_t r;
         size_t c;
         const size_t N = this->rows * this->cols;
 
         // "collect" all elements of this
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) private(r, c)
-        for ( idx=0; idx<N; ++idx )
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) private(r, c)
+        for ( size_t idx=0; idx<N; ++idx )
         {
             r = idx / this->cols;
             c = idx % this->cols;
@@ -819,7 +818,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     // T(r,c) = this(c,r)
 
     std::vector<T> tempElems;
-    size_t idx;
     size_t r;
     size_t c;
     const size_t N = this->rows * this->cols;
@@ -834,8 +832,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 
-    #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) private(r, c)
-    for ( idx=0; idx<N; ++idx )
+    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) private(r, c)
+    for ( size_t idx=0; idx<N; ++idx )
     {
         r = idx / this->cols;
         c = idx % this->cols;
@@ -905,6 +903,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (m
 template<class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
 {
+    const size_t N = this->rows;
+
     // Checking of input parameters. The matrix must contain at least 2 columns
     // as the result must still contain at least one. colNr must be
     // between 0 and cols-1
@@ -918,8 +918,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw
     // the first one (row=0). This way the position of the element to be removed
     // is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
     // move remaining elements appropriately
-    #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
-    for ( size_t i=1; i<=this->rows; ++i )
+    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+    for ( size_t i=1; i<=N; ++i )
     {
         this->elems.erase(this->elems.begin()+(this->rows-i)*this->cols+colNr);
     }
@@ -992,6 +992,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T&
 template<class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
 {
+    const size_t N = this->rows;
+
     // A valid colNr is between 0 and cols (incl.)
     if ( colNr > this->cols )
     {
@@ -1013,8 +1015,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
 
         // Elements will be inserted step by step, with ascending row coordinate.
         // The position of each such element can be calculated as r*(cols+1)+colNr.
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD)
-        for ( size_t r = 0; r < this->rows; ++r )
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+        for ( size_t r = 0; r < N; ++r )
         {
             this->elems.insert(this->elems.begin()+r*(this->cols+1)+colNr, el);
         }  // for r

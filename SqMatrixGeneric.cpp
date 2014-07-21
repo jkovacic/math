@@ -135,7 +135,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         size_t i;
         size_t j;
 
-        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) private(i, j)
+        #pragma omp parallel for if(N2>OMP_CHUNKS_PER_THREAD) private(i, j)
         for ( size_t idx=0; idx<N2; ++idx )
         {
             i = idx / N;
@@ -256,7 +256,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 T tempElem;
 
                 // However the swapping part might conditionally be suitable for parallelization
-                #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) private(tempElem) shared(temp)
+                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) private(tempElem, c) shared(temp)
                 for ( c=this->pos(i,i); c<this->pos(i+1,0); ++c )
                 {
                     tempElem = temp.at(c);
@@ -302,7 +302,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
              * rows' elements properly. Hence this elements are stored into 'ri' before
              * the main algorithm starts.
              */
-            #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) shared(temp, ri)
+            #pragma omp parallel for if((N-i-1)>OMP_CHUNKS_PER_THREAD) private(r) shared(temp, ri)
             for ( r=i+1; r<N; ++r )
             {
                 ri.at(r-i-1) = temp.at(this->pos(r, i));
