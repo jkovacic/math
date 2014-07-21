@@ -32,14 +32,10 @@ limitations under the License.
 #include "MatrixGeneric.h"
 #include "LinearEquationSolverGeneric.h"
 #include "LinearEquationSolverException.h"
+#include "omp_settings.h"
 
 #include <stdexcept>
 
-
-// The function 'pos', defined in the parent class, must be called as
-// this->pos. The following macro has been defined to shorten this and
-// to make the code a little bit more readable:
-#define POS(r, c)   this->pos((r), (c))
 
 // 'Zero' and 'one' constant have already been defined in the class NumericUtil.
 // They can only be accessed as math::NumericUtil<T>::ZERO or math::NumericUtil<T>::ONE, respectively
@@ -139,7 +135,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         {
             for ( size_t j=0; j<N; ++j )
             {
-                this->elems.at(POS(i, j)) = ( i==j ? scalar : ZERO );
+                this->elems.at(this->pos(i, j)) = ( i==j ? scalar : ZERO );
             } // for j
         } // for i
     }  // try
@@ -211,7 +207,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // another one (r; r>i) satisfying temp(r,i)!=0
             // Each swap multiplies the determinant by -1
 
-            if ( true == math::NumericUtil<T>::isZero(temp.at(POS(i, i))) )
+            if ( true == math::NumericUtil<T>::isZero(temp.at(this->pos(i, i))) )
             {
 
                 // Line swap will be necessary.
@@ -220,7 +216,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
                 for ( r=i+1; r<N; ++r )
                 {
-                    if ( false == NumericUtil<T>::isZero(temp.at(POS(r, i))) )
+                    if ( false == NumericUtil<T>::isZero(temp.at(this->pos(r, i))) )
                     {
                         // Found, no need to search further,
                         // so end the for (r) loop
@@ -242,11 +238,11 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // BTW, all elements left of (i,i) and (r,i) should already be
                 // equal to 0 and it wouldn't be necessary to swap them.
                 // But a few extra "operations" shouldn't considerably affect complexity
-                for ( size_t c=POS(i,0); c<POS(i+1,0); ++c )
+                for ( size_t c=this->pos(i,0); c<this->pos(i+1,0); ++c )
                 {
                     const T tempElem = temp.at(c);
-                    temp.at(c) = temp.at(POS(r, c));
-                    temp.at(POS(r, c)) = tempElem;
+                    temp.at(c) = temp.at(this->pos(r, c));
+                    temp.at(this->pos(r, c)) = tempElem;
                 }
 
                 // finally, if two lines are swapped, det = -det
@@ -265,12 +261,12 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // temp(r,i) will be calculated to 0 immediately.
                 // However, its initial value is necessary to properly
                 // calculate all other elements of the r^th row
-                T ri = temp.at(POS(r, i));
+                T ri = temp.at(this->pos(r, i));
 
                 for ( size_t c=i; c<N; ++c )
                 {
                     // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                    temp.at(POS(r, c)) -= temp.at(POS(i, c)) * ri / temp.at(POS(i, i));
+                    temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri / temp.at(this->pos(i, i));
                 }  // for c
             }  // for r
         }  // for i
@@ -279,7 +275,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // elements can be multiplied
         for ( size_t i=0; i<N; ++i )
         {
-            retVal *= temp.at(POS(i, i));
+            retVal *= temp.at(this->pos(i, i));
         }
 
         // temp not needed anymore, clean it
@@ -369,9 +365,9 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     {
         for ( size_t c=r+1; c<N; ++c )
         {
-            temp = this->elems.at(POS(r, c));
-            this->elems.at(POS(r, c)) = this->elems.at(POS(c, r));
-            this->elems.at(POS(c, r)) = temp;
+            temp = this->elems.at(this->pos(r, c));
+            this->elems.at(this->pos(r, c)) = this->elems.at(this->pos(c, r));
+            this->elems.at(this->pos(c, r)) = temp;
         }  // for c
     }  // for r
 
@@ -386,11 +382,11 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
  * be a square matrix (it can be declared as an "ordinary" matrix, though)
  * with the same dimensions as 'this'
  *
- * @param m
+ * @param m - matrix to be multiplied by this one
  *
  * @return reference to itself
  *
- * @throw
+ * @throw MatrixException if dimensions do not match or if allocation of memory fails
  */
 template<class T>
 math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
@@ -444,6 +440,5 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr, con
 }
 
 // The macros were defined for implementation in this file only. Undef them now
-#undef POS
 #undef ZERO
 #undef ONE
