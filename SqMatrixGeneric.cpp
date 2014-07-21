@@ -135,7 +135,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         size_t i;
         size_t j;
 
-        #pragma omp parallel for if(N2>OMP_CHUNKS_PER_THREAD) private(i, j)
+        #pragma omp parallel for if(N2>OMP_CHUNKS_PER_THREAD) default(none) private(i, j) shared(scalar)
         for ( size_t idx=0; idx<N2; ++idx )
         {
             i = idx / N;
@@ -254,7 +254,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // swap i.th and r.th line by replacing elements one by one
 
                 // However the swapping part might conditionally be suitable for parallelization
-                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) private(c) shared(temp)
+                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) default(none) private(c) shared(temp, r, i)
                 for ( c=this->pos(i,i); c<this->pos(i+1,0); ++c )
                 {
                     T tempElem = temp.at(c);
@@ -300,7 +300,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
              * rows' elements properly. Hence this elements are stored into 'ri' before
              * the main algorithm starts.
              */
-            #pragma omp parallel for if((N-i-1)>OMP_CHUNKS_PER_THREAD) private(r) shared(temp, ri)
+            #pragma omp parallel for if((N-i-1)>OMP_CHUNKS_PER_THREAD) default(none) private(r) shared(temp, ri, i)
             for ( r=i+1; r<N; ++r )
             {
                 ri.at(r-i-1) = temp.at(this->pos(r, i));
@@ -311,7 +311,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
              * Main part of the algorithm. An appropriate multiplier of the i.th row will be
              * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
              */
-            #pragma omp parallel for private(r, c) shared(ri)
+            #pragma omp parallel for default(none) private(r, c) shared(ri, temp, i)
             for ( size_t idx=0; idx<N2; ++idx )
             {
                 /*

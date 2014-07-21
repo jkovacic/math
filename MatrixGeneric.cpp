@@ -398,7 +398,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator+ (const math::MatrixGene
         // Matrices have the same number of elements, just traverse
         // them linearly and perform addition of elements at the same position
 
-    	#pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+    	#pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, matrix)
         for ( size_t i=0; i<N; ++i )
         {
             temp.elems.at(i) = this->elems.at(i) + matrix.elems.at(i);
@@ -437,7 +437,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     {
         const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(m)
         for ( size_t i=0; i<N; ++i )
         {
             this->elems.at(i) += m.elems.at(i);
@@ -479,7 +479,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator- (const math::MatrixGene
     try
     {
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, m)
         for ( size_t i=0; i<N; ++i )
         {
             temp.elems.at(i) = this->elems.at(i) - m.elems.at(i);
@@ -519,7 +519,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
     {
     	const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(matrix)
         for ( size_t i=0; i<N; ++i )
         {
             this->elems.at(i) -= matrix.elems.at(i);
@@ -554,7 +554,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
     {
     	const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp)
         for ( size_t i=0; i<N; ++i )
         {
             temp.elems.at(i) = -(this->elems.at(i));
@@ -610,7 +610,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
         size_t c;
         const size_t N = this->rows * matrix.cols;
 
-        #pragma omp parallel for private(r, c)
+        #pragma omp parallel for default(none) private(r, c) shared(matrix, temp)
         for ( size_t idx=0; idx<N; ++idx )
         {
             r = idx / matrix.cols;
@@ -694,7 +694,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const
     {
         const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, scalar)
         for ( size_t i=0; i<N; ++i )
         {
             retVal.elems.at(i) = this->elems.at(i) * scalar;
@@ -723,7 +723,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
     const size_t N = this->rows * this->cols;
 
     // Multiply each element by the 'scalar'
-    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
+    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(scalar)
     for ( size_t i=0; i<N; ++i )
     {
         this->elems.at(i) *= scalar;
@@ -777,7 +777,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
         const size_t N = this->rows * this->cols;
 
         // "collect" all elements of this
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) private(r, c)
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) private(r, c) shared(retVal)
         for ( size_t idx=0; idx<N; ++idx )
         {
             r = idx / this->cols;
@@ -830,7 +830,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 
-    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) private(r, c)
+    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) private(r, c) shared(tempElems)
     for ( size_t idx=0; idx<N; ++idx )
     {
         r = idx / this->cols;
@@ -913,7 +913,10 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw
     // It is best to remove them from the last (the highest row number) till
     // the first one (row=0). This way the position of the element to be removed
     // is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
-    // move remaining elements appropriately
+    // move remaining elements appropriately.
+    //
+    // Note: vector.erase() is by no means thread safe, so the for loop
+    // should not be parallelized!
     for ( size_t i=1; i<=this->rows; ++i )
     {
         this->elems.erase(this->elems.begin()+(this->rows-i)*this->cols+colNr);
@@ -1008,6 +1011,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
 
         // Elements will be inserted step by step, with ascending row coordinate.
         // The position of each such element can be calculated as r*(cols+1)+colNr.
+        //
+        // Note: vector.insert() is by no means thread safe, so the for loop
+        // should not be parallelized!
         for ( size_t r = 0; r < this->rows; ++r )
         {
             this->elems.insert(this->elems.begin()+r*(this->cols+1)+colNr, el);
