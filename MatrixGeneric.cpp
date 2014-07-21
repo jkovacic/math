@@ -608,17 +608,15 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
     {
         size_t r;
         size_t c;
-        size_t i;
-        T sum;
         const size_t N = this->rows * matrix.cols;
 
-        #pragma omp parallel for private(r, c, i, sum)
+        #pragma omp parallel for private(r, c)
         for ( size_t idx=0; idx<N; ++idx )
         {
             r = idx / matrix.cols;
             c = idx % matrix.cols;
-            sum = ZERO;
-            for ( i=0; i<this->cols; ++i )
+            T sum = ZERO;
+            for ( size_t i=0; i<this->cols; ++i )
             {
                 sum += this->elems.at(this->pos(r, i)) * matrix.elems.at(matrix.pos(i, c));
             }
@@ -903,8 +901,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (m
 template<class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
 {
-    const size_t N = this->rows;
-
     // Checking of input parameters. The matrix must contain at least 2 columns
     // as the result must still contain at least one. colNr must be
     // between 0 and cols-1
@@ -918,8 +914,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw
     // the first one (row=0). This way the position of the element to be removed
     // is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
     // move remaining elements appropriately
-    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
-    for ( size_t i=1; i<=N; ++i )
+    for ( size_t i=1; i<=this->rows; ++i )
     {
         this->elems.erase(this->elems.begin()+(this->rows-i)*this->cols+colNr);
     }
@@ -992,8 +987,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T&
 template<class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
 {
-    const size_t N = this->rows;
-
     // A valid colNr is between 0 and cols (incl.)
     if ( colNr > this->cols )
     {
@@ -1015,8 +1008,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
 
         // Elements will be inserted step by step, with ascending row coordinate.
         // The position of each such element can be calculated as r*(cols+1)+colNr.
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD)
-        for ( size_t r = 0; r < N; ++r )
+        for ( size_t r = 0; r < this->rows; ++r )
         {
             this->elems.insert(this->elems.begin()+r*(this->cols+1)+colNr, el);
         }  // for r

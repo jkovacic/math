@@ -253,13 +253,11 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
                 // swap i.th and r.th line by replacing elements one by one
 
-                T tempElem;
-
                 // However the swapping part might conditionally be suitable for parallelization
-                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) private(tempElem, c) shared(temp)
+                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) private(c) shared(temp)
                 for ( c=this->pos(i,i); c<this->pos(i+1,0); ++c )
                 {
-                    tempElem = temp.at(c);
+                    T tempElem = temp.at(c);
                     temp.at(c) = temp.at(this->pos(r, c));
                     temp.at(this->pos(r, c)) = tempElem;
                 }
