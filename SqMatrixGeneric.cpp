@@ -35,6 +35,7 @@ limitations under the License.
 #include "omp_settings.h"
 
 #include <stdexcept>
+#include <vector>
 
 
 // 'Zero' and 'one' constant have already been defined in the class NumericUtil.
@@ -130,14 +131,19 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
     try
     {
         const size_t N = this->rows;
+        const size_t N2 = N * N;
+        size_t i;
+        size_t j;
 
-        for ( size_t i=0; i<N; ++i )
+        #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) private(i, j)
+        for ( size_t idx=0; idx<N2; ++idx )
         {
-            for ( size_t j=0; j<N; ++j )
-            {
-                this->elems.at(this->pos(i, j)) = ( i==j ? scalar : ZERO );
-            } // for j
-        } // for i
+            i = idx / N;
+            j = idx % N;
+
+            this->elems.at(this->pos(i, j)) = ( i==j ? scalar : ZERO );
+        }
+
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -171,7 +177,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setUnit() throw(math::Matrix
  *
  * @return determinant
  *
- * @throw MatrixException
+ * @throw MatrixException if allocation of memory for auxiliary variables fails
  */
 template<class T>
 T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
@@ -198,9 +204,21 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // are permitted
         std::vector<T> temp = this->elems;
         size_t r;
+        size_t c;
+
+        // Parallelization algorithm requires that first elements of each submatrix's
+        // row are temporarily stored into a randomly accessible container
+        std::vector<T> ri;
         
         const size_t N = this->rows;  // number of rows (and columns)
 
+        ri.reserve(N-1);
+
+        /*
+         * First part of the algorithm just finds the first occurrence of a
+         * row where A(i,i) does not equal 0. As such, this part is not
+         * suitable for parallelization.
+         */
         for ( size_t i=0; i<N-1; ++i )
         {
             // if temp(i,i) equals zero, swap the i^th line with
@@ -235,12 +253,13 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
                 // swap i.th and r.th line by replacing elements one by one
 
-                // BTW, all elements left of (i,i) and (r,i) should already be
-                // equal to 0 and it wouldn't be necessary to swap them.
-                // But a few extra "operations" shouldn't considerably affect complexity
-                for ( size_t c=this->pos(i,0); c<this->pos(i+1,0); ++c )
+                T tempElem;
+
+                // However the swapping part might conditionally be suitable for parallelization
+                #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) private(tempElem) shared(temp)
+                for ( c=this->pos(i,i); c<this->pos(i+1,0); ++c )
                 {
-                    const T tempElem = temp.at(c);
+                    tempElem = temp.at(c);
                     temp.at(c) = temp.at(this->pos(r, c));
                     temp.at(this->pos(r, c)) = tempElem;
                 }
@@ -256,23 +275,70 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // a multiplier of one line (i in this algorithm)
             // is added to another line (r; r>i)
 
-            for ( size_t r=i+1; r<N; ++r )
-            {
-                // temp(r,i) will be calculated to 0 immediately.
-                // However, its initial value is necessary to properly
-                // calculate all other elements of the r^th row
-                T ri = temp.at(this->pos(r, i));
+            /*
+             * Code before parallelization:
+             *
+             * for ( size_t r=i+1; r<N; ++r )
+             * {
+             *     T ri = temp.at(this->pos(r, i));
+             *     for ( size_t c=i; c<N; ++c )
+             *     {
+             *         temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri / temp.at(this->pos(i, i));
+             *     }
+             * }
+             */
 
-                for ( size_t c=i; c<N; ++c )
-                {
-                    // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                    temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri / temp.at(this->pos(i, i));
-                }  // for c
-            }  // for r
+            // A submatrix of the i.th iteration will have (N-i-1) rows
+            // and (N-i) columns.
+            const size_t N2 = (N-i-1) * (N-i);
+
+            // To enable parallelization (when feasible), fill 'ri' with zeros.
+            ri.clear();
+            ri.resize(N-i-1, ZERO);
+
+            /*
+			 * The algorithm below this for loop will calculate temp(r,i) to zero immediately.
+             * However, initial values for each valid 'r' are necessary to calculate all other
+             * rows' elements properly. Hence this elements are stored into 'ri' before
+             * the main algorithm starts.
+             */
+            #pragma omp parallel for schedule(static, OMP_CHUNKS_PER_THREAD) shared(temp, ri)
+            for ( r=i+1; r<N; ++r )
+            {
+                ri.at(r-i-1) = temp.at(this->pos(r, i));
+            }
+
+
+            /*
+             * Main part of the algorithm. An appropriate multiplier of the i.th row will be
+             * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
+             */
+            #pragma omp parallel for private(r, c) shared(ri)
+            for ( size_t idx=0; idx<N2; ++idx )
+            {
+                /*
+                 * Convert 'idx' to row and column number of each element of
+                 * the lower right corner submatrix of size (N-i-1) x (N-i).
+                 * Appropriate offsets are already applied to 'r' and 'c', respectively.
+                 */
+                r = i + 1 + idx / (N-i);
+                c = i + idx % (N-i);
+
+                // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
+                temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri.at(r-i-1) / temp.at(this->pos(i, i));
+            }  // for idx
         }  // for i
 
-        // Now temp is an upper triangular matrix so all its diagonal
-        // elements can be multiplied
+
+        /*
+         * Now 'temp' is an upper triangular matrix so all its diagonal
+         * elements can be multiplied.
+         *
+         * Note: it would be possible to parallelize this part and apply
+         * reduction to multiplication, however, as there are no additional
+         * operations per thread, the only "benefit" of this would be additional
+         * overhead due to thread manipulation.
+         */
         for ( size_t i=0; i<N; ++i )
         {
             retVal *= temp.at(this->pos(i, i));
