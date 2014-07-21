@@ -132,18 +132,18 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
     {
         const size_t N = this->rows;
         const size_t N2 = N * N;
-        size_t i;
-        size_t j;
 
-        #pragma omp parallel for if(N2>OMP_CHUNKS_PER_THREAD) default(none) private(i, j) shared(scalar)
-        for ( size_t idx=0; idx<N2; ++idx )
+        #pragma omp parallel for collapse(2) if(N2>OMP_CHUNKS_PER_THREAD) default(none) shared(scalar)
+        for ( size_t r=0; r<N; ++r )
         {
-            i = idx / N;
-            j = idx % N;
+            for ( size_t c=0; c<N; ++c )
+            {
+                this->elems.at(this->pos(r, c)) = ( r==c ? scalar : ZERO );
+            }  // for c
+        }  // for r
 
-            this->elems.at(this->pos(i, j)) = ( i==j ? scalar : ZERO );
-        }
-
+        // just to suppress a warning when OpenMP is not enabled
+        (void) N2;
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -203,11 +203,9 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // elements will be copied into a temporary one where any modifications
         // are permitted
         std::vector<T> temp = this->elems;
-        size_t r;
-        size_t c;
 
-        // Parallelization algorithm requires that first elements of each submatrix's
-        // row are temporarily stored into a randomly accessible container
+        // Parallelization of the algorithm requires that first elements of each
+        // submatrix's row are temporarily stored into a randomly accessible container.
         std::vector<T> ri;
         
         const size_t N = this->rows;  // number of rows (and columns)
@@ -227,6 +225,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
             if ( true == math::NumericUtil<T>::isZero(temp.at(this->pos(i, i))) )
             {
+                size_t r;
 
                 // Line swap will be necessary.
                 // Find the r^th line meeting the criteria above
@@ -254,8 +253,8 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // swap i.th and r.th line by replacing elements one by one
 
                 // However the swapping part might conditionally be suitable for parallelization
-                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) default(none) private(c) shared(temp, r, i)
-                for ( c=this->pos(i,i); c<this->pos(i+1,0); ++c )
+                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, r, i)
+                for ( size_t c=this->pos(i,i); c<this->pos(i+1,0); ++c )
                 {
                     T tempElem = temp.at(c);
                     temp.at(c) = temp.at(this->pos(r, c));
@@ -273,35 +272,18 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // a multiplier of one line (i in this algorithm)
             // is added to another line (r; r>i)
 
-            /*
-             * Code before parallelization:
-             *
-             * for ( size_t r=i+1; r<N; ++r )
-             * {
-             *     T ri = temp.at(this->pos(r, i));
-             *     for ( size_t c=i; c<N; ++c )
-             *     {
-             *         temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri / temp.at(this->pos(i, i));
-             *     }
-             * }
-             */
-
-            // A submatrix of the i.th iteration will have (N-i-1) rows
-            // and (N-i) columns.
-            const size_t N2 = (N-i-1) * (N-i);
-
             // To enable parallelization (when feasible), fill 'ri' with zeros.
             ri.clear();
             ri.resize(N-i-1, ZERO);
 
             /*
-			 * The algorithm below this for loop will calculate temp(r,i) to zero immediately.
+             * The algorithm below this for loop will calculate temp(r,i) to zero immediately.
              * However, initial values for each valid 'r' are necessary to calculate all other
              * rows' elements properly. Hence this elements are stored into 'ri' before
              * the main algorithm starts.
              */
-            #pragma omp parallel for if((N-i-1)>OMP_CHUNKS_PER_THREAD) default(none) private(r) shared(temp, ri, i)
-            for ( r=i+1; r<N; ++r )
+            #pragma omp parallel for if((N-i-1)>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, ri, i)
+            for ( size_t r=i+1; r<N; ++r )
             {
                 ri.at(r-i-1) = temp.at(this->pos(r, i));
             }
@@ -311,20 +293,15 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
              * Main part of the algorithm. An appropriate multiplier of the i.th row will be
              * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
              */
-            #pragma omp parallel for default(none) private(r, c) shared(ri, temp, i)
-            for ( size_t idx=0; idx<N2; ++idx )
+            #pragma omp parallel for collapse(2) default(none) shared(ri, temp, i)
+            for ( size_t r=i+1; r<N; ++r )
             {
-                /*
-                 * Convert 'idx' to row and column number of each element of
-                 * the lower right corner submatrix of size (N-i-1) x (N-i).
-                 * Appropriate offsets are already applied to 'r' and 'c', respectively.
-                 */
-                r = i + 1 + idx / (N-i);
-                c = i + idx % (N-i);
-
-                // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri.at(r-i-1) / temp.at(this->pos(i, i));
-            }  // for idx
+                for ( size_t c=i; c<N; ++c)
+                {
+                    // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
+                    temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri.at(r-i-1) / temp.at(this->pos(i, i));
+                }  // for c
+            }  // for r
         }  // for i
 
 
@@ -425,6 +402,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     // Traverse the upper diagonal part of the matrix,
     // no need to reach the final row and
     // no need to transpose elements on the diagonal:
+
     for ( size_t r=0; r<N-1; ++r )
     {
         for ( size_t c=r+1; c<N; ++c )

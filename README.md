@@ -21,7 +21,7 @@ For more details about official _make_ targets, please type:
 
 ##OpenMP support
 Mathematical algorithms in classes are currently being rewritten to support
-OpenMP (parallelization using multiple threads on multicore processors).
+OpenMP (parallelization using multiple threads on multicore systems).
 Please note that OpenMP is currently disabled by default. To enable it,
 build the application as:
 
@@ -34,6 +34,8 @@ For more details, type
 Build instructions assume that GCC is used as a compiler. If you wish to
 use any other compiler, you should edit _Makefile_ and modify appropriate
 variables and/or build rules.
+
+Please note that OpenMP version 3.0 or newer is required.
 
 ##License
 The library is licenced under the

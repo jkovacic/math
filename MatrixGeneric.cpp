@@ -239,7 +239,7 @@ T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixExce
 
 
 /**
- * Returns a read-only (const) reference to the desired element od the matrix.
+ * Returns a read-only (const) reference to the desired element of the matrix.
  * @note The reference should be used immediately after this call before
  *       the matrix is destroyed or its internal storage is reallocated.
  *
@@ -606,23 +606,20 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGene
 
     try
     {
-        size_t r;
-        size_t c;
-        const size_t N = this->rows * matrix.cols;
-
-        #pragma omp parallel for default(none) private(r, c) shared(matrix, temp)
-        for ( size_t idx=0; idx<N; ++idx )
+        #pragma omp parallel for collapse(2) default(none) shared(matrix, temp)
+        for ( size_t r=0; r<this->rows; ++r )
         {
-            r = idx / matrix.cols;
-            c = idx % matrix.cols;
-            T sum = ZERO;
-            for ( size_t i=0; i<this->cols; ++i )
+            for ( size_t c=0; c<matrix.cols; ++c)
             {
-                sum += this->elems.at(this->pos(r, i)) * matrix.elems.at(matrix.pos(i, c));
-            }
+                T sum = ZERO;
+                for ( size_t i=0; i<this->cols; ++i )
+                {
+                    sum += this->elems.at(this->pos(r, i)) * matrix.elems.at(matrix.pos(i, c));
+                }
 
-            temp.elems.at(temp.pos(r, c)) = sum;
-        }  // for idx
+                temp.elems.at(temp.pos(r, c)) = sum;
+            }  // for c
+        }  // for r
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -770,22 +767,20 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     // Create an instance with swapped dimensions
     math::MatrixGeneric<T> retVal(this->cols, this->rows);
 
+    const size_t N = this->rows * this->cols;
+
     try
     {
-        size_t r;
-        size_t c;
-        const size_t N = this->rows * this->cols;
-
         // "collect" all elements of this
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) private(r, c) shared(retVal)
-        for ( size_t idx=0; idx<N; ++idx )
+        #pragma omp parallel for collapse(2) if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal)
+        for ( size_t r=0; r<this->rows; ++r )
         {
-            r = idx / this->cols;
-            c = idx % this->cols;
-
-            // and swap their "coordinates"
-            retVal.elems.at(retVal.pos(c, r)) = this->elems.at(this->pos(r, c));
-        }
+            for ( size_t c=0; c<this->cols; ++c )
+            {
+                // and swap their "coordinates"
+                retVal.elems.at(retVal.pos(c, r)) = this->elems.at(this->pos(r, c));
+            }  // for c
+        }  // for r
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -793,6 +788,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     }
 
     return retVal;
+
+    // just to suppress a warning when OpenMP is not enabled
+    (void) N;
 }
 
 
@@ -816,8 +814,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     // T(r,c) = this(c,r)
 
     std::vector<T> tempElems;
-    size_t r;
-    size_t c;
     const size_t N = this->rows * this->cols;
 
     // reserve enough space for the temporary vector:
@@ -830,22 +826,22 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 
-    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) private(r, c) shared(tempElems)
-    for ( size_t idx=0; idx<N; ++idx )
+    #pragma omp parallel for collapse(2) if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(tempElems)
+    for ( size_t r=0; r<this->rows; ++r )
     {
-        r = idx / this->cols;
-        c = idx % this->cols;
-
-        tempElems.at(c*this->rows + r) = this->elems.at(this->pos(r, c));
-    }
+        for ( size_t c=0; c<this->cols; ++c )
+        {
+            tempElems.at(c*this->rows + r) = this->elems.at(this->pos(r, c));
+        }  // for c
+    }  // for r
 
     // update the vector of elements:
     this->elems = tempElems;
 
     // and swap matrix's dimensions:
-    c = this->cols;
+    size_t sw = this->cols;
     this->cols = this->rows;
-    this->rows = c;
+    this->rows = sw;
 
     // tempElems not needed anymore, clean it
     tempElems.clear();
