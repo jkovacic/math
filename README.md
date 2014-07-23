@@ -35,7 +35,8 @@ Build instructions assume that GCC is used as a compiler. If you wish to
 use any other compiler, you should edit _Makefile_ and modify appropriate
 variables and/or build rules.
 
-Please note that OpenMP version 3.0 or newer is required.
+To build a parallelized version of the application, your compiler must
+support __OpenMP version 3.0__ or newer.
 
 ##License
 The library is licenced under the

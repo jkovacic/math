@@ -203,14 +203,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // elements will be copied into a temporary one where any modifications
         // are permitted
         std::vector<T> temp = this->elems;
-
-        // Parallelization of the algorithm requires that first elements of each
-        // submatrix's row are temporarily stored into a randomly accessible container.
-        std::vector<T> ri;
-        
         const size_t N = this->rows;  // number of rows (and columns)
-
-        ri.reserve(N-1);
 
         /*
          * First part of the algorithm just finds the first occurrence of a
@@ -272,34 +265,24 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // a multiplier of one line (i in this algorithm)
             // is added to another line (r; r>i)
 
-            // To enable parallelization (when feasible), fill 'ri' with zeros.
-            ri.clear();
-            ri.resize(N-i-1, ZERO);
-
-            /*
-             * The algorithm below this for loop will calculate temp(r,i) to zero immediately.
-             * However, initial values for each valid 'r' are necessary to calculate all other
-             * rows' elements properly. Hence this elements are stored into 'ri' before
-             * the main algorithm starts.
-             */
-            #pragma omp parallel for if((N-i-1)>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, ri, i)
-            for ( size_t r=i+1; r<N; ++r )
-            {
-                ri.at(r-i-1) = temp.at(this->pos(r, i));
-            }
-
-
             /*
              * Main part of the algorithm. An appropriate multiplier of the i.th row will be
              * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
+             *
+             * Note: only the outer for loop (for r) will be parallelized.
              */
-            #pragma omp parallel for collapse(2) default(none) shared(ri, temp, i)
+            #pragma omp parallel for default(none) shared(temp, i)
             for ( size_t r=i+1; r<N; ++r )
             {
+                // temp(r,i) will be calculated to 0 immediately.
+                // However, its initial value is necessary to properly
+                // calculate all other elements of the r.th row
+                T ri = temp.at(this->pos(r, i));
+
                 for ( size_t c=i; c<N; ++c)
                 {
                     // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                    temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri.at(r-i-1) / temp.at(this->pos(i, i));
+                    temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri / temp.at(this->pos(i, i));
                 }  // for c
             }  // for r
         }  // for i
@@ -396,24 +379,37 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
 template<class T>
 math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::MatrixException)
 {
-    const size_t N = this->rows;  // number of rows (and columns)
-    T temp;
+    // TODO: find and implement a better algorithm
+
+    const size_t N = this->rows;       // number of rows (and columns)
+    const size_t Ntr = N * (N-1) / 2;  // number of all elements to be transposed
 
     // Traverse the upper diagonal part of the matrix,
     // no need to reach the final row and
     // no need to transpose elements on the diagonal:
 
+    /*
+     * Notes about parallelization:
+     * As the inner loop (for c) also depends on outer loop's
+     * iterator (r), it is not possible to parallelize both loops
+     * in an elegant way. Hence only the outer loop is parallelized.
+     * As the threads' load varies, dynamic scheduling is applied.
+     */
+    #pragma omp parallel for if(Ntr>OMP_CHUNKS_PER_THREAD) default(none) schedule(dynamic)
     for ( size_t r=0; r<N-1; ++r )
     {
         for ( size_t c=r+1; c<N; ++c )
         {
-            temp = this->elems.at(this->pos(r, c));
+            T temp = this->elems.at(this->pos(r, c));
             this->elems.at(this->pos(r, c)) = this->elems.at(this->pos(c, r));
             this->elems.at(this->pos(c, r)) = temp;
         }  // for c
     }  // for r
 
     return *this;
+
+    // just to suppress a warning when OpenMP is not enabled
+    (void) Ntr;
 }
 
 /**
