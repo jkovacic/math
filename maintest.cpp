@@ -216,7 +216,7 @@ void rationalTest()
 
     try
     {
-        // and also test one argument constuctor
+        // and also test one argument constructor
         Rational zero(0);
         cout << "zero = " << zero << endl;
         zero.inverse();
@@ -240,7 +240,7 @@ void rationalTest()
     // similar test, now invert() should "fail"
     try
     {
-        // and also one argument constuctor
+        // and also one argument constructor
         Rational zero(0);
         Rational inv;
         inv = zero.invert();
