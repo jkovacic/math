@@ -30,7 +30,7 @@ limitations under the License.
 #include "MatrixException.h"
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
-
+#include "omp_settings.h"
 
 /**
  * Constructor.
@@ -186,18 +186,26 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
         SqMatrixGeneric<T> temp(m_coef);
         MatrixGeneric<T> retVal(m_term);
 
-        size_t r;
-        T el;
-
         // Try to convert the 'temp' into an identity matrix
-        // by appropriate adding multiples of other lines to each line
+        // by appropriately adding multiples of other lines to each line
         // (incl. lines of 'retVal')
 
+        /*
+         * The first part of the algorithm will (try to) ensure there are
+         * no zeros among temp's diagonal elements. Additionally it will
+         * subtract multiples of the i.th row from all subsequent rows (r>i)
+         * so their i.th column will be equal to 0. This requires plenty of
+         * additions/subtractions of individual rows so parallelization of
+         * this for loop is not possible due to race conditions. IT will be
+         * possible to parallelize certain parts of this lop, though.
+         */
         for ( size_t i=0; i<N; ++i )
         {
             // first check if the diagonal element equals 0
             if ( true == math::NumericUtil<T>::isZero(temp.at(i, i)) )
             {
+                size_t r;
+
                 // if it does, try to find another row r where temp(r,i)!=0
                 for ( r=0; r<N; ++r )
                 {
@@ -221,7 +229,8 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
                     throw math::LinearEquationSolverException(math::LinearEquationSolverException::NO_UNIQUE_SOLUTION);
                 }
 
-                // add the r^th line to the i^th one:
+                // add the r.th line to the i.th one and thus prevent temp(i,i) from being 0:
+                #pragma omp parallel default(none) shared(temp, retVal, i, r)
                 for ( size_t c=0; c<Nmax; ++c )
                 {
                     if ( c<N )
@@ -237,77 +246,93 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
             }  // if temp(i,i)==0
 
-            // Let the diag element be 1. So divide the whole row by temp(i,i)
-            //  (columns smaller than i are already 0)
-            el = temp.get(i, i);
-
-            for ( size_t c=i; c<N; ++c )
+            // Set the i.th column of all other rows (r>i) to 0 by
+            // adding the appropriate multiple of the i.th row
+            #pragma omp parallel for default(none) shared(temp, retVal, i)
+            for ( size_t r=i+1; r<N; r++ )
             {
-                temp.at(i, c) /= el;
+                // Nothing to do if temp(r,i) is already 0.
+                if ( false == math::NumericUtil<T>::isZero(temp.at(r, i)) )
+                {
+                    // Subtract a multiple of the i^th row.
+                    const T el = temp.get(r, i) / temp.get(i, i);
+
+                    // temp(r,:) = temp(r,:)-el*temp(i,:)
+                    for ( size_t c=i; c<N; ++c )
+                    {
+                        temp.at(r, c) -= el*temp.at(i, c);
+                    }
+
+                    // term(r,:) = term(r,:)-el*term(i,:)
+                    for ( size_t c=0; c<NT; ++c )
+                    {
+                        retVal.at(r, c) -= el*retVal.at(i, c);
+                    }
+                }  // if (temp(r,i) != 0
+            }  // for r
+        }  // for i
+
+        // Set the diag elements of 'temp' and 'retVal' to 1 by dividing the
+        // whole row by temp(r,r). Columns smaller than 'r' are already equal to 0.
+
+        // Normalizing of each row is independent from other rows so it is
+        // perfectly safe to parallelize the task by rows.
+        #pragma omp parallel for default(none) shared(temp, retVal)
+        for ( size_t r=0; r<N; ++r )
+        {
+            const T el = temp.get(r, r);
+
+            for ( size_t c=r; c<N; ++c )
+            {
+        	    temp.at(r, c) /= el;
             }
 
             for ( size_t c=0; c<NT; ++c )
             {
-                retVal.at(i, c) /= el;
+                retVal.at(r, c) /= el;
             }
-
-
-            // set the i^th column of all other rows (r>i) to 0 by
-            // adding the appropriate multiple of the i^th row
-            for ( r=i+1; r<N; r++ )
-            {
-                // Nothing to do if temp(r,i) is already 0.
-                if ( true == math::NumericUtil<T>::isZero(temp.at(r, i)) )
-                {
-                    continue;  // for r
-                }
-
-                // Subtract a multiple of the i^th row. Note that temp(i,i) is already 1.
-                el = temp.get(r, i);
-
-                for ( size_t c=i; c<N; ++c )
-                {
-                    temp.at(r, c) -= el*temp.at(i, c);
-                }
-
-                for ( size_t c=0; c<NT; ++c )
-                {
-                    retVal.at(r, c) -= el*retVal.at(i, c);
-                }
-            }  // for r
-        }  // for i
+        }
 
         // Now the lower triangle (below diag excl.) is 0, the diagonal consists of 1,
         // The upper triangle (above the diag) must be set to 0 as well.
 
-        for ( r=0; r<N; ++r )
+        // Column 'c' of each row (for r<c) will be set to 0
+        // by adding the appropriate multiple of c.th row
+
+        // Parallelization of this for loop is not possible due to race conditions.
+        for ( size_t c=1; c<N; ++c )
         {
-            for ( size_t c=r+1; c<N; ++c )
+            // The current row to apply the operation described above
+
+            // It is possible to parallelize this for loop because a row 'c' (not included
+            // into the for loop) will be added independently to each "parallelized" row
+            // 'r' (between 0 and c-1 incl.), thus no race condition is possible.
+            #pragma omp parallel for default(none) shared(temp, retVal, c) schedule(dynamic)
+            for ( size_t r=0; r<c; ++r )
             {
-                // Nothing to do if already 0
-                if ( true == math::NumericUtil<T>::isZero(temp.at(r, c)) )
+                // Nothing to do if temp(r,c) already equals 0
+                if ( false == math::NumericUtil<T>::isZero(temp.at(r, c)) )
                 {
-                    continue;  // for c
-                }
+                	// To set temp(r,c) to 0 it is a good idea to add the c.th row to it.
+                    // temp(c,i); i<c are already 0 (i.e. will not affect anything left of temp(i,c)
+                    // and temp(c,c) is already 1.
 
-                // To set temp(r,c) to 0 it is a good idea to add the c^th row to it.
-                // temp(c,i); i<c are already 0 (i.e. will not affect anything left of temp(i,c)
-                // and temp(c,c) is already 1.
+                    const T el = temp.get(r, c);
 
-                el = temp.get(r, c);
+                    // temp(r,:) = temp(r,:) - el*temp(c,:)
+                    for ( size_t i=c; i<N; ++i )
+                    {
+                        temp.at(r, i) -= el*temp.at(c, i);
+                    }
 
-                for ( size_t i=c; i<N; ++i )
-                {
-                    temp.at(r, i) -= el*temp.at(c, i);
-                }
-
-                for ( size_t i=0; i<NT; ++i )
-                {
-                    retVal.at(r, i) -= el*retVal.at(c, i);
-                }
-            }  // for c
-        }  // for r
-
+                    // term(r,:) = term(r,:) - el*term(c,:)
+                    for ( size_t i=0; i<NT; ++i )
+                    {
+                        retVal.at(r, i) -= el*retVal.at(c, i);
+                    }
+                }  // if temp(r,c) != 0
+            }  // for r
+        }  // for c
 
         return retVal;
 
