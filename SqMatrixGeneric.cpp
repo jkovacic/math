@@ -249,7 +249,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, r, i)
                 for ( size_t c=this->pos(i,i); c<this->pos(i+1,0); ++c )
                 {
-                    T tempElem = temp.at(c);
+                    const T tempElem = temp.at(c);
                     temp.at(c) = temp.at(this->pos(r, c));
                     temp.at(this->pos(r, c)) = tempElem;
                 }
@@ -277,7 +277,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // temp(r,i) will be calculated to 0 immediately.
                 // However, its initial value is necessary to properly
                 // calculate all other elements of the r.th row
-                T ri = temp.at(this->pos(r, i));
+                const T ri = temp.at(this->pos(r, i));
 
                 for ( size_t c=i; c<N; ++c)
                 {
@@ -400,7 +400,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     {
         for ( size_t c=r+1; c<N; ++c )
         {
-            T temp = this->elems.at(this->pos(r, c));
+            const T temp = this->elems.at(this->pos(r, c));
             this->elems.at(this->pos(r, c)) = this->elems.at(this->pos(c, r));
             this->elems.at(this->pos(c, r)) = temp;
         }  // for c
