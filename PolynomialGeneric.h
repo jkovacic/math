@@ -138,8 +138,6 @@ public:
     friend PolynomialGeneric<T> (math::operator- <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
 
 
-    // TODO roots()
-
     // Destructor
     virtual ~PolynomialGeneric();
 
