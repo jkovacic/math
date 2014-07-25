@@ -15,18 +15,20 @@ limitations under the License.
 */
 
 /**
-@file NumericUtil.h
-
-Declaration of the class NumericUtil, a collection of some useful numerical utilities
-
-@author Jernej Kovacic
-*/
+ * @file NumericUtil.h
+ *
+ * Declaration of the class NumericUtil, a collection of some useful
+ * numerical utilities.
+ *
+ * @author Jernej Kovacic
+ */
 
 #ifndef _MATH_NUMERICUTIL_H_
 #define _MATH_NUMERICUTIL_H_
 
 #include "Rational.h"
 
+#include <cstddef>
 #include <complex>
 
 namespace math
@@ -62,7 +64,7 @@ public:
     static void setEPS(const T& eps);
     
     // Efficient calculation of base^n:
-    static T power(const T& base, unsigned int n);
+    static T power(const T& base, size_t n);
 };
 
 // Declaration of specialized methods inside the name space declaration
