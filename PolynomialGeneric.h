@@ -120,9 +120,9 @@ public:
 
     // Operators
     PolynomialGeneric<T> operator+(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
-    PolynomialGeneric<T>& operator+=(const PolynomialGeneric<T> poly) throw (PolynomialException);
+    PolynomialGeneric<T>& operator+=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T> operator-(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
-    PolynomialGeneric<T>& operator-=(const PolynomialGeneric<T> poly) throw (PolynomialException);
+    PolynomialGeneric<T>& operator-=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T> operator*(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
     PolynomialGeneric<T>& operator*=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T> operator-() const throw (PolynomialException);

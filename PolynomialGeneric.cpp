@@ -28,6 +28,7 @@ limitations under the License.
 
 // deliberately there is no #include "PolynomialGeneric.h" !
 #include "NumericUtil.h"
+#include "omp_settings.h"
 
 #include <vector>
 #include <cstdlib>
@@ -145,6 +146,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T* carray, size_t n) throw (
         this->coef.resize(n);
 
         // And copy all elements from the array.
+        #pragma omp parallel for if(n>OMP_CHUNKS_PER_THREAD) default(none) shared(carray, n)
         for ( size_t i=0; i<n; ++i )
         {
             this->coef.at(i) = carray[i];
@@ -323,6 +325,7 @@ std::vector<T> math::PolynomialGeneric<T>::getDesc() const throw (math::Polynomi
         std::vector<T> retVal(N);
 
         // copy elements from coef to retVal in reverse order:
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal)
         for ( size_t i=0; i<N; ++i )
         {
             retVal.at(i) = this->coef.at(N-1-i);
@@ -425,6 +428,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vecto
         this->coef.clear();
         this->coef.resize(N);
 
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(cvect)
         for ( size_t i=0; i<N; ++i )
         {
             this->coef.at(i) = cvect.at(N-1-i);
@@ -649,6 +653,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
     }
 
     // For polynomials of higher degree (>0) apply the formula above:
+    #pragma omp parallel for default(none) shared(retVal)
     for ( size_t i=0; i<DEG; ++i )
     {
         retVal.coef.at(i) = static_cast<T>(i+1) * this->coef.at(i+1);
@@ -693,6 +698,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
     retVal.coef.at(0) = c;
 
     // for other coefficients, apply the formula above:
+    #pragma omp parallel for default(none) shared(retVal)
     for ( size_t i=0; i<N; ++i )
     {
         retVal.coef.at(i+1) = this->coef.at(i)/static_cast<T>(i+1);
@@ -745,6 +751,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator+(const math::Pol
             Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its i^th coefficient as 0 (already set above)
         */
+        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, poly)
         for ( size_t i=0; i<nmax; ++i )
         {
             if ( i<nthis )
@@ -779,7 +786,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator+(const math::Pol
  * @throw PolynomialException if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::PolynomialGeneric<T> poly) throw (math::PolynomialException)
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
 {
     // For a definition of polynomial addition, see operator+
     try
@@ -795,6 +802,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
+        #pragma omp parallel for if(npoly>OMP_CHUNKS_PER_THREAD) default(none) shared(poly)
         for ( size_t i=0; i<npoly; ++i )
         {
             this->coef.at(i) += poly.coef.at(i);
@@ -906,6 +914,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-(const math::Pol
             Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its ith coefficient as 0 (already set above)
         */
+        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, poly)
         for ( size_t i=0; i<nmax; ++i )
         {
             if ( i<nthis )
@@ -941,7 +950,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-(const math::Pol
  * @throw PolynomialException if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::PolynomialGeneric<T> poly) throw (math::PolynomialException)
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
 {
     // For a definition of polynomial subtraction, see operator-
     try
@@ -956,6 +965,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
+        #pragma omp parallel for if(npoly>OMP_CHUNKS_PER_THREAD) default(none) shared(poly)
         for ( size_t i=0; i<npoly; ++i )
         {
             this->coef.at(i) -= poly.coef.at(i);
@@ -1046,9 +1056,11 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-() const throw (
     try
     {
         math::PolynomialGeneric<T> retVal(*this);
+        const size_t N = this->coef.size();
 
         // Just negate each coefficient:
-        for ( size_t i=0; i < this->coef.size(); ++i )
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal)
+        for ( size_t i=0; i<N; ++i )
         {
             retVal.coef.at(i) = -this->coef.at(i);
         }
@@ -1124,6 +1136,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const math::Pol
         math::PolynomialGeneric<T> retVal(true, N);
 
         // Each product's coefficient...
+        #pragma omp parallel for default(none) shared(retVal, poly)
         for ( size_t i=0; i<N; ++i )
         {
             // ... is a sum of products as specified above
@@ -1207,6 +1220,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const T& sc) co
     const size_t N = this->coef.size();
     math::PolynomialGeneric<T> retVal(*this);
 
+    #pragma omp parallel for default(none) shared(retVal, sc)
     for ( size_t i=0; i<N; ++i )
     {
         retVal.coef.at(i) *= sc;
@@ -1230,6 +1244,8 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
 {
     // Multiply each coefficient by the scalar
     const size_t N = this->coef.size();
+
+    #pragma omp parallel for default(none) shared(sc)
     for ( size_t i=0; i<N; ++i )
     {
         this->coef.at(i) *= sc;
