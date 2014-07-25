@@ -61,8 +61,8 @@ math::LinearEquationSolverGeneric<T>::LinearEquationSolverGeneric(const SqMatrix
     try
     {
         // just copy both matrices into internal members
-        m_coef = coef;
-        m_term = term;
+        this->m_coef = coef;
+        this->m_term = term;
     }
     catch (const math::MatrixException& mex )
     {
@@ -77,7 +77,7 @@ math::LinearEquationSolverGeneric<T>::LinearEquationSolverGeneric(const SqMatrix
 template<class T>
 math::SqMatrixGeneric<T>& math::LinearEquationSolverGeneric<T>::getCoef() const
 {
-    return m_coef;
+    return this->m_coef;
 }
 
 /**
@@ -86,7 +86,7 @@ math::SqMatrixGeneric<T>& math::LinearEquationSolverGeneric<T>::getCoef() const
 template<class T>
 math::MatrixGeneric<T>& math::LinearEquationSolverGeneric<T>::getTerm() const
 {
-    return m_term;
+    return this->m_term;
 }
 
 /**
@@ -106,7 +106,7 @@ math::LinearEquationSolverGeneric<T>& math::LinearEquationSolverGeneric<T>::setC
     try
     {
         // just copy the matrix into the internal member
-        m_coef = coef;
+        this->m_coef = coef;
     }
     catch ( const math::MatrixException& mex )
     {
@@ -134,7 +134,7 @@ math::LinearEquationSolverGeneric<T>& math::LinearEquationSolverGeneric<T>::setT
     try
     {
         // just copy the matrix into the internal member
-        m_term = term;
+        this->m_term = term;
     }
     catch ( const math::MatrixException& mex )
     {
@@ -171,20 +171,20 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
      * unique solution of a system of linear equations. More details about
      * the algorithm at: http://en.wikipedia.org/wiki/Gaussian_elimination
      */
-    const size_t N = m_coef.nrColumns();  // Nr. of unknowns
-    const size_t NT = m_term.nrColumns(); // Nr. of terms' columns
+    const size_t N = this->m_coef.nrColumns();  // Nr. of unknowns
+    const size_t NT = this->m_term.nrColumns(); // Nr. of terms' columns
     const size_t Nmax = (N>=NT ? N : NT); // max. of both values
 
     // Check of dimensions
-    if ( N!=m_term.nrRows() )
+    if ( N!=this->m_term.nrRows() )
     {
         throw math::LinearEquationSolverException(math::LinearEquationSolverException::INVALID_DIMENSION);
     }
 
     try
     {
-        SqMatrixGeneric<T> temp(m_coef);
-        MatrixGeneric<T> retVal(m_term);
+        SqMatrixGeneric<T> temp(this->m_coef);
+        MatrixGeneric<T> retVal(this->m_term);
 
         // Try to convert the 'temp' into an identity matrix
         // by appropriately adding multiples of other lines to each line
