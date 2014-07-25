@@ -284,7 +284,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
             for ( size_t c=r; c<N; ++c )
             {
-        	    temp.at(r, c) /= el;
+                temp.at(r, c) /= el;
             }
 
             for ( size_t c=0; c<NT; ++c )
