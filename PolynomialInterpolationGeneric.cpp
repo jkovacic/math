@@ -81,7 +81,7 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
      
                        a(r,c-1) - a(r-1,c-1)     
              a(r,c) = ------------------------
-                           y(r) - y(r-c)
+                           x(r) - x(r-c)
        
               for c = 1..n, r=c..n
       
