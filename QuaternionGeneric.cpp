@@ -492,48 +492,45 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const math::Qua
         http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
     */
 
-    T rv_o;
-    T rv_i;
-    T rv_j;
-    T rv_k;
+	math::QuaternionGeneric<T> retVal;
 
     // Calculation of the product can be parallelized into 4 mutually independent sections:
     #pragma omp parallel sections if (OMP_QUAT_PARALLELIZE!=0)
     {
         #pragma omp section
         {
-            rv_o = this->quat_o * q.quat_o -
-                   this->quat_i * q.quat_i -
-                   this->quat_j * q.quat_j -
-                   this->quat_k * q.quat_k;
+            retVal.quat_o = this->quat_o * q.quat_o -
+                            this->quat_i * q.quat_i -
+                            this->quat_j * q.quat_j -
+                            this->quat_k * q.quat_k;
         }
 
         #pragma omp section
         {
-            rv_i = this->quat_o * q.quat_i +
-                   this->quat_i * q.quat_o +
-                   this->quat_j * q.quat_k -
-                   this->quat_k * q.quat_j;
+           retVal.quat_i = this->quat_o * q.quat_i +
+                           this->quat_i * q.quat_o +
+                           this->quat_j * q.quat_k -
+                           this->quat_k * q.quat_j;
         }
 
         #pragma omp section
         {
-            rv_j = this->quat_o * q.quat_j -
-                   this->quat_i * q.quat_k +
-                   this->quat_j * q.quat_o +
-                   this->quat_k * q.quat_i;
+            retVal.quat_j = this->quat_o * q.quat_j -
+                            this->quat_i * q.quat_k +
+                            this->quat_j * q.quat_o +
+                            this->quat_k * q.quat_i;
         }
 
         #pragma omp section
         {
-            rv_k = this->quat_o * q.quat_k +
-                   this->quat_i * q.quat_j -
-                   this->quat_j * q.quat_i +
-                   this->quat_k * q.quat_o;
+            retVal.quat_k = this->quat_o * q.quat_k +
+                            this->quat_i * q.quat_j -
+                            this->quat_j * q.quat_i +
+                            this->quat_k * q.quat_o;
         }
     }
 
-    return math::QuaternionGeneric<T>(rv_o, rv_i, rv_j, rv_k);
+    return retVal;
 }
 
 
