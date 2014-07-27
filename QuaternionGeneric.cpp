@@ -37,6 +37,26 @@ limitations under the License.
 
 // Deliberately there is no #include "QuaternionGeneric.h" !
 #include "NumericUtil.h"
+#include "omp_settings.h"
+
+
+/*
+ * Notes about parallelization:
+ *
+ * In most functions, each quaternion's element can be calculated
+ * independently from the others, hence it would be possible to
+ * apply OpenMP's directive "sections" to parallelize most algorithms into
+ * 4 threads, one for each element. However, this is implemented only in
+ * operator*() which requires a little bit more operations for each element.
+ * It could be done in most other functions in a very similar manner, however
+ * it doesn't make much sense as each element's operations are very basic.
+ *
+ * Furthermore, parallelization of any algorithm in this file can be
+ * enabled/disabled by setting the macro OMP_QUAT_PARALLELIZE in omp_settings.h
+ * If its value is set to 0, any parallelization within this file is completely
+ * disabled, otherwise it is enabled. By default this macro is set
+ * to disable parallelization.
+ */
 
 
 /**
@@ -55,6 +75,7 @@ math::QuaternionGeneric<T>::QuaternionGeneric(const T& o, const T& i, const T& j
     // Nothing else to do
 }
 
+
 /**
  * Copy constructor.
  * Creates an exact copy of the original quaternion q.
@@ -67,6 +88,7 @@ math::QuaternionGeneric<T>::QuaternionGeneric(const math::QuaternionGeneric<T>& 
 {
     // Nothing else to do
 }
+
 
 /**
  * Assignment operator (=)
@@ -94,6 +116,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator=(const math::Qu
     return *this;
 }
 
+
 /**
  * @return scalar component ('1') of the quaternion
  */
@@ -102,6 +125,7 @@ T math::QuaternionGeneric<T>::getOne() const
 {
     return this->quat_o;
 }
+
 
 /**
  * @return component 'i' of the quaternion
@@ -112,6 +136,7 @@ T math::QuaternionGeneric<T>::getI() const
     return this->quat_i;
 }
 
+
 /**
  * @return component 'j' of the quaternion
  */
@@ -120,6 +145,7 @@ T math::QuaternionGeneric<T>::getJ() const
 {
     return this->quat_j;
 }
+
 
 /**
  * @return component 'k' of the quaternion
@@ -153,6 +179,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::set(const T& o, const T&
     return *this;
 }
 
+
 /**
  * Assigns the scalar component of the quaternion.
  *
@@ -168,6 +195,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::setOne(const T& o)
     // return the reference to itself:
     return *this;
 }
+
 
 /**
  * Assigns the component 'i' of the quaternion.
@@ -185,6 +213,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::setI(const T& i)
     return *this;
 }
 
+
 /**
  * Assigns the component 'j' of the quaternion.
  *
@@ -201,6 +230,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::setJ(const T& j)
     return *this;
 }
 
+
 /**
  * Assigns the component 'k' of the quaternion.
  *
@@ -216,6 +246,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::setK(const T& k)
     // return the reference to itself:
     return *this;
 }
+
 
 /**
  * Outputs the quaternion to the stream 'str' in form '(a+bi+cj+dk)'
@@ -234,20 +265,21 @@ void math::QuaternionGeneric<T>::display(std::ostream& str) const
     str << '(';
 
     // output he first component ('1')
-    str << quat_o;
+    str << this->quat_o;
 
     // For the other components, display each component's sign
     
     str << std::showpos;
 
-    str << quat_i << 'i';
-    str << quat_j << 'j';
-    str << quat_k << 'k';
+    str << this->quat_i << 'i';
+    str << this->quat_j << 'j';
+    str << this->quat_k << 'k';
 
     str << std::noshowpos;
     // finish with a closing bracket
     str << ')';
 }
+
 
 /**
  * A friend function that outputs the quaternion to an output stream
@@ -267,6 +299,7 @@ std::ostream& math::operator<<(std::ostream& output, const math::QuaternionGener
     return output;
 }
 
+
 /**
  * Addition operator (+) of two quaternions.
  *
@@ -283,11 +316,13 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const math::Qua
         = ( (a1+a2) + (b1+b2)*i + (c1+c2)*j + (d1+d2)*k )
     */
 
-    return math::QuaternionGeneric<T>( quat_o + q.quat_o,
-                                       quat_i + q.quat_i,
-                                       quat_j + q.quat_j,
-                                       quat_k + q.quat_k );
+    return math::QuaternionGeneric<T>(
+            this->quat_o + q.quat_o,
+            this->quat_i + q.quat_i,
+            this->quat_j + q.quat_j,
+            this->quat_k + q.quat_k );
 }
+
 
 /**
  * Addition operator (+) of a quaternion and a scalar
@@ -299,11 +334,13 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const math::Qua
 template<class T>
 math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const T& scalar) const
 {
-    return math::QuaternionGeneric<T>( quat_o + scalar,
-                                       quat_i,
-                                       quat_j,
-                                       quat_k );
+    return math::QuaternionGeneric<T>(
+            this->quat_o + scalar,
+            this->quat_i,
+            this->quat_j,
+            this->quat_k );
 }
+
 
 /**
  * Addition operator (+=) that adds a quaternion to this and assigns the sum to itself.
@@ -327,6 +364,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator+=(const math::Q
     return *this;
 }
 
+
 /**
  * Addition operator (+=) that adds a scalar to this and assigns the sum to itself.
  *
@@ -341,6 +379,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator+=(const T& scal
     
     return *this;
 }
+
 
 /**
  * Subtraction operator (-) of two quaternions.
@@ -358,11 +397,13 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const math::Qua
         = ( (a1-a2) + (b1-b2)*i + (c1-c2)*j + (d1-d2)*k )
     */
 
-    return math::QuaternionGeneric<T>( quat_o - q.quat_o,
-                                       quat_i - q.quat_i,
-                                       quat_j - q.quat_j,
-                                       quat_k - q.quat_k );
+    return math::QuaternionGeneric<T>(
+            this->quat_o - q.quat_o,
+            this->quat_i - q.quat_i,
+            this->quat_j - q.quat_j,
+            this->quat_k - q.quat_k );
 }
+
 
 /**
  * Subtraction operator (-) of a quaternion and a scalar
@@ -374,11 +415,13 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const math::Qua
 template<class T>
 math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const T& scalar) const
 {
-    return QuaternionGeneric<T>( quat_o - scalar,
-                                 quat_i,
-                                 quat_j,
-                                 quat_k );
+    return QuaternionGeneric<T>(
+            this->quat_o - scalar,
+            this->quat_i,
+            this->quat_j,
+            this->quat_k );
 }
+
 
 /**
  * Subtraction operator (-=) that subtracts a quaternion from this and assigns the difference to itself.
@@ -402,6 +445,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator-=(const math::Q
     return *this;
 }
 
+
 /**
  * Subtraction operator (-=) that subtracts a scalar from this and assigns 
  * the difference to itself.
@@ -417,6 +461,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator-=(const T& scal
     
     return *this;
 }
+
 
 /**
  * Multiplication operator (*) of two quaternions.
@@ -447,12 +492,50 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const math::Qua
         http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
     */
 
-    return math::QuaternionGeneric<T>(
-            quat_o*q.quat_o - quat_i*q.quat_i - quat_j*q.quat_j - quat_k*q.quat_k,
-            quat_o*q.quat_i + quat_i*q.quat_o + quat_j*q.quat_k - quat_k*q.quat_j,
-            quat_o*q.quat_j - quat_i*q.quat_k + quat_j*q.quat_o + quat_k*q.quat_i,
-            quat_o*q.quat_k + quat_i*q.quat_j - quat_j*q.quat_i + quat_k*q.quat_o );
+    T rv_o;
+    T rv_i;
+    T rv_j;
+    T rv_k;
+
+    // Calculation of the product can be parallelized into 4 mutually independent sections:
+    #pragma omp parallel sections if (OMP_QUAT_PARALLELIZE!=0)
+    {
+        #pragma omp section
+        {
+            rv_o = this->quat_o * q.quat_o -
+                   this->quat_i * q.quat_i -
+                   this->quat_j * q.quat_j -
+                   this->quat_k * q.quat_k;
+        }
+
+        #pragma omp section
+        {
+            rv_i = this->quat_o * q.quat_i +
+                   this->quat_i * q.quat_o +
+                   this->quat_j * q.quat_k -
+                   this->quat_k * q.quat_j;
+        }
+
+        #pragma omp section
+        {
+            rv_j = this->quat_o * q.quat_j -
+                   this->quat_i * q.quat_k +
+                   this->quat_j * q.quat_o +
+                   this->quat_k * q.quat_i;
+        }
+
+        #pragma omp section
+        {
+            rv_k = this->quat_o * q.quat_k +
+                   this->quat_i * q.quat_j -
+                   this->quat_j * q.quat_i +
+                   this->quat_k * q.quat_o;
+        }
+    }
+
+    return math::QuaternionGeneric<T>(rv_o, rv_i, rv_j, rv_k);
 }
+
 
 /**
  * Multiplication operator (*=) that multiplies a quaternion to this and assigns the product to itself.
@@ -484,6 +567,7 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const math::Q
     return *this;
 }
 
+
 /**
  * Multiplication operator (*) for multiplication of a quaternion and a scalar.
  * It multiplies each quaternion's component by the scalar.
@@ -501,11 +585,13 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const T& scalar
           (a+ b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
     */
 
-    return math::QuaternionGeneric<T>( quat_o * scalar,
-                                       quat_i * scalar,
-                                       quat_j * scalar,
-                                       quat_k * scalar );
+    return math::QuaternionGeneric<T>(
+            this->quat_o * scalar,
+            this->quat_i * scalar,
+            this->quat_j * scalar,
+            this->quat_k * scalar );
 }
+
 
 /**
  * Multiplication operator (*=) that multiplies a quaternion by a scalar
@@ -519,13 +605,14 @@ template<class T>
 math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const T& sc)
 {
     // Multiply each component by the scalar
-    quat_o *= sc;
-    quat_i *= sc;
-    quat_j *= sc;
-    quat_k *= sc;
+    this->quat_o *= sc;
+    this->quat_i *= sc;
+    this->quat_j *= sc;
+    this->quat_k *= sc;
 
     return *this;
 }
+
 
 /**
  * Multiplication operator (*) of a scalar and a quaternion.
@@ -549,6 +636,7 @@ math::QuaternionGeneric<T> math::operator*(const T& scalar, const math::Quaterni
     return (q * scalar);
 }
 
+
 /**
  * Addition operator (+) of a scalar and a quaternion.
  * In general ( if T represents a real number) this operation is commutative
@@ -568,6 +656,7 @@ math::QuaternionGeneric<T> math::operator+(const T& scalar, const math::Quaterni
     return (q + scalar);
 }
 
+
 /**
  * Subtraction operator (-) of a scalar and a quaternion.
  * Since the first operand is not a quaternion, it must be implemented as
@@ -586,6 +675,7 @@ math::QuaternionGeneric<T> math::operator-(const T& scalar, const math::Quaterni
             ( scalar - q.quat_o, -q.quat_i, -q.quat_j, -q.quat_k );
 }
 
+
 /**
  * Unary negation operator (-)
  *
@@ -598,11 +688,13 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-() const
         Negation of a quaternion is trivial: just negate each component.
     */
 
-    return math::QuaternionGeneric<T>( -quat_o,
-                                       -quat_i,
-                                       -quat_j,
-                                       -quat_k );
+    return math::QuaternionGeneric<T>(
+            -this->quat_o,
+            -this->quat_i,
+            -this->quat_j,
+            -this->quat_k );
 }
+
 
 /**
  * Conjugation of the quaternion.
@@ -622,8 +714,13 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::conj() const
         "vector" components are negated.
     */
 
-    return math::QuaternionGeneric<T>(quat_o, -quat_i, -quat_j, -quat_k);
+    return math::QuaternionGeneric<T>(
+             this->quat_o,
+            -this->quat_i,
+            -this->quat_j,
+            -this->quat_k);
 }
+
 
 /**
  * Conjugate the quaternion and write all changes into it
@@ -639,13 +736,14 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::conjugated()
     // quat_o remains unmodified
 
     // the other members are assigned their opposite values:
-    quat_i = -quat_i;
-    quat_j = -quat_j;
-    quat_k = -quat_k;
+    this->quat_i = -this->quat_i;
+    this->quat_j = -this->quat_j;
+    this->quat_k = -this->quat_k;
 
     // return the reference to itself
     return *this;
 }
+
 
 /*
  * A utility function that calculates a sum of components' squares.
@@ -658,8 +756,13 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::conjugated()
 template<class T>
 inline T math::QuaternionGeneric<T>::sqsum() const
 {
-    return (quat_o*quat_o + quat_i*quat_i + quat_j*quat_j + quat_k*quat_k);
+    return (
+            this->quat_o * this->quat_o +
+            this->quat_i * this->quat_i +
+            this->quat_j * this->quat_j +
+            this->quat_k * this->quat_k );
 }
+
 
 /**
  * Norm of the quaternion.
@@ -697,6 +800,7 @@ T math::QuaternionGeneric<T>::norm() const throw (math::QuaternionException)
     return math::NumericUtil<T>::ZERO;
 }
 
+
 /*
     Specialization of norm() for float, double and long double.
     All three specializations are very similar and only differ in types of the
@@ -724,6 +828,7 @@ _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(long double)
 
 // definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM not needed anymore, #undef it
 #undef _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM
+
 
 
 /**
@@ -768,6 +873,7 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::unit() const throw (math:
     only once using a parameterized #define.
 */
 
+
 #define _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(FD) \
 template<> \
 math::QuaternionGeneric<FD> math::QuaternionGeneric<FD>::unit() const throw (math::QuaternionException) \
@@ -792,6 +898,7 @@ _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(long double)
 
 // definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT not needed anymore, #undef it
 #undef _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT
+
 
 
 /**
@@ -834,5 +941,9 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::reciprocal() const throw 
         throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
     }
 
-    return math::QuaternionGeneric<T>(quat_o/nsq, -quat_i/nsq, -quat_j/nsq, -quat_k/nsq);
+    return math::QuaternionGeneric<T>(
+             this->quat_o / nsq,
+            -this->quat_i / nsq,
+            -this->quat_j / nsq,
+            -this->quat_k / nsq );
 }

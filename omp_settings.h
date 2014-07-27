@@ -34,6 +34,18 @@ limitations under the License.
  * This macro defines the "threshold" number of operations when
  * parallelization of simple tasks might be sensible.
  */
-#define OMP_CHUNKS_PER_THREAD         ( 100 )
+#define OMP_CHUNKS_PER_THREAD                 ( 100 )
+
+
+/**
+ * In quaternion arithmetics, it rarely makes any sense to parallelize
+ * operations into 4 threads (one to calculate each quaternion's element).
+ * Typically this is only sensible when T (type of elements) is a class with
+ * complex (slow) basic operations, such as '+', '-' and '*'.
+ *
+ * If this macro is set to 0, parallelization of quaternion's arithmetics
+ * is disabled. To enable parallelization, set this macro to any non-zero value.
+ */
+#define OMP_QUAT_PARALLELIZE                  ( 0 )
 
 #endif  // _MATH_OMP_SETTINGS_H_
