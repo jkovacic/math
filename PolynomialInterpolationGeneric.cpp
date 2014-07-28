@@ -31,6 +31,7 @@ limitations under the License.
 // Deliberately there is no #include "PolynomialInterpolationGeneric.h"
 #include "PolynomialGeneric.h"
 #include "CurveFittingException.h"
+#include "omp_settings.h"
 
 #include <vector>
 #include <new>
@@ -155,15 +156,29 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
         
         // recalculate vector's element as differential quotients:
         // a(i) = (a(i+1)-a(i))/ (appropriate difference of x)
+
+        /*
+         * This for loop cannot be parallelized because 'a' at each iteration
+         * depends on the same vector at the previous iteration
+         */
         for ( size_t c=0; c<(N-1); ++c )
         {
+            /*
+             * On the other hand, it is possible to parallelize the inner
+             * for loop. However it must be ensured that a.at(i) is updated
+             * before a.at(i+1). This can be achieved using the OpenMP
+             * "ordered" clause.
+             */
+            #pragma omp parallel for ordered default(none) shared(a, x, c)
             for ( size_t i=0; i<(N-1-c); ++i )
             {
-                a.at(i) = (a.at(i+1)-a.at(i)) / (x.at(i+c+1)-x.at(i));
+                T el = (a.at(i+1) - a.at(i)) / (x.at(i+c+1) - x.at(i));
+
+                // It is important that this update is performed in the right order!
+                #pragma omp ordered
+                a.at(i) = el;
             }  // for i
   
-            // the last element of a not needed anymore
-            a.pop_back();
             
             // finally update the polynomials as described in the last section above
             term.set(0, -x.at(c));
