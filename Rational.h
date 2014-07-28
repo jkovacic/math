@@ -16,13 +16,13 @@ limitations under the License.
 
 
 /**
-@file Rational.h
-
-Declaration of the class Rational, representing mathematical rational numbers,
-i.e. reduced fractions of two integers
-
-@author Jernej Kovacic
-*/
+ * @file Rational.h
+ *
+ * Declaration of the class Rational, representing mathematical rational numbers,
+ * i.e. reduced fractions of two integers
+ *
+ * @author Jernej Kovacic
+ */
 
 #ifndef _MATH_RATIONAL_H_
 #define	_MATH_RATIONAL_H_
@@ -37,8 +37,30 @@ namespace math
 
 // Advance declaration of the class is necessary...
 class Rational;
-// to declare the class's friend function:
+
+// to declare the class's friend function...
 std::ostream& operator<<(std::ostream& output, const Rational& fraction);
+
+// ...and binary operators as friend functions:
+Rational operator+(const Rational& f1, const Rational& f2) throw(RationalException);
+Rational operator-(const Rational& f1, const Rational& f2) throw(RationalException);
+Rational operator*(const Rational& f1, const Rational& f2) throw(RationalException);
+Rational operator/(const Rational& f1, const Rational& f2) throw(RationalException);
+
+// Comparison operators:
+// - returns true if fractions' values are equal
+bool operator==(const Rational& f1, const Rational& f2);
+// - returns true if fractions' values are not equal
+bool operator!=(const Rational& f1, const Rational& f2);
+// - returns true if strictly less than fraction
+bool operator<(const Rational& f1, const Rational& f2);
+// - returns true if less than or equal to fraction
+bool operator<=(const Rational& f1, const Rational& f2);
+// - returns true if strictly greater than fraction
+bool operator>(const Rational& f1, const Rational& f2);
+// - returns true if greater than or equal to fraction
+bool operator>=(const Rational& f1, const Rational& f2);
+
 
 
 /**
@@ -98,41 +120,21 @@ public:
 
     // Operator =, copies values of fraction's numerator and denominator
     Rational& operator=(const Rational& fraction);
-    // typical mathematical operators
-    Rational operator+(const Rational& fraction) const throw(RationalException);
+    // Binary operations are implemented as separate friend functions,
+    // the following operators remain that actually modify instance of the class:
     Rational& operator+=(const Rational& fraction) throw(RationalException);
-    Rational operator-(const Rational& fraction) const throw(RationalException);
     Rational& operator-=(const Rational& fraction) throw(RationalException);
-    Rational operator*(const Rational& fraction) const throw(RationalException);
     Rational& operator*=(const Rational& fraction) throw(RationalException);
-    Rational operator/(const Rational& fraction) const throw(RationalException);
     Rational& operator/=(const Rational& fraction) throw(RationalException);
     // Unary operator -
     Rational operator-() const;
-
-    // Comparison operators:
-    // - returns true if fractions' values are equal
-    bool operator==(const Rational& fraction) const;
-    // - returns true if fractions' values are not equal
-    bool operator!=(const Rational& fraction) const;
-    // - returns true if strictly less than fraction
-    bool operator<(const Rational& fraction) const;
-    // - returns true if less than or equal to fraction
-    bool operator<=(const Rational& fraction) const;
-    // - returns true if strictly greater than fraction
-    bool operator>(const Rational& fraction) const;
-    // - returns true if greater than or equal to fraction
-    bool operator>=(const Rational& fraction) const;
-
-    // The following two functions are public and static as they
-    // may also be useful elsewhere:
 
 private:
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
     void reduce();
     // Auxiliary function that calculates unreduced numerator of difference of two fraction
     // Only its sign actually matters, so it returns -1, 0 or 1
-    short int sign(const Rational& fraction) const;
+    static short int sign(const Rational& f1, const Rational& f2);
     // Absolute value of an integer (just an auxiliary function for others)
     static unsigned long int absolute(long int a);
     static long int auxSum(long int num1, long int denom2, long int num2, long int denom1) throw(RationalException);
@@ -141,6 +143,19 @@ private:
     static unsigned long long int pow10(unsigned int n) throw (RationalException);
     // parses a string into a long long value
     static long long int str2ll(const std::string& str) throw (RationalException);
+
+    // Friend functions that implement operators:
+    friend Rational operator+(const Rational& f1, const Rational& f2) throw(RationalException);
+    friend Rational operator-(const Rational& f1, const Rational& f2) throw(RationalException);
+    friend Rational operator*(const Rational& f1, const Rational& f2) throw(RationalException);
+    friend Rational operator/(const Rational& f1, const Rational& f2) throw(RationalException);
+
+    friend bool operator==(const Rational& f1, const Rational& f2);
+    friend bool operator!=(const Rational& f1, const Rational& f2);
+    friend bool operator<(const Rational& f1, const Rational& f2);
+    friend bool operator<=(const Rational& f1, const Rational& f2);
+    friend bool operator>(const Rational& f1, const Rational& f2);
+    friend bool operator>=(const Rational& f1, const Rational& f2);
 };
 
 } // namespace math
