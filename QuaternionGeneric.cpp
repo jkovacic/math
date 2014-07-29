@@ -282,67 +282,6 @@ void math::QuaternionGeneric<T>::display(std::ostream& str) const
 
 
 /**
- * A friend function that outputs the quaternion to an output stream
- *
- * @param output - stream to write to
- * @param q - quaternion to be displayed
- *
- * @return reference of output stream (i.e. 'output')
- */
-template<class T>
-std::ostream& math::operator<<(std::ostream& output, const math::QuaternionGeneric<T>& q)
-{
-    // just pass the quaternion to QuaternionGeneric::display()...
-    q.display(output);
-
-    // ... and return reference of the stream
-    return output;
-}
-
-
-/**
- * Addition operator (+) of two quaternions.
- *
- * @param q - quaternion to be added to this one
- *
- * @return *this + q
- */
-template<class T>
-math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const math::QuaternionGeneric<T>& q) const
-{
-    /*
-        Addition of quaternions is trivial:
-        (a1 + b1*i + c1*j + d1*k) + (a2 + b2*i + c2*j + d2*k) =
-        = ( (a1+a2) + (b1+b2)*i + (c1+c2)*j + (d1+d2)*k )
-    */
-
-    return math::QuaternionGeneric<T>(
-            this->quat_o + q.quat_o,
-            this->quat_i + q.quat_i,
-            this->quat_j + q.quat_j,
-            this->quat_k + q.quat_k );
-}
-
-
-/**
- * Addition operator (+) of a quaternion and a scalar
- * 
- * @param scalar - scalar to be added to this quaternion
- * 
- * @return *this + scalar
- */
-template<class T>
-math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator+(const T& scalar) const
-{
-    return math::QuaternionGeneric<T>(
-            this->quat_o + scalar,
-            this->quat_i,
-            this->quat_j,
-            this->quat_k );
-}
-
-
-/**
  * Addition operator (+=) that adds a quaternion to this and assigns the sum to itself.
  *
  * @param q - quaternion to be added to this one
@@ -378,48 +317,6 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator+=(const T& scal
     this->quat_o += scalar;
     
     return *this;
-}
-
-
-/**
- * Subtraction operator (-) of two quaternions.
- *
- * @param q - quaternion to be subtracted to this one
- *
- * @return *this - q
- */
-template<class T>
-math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const math::QuaternionGeneric<T>& q) const
-{
-    /*
-        Subtraction of quaternions is trivial:
-        (a1 + b1*i + c1*j + d1*k) - (a2 + b2*i + c2*j + d2*k) =
-        = ( (a1-a2) + (b1-b2)*i + (c1-c2)*j + (d1-d2)*k )
-    */
-
-    return math::QuaternionGeneric<T>(
-            this->quat_o - q.quat_o,
-            this->quat_i - q.quat_i,
-            this->quat_j - q.quat_j,
-            this->quat_k - q.quat_k );
-}
-
-
-/**
- * Subtraction operator (-) of a quaternion and a scalar
- * 
- * @param scalar - scalar to be subtracted from this quaternion
- * 
- * @return *this - scalar
- */
-template<class T>
-math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator-(const T& scalar) const
-{
-    return QuaternionGeneric<T>(
-            this->quat_o - scalar,
-            this->quat_i,
-            this->quat_j,
-            this->quat_k );
 }
 
 
@@ -464,77 +361,6 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator-=(const T& scal
 
 
 /**
- * Multiplication operator (*) of two quaternions.
- *
- * Note that quaternion multiplication is not commutative (q*p != p*q).
- *
- * @param q- quaternion to be multiplied by this
- *
- * @return this * q
-*/
-template<class T>
-math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const math::QuaternionGeneric<T>& q) const
-{
-    /*
-        From the following definitions:
-          i*i = j*j = k*k = -1,
-          i*j = k, j*i = -k, j*k = i, k*j = -i, k*i = j and i*k = -j,
-        the following formula can be quickly derived:
-
-        (a1 + b1*i + c1*j + d1*k) * (a2 + b2*i + c2*j + d2*k) =
-        =  (a1*a2 - b1*b2 - c1*c2 - d1*d2)     +
-        +  (a1*b2 + b1*a2 + c1*d2 - d1*c2) * i +
-        +  (a1*c2 - b1*d2 + c1*a2 + d1*b2) * j +
-        +  (a1*d2 + b1*c2 - c1*b2 + d1*a2) * k
-
-        Note: The following script for GNU Octave or Matlab can be used
-        for a quick unit test of the function:
-        http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
-    */
-
-	math::QuaternionGeneric<T> retVal;
-
-    // Calculation of the product can be parallelized into 4 mutually independent sections:
-    #pragma omp parallel sections if (OMP_QUAT_PARALLELIZE!=0)
-    {
-        #pragma omp section
-        {
-            retVal.quat_o = this->quat_o * q.quat_o -
-                            this->quat_i * q.quat_i -
-                            this->quat_j * q.quat_j -
-                            this->quat_k * q.quat_k;
-        }
-
-        #pragma omp section
-        {
-           retVal.quat_i = this->quat_o * q.quat_i +
-                           this->quat_i * q.quat_o +
-                           this->quat_j * q.quat_k -
-                           this->quat_k * q.quat_j;
-        }
-
-        #pragma omp section
-        {
-            retVal.quat_j = this->quat_o * q.quat_j -
-                            this->quat_i * q.quat_k +
-                            this->quat_j * q.quat_o +
-                            this->quat_k * q.quat_i;
-        }
-
-        #pragma omp section
-        {
-            retVal.quat_k = this->quat_o * q.quat_k +
-                            this->quat_i * q.quat_j -
-                            this->quat_j * q.quat_i +
-                            this->quat_k * q.quat_o;
-        }
-    }
-
-    return retVal;
-}
-
-
-/**
  * Multiplication operator (*=) that multiplies a quaternion to this and assigns the product to itself.
  *
  * Note that quaternion multiplication is not commutative (q*p != p*q).
@@ -566,31 +392,6 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const math::Q
 
 
 /**
- * Multiplication operator (*) for multiplication of a quaternion and a scalar.
- * It multiplies each quaternion's component by the scalar.
- *
- * @param scalar - scalar to be multiplied by the quaternion
- *
- * @return this * scalar
- */
-template<class T>
-math::QuaternionGeneric<T> math::QuaternionGeneric<T>::operator*(const T& scalar) const
-{
-    /*
-        From the definition of quaternion multiplication (see operator*),
-        one can quickly derive the following simplified formula:
-          (a+ b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
-    */
-
-    return math::QuaternionGeneric<T>(
-            this->quat_o * scalar,
-            this->quat_i * scalar,
-            this->quat_j * scalar,
-            this->quat_k * scalar );
-}
-
-
-/**
  * Multiplication operator (*=) that multiplies a quaternion by a scalar
  * and assigns the product to itself.
  * 
@@ -608,68 +409,6 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::operator*=(const T& sc)
     this->quat_k *= sc;
 
     return *this;
-}
-
-
-/**
- * Multiplication operator (*) of a scalar and a quaternion.
- * In general ( if T represents a real number) this operation is commutative
- * and does the same as operator*(scalar).
- * Since the first operand is not a quaternion, it must be implemented as
- * a friend function.
- *
- * @param scalar
- * @param q - quaternion
- *
- * @return scalar * q
- */
-template<class T>
-math::QuaternionGeneric<T> math::operator*(const T& scalar, const math::QuaternionGeneric<T>& q)
-{
-    /*
-        In general, multiplication of a scalar and quaternion is commutative.
-        If this is not a case, implement a specialization.
-    */
-    return (q * scalar);
-}
-
-
-/**
- * Addition operator (+) of a scalar and a quaternion.
- * In general ( if T represents a real number) this operation is commutative
- * and does the same as operator+(scalar).
- * Since the first operand is not a quaternion, it must be implemented as
- * a friend function.
- *
- * @param scalar
- * @param q - quaternion
- *
- * @return scalar + q
- */
-template<class T>
-math::QuaternionGeneric<T> math::operator+(const T& scalar, const math::QuaternionGeneric<T>& q)
-{
-    // Addition is commutative
-    return (q + scalar);
-}
-
-
-/**
- * Subtraction operator (-) of a scalar and a quaternion.
- * Since the first operand is not a quaternion, it must be implemented as
- * a friend function.
- *
- * @param scalar
- * @param q - quaternion
- *
- * @return scalar - q
- */
-template<class T>
-math::QuaternionGeneric<T> math::operator-(const T& scalar, const math::QuaternionGeneric<T>& q)
-{
-    // Subtraction is not commutative!
-    return math::QuaternionGeneric<T>
-            ( scalar - q.quat_o, -q.quat_i, -q.quat_j, -q.quat_k );
 }
 
 
@@ -943,4 +682,266 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::reciprocal() const throw 
             -this->quat_i / nsq,
             -this->quat_j / nsq,
             -this->quat_k / nsq );
+}
+
+
+
+/**
+ * Addition operator (+) of two quaternions.
+ *
+ * @param q1 - augend
+ * @param q2 - addend
+ *
+ * @return q1 + q2
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator+(const math::QuaternionGeneric<T>& q1, const math::QuaternionGeneric<T>& q2)
+{
+    /*
+        Addition of quaternions is trivial:
+        (a1 + b1*i + c1*j + d1*k) + (a2 + b2*i + c2*j + d2*k) =
+        = ( (a1+a2) + (b1+b2)*i + (c1+c2)*j + (d1+d2)*k )
+    */
+
+    return math::QuaternionGeneric<T>(
+            q1.quat_o + q2.quat_o,
+            q1.quat_i + q2.quat_i,
+            q1.quat_j + q2.quat_j,
+            q1.quat_k + q2.quat_k );
+}
+
+
+/**
+ * Subtraction operator (-) of two quaternions.
+ *
+ * @param q1 - minunend
+ * @param q2 - subtrahend
+ *
+ * @return q1 - q2
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator-(const math::QuaternionGeneric<T>& q1, const math::QuaternionGeneric<T>& q2)
+{
+    /*
+        Subtraction of quaternions is trivial:
+        (a1 + b1*i + c1*j + d1*k) - (a2 + b2*i + c2*j + d2*k) =
+        = ( (a1-a2) + (b1-b2)*i + (c1-c2)*j + (d1-d2)*k )
+    */
+
+    return math::QuaternionGeneric<T>(
+    		q1.quat_o - q2.quat_o,
+    		q1.quat_i - q2.quat_i,
+    		q1.quat_j - q2.quat_j,
+    		q1.quat_k - q2.quat_k );
+}
+
+
+/**
+ * Multiplication operator (*) of two quaternions.
+ *
+ * Note that quaternion multiplication is not commutative (q*p != p*q).
+ *
+ * @param q1 - multiplicand
+ * @param q2 - multiplier
+ *
+ * @return q1 * q2
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator*(const math::QuaternionGeneric<T>& q1, const math::QuaternionGeneric<T>& q2)
+{
+    /*
+        From the following definitions:
+          i*i = j*j = k*k = -1,
+          i*j = k, j*i = -k, j*k = i, k*j = -i, k*i = j and i*k = -j,
+        the following formula can be quickly derived:
+
+        (a1 + b1*i + c1*j + d1*k) * (a2 + b2*i + c2*j + d2*k) =
+        =  (a1*a2 - b1*b2 - c1*c2 - d1*d2)     +
+        +  (a1*b2 + b1*a2 + c1*d2 - d1*c2) * i +
+        +  (a1*c2 - b1*d2 + c1*a2 + d1*b2) * j +
+        +  (a1*d2 + b1*c2 - c1*b2 + d1*a2) * k
+
+        Note: The following script for GNU Octave or Matlab can be used
+        for a quick unit test of the function:
+        http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
+    */
+
+	math::QuaternionGeneric<T> retVal;
+
+    // Calculation of the product can be parallelized into 4 mutually independent sections:
+    #pragma omp parallel sections if (OMP_QUAT_PARALLELIZE!=0)
+    {
+        #pragma omp section
+        {
+            retVal.quat_o = q1.quat_o * q2.quat_o -
+                            q1.quat_i * q2.quat_i -
+                            q1.quat_j * q2.quat_j -
+                            q1.quat_k * q2.quat_k;
+        }
+
+        #pragma omp section
+        {
+           retVal.quat_i = q1.quat_o * q2.quat_i +
+                           q1.quat_i * q2.quat_o +
+                           q1.quat_j * q2.quat_k -
+                           q1.quat_k * q2.quat_j;
+        }
+
+        #pragma omp section
+        {
+            retVal.quat_j = q1.quat_o * q2.quat_j -
+                            q1.quat_i * q2.quat_k +
+                            q1.quat_j * q2.quat_o +
+                            q1.quat_k * q2.quat_i;
+        }
+
+        #pragma omp section
+        {
+            retVal.quat_k = q1.quat_o * q2.quat_k +
+                            q1.quat_i * q2.quat_j -
+                            q1.quat_j * q2.quat_i +
+                            q1.quat_k * q2.quat_o;
+        }
+    }
+
+    return retVal;
+}
+
+
+/**
+ * Addition operator (+) of a quaternion and a scalar
+ *
+ * @param q - augend (a quaternion)
+ * @param sc - addend (a scalar)
+ *
+ * @return q + sc
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator+(const math::QuaternionGeneric<T>& q, const T& sc)
+{
+    return math::QuaternionGeneric<T>(
+            q.quat_o + sc,
+            q.quat_i,
+            q.quat_j,
+            q.quat_k );
+}
+
+
+/**
+ * Subtraction operator (-) of a quaternion and a scalar
+ *
+ * @param q - minuend (a quaternion)
+ * @param sc - subtrahend (a scalar)
+ *
+ * @return q - sc
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator-(const math::QuaternionGeneric<T>& q, const T& sc)
+{
+    return QuaternionGeneric<T>(
+    		q.quat_o - sc,
+    		q.quat_i,
+    		q.quat_j,
+    		q.quat_k );
+}
+
+
+/**
+ * Multiplication operator (*) for multiplication of a quaternion and a scalar.
+ * It multiplies each quaternion's component by the scalar.
+ *
+ * @param q - multiplicand (a quaternion)
+ * @param sc - multiplier (a scalar)
+ *
+ * @return q * sc
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator*(const math::QuaternionGeneric<T>& q, const T& sc)
+{
+    /*
+        From the definition of quaternion multiplication (see operator*),
+        one can quickly derive the following simplified formula:
+          (a+ b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
+    */
+
+    return math::QuaternionGeneric<T>(
+            q.quat_o * sc,
+            q.quat_i * sc,
+            q.quat_j * sc,
+            q.quat_k * sc );
+}
+
+
+/**
+ * Addition operator (+) of a scalar and a quaternion.
+ * In general ( if T represents a real number) this operation is commutative
+ * and does the same as operator+(scalar).
+ *
+ * @param scalar - augend (a scalar)
+ * @param q - addend (a quaternion)
+ *
+ * @return scalar + q
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator+(const T& scalar, const math::QuaternionGeneric<T>& q)
+{
+    // Addition is commutative
+    return (q + scalar);
+}
+
+
+/**
+ * Subtraction operator (-) of a scalar and a quaternion.
+ *
+ * @param scalar - minuend (a scalar)
+ * @param q - subtrahend (a quaternion)
+ *
+ * @return scalar - q
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator-(const T& scalar, const math::QuaternionGeneric<T>& q)
+{
+    // Subtraction is not commutative!
+    return math::QuaternionGeneric<T>
+            ( scalar - q.quat_o, -q.quat_i, -q.quat_j, -q.quat_k );
+}
+
+
+/**
+ * Multiplication operator (*) of a scalar and a quaternion.
+ * In general ( if T represents a real number) this operation is commutative
+ * and does the same as operator*(scalar).
+ *
+ * @param scalar - multiplicand (a scalar)
+ * @param q - multiplier (a quaternion)
+ *
+ * @return scalar * q
+ */
+template<class T>
+math::QuaternionGeneric<T> math::operator*(const T& scalar, const math::QuaternionGeneric<T>& q)
+{
+    /*
+        In general, multiplication of a scalar and quaternion is commutative.
+        If this is not a case, implement a specialization.
+    */
+    return (q * scalar);
+}
+
+
+/**
+ * A friend function that outputs the quaternion to an output stream
+ *
+ * @param output - stream to write to
+ * @param q - quaternion to be displayed
+ *
+ * @return reference of output stream (i.e. 'output')
+ */
+template<class T>
+std::ostream& math::operator<<(std::ostream& output, const math::QuaternionGeneric<T>& q)
+{
+    // just pass the quaternion to QuaternionGeneric::display()...
+    q.display(output);
+
+    // ... and return reference of the stream
+    return output;
 }

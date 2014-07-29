@@ -35,15 +35,34 @@ namespace math
 
 // Advance declaration of the class is necessary...
 template<class T> class QuaternionGeneric;
+
 // to declare its friend functions:
 template<class T>
-QuaternionGeneric<T> operator* (const T& scalar, const QuaternionGeneric<T>& q);
+QuaternionGeneric<T> operator+(const QuaternionGeneric<T>& q1, const QuaternionGeneric<T>& q2);
 
 template<class T>
-QuaternionGeneric<T> operator+ (const T& scalar, const QuaternionGeneric<T>& q);
+QuaternionGeneric<T> operator-(const QuaternionGeneric<T>& q1, const QuaternionGeneric<T>& q2);
 
 template<class T>
-QuaternionGeneric<T> operator- (const T& scalar, const QuaternionGeneric<T>& q);
+QuaternionGeneric<T> operator*(const QuaternionGeneric<T>& q1, const QuaternionGeneric<T>& q2);
+
+template<class T>
+QuaternionGeneric<T> operator+(const QuaternionGeneric<T>& q, const T& sc);
+
+template<class T>
+QuaternionGeneric<T> operator-(const QuaternionGeneric<T>& q, const T& sc);
+
+template<class T>
+QuaternionGeneric<T> operator*(const QuaternionGeneric<T>& q, const T& sc);
+
+template<class T>
+QuaternionGeneric<T> operator+(const T& scalar, const QuaternionGeneric<T>& q);
+
+template<class T>
+QuaternionGeneric<T> operator-(const T& scalar, const QuaternionGeneric<T>& q);
+
+template<class T>
+QuaternionGeneric<T> operator*(const T& scalar, const QuaternionGeneric<T>& q);
 
 // and its friend << operator:
 template<class T>
@@ -104,31 +123,13 @@ public:
 
     // Quaternion arithmetics operators:
     QuaternionGeneric<T>& operator=(const QuaternionGeneric<T>& q);
-    QuaternionGeneric<T> operator+(const QuaternionGeneric<T>& q) const;
     QuaternionGeneric<T>& operator+=(const QuaternionGeneric<T>& q);
-    QuaternionGeneric<T> operator-(const QuaternionGeneric<T>& q) const;
     QuaternionGeneric<T>& operator-=(const QuaternionGeneric<T>& q);
-    QuaternionGeneric<T> operator*(const QuaternionGeneric<T>& q) const;
     QuaternionGeneric<T>& operator*=(const QuaternionGeneric<T>& q);
-    QuaternionGeneric<T> operator*(const T& scalar) const;
     QuaternionGeneric<T>& operator*=(const T& scalar);
-    QuaternionGeneric<T> operator+(const T& scalar) const;
     QuaternionGeneric<T>& operator+=(const T& scalar);
-    QuaternionGeneric<T> operator-(const T& scalar) const;
     QuaternionGeneric<T>& operator-=(const T& scalar);
     QuaternionGeneric<T> operator-() const;
-    
-    // A friend function that multiplies a scalar and a quaternion
-    friend QuaternionGeneric<T> (math::operator* <>) (const T& scalar, const QuaternionGeneric<T>& q);
-
-    // A friend function that adds a scalar and a quaternion
-    friend QuaternionGeneric<T> (math::operator+ <>) (const T& scalar, const QuaternionGeneric<T>& q);
-    
-    // A friend function that subtracts a quaternion from a scalar
-    friend QuaternionGeneric<T> (math::operator- <>) (const T& scalar, const QuaternionGeneric<T>& q);
-    
-    // a friend function to overload the operator << (used by std::cout and std::cerr)
-    friend std::ostream& (math::operator<< <>) (std::ostream& output, const QuaternionGeneric<T>& q);
 
     // Conjugate the quaternion:
     QuaternionGeneric<T> conj() const;
@@ -142,6 +143,22 @@ public:
 
     // Reciprocal quaternion (q^(-1)):
     QuaternionGeneric<T> reciprocal() const throw (QuaternionException);
+
+
+    // operators in separate functions declared as friend functions
+    friend QuaternionGeneric<T> (math::operator+ <>) (const QuaternionGeneric<T>& q1, const QuaternionGeneric<T>& q2);
+    friend QuaternionGeneric<T> (math::operator- <>) (const QuaternionGeneric<T>& q1, const QuaternionGeneric<T>& q2);
+    friend QuaternionGeneric<T> (math::operator* <>) (const QuaternionGeneric<T>& q1, const QuaternionGeneric<T>& q2);
+    friend QuaternionGeneric<T> (math::operator+ <>) (const QuaternionGeneric<T>& q, const T& sc);
+    friend QuaternionGeneric<T> (math::operator- <>) (const QuaternionGeneric<T>& q, const T& sc);
+    friend QuaternionGeneric<T> (math::operator* <>) (const QuaternionGeneric<T>& q, const T& sc);
+    friend QuaternionGeneric<T> (math::operator* <>) (const T& scalar, const QuaternionGeneric<T>& q);
+    friend QuaternionGeneric<T> (math::operator+ <>) (const T& scalar, const QuaternionGeneric<T>& q);
+    friend QuaternionGeneric<T> (math::operator- <>) (const T& scalar, const QuaternionGeneric<T>& q);
+
+    // a friend function to overload the operator << (used by std::cout and std::cerr)
+    friend std::ostream& (math::operator<< <>) (std::ostream& output, const QuaternionGeneric<T>& q);
+
 };   // class QuaternionGeneric
 
 

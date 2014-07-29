@@ -522,11 +522,11 @@ void quaternionTest()
         cout << "p+q: " << sum << "\tp-q: " << dif << endl;
         // Must output (7.6-10.2i+6.8j+5.6k) and (7.6+13.2i+1.6j-2.2k), respectively
         cout << "p*q: " << p*q << "\tq*p: " << q*p << endl;
-        cout << "p+5: " << p+5 << "\t3+p: " << 3.0f + p << endl;
-        cout << "p-4: " << p-4 << "\t1-p: " << 1.0f - p << endl;
+        cout << "p+5: " << p+5.f << "\t3+p: " << 3.0f + p << endl;
+        cout << "p-4: " << p-4.f << "\t1-p: " << 1.0f - p << endl;
         p += 2;
         cout << "p+2: " << p;
-        p -= 2;
+        p -= 2.f;
         cout << "\tp+2-2: " << p << endl;
 
         FQuaternion qc = -0.5f*(q+i*q*i+j*q*j+k*q*k);

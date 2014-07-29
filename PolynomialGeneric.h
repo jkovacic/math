@@ -147,7 +147,7 @@ public:
     virtual ~PolynomialGeneric();
 
 
-    // operators in separate fnctions declared as friend functions
+    // operators in separate functions declared as friend functions
     friend PolynomialGeneric<T> (math::operator+ <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator- <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator* <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
