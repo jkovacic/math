@@ -42,6 +42,24 @@ template<class T> class PolynomialGeneric;
 
 // to declare the class's friend functions:
 template<class T>
+PolynomialGeneric<T> operator+(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator-(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator*(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator+(const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator-(const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator*(const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
+
+template<class T>
 PolynomialGeneric<T> operator*(const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
 
 template<class T>
@@ -112,34 +130,36 @@ public:
 
     // Display the polynomial
     void display(char arg = 'x', std::ostream& str = std::cout) const;
-    // a friend function to overload the operator << (used by std::cout and std::cerr)
-    friend std::ostream& (math::operator<< <>) (std::ostream& output, const PolynomialGeneric<T>& poly);
 
     // Assignment operator
     PolynomialGeneric<T>& operator=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
 
     // Operators
-    PolynomialGeneric<T> operator+(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
     PolynomialGeneric<T>& operator+=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
-    PolynomialGeneric<T> operator-(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
     PolynomialGeneric<T>& operator-=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
-    PolynomialGeneric<T> operator*(const PolynomialGeneric<T>& poly) const throw (PolynomialException);
     PolynomialGeneric<T>& operator*=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T> operator-() const throw (PolynomialException);
-    PolynomialGeneric<T> operator*(const T& sc) const throw (PolynomialException);
     PolynomialGeneric<T>& operator*=(const T& sc);
-    PolynomialGeneric<T> operator+(const T& sc) const throw (PolynomialException);
     PolynomialGeneric<T>& operator+=(const T& sc);
-    PolynomialGeneric<T> operator-(const T& sc) const throw (PolynomialException);
     PolynomialGeneric<T>& operator-=(const T& sc);
-
-    friend PolynomialGeneric<T> (math::operator* <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
-    friend PolynomialGeneric<T> (math::operator+ <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
-    friend PolynomialGeneric<T> (math::operator- <>)(const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
-
 
     // Destructor
     virtual ~PolynomialGeneric();
+
+
+    // operators in separate fnctions declared as friend functions
+    friend PolynomialGeneric<T> (math::operator+ <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator- <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator* <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator+ <>) (const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator- <>) (const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator* <>) (const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator+ <>) (const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+    friend PolynomialGeneric<T> (math::operator- <>) (const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+    friend PolynomialGeneric<T> (math::operator* <>) (const T& sc, const PolynomialGeneric<T>& poly) throw (PolynomialException);
+
+    // a friend function to overload the operator << (used by std::cout and std::cerr)
+    friend std::ostream& (math::operator<< <>) (std::ostream& output, const PolynomialGeneric<T>& poly);
 
 };  // class PolynomialGeneric
 

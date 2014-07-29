@@ -67,6 +67,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(std::vector<T> cvect) throw (math:
     }
 }
 
+
 /**
  * Constructor that assigns a scalar value to a zero-degree polynomial
  * 
@@ -88,6 +89,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T& c0) throw (math::Polynomi
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
 }
+
 
 /**
  * Copy constructor.
@@ -112,6 +114,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const math::PolynomialGeneric<T>& 
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
 }
+
 
 /**
  * Constructor.
@@ -165,6 +168,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T* carray, size_t n) throw (
     }
 }
 
+
 /**
  * Constructor.
  * Allocates memory for 'n' coefficients. All coefficients are assigned a zero value except the
@@ -212,6 +216,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(bool ignored, size_t n) throw (mat
     (void) ignored;
 }
 
+
 /*
  * A utility function (only used internally) that copies elements of a vector to coef
  *
@@ -234,6 +239,7 @@ void math::PolynomialGeneric<T>::copyCoefs(const std::vector<T>& cvect) throw (m
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
 }
+
 
 /*
  * Zero-values for highest order coefficients are not allowed. For that reason,
@@ -264,6 +270,7 @@ void math::PolynomialGeneric<T>::reduce()
     }
 }
 
+
 /**
  * Assignment operator (=)
  *
@@ -290,6 +297,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator=(const math::Po
     return *this;
 }
 
+
 /**
  * @return vector of coefficients in ascending order ([c0, c1, c2, ..., cn])
  *
@@ -309,6 +317,7 @@ std::vector<T> math::PolynomialGeneric<T>::get() const throw (math::PolynomialEx
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
 }
+
 
 /**
  * @return vector of coefficients in descending order ([cn, ... , c2, c1, c0])
@@ -340,6 +349,7 @@ std::vector<T> math::PolynomialGeneric<T>::getDesc() const throw (math::Polynomi
     }
 }
 
+
 /**
  * @param pos - degree of the desired term
  *
@@ -360,6 +370,7 @@ T math::PolynomialGeneric<T>::get(size_t pos) const
     return this->coef.at(pos);
 }
 
+
 /**
  * @return degree of the polynomial, i.e. the non-zero coefficient of the highest degree term
  */
@@ -373,6 +384,7 @@ size_t math::PolynomialGeneric<T>::degree() const
     */
     return this->coef.size()-1;
 }
+
 
 /**
  * Assigns polynomial's coefficients from 'cvect'
@@ -401,6 +413,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(const std::vector<T>
 
     return *this;
 }
+
 
 /**
  * Assigns polynomial's coefficients from 'cvect'
@@ -444,6 +457,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vecto
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
 }
+
 
 /**
  * Modifies the coefficient at the position 'pos'. If 'pos' exceeds the polynomial's degree
@@ -492,6 +506,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(size_t pos, const T&
 
     return *this;
 }
+
 
 /**
  * Inserts a coefficient in front of the pos^th coefficient. Degree of the polynomial is increased.
@@ -559,6 +574,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::insert(size_t pos, const
     return *this;
 }
 
+
 /**
  * Removes the desired coefficient from the polynomial.
  * If 'pos' exceeds the polynomial's degree, nothing will be done.
@@ -587,6 +603,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::remove(size_t pos)
 
     return *this;
 }
+
 
 /**
  * Evaluates the polynomial.
@@ -619,6 +636,7 @@ T math::PolynomialGeneric<T>::value(const T& x) const
 
     return retVal;
 }
+
 
 /**
  * Derivation of the polynomial.
@@ -661,6 +679,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
 
     return retVal;
 }
+
 
 /**
  * Indefinite integral of the polynomial.
@@ -707,72 +726,6 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
     return retVal;
 }
 
-/**
- * Addition operator (+) of two polynomials.
- *
- * @note Polynomials can be of different degrees.
- *
- * @param poly - polynomial to be added to this one
- *
- * @return *this + poly
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator+(const math::PolynomialGeneric<T>& poly) const throw (math::PolynomialException)
-{
-
-    try
-    {
-        const size_t nthis = this->coef.size();
-        const size_t npoly = poly.coef.size();
-
-        /*
-            Addition of polynomials is similar to addition of vectors/matrices:
-
-                                   N
-                                 -----
-                                 \                   i
-                  p(x) + q(x) =  |      (pi + qi) * x
-                                 /
-                                 -----
-                                  i=0
-
-            where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
-        */
-        const size_t nmax = ( nthis>=npoly ? nthis : npoly );
-
-        math::PolynomialGeneric<T> retVal(true, nmax);
-
-        // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
-        retVal.coef.at(nmax-1) = NumericUtil<T>::ZERO;
-
-        /*
-            Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
-            consider its i^th coefficient as 0 (already set above)
-        */
-        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, poly)
-        for ( size_t i=0; i<nmax; ++i )
-        {
-            if ( i<nthis )
-            {
-                retVal.coef.at(i) = this->coef.at(i);
-            }
-
-            if ( i<npoly )
-            {
-                retVal.coef.at(i) += poly.coef.at(i);
-            }
-        }
-
-        retVal.reduce();
-        return retVal;
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
-    }
-}
 
 /**
  * Addition operator (+=) that adds a polynomial to 'this' and assigns the sum to itself.
@@ -817,24 +770,6 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
     return *this;
 }
 
-/**
- * Addition operator (+) of a polynomial and a scalar.
- *
- * @param sc - scalar to be added to "this" polynomial
- *
- * @return *this + sc
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator+(const T& sc) const throw (math::PolynomialException)
-{
-    math::PolynomialGeneric<T> retVal(*this);
-
-    retVal.coef.at(0) += sc;
-    retVal.reduce();
-    return retVal;
-}
 
 /**
  * Addition operator (+=) that adds a scalar to 'this' and assigns the sum to itself.
@@ -851,91 +786,6 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const T& sc)
     return *this;
 }
 
-/**
- * Addition operator (+) of a scalar and a polynomial.
- * This operation is commutative and does the same as operator+(scalar).
- * Since the first operand is not a polynomial, it must be implemented as
- * a friend function.
- *
- * @param sc - scalar
- * @param poly - polynomial
- *
- * @return sc + poly
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::operator+(const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
-{
-    return (poly + sc);
-}
-
-/**
- * Subtraction operator (-) of two polynomials.
- *
- * @note Polynomials can be of different degrees.
- *
- * @param poly - polynomial to be subtracted from this one
- *
- * @return *this - poly
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-(const math::PolynomialGeneric<T>& poly) const throw (math::PolynomialException)
-{
-    try
-    {
-        const size_t nthis = this->coef.size();
-        const size_t npoly = poly.coef.size();
-
-        /*
-            Subtraction of polynomials is similar to subtraction of vectors/matrices:
-
-                                   N
-                                 -----
-                                 \                  i
-                  p(x) - q(x) =  |     (pi - qi) * x
-                                 /
-                                 -----
-                                  i=0
-
-            where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
-        */
-
-        const size_t nmax = ( nthis>=npoly ? nthis : npoly );
-
-        math::PolynomialGeneric<T> retVal(true, nmax);
-
-        // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
-        retVal.coef.at(nmax-1) = math::NumericUtil<T>::ZERO;
-
-        /*
-            Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
-            consider its ith coefficient as 0 (already set above)
-        */
-        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, poly)
-        for ( size_t i=0; i<nmax; ++i )
-        {
-            if ( i<nthis )
-            {
-                retVal.coef.at(i) = this->coef.at(i);
-            }
-
-            if ( i<npoly )
-            {
-                retVal.coef.at(i) -= poly.coef.at(i);
-            }
-        }
-
-        retVal.reduce();
-        return retVal;
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
-    }
-}
 
 /**
  * Subtraction operator (-=) that subtracts a polynomial from 'this' and assigns
@@ -980,24 +830,6 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
     return *this;
 }
 
-/**
- * Subtraction operator (-) of a polynomial and a scalar.
- *
- * @param sc - scalar to be subtracted from "this" polynomial
- *
- * @return *this - sc
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-(const T& sc) const throw (math::PolynomialException)
-{
-    math::PolynomialGeneric<T> retVal(*this);
-
-    retVal.coef.at(0) -= sc;
-    retVal.reduce();
-    return retVal;
-}
 
 /**
  * Subtraction operator (-=) that subtracts a scalar from 'this' and assigns the difference to itself.
@@ -1014,23 +846,6 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const T& sc)
     return *this;
 }
 
-/**
- * Subtraction operator (-) of a scalar and a polynomial.
- * Since the first operand is not a polynomial, it must be implemented as
- * a friend function.
- *
- * @param sc - scalar
- * @param poly - polynomial
- *
- * @return sc - poly
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::operator-(const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
-{
-    return (-poly + sc);
-}
 
 /**
  * Unary negation operator (-)
@@ -1074,96 +889,6 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-() const throw (
     }
 }
 
-/**
- * Multiplication operator (*) of two polynomials.
- *
- * @note Polynomials can be of different degrees.
- * @note Multiplication of polynomials is commutative.
- *
- * @param poly - polynomial to be multiplied by this one
- *
- * @return *this * poly
- *
- * @throw PolynomialException if the product would be too large or if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const math::PolynomialGeneric<T>& poly) const throw (math::PolynomialException)
-{
-    /*
-        As explained at http://www.mathworks.com/help/matlab/ref/conv.html, multiplication of
-        polynomials is equivalent to convolution of vectors.
-
-        If Np is size of p(x) and Nq is size of q(x), the product's size will be:
-          N = Np + Nq - 1.
-
-        Coefficients of prod(x) = p(x) * q(x), rewritten for the library's order of coefficients,
-        can be calculated as follows:
-
-                         N
-                       ------
-                       \
-            prod(k) =  |      p(i) * q(k-i)          (k = 0 .. N-1)
-                       /
-                       ------
-                        i=0
-
-        where prod(i), p(i) and q(i) denote the i^th coefficient of prod, p or q, respectively.
-
-        Where index is out of any polynomial's coefficients' range, consider its coefficient as zero.
-
-        For a unit test, function conv() can be used in Matlab or GNU Octave.
-        Note that both programs take polynomial's coefficients in the opposite order as this library!
-
-    */
-
-    try
-    {
-        const size_t nthis = this->coef.size();
-        const size_t npoly = poly.coef.size();
-
-        /*
-            At polynomial multiplication it is possible that product's number of coefficients exceeds 
-            the maximum allowed vector's size. For that reason, this check is performed.
-        */
-        if ( npoly>(this->coef.max_size()-nthis + 1) )
-        {
-            throw math::PolynomialException(math::PolynomialException::TOO_LARGE);   
-        }
-        
-        // Size of the product polynomial:
-        const size_t N = nthis + npoly - 1;
-
-        math::PolynomialGeneric<T> retVal(true, N);
-
-        // Each product's coefficient...
-        #pragma omp parallel for default(none) shared(retVal, poly)
-        for ( size_t i=0; i<N; ++i )
-        {
-            // ... is a sum of products as specified above
-            T temp = math::NumericUtil<T>::ZERO;
-            for ( size_t j=0; j<N; ++j )
-            {
-                // if any index would point out of respective polynomial's range,
-                // treat it as a zero (i.e. skip this iteration)
-                if ( j>i || j>=nthis || (i-j)>=npoly )
-                {
-                    continue;   // for j
-                }
-
-                temp += this->coef.at(j) * poly.coef.at(i-j);
-            }
-
-            retVal.coef.at(i) = temp;
-        }
-
-        retVal.reduce();
-        return retVal;
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
-    }
-}
 
 /**
  * Multiplication operator (*=) that multiplies two polynomials and assigns the product to itself.
@@ -1192,44 +917,6 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const math::P
     return *this;
 }
 
-/**
- * Multiplication operator (*) for multiplication of a polynomial and a scalar.
- *
- * @param sc - scalar to be multiplied by the polynomial
- *
- * @return *this * sc
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template<class T>
-math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator*(const T& sc) const throw (math::PolynomialException)
-{
-    /*
-        Multiplication of a polynomial by a scalar is trivial:
-        Each coefficient is multiplied by the scalar.
-
-                         Np
-                        -----
-                        \               i
-            p(x) *sc =  |    sc * pi * x
-                        /
-                        -----
-                         i=0
-    */
-
-    const size_t N = this->coef.size();
-    math::PolynomialGeneric<T> retVal(*this);
-
-    #pragma omp parallel for default(none) shared(retVal, sc)
-    for ( size_t i=0; i<N; ++i )
-    {
-        retVal.coef.at(i) *= sc;
-    }
-
-    // applicable when sc==o
-    retVal.reduce();
-    return retVal;
-}
 
 /**
  * Multiplication operator (*=) that multiplies a polynomial by a scalar
@@ -1255,25 +942,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
     this->reduce();
     return *this;
 }
-/**
-  * Multiplication operator (*) of a scalar and a polynomial.
-  * This operation is commutative and does the same as operator*(scalar).
-  * Since the first operand is not a polynomial, it must be implemented as
-  * a friend function.
-  *
-  * @param sc - scalar
-  * @param poly - polynomial
-  *
-  * @return sc * poly
-  *
-  * @throw PolynomialException if allocation of memory fails
-  */
-template<class T>
-math::PolynomialGeneric<T> math::operator* (const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
-{
-    // 'reduce' performed by operator*(poly, sc)
-    return (poly * sc);
-}
+
 
 /**
  * Outputs the polynomial to the stream 'str' in form 'c0 +c1*x +c2*x^2 + ...'
@@ -1325,6 +994,392 @@ void math::PolynomialGeneric<T>::display(char arg, std::ostream& str) const
 
 }
 
+
+/**
+ * Destructor
+ */
+template<class T>
+math::PolynomialGeneric<T>::~PolynomialGeneric()
+{
+    // Vector's destructors would probably clean up this automatically.
+    // Anyway, let us clear the vector, just to be aware of allocated resources.
+    this->coef.clear();
+
+    // Other dynamically allocated memory (via malloc or new) should be freed here.
+    // There are no other resources to release.
+}
+
+
+
+
+/**
+ * Addition operator (+) of two polynomials.
+ *
+ * @note Polynomials can be of different degrees.
+ *
+ * @param p1 - augend
+ * @param p2 - addend
+ *
+ * @return p1 + p2
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& p1, const math::PolynomialGeneric<T>& p2) throw (math::PolynomialException)
+{
+
+    try
+    {
+        const size_t Np1 = p1.coef.size();
+        const size_t Np2 = p2.coef.size();
+
+        /*
+            Addition of polynomials is similar to addition of vectors/matrices:
+
+                                   N
+                                 -----
+                                 \                   i
+                  p(x) + q(x) =  |      (pi + qi) * x
+                                 /
+                                 -----
+                                  i=0
+
+            where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
+        */
+        const size_t nmax = ( Np1>=Np2 ? Np1 : Np2 );
+
+        math::PolynomialGeneric<T> retVal(true, nmax);
+
+        // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
+        retVal.coef.at(nmax-1) = NumericUtil<T>::ZERO;
+
+        /*
+            Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
+            consider its i^th coefficient as 0 (already set above)
+        */
+        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, p1, p2)
+        for ( size_t i=0; i<nmax; ++i )
+        {
+            if ( i<Np1 )
+            {
+                retVal.coef.at(i) = p1.coef.at(i);
+            }
+
+            if ( i<Np2 )
+            {
+                retVal.coef.at(i) += p2.coef.at(i);
+            }
+        }
+
+        retVal.reduce();
+        return retVal;
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
+    }
+}
+
+
+/**
+ * Subtraction operator (-) of two polynomials.
+ *
+ * @note Polynomials can be of different degrees.
+ *
+ * @param p1 - minuend
+ * @param p2 - subtrahend
+ *
+ * @return p1 - p2
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& p1, const math::PolynomialGeneric<T>& p2) throw (math::PolynomialException)
+{
+    try
+    {
+        const size_t Np1 = p1.coef.size();
+        const size_t Np2 = p2.coef.size();
+
+        /*
+            Subtraction of polynomials is similar to subtraction of vectors/matrices:
+
+                                   N
+                                 -----
+                                 \                  i
+                  p(x) - q(x) =  |     (pi - qi) * x
+                                 /
+                                 -----
+                                  i=0
+
+            where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
+        */
+
+        const size_t nmax = ( Np1>=Np2 ? Np1 : Np2 );
+
+        math::PolynomialGeneric<T> retVal(true, nmax);
+
+        // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
+        retVal.coef.at(nmax-1) = math::NumericUtil<T>::ZERO;
+
+        /*
+            Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
+            consider its ith coefficient as 0 (already set above)
+        */
+        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, p1, p2)
+        for ( size_t i=0; i<nmax; ++i )
+        {
+            if ( i<Np1 )
+            {
+                retVal.coef.at(i) = p1.coef.at(i);
+            }
+
+            if ( i<Np2 )
+            {
+                retVal.coef.at(i) -= p2.coef.at(i);
+            }
+        }
+
+        retVal.reduce();
+        return retVal;
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
+    }
+}
+
+
+/**
+ * Multiplication operator (*) of two polynomials.
+ *
+ * @note Polynomials can be of different degrees.
+ * @note Multiplication of polynomials is commutative.
+ *
+ * @param p1 - multiplicand
+ * @param p2 - multiplier
+ *
+ * @return p1 * p2
+ *
+ * @throw PolynomialException if the product would be too large or if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& p1, const math::PolynomialGeneric<T>& p2) throw (math::PolynomialException)
+{
+    /*
+        As explained at http://www.mathworks.com/help/matlab/ref/conv.html, multiplication of
+        polynomials is equivalent to convolution of vectors.
+
+        If Np is size of p(x) and Nq is size of q(x), the product's size will be:
+          N = Np + Nq - 1.
+
+        Coefficients of prod(x) = p(x) * q(x), rewritten for the library's order of coefficients,
+        can be calculated as follows:
+
+                         N
+                       ------
+                       \
+            prod(k) =  |      p(i) * q(k-i)          (k = 0 .. N-1)
+                       /
+                       ------
+                        i=0
+
+        where prod(i), p(i) and q(i) denote the i^th coefficient of prod, p or q, respectively.
+
+        Where index is out of any polynomial's coefficients' range, consider its coefficient as zero.
+
+        For a unit test, function conv() can be used in Matlab or GNU Octave.
+        Note that both programs take polynomial's coefficients in the opposite order as this library!
+
+    */
+
+    try
+    {
+        const size_t Np1 = p1.coef.size();
+        const size_t Np2 = p2.coef.size();
+
+        /*
+            At polynomial multiplication it is possible that product's number of coefficients exceeds
+            the maximum allowed vector's size. For that reason, this check is performed.
+        */
+        if ( Np2>(p1.coef.max_size()-Np1 + 1) )
+        {
+            throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
+        }
+
+        // Size of the product polynomial:
+        const size_t N = Np1 + Np2 - 1;
+
+        math::PolynomialGeneric<T> retVal(true, N);
+
+        // Each product's coefficient...
+        #pragma omp parallel for default(none) shared(retVal, p1, p2)
+        for ( size_t i=0; i<N; ++i )
+        {
+            // ... is a sum of products as specified above
+            T temp = math::NumericUtil<T>::ZERO;
+            for ( size_t j=0; j<N; ++j )
+            {
+                // if any index would point out of respective polynomial's range,
+                // treat it as a zero (i.e. skip this iteration)
+                if ( j>i || j>=Np1 || (i-j)>=Np2 )
+                {
+                    continue;   // for j
+                }
+
+                temp += p1.coef.at(j) * p2.coef.at(i-j);
+            }
+
+            retVal.coef.at(i) = temp;
+        }
+
+        retVal.reduce();
+        return retVal;
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
+    }
+}
+
+
+/**
+ * Addition operator (+) of a polynomial and a scalar.
+ *
+ * @param poly - augend (a polynomial)
+ * @param sc - addend (a scalar)
+ *
+ * @return poly + sc
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& poly, const T& sc) throw (math::PolynomialException)
+{
+    math::PolynomialGeneric<T> retVal(poly);
+
+    retVal.coef.at(0) += sc;
+    retVal.reduce();
+    return retVal;
+}
+
+
+/**
+ * Subtraction operator (-) of a polynomial and a scalar.
+ *
+ * @param poly - minuend (a polynomial)
+ * @param sc - subtrahend (a scalar)
+ *
+ * @return poly - sc
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& poly, const T& sc) throw (math::PolynomialException)
+{
+    math::PolynomialGeneric<T> retVal(poly);
+
+    retVal.coef.at(0) -= sc;
+    retVal.reduce();
+    return retVal;
+}
+
+
+/**
+ * Multiplication operator (*) for multiplication of a polynomial and a scalar.
+ *
+ * @param poly - multiplicand (a polynomial)
+ * @param sc - multiplier (a scalar)
+ *
+ * @return poly * sc
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& poly, const T& sc) throw (math::PolynomialException)
+{
+    /*
+        Multiplication of a polynomial by a scalar is trivial:
+        Each coefficient is multiplied by the scalar.
+
+                         Np
+                        -----
+                        \               i
+            p(x) *sc =  |    sc * pi * x
+                        /
+                        -----
+                         i=0
+    */
+
+    const size_t N = poly.coef.size();
+    math::PolynomialGeneric<T> retVal(poly);
+
+    #pragma omp parallel for default(none) shared(retVal, sc)
+    for ( size_t i=0; i<N; ++i )
+    {
+        retVal.coef.at(i) *= sc;
+    }
+
+    // applicable when sc==o
+    retVal.reduce();
+    return retVal;
+}
+
+
+/**
+ * Addition operator (+) of a scalar and a polynomial.
+ * This operation is commutative and does the same as operator+(scalar).
+ *
+ * @param sc - augend (a scalar)
+ * @param poly - addend (a polynomial)
+ *
+ * @return sc + poly
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator+(const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+{
+    return (poly + sc);
+}
+
+
+/**
+ * Subtraction operator (-) of a scalar and a polynomial.
+ *
+ * @param sc - minuend (a scalar)
+ * @param poly - subtrahend (a polynomial)
+ *
+ * @return sc - poly
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator-(const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+{
+    return (-poly + sc);
+}
+
+
+/**
+  * Multiplication operator (*) of a scalar and a polynomial.
+  * This operation is commutative and does the same as operator*(scalar).
+  *
+  * @param sc - multiplicand (a scalar)
+  * @param poly - multiplier (a polynomial)
+  *
+  * @return sc * poly
+  *
+  * @throw PolynomialException if allocation of memory fails
+  */
+template<class T>
+math::PolynomialGeneric<T> math::operator* (const T& sc, const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+{
+    // 'reduce' performed by operator*(poly, sc)
+    return (poly * sc);
+}
+
+
 /**
  * A friend function that outputs the polynomial to output stream
  *
@@ -1341,18 +1396,4 @@ std::ostream& math::operator<<(std::ostream& output, const math::PolynomialGener
 
     // ... and return a reference of the stream
     return output;
-}
-
-/**
- * Destructor
- */
-template<class T>
-math::PolynomialGeneric<T>::~PolynomialGeneric()
-{
-    // Vector's destructors would probably clean up this automatically.
-    // Anyway, let us clear the vector, just to be aware of allocated resources.
-    this->coef.clear();
-
-    // Other dynamically allocated memory (via malloc or new) should be freed here.
-    // There are no other resources to release.
 }
