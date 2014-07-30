@@ -45,9 +45,22 @@ namespace math
 
 // Advance declaration of the class is necessary...
 template<class T> class MatrixGeneric;
-// to declare the class's friend function:
+
+// to declare the class's friend functions:
 template<class T>
-MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (math::MatrixException);
+MatrixGeneric<T> operator+(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+
+template<class T>
+MatrixGeneric<T> operator-(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+
+template<class T>
+MatrixGeneric<T> operator*(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+
+template<class T>
+MatrixGeneric<T> operator*(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+
+template<class T>
+MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 
 /**
  * @brief A class representing general matrices and their basic operators.
@@ -96,17 +109,11 @@ public:
 
     // Matrix arithmetics operators
     virtual MatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
-    MatrixGeneric<T> operator+ (const MatrixGeneric<T>& m) const throw (MatrixException);
     MatrixGeneric<T>& operator+= (const MatrixGeneric<T>& m) throw (MatrixException);
-    MatrixGeneric<T> operator- (const MatrixGeneric<T>& m) const throw (MatrixException);
     MatrixGeneric<T>& operator-= (const MatrixGeneric<T>& m) throw (MatrixException);
-    MatrixGeneric<T> operator* (const MatrixGeneric<T>& m) const throw (MatrixException);
     virtual MatrixGeneric<T>& operator*= (const MatrixGeneric<T>&m ) throw (MatrixException);
-    MatrixGeneric<T> operator* (const T& sc) const throw (MatrixException);
     MatrixGeneric<T>& operator*= (const T& scalar);
     MatrixGeneric<T> operator- () const throw (MatrixException);
-    // A friend function that multiplies a scalar and a matrix
-    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
@@ -121,6 +128,13 @@ public:
     // Destructor
     virtual ~MatrixGeneric();
 
+
+    // Declaration of friend functions
+    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 };
 
 // Matrices with elements of types float and double make most sense

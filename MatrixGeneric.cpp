@@ -368,56 +368,10 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGen
 
 
 /**
- * Addition operator (+) of two matrices.
- * Both matrices must have the same dimension (equal number of rows and columns)
- *
- * @param matrix to be added to this one
- *
- * @return *this + matrix
- *
- * @throw MatrixException if dimensions do not match
- */
-template<class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::operator+ (const math::MatrixGeneric<T>& matrix) const throw (math::MatrixException)
-{
-    // Check of dimensions. Numbers of rows and columns must match
-    // otherwise addition is not possible
-    if ( this->rows != matrix.rows || this->cols != matrix.cols )
-    {
-        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
-    }
-
-    // Each element of the sum matrix is a sum of elements at the same position
-    // S(r,c) = this(r,c) + matrix(r,c)
-    math::MatrixGeneric<T> temp(this->rows, this->cols);
-
-    const size_t N = this->rows * this->cols;
-
-    try
-    {
-        // Matrices have the same number of elements, just traverse
-        // them linearly and perform addition of elements at the same position
-
-    	#pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, matrix)
-        for ( size_t i=0; i<N; ++i )
-        {
-            temp.elems.at(i) = this->elems.at(i) + matrix.elems.at(i);
-        }
-    }  // try
-    catch ( const std::out_of_range& oor )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
-    }
-
-    return temp;
-}
-
-
-/**
  * Addition operator (+=) that adds a matrix to this and assigns the sum to itself.
  * Both matrices must have the same dimension (equal number of rows and columns)
  *
- * @param matrix to be added to this one
+ * @param m - matrix to be added to this one
  *
  * @return reference to this
  *
@@ -449,48 +403,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     }
 
     return *this;
-}
-
-
-/**
- * Subtraction operator (-) of two matrices.
- * Both matrices must have the same dimension (equal number of rows and columns)
- *
- * @param matrix to be subtracted from this one
- *
- * @return *this - matrix
- *
- * @throw MatrixException if dimensions do not match
- */
-template<class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::operator- (const math::MatrixGeneric<T>& m) const throw (math::MatrixException)
-{
-    // Check dimensions of both matrices. They must have the same number of rows and columns
-    if ( this->rows != m.rows || this->cols != m.cols )
-    {
-        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
-    }
-
-    // Each element of the difference matrix is a difference of elements at the same position
-    // D(r,c) = this(r,c) - matrix(r,c)
-    math::MatrixGeneric<T> temp(this->rows, this->cols);
-    const size_t N = this->rows * this->cols;
-
-    try
-    {
-
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, m)
-        for ( size_t i=0; i<N; ++i )
-        {
-            temp.elems.at(i) = this->elems.at(i) - m.elems.at(i);
-        }
-    }  // try
-    catch ( const std::out_of_range& oor )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
-    }
-
-    return temp;
 }
 
 
@@ -570,67 +482,6 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
 
 
 /**
- * Multiplication operator (*) of two matrices.
- * Number of columns of 'this' must be the same as number of rows of matrix,
- * otherwise multiplication is not possible. The resulting matrix will
- * have this.rows rows and matrix.cols columns.
- *
- * Note that matrix multiplication is not commutative (A*B != B*A).
- *
- * @param matrix
- *
- * @return this * matrix
- *
- * @throw MatrixException if dimensions do not match
- */
-template<class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const math::MatrixGeneric<T>& matrix) const throw (math::MatrixException)
-{
-    // Check if dimensions match (this.cols must be equal to matrix.rows)
-    if ( this->cols != matrix.rows )
-    {
-        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
-    }
-
-    // Multiplication modifies dimensions, so make sure the product will contain
-    // more elements than allowed by vector:
-    if ( matrix.cols > elems.max_size() / this->rows )
-    {
-        throw math::MatrixException(math::MatrixException::TOO_LARGE);
-    }
-
-    // if dimension of this is (m,n) and dimension of matrix is (n,o), the
-    // dimension of the product will be (m,o).
-    // P(r,c) = sum( i=0, n, this(r,i)*matrix(i,c) )
-    math::MatrixGeneric<T> temp(this->rows, matrix.cols);
-
-    try
-    {
-        #pragma omp parallel for collapse(2) default(none) shared(matrix, temp)
-        for ( size_t r=0; r<this->rows; ++r )
-        {
-            for ( size_t c=0; c<matrix.cols; ++c)
-            {
-                T sum = ZERO;
-                for ( size_t i=0; i<this->cols; ++i )
-                {
-                    sum += this->elems.at(this->pos(r, i)) * matrix.elems.at(matrix.pos(i, c));
-                }
-
-                temp.elems.at(temp.pos(r, c)) = sum;
-            }  // for c
-        }  // for r
-    }  // try
-    catch ( const std::out_of_range& oor )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
-    }
-
-    return temp;
-}
-
-
-/**
  * Multiplication operator (*=) that multiplies a matrix by this one and assigns
  * the product to itself.
  * Number of columns of 'this' must be the same as number of rows of 'm',
@@ -668,45 +519,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGe
 
 
 /**
- * Multiplication operator (*) for multiplication of a matrix and a scalar.
- * There are no restrictions about matrix dimensions.
- *
- * @param scalar
- *
- * @return this * scalar
- *
- * @throw MatrixException if matrix does not contain enough elements
- */
-template<class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::operator* (const T& scalar) const throw (math::MatrixException)
-{
-    // The operation is possible on matrices with any dimension
-    // so no need to check input arguments
-
-    // Just multiply each element by the scalar:
-    // P(r,c) = scalar * this(r,c)
-    math::MatrixGeneric<T> retVal(this->rows, this->cols);
-
-    try
-    {
-        const size_t N = this->rows * this->cols;
-
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, scalar)
-        for ( size_t i=0; i<N; ++i )
-        {
-            retVal.elems.at(i) = this->elems.at(i) * scalar;
-        }
-    }  //try
-    catch ( const std::out_of_range& oor )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
-    }
-
-    return retVal;
-}
-
-
-/**
  * Multiplication operator (*=) that multiplies a matrix by a scalar
  * and assigns the product to itself.
  *
@@ -727,27 +539,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
     }
 
     return *this;
-}
-
-
-/**
- * Multiplication operator (*) of a scalar and a matrix.
- * This operation is commutative and does the same as operator*(scalar).
- * Since the first operand is not a matrix, it must be implemented as
- * a friend function.
- *
- * @param scalar
- * @param matrix
- *
- * @return scalar * matrix
- *
- * @throw MatrixException if matrix does not contain enough elements
- */
-template<class T>
-math::MatrixGeneric<T> math::operator* (const T& scalar, const math::MatrixGeneric<T>& matrix) throw (math::MatrixException)
-{
-    MatrixGeneric<T> retVal = matrix * scalar;
-    return retVal;
 }
 
 
@@ -1040,6 +831,219 @@ math::MatrixGeneric<T>::~MatrixGeneric()
     // Other dynamically allocated memory (via malloc or new) should be freed here.
     // There are no other resources to release.
 }
+
+
+
+/**
+ * Addition operator (+) of two matrices.
+ * Both matrices must have the same dimension (equal number of rows and columns)
+ *
+ * @param m1 - augend
+ * @param m2 - addend
+ *
+ * @return m1 + m2
+ *
+ * @throw MatrixException if dimensions do not match
+ */
+template<class T>
+math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
+{
+    // Check of dimensions. Numbers of rows and columns must match
+    // otherwise addition is not possible
+    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    // Each element of the sum matrix is a sum of elements at the same position
+    // S(r,c) = this(r,c) + matrix(r,c)
+    math::MatrixGeneric<T> temp(m1.rows, m2.cols);
+
+    const size_t N = m1.rows * m2.cols;
+
+    try
+    {
+        // Matrices have the same number of elements, just traverse
+        // them linearly and perform addition of elements at the same position
+
+    	#pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, m1, m2)
+        for ( size_t i=0; i<N; ++i )
+        {
+            temp.elems.at(i) = m1.elems.at(i) + m2.elems.at(i);
+        }
+    }  // try
+    catch ( const std::out_of_range& oor )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return temp;
+}
+
+
+/**
+ * Subtraction operator (-) of two matrices.
+ * Both matrices must have the same dimension (equal number of rows and columns)
+ *
+ * @param m1 - minuend
+ * @param m2 - subtrahend
+ *
+ * @return m1 - m2
+ *
+ * @throw MatrixException if dimensions do not match
+ */
+template<class T>
+math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
+{
+    // Check dimensions of both matrices. They must have the same number of rows and columns
+    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    // Each element of the difference matrix is a difference of elements at the same position
+    // D(r,c) = this(r,c) - matrix(r,c)
+    math::MatrixGeneric<T> temp(m1.rows, m2.cols);
+    const size_t N = m1.rows * m2.cols;
+
+    try
+    {
+
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, m1, m2)
+        for ( size_t i=0; i<N; ++i )
+        {
+            temp.elems.at(i) = m1.elems.at(i) - m2.elems.at(i);
+        }
+    }  // try
+    catch ( const std::out_of_range& oor )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return temp;
+}
+
+
+/**
+ * Multiplication operator (*) of two matrices.
+ * Number of columns of 'this' must be the same as number of rows of matrix,
+ * otherwise multiplication is not possible. The resulting matrix will
+ * have this.rows rows and matrix.cols columns.
+ *
+ * Note that matrix multiplication is not commutative (A*B != B*A).
+ *
+ * @param m1 - multiplicand
+ * @param m2 - multiplier
+ *
+ * @return m1 * m2
+ *
+ * @throw MatrixException if dimensions do not match
+ */
+template<class T>
+math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
+{
+    // Check if dimensions match (this.cols must be equal to matrix.rows)
+    if ( m1.cols != m2.rows )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    // Multiplication modifies dimensions, so make sure the product will contain
+    // more elements than allowed by vector:
+    if ( m2.cols > m1.elems.max_size() / m1.rows )
+    {
+        throw math::MatrixException(math::MatrixException::TOO_LARGE);
+    }
+
+    // if dimension of this is (m,n) and dimension of matrix is (n,o), the
+    // dimension of the product will be (m,o).
+    // P(r,c) = sum( i=0, n, this(r,i)*matrix(i,c) )
+    math::MatrixGeneric<T> temp(m1.rows, m2.cols);
+
+    try
+    {
+        #pragma omp parallel for collapse(2) default(none) shared(m1, m2, temp)
+        for ( size_t r=0; r<m1.rows; ++r )
+        {
+            for ( size_t c=0; c<m2.cols; ++c)
+            {
+                T sum = ZERO;
+                for ( size_t i=0; i<m1.cols; ++i )
+                {
+                    sum += m1.elems.at(m1.pos(r, i)) * m2.elems.at(m2.pos(i, c));
+                }
+
+                temp.elems.at(temp.pos(r, c)) = sum;
+            }  // for c
+        }  // for r
+    }  // try
+    catch ( const std::out_of_range& oor )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return temp;
+}
+
+
+/**
+ * Multiplication operator (*) for multiplication of a matrix and a scalar.
+ * There are no restrictions about matrix dimensions.
+ *
+ * @param m - multiplicand (a matrix)
+ * @param sc - multiplier (a scalar)
+ *
+ * @return m * sc
+ *
+ * @throw MatrixException if matrix does not contain enough elements
+ */
+template<class T>
+math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T& sc) throw (math::MatrixException)
+{
+    // The operation is possible on matrices with any dimension
+    // so no need to check input arguments
+
+    // Just multiply each element by the scalar:
+    // P(r,c) = scalar * this(r,c)
+    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+
+    try
+    {
+        const size_t N = m.rows * m.cols;
+
+        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, m, sc)
+        for ( size_t i=0; i<N; ++i )
+        {
+            retVal.elems.at(i) = m.elems.at(i) * sc;
+        }
+    }  //try
+    catch ( const std::out_of_range& oor )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return retVal;
+}
+
+
+/**
+ * Multiplication operator (*) of a scalar and a matrix.
+ * This operation is commutative and does the same as operator*(scalar).
+ *
+ * @param sc - multiplicand (a scalar)
+ * @param m - multiplier (a matrix)
+ *
+ * @return scalar * matrix
+ *
+ * @throw MatrixException if matrix does not contain enough elements
+ */
+template<class T>
+math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>& m) throw (math::MatrixException)
+{
+    MatrixGeneric<T> retVal = m * sc;
+    return retVal;
+}
+
 
 // This macro was defined especially for this file. To prevent any possible
 // conflicts, it will be #undef'ed
