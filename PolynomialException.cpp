@@ -55,6 +55,9 @@ void math::PolynomialException::display(std::ostream& str) const
         case TOO_LARGE:
             str << "Too many polynomial terms";
             break;
+        case DIVIDE_BY_ZERO:
+            str << "Attempt of division by zero";
+            break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and

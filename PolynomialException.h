@@ -43,7 +43,8 @@ struct PolynomialException : public IMathException
         OUT_OF_MEMORY,              /// Could not allocate enough memory
         OUT_OF_RANGE,               /// Attempt to access an element out of range
         INVALID_ARGUMENT,           /// Invalid argument passed to constructor
-        TOO_LARGE                   /// Too many polynomial's terms
+        TOO_LARGE,                  /// Too many polynomial's terms
+        DIVIDE_BY_ZERO              /// Attempt of division by zero
     };
 
     err_codes error;     /// Type of an error

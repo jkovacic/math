@@ -945,6 +945,70 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
 
 
 /**
+ * Division operator (/=) that divides a polynomial by a scalar
+ * and assigns the quotient to itself:
+ *    *this /= sc
+ *
+ * @param sc - scalar; must not be zero
+ *
+ * @return reference to itself
+ *
+ * @throw PolynomialException if attempting to divide by zero
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const T& sc) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == math::NumericUtil<T>::isZero(sc) )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    /*
+     * Just divide each polynoial's coefficient by 'sc'.
+     * This is equivalent to multiplication by a reciprocal value
+     * of 'sc' which is already implemented by operator*.
+     */
+    *this *= math::NumericUtil<T>::ONE / sc;
+
+    return *this;
+}
+
+
+/**
+ * Modulation operator (%=) that divides a polynomial by a scalar
+ * and assigns the remainder to itself:
+ *    *this %= sc
+ * When a polynomial is divided by a scalar, the remainder is always zero.
+ *
+ * @param sc - scalar; must not be zero
+ *
+ * @return reference to itself
+ *
+ * @throw PolynomialException if attempting to divide by zero
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator %=(const T& sc) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == math::NumericUtil<T>::isZero(sc) )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    /*
+     * When a polynomial is divided by a scalar, there is
+     * no remainder. Hence *this will be set to
+     * a zero polynomial.
+     */
+    this->coef.clear();
+    this->coef.resize(1, math::NumericUtil<T>::ZERO);
+
+    return *this;
+}
+
+
+/**
  * Outputs the polynomial to the stream 'str' in form 'c0 +c1*x +c2*x^2 + ...'
  *
  * @param arg - variable to be displayed (default: 'x')
@@ -1323,6 +1387,60 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& pol
     // applicable when sc==o
     retVal.reduce();
     return retVal;
+}
+
+
+/**
+ * Division operator (/) for division of a polynomial by a scalar.
+ *
+ * @param poly - dividend (a polynomial)
+ * @param sc - divisor (a scalar), should not be zero
+ *
+ * @return poly / sc
+ *
+ * @throw PolynomialException if attempting to divide by zero or if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator/(const math::PolynomialGeneric<T>& poly, const T& sc) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == math::NumericUtil<T>::isZero(sc) )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    /*
+     * Just divide each polynoial's coefficient by 'sc'.
+     * This is equivalent to multiplication by a reciprocal value
+     * of 'sc' which is already implemented by operator*.
+     */
+    return poly * (math::NumericUtil<T>::ONE / sc);
+}
+
+
+/**
+ * Modulation operator (%) for division of a polynomial by a scalar.
+ *
+ * @param poly - dividend (a polynomial)
+ * @param sc - divisor (a scalar), should not be zero
+ *
+ * @return poly % sc; always zero
+ *
+ * @throw PolynomialException if attempting to divide by zero or if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator%(const math::PolynomialGeneric<T>& poly, const T& sc) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == math::NumericUtil<T>::isZero(sc) )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    // There is no remainder when a polynomial is divided by a scalar,
+    // return a zero polynomial.
+    return PolynomialGeneric<T>(math::NumericUtil<T>::ZERO);
+    (void) poly;
 }
 
 

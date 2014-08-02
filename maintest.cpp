@@ -592,6 +592,12 @@ void polynomialTest()
         FPolynomial qint = q.integ();
         cout << "I(q(x))dx = " << qint << endl;
         cout << "int(q(x))' = " << qint.deriv() << endl;
+        cout << "q / 5 = " << q/5.0f << endl;
+        cout << "q mod 5 = " << q%5.f << endl;
+        q /= 2.0f;
+        cout << "q / 2 = " << q << endl;
+        q %= 2.0f;
+        cout << "q mod 2 = " << q << endl;
     }
     catch ( const PolynomialException& pex )
     {
