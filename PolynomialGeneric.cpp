@@ -988,7 +988,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const T& sc) 
  * @throw PolynomialException if attempting to divide by zero
  */
 template<class T>
-math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator %=(const T& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator%=(const T& sc) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
     if ( true == math::NumericUtil<T>::isZero(sc) )
@@ -1366,13 +1366,13 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& pol
         Multiplication of a polynomial by a scalar is trivial:
         Each coefficient is multiplied by the scalar.
 
-                         Np
-                        -----
-                        \               i
-            p(x) *sc =  |    sc * pi * x
-                        /
-                        -----
-                         i=0
+                          Np
+                         -----
+                         \               i
+            p(x) * sc =  |    sc * pi * x
+                         /
+                         -----
+                          i=0
     */
 
     const size_t N = poly.coef.size();
