@@ -74,6 +74,12 @@ PolynomialGeneric<T> operator+(const T& sc, const PolynomialGeneric<T>& poly) th
 template<class T>
 PolynomialGeneric<T> operator-(const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
 
+template<class T>
+PolynomialGeneric<T> operator/(const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator%(const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
+
 // and its friend << operator:
 template<class T>
 std::ostream& operator<<(std::ostream& output, const PolynomialGeneric<T>& q);
@@ -101,6 +107,8 @@ private:
     void copyCoefs(const std::vector<T>& cvect) throw (PolynomialException);
     // A utility function that reduces zero-coeeficients from the highest terms
     void reduce();
+    // Is this a zero polynomial
+    inline bool isZero() const;
 
 public:
     // Constructors
@@ -166,6 +174,8 @@ public:
     friend PolynomialGeneric<T> (math::operator+ <>) (const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator- <>) (const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator* <>) (const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator/ <>) (const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator% <>) (const T& sc, const PolynomialGeneric<T>& poly) throw(PolynomialException);
 
     // a friend function to overload the operator << (used by std::cout and std::cerr)
     friend std::ostream& (math::operator<< <>) (std::ostream& output, const PolynomialGeneric<T>& poly);

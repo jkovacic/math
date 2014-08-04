@@ -594,6 +594,8 @@ void polynomialTest()
         cout << "int(q(x))' = " << qint.deriv() << endl;
         cout << "q / 5 = " << q/5.0f << endl;
         cout << "q mod 5 = " << q%5.f << endl;
+        cout << "2 / q = " << 2.0f/q << endl;
+        cout << "2 mod q = " << 2.0f%q << endl;
         q /= 2.0f;
         cout << "q / 2 = " << q << endl;
         q %= 2.0f;
