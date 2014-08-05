@@ -51,6 +51,12 @@ template<class T>
 PolynomialGeneric<T> operator*(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
 
 template<class T>
+PolynomialGeneric<T> operator/(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+
+template<class T>
+PolynomialGeneric<T> operator%(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+
+template<class T>
 PolynomialGeneric<T> operator+(const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
 
 template<class T>
@@ -105,8 +111,13 @@ private:
 
     // A utility function that copies vector's coefficients
     void copyCoefs(const std::vector<T>& cvect) throw (PolynomialException);
+
     // A utility function that reduces zero-coeeficients from the highest terms
     void reduce();
+
+    // A utility function for polynomial division
+    static void polyDivision(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2, PolynomialGeneric<T>& q, PolynomialGeneric<T>& rem) throw (PolynomialException);
+
     // Is this a zero polynomial
     inline bool isZero() const;
 
@@ -151,6 +162,8 @@ public:
     PolynomialGeneric<T>& operator+=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T>& operator-=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T>& operator*=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
+    PolynomialGeneric<T>& operator/=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
+    PolynomialGeneric<T>& operator%=(const PolynomialGeneric<T>& poly) throw (PolynomialException);
     PolynomialGeneric<T> operator-() const throw (PolynomialException);
     PolynomialGeneric<T>& operator+=(const T& sc);
     PolynomialGeneric<T>& operator-=(const T& sc);
@@ -166,6 +179,8 @@ public:
     friend PolynomialGeneric<T> (math::operator+ <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator- <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator* <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator/ <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
+    friend PolynomialGeneric<T> (math::operator% <>) (const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator+ <>) (const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator- <>) (const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);
     friend PolynomialGeneric<T> (math::operator* <>) (const PolynomialGeneric<T>& poly, const T& sc) throw(PolynomialException);

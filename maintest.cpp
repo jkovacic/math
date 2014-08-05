@@ -600,6 +600,43 @@ void polynomialTest()
         cout << "q / 2 = " << q << endl;
         q %= 2.0f;
         cout << "q mod 2 = " << q << endl;
+
+        p = FPolynomial(true, 6);
+        p.set(0, -1.f).set(1, 0.f).set(2, 1.f).set(3, 2.f).set(4, -1.f).set(5, 4.f);
+        q = FPolynomial(true, 3);
+        q.set(0, 1.f).set(1, 0.f).set(2, 1.f);
+        cout << "p = " << p << endl;
+        cout << "q = " << q << endl;
+        // Expected: "2 -2*x -1*x^2 +4*x^3"
+        cout << "p / q = " << p/q << endl;
+        // Expected: "-3 +2*x"
+        cout << "p mod q = " << p%q << endl;
+
+        p = FPolynomial(true, 4);
+        p.set(0, -4.f).set(1, 0.f).set(2, -2.f).set(3, 1.f);
+        q = FPolynomial(true, 2);
+        q.set(0, -3.f).set(1, 1.f);
+        cout << "p = " << p << endl;
+        cout << "q = " << q << endl;
+        // Expected: "3 +1*x +1*x^2"
+        cout << "p / q = " << p/q << endl;
+        // Expected: "3 +1*x +1*x^2"
+        cout << "p mod q = " << p%q << endl;
+
+        p = FPolynomial(true, 5);
+        p.set(0, -5.f).set(1, 3.f).set(2, 0.f).set(3, -6.f).set(4, 4.f);
+        q = FPolynomial(true, 2);
+        q.set(0, -1.f).set(1, 2.f);
+        FPolynomial ptemp = p;
+        cout << "p = " << p << endl;
+        cout << "q = " << q << endl;
+        ptemp /= q;
+        // Expected: "1 -1*x -2*x^2 +2*x^3"
+        cout << "p / q = " << ptemp << endl;
+        ptemp = p;
+        ptemp %= q;
+        // Expected: "-4"
+        cout << "p mod q = " << ptemp << endl;
     }
     catch ( const PolynomialException& pex )
     {
@@ -1113,6 +1150,7 @@ void combinatoricsTest()
  */
 int main(int argc, const char* argv[])
 {
+
     cout << "Q U A T E R N I O N   T E S T" << endl << endl;
     quaternionTest();
 
@@ -1145,7 +1183,7 @@ int main(int argc, const char* argv[])
     
     cout << endl << "C O M B I N A T O R I C S   T E S T" << endl << endl;
     combinatoricsTest();
-    
+
     return 0;
 
     (void) argc;

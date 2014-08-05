@@ -737,6 +737,101 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
 }
 
 
+/*
+ * A static utility function that divides twov polynomials and returns
+ * their quotient an remainder.
+ *
+ * @note 'q' and 'rem' must be defined by the caller and passed by their
+ *       references, this function will fill in their coefficients appropriately.
+ * 
+ * @param p1 - dividined polynomial (input)
+ * @param p2 - divisor polynomial (input)
+ * @param q - p1 / p2 (output)
+ * @param rem - p1 mod p2 (output)
+ *
+ * @throw PolynomilExcpetion if attempting to divide by a zero polynomial
+ */
+template<class T>
+void math::PolynomialGeneric<T>::polyDivision(
+        const math::PolynomialGeneric<T>& p1,
+        const math::PolynomialGeneric<T>& p2,
+        math::PolynomialGeneric<T>& q,
+        math::PolynomialGeneric<T>& rem ) 
+    throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == p2.isZero() )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    // Degrees of 'p1' and 'p2':
+    const size_t Np1 = p1.coef.size() - 1;
+    const size_t Np2 = p2.coef.size() - 1;
+
+    // Use specialized operators of 'p2' is a scalar
+    if ( Np2==0 && false==math::NumericUtil<T>::isZero(p2.coef.at(0)) )
+    {
+        q = p1 / p2.get(0);
+        rem = math::PolynomialGeneric<T>( math::NumericUtil<T>::ZERO );
+        return;
+    }
+
+    // Handling of situations when p2's degree is higher than p1's
+    if ( Np2 > Np1 )
+    {
+        q = math::PolynomialGeneric<T>( math::NumericUtil<T>::ZERO );
+        rem = p1;
+        return;
+    }
+
+    // Quotient's degree:
+    const size_t Nq = Np1 - Np2;
+
+    // As 'p1' must remain constant, this vector will store its coefficients
+    // during the division procedure:
+    std::vector<T> p(p1.coef);
+
+    // The highest degree coefficient of 'p2':
+    const T Cdiv = p2.coef.at( Np2 );
+
+    // Preallocate q's vector of coefficients
+    q.coef.resize(Nq+1, math::NumericUtil<T>::ZERO);
+
+    // This for loop sequentially updates 'p' so it is
+    // not suitable for parallelization
+    for ( size_t i=0; i<=Nq; ++i )
+    {
+        // Divide p's and p2's highest order coefficients...
+        const T c = p.at(Np1-i) / Cdiv;
+        // ... the quotient is also one of q's coefficients...
+        q.coef.at(Nq-i) = c;
+
+        // If the for loop below were extended by one iteration,
+        // it would also calculate this p's coefficients to 0
+        p.at(Np1-i) = math::NumericUtil<T>::ZERO;
+
+        /*
+         * The for loop is actually equivalent to multiplication
+         * of 'p2' by the q's i.th term, subtracting the product
+         * from 'p' and assigning the difference to 'p'.
+         *
+         * Unlike the outer for loop, the inner loop
+         * be parallelized.
+         */
+        #pragma omp paralel for if(Np2>OMP_CHUNKS_PER_THREAD) default(none) shared(p, p2, i, c)
+        for ( size_t j=0; j<Np2; ++j )
+        {
+            p.at(Nq-i+j) -= c * p2.coef.at(j);
+        }
+    }
+
+    // Finally assign the remainder of 'p' to 'rem'
+    rem.coef = p;
+    rem.reduce();
+}
+
+
 /**
  * Addition operator (+=) that adds a polynomial to 'this' and assigns the sum to itself.
  *
@@ -950,6 +1045,64 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
 
     // applicable when the scalar is 0...
     this->reduce();
+    return *this;
+}
+
+
+/**
+ * Division operator (/=) that divides two polynomials and assigns
+ * the quotient to itself.
+ * 
+ * @param poly - polynomial to divide this one
+ *
+ * @return reference to itself
+ * 
+ * @throw PolynomialException if attempting to divide by a zero polynomial
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == poly.isZero() )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    math::PolynomialGeneric<T> quot;
+    math::PolynomialGeneric<T> temp;
+
+    math::PolynomialGeneric<T>::polyDivision(*this, poly, quot, temp);
+    *this = quot;
+
+    return *this;
+}
+
+
+/**
+ * Modulation operator (%=) that divides two polynomials and assigns
+ * the remainder to itself.
+ * 
+ * @param poly - polynomial to divide this one
+ *
+ * @return reference to itself
+ * 
+ * @throw PolynomialException if attempting to divide by a zero polynomial
+ */
+template<class T>
+math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator%=(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == poly.isZero() )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    math::PolynomialGeneric<T> rem;
+    math::PolynomialGeneric<T> temp;
+
+    math::PolynomialGeneric<T>::polyDivision(*this, poly, temp, rem);
+    *this= rem;
+
     return *this;
 }
 
@@ -1314,6 +1467,60 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& p1,
     {
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
+}
+
+
+/**
+ * Division operator (/) of two polynomials.
+ *
+ * @param p1 - dividend
+ * @param p2 - divisor
+ *
+ * @return p1 / p2
+ *
+ * @throw PolynomialException if attempting to divide by a zero polynomial or if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator/(const math::PolynomialGeneric<T>& p1, const math::PolynomialGeneric<T>& p2) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == p2.isZero() )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    math::PolynomialGeneric<T> retVal;
+    math::PolynomialGeneric<T> temp;
+
+    math::PolynomialGeneric<T>::polyDivision(p1, p2, retVal, temp);
+    return retVal;
+}
+
+
+/**
+ * Modulation operator (%) of two polynomials.
+ *
+ * @param p1 - dividend
+ * @param p2 - divisor
+ *
+ * @return p1 mod p2
+ *
+ * @throw PolynomialException if attempting to divide by a zero polynomial or if allocation of memory fails
+ */
+template<class T>
+math::PolynomialGeneric<T> math::operator%(const math::PolynomialGeneric<T>& p1, const math::PolynomialGeneric<T>& p2) throw (math::PolynomialException)
+{
+    // Division by zero is not permitted
+    if ( true == p2.isZero() )
+    {
+        throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    math::PolynomialGeneric<T> retVal;
+    math::PolynomialGeneric<T> temp;
+
+    math::PolynomialGeneric<T>::polyDivision(p1, p2, temp, retVal);
+    return retVal;
 }
 
 
