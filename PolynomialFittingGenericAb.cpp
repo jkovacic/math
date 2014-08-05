@@ -29,7 +29,7 @@ limitations under the License.
  */
 
 // Deliberately there is no #include "PolynomialFittingGenericAb.h"
-
+#include "PolynomialGeneric.h"
 
 /**
  * @return a copy of the polynomial that best fits entered points.
@@ -44,7 +44,7 @@ math::PolynomialGeneric<T> math::PolynomialFittingGenericAb<T>::getPolynomial() 
         throw math::CurveFittingException(math::CurveFittingException::CURVE_NOT_GENERATED);
     }
 
-    return poly;
+    return this->poly;
 }
 
 /**
@@ -75,5 +75,5 @@ T math::PolynomialFittingGenericAb<T>::valueAt(const T& x, bool strict) const th
     }
 
     // evaluate the polynomial using the PolynomialGeneric's member function
-    return poly.value(x);
+    return this->poly.value(x);
 }

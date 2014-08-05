@@ -15,12 +15,15 @@ limitations under the License.
 */
 
 /**
-@file PolynomialException.cpp
+ * @file PolynomialException.cpp
+ *
+ * Implementation of the class PolynomialException
+ *
+ * @author Jernej Kovacic
+ */
 
-Implementation of the class PolynomialException
 
-@author Jernej Kovacic
-*/
+#include <ostream>
 
 #include "PolynomialException.h"
 
@@ -41,7 +44,7 @@ math::PolynomialException::PolynomialException(err_codes err)
  */
 void math::PolynomialException::display(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case OUT_OF_MEMORY:
             str << "Could not allocate enough memory";

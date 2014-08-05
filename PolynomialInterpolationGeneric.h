@@ -27,6 +27,8 @@ limitations under the License.
 #ifndef _MATH_POLYNOMIALINTERPOLATIONGENERIC_H_
 #define _MATH_POLYNOMIALINTERPOLATIONGENERIC_H_
 
+#include <cstddef>
+
 #include "PolynomialFittingGenericAb.h"
 
 

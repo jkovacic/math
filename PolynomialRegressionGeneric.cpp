@@ -34,6 +34,7 @@ limitations under the License.
 #include "NumericUtil.h"
 #include "CurveFittingException.h"
 
+#include <cstddef>
 #include <limits>
 
 

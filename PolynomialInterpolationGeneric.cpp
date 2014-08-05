@@ -35,6 +35,7 @@ limitations under the License.
 
 #include <vector>
 #include <new>
+#include <cstddef>
 
 
 /**

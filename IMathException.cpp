@@ -15,16 +15,16 @@ limitations under the License.
 */
 
 /**
-@file IMathException.h
-
-Implementation of an empty destructor to
-suppress warnings in derived classes.
-
-For more info, see:
-http://stackoverflow.com/questions/127426/gnu-compiler-warning-class-has-virtual-functions-but-non-virtual-destructor
-
-@author Jernej Kovacic
-*/
+ * @file IMathException.h
+ *
+ * Implementation of an empty destructor to
+ * suppress warnings in derived classes.
+ *
+ * For more info, see:
+ * http://stackoverflow.com/questions/127426/gnu-compiler-warning-class-has-virtual-functions-but-non-virtual-destructor
+ *
+ * @author Jernej Kovacic
+ */
 
 
 #include "IMathException.h"

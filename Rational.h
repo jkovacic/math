@@ -29,7 +29,7 @@ limitations under the License.
 
 #include "RationalException.h"
 
-#include <iostream>
+#include <ostream>
 #include <string>
 
 namespace math

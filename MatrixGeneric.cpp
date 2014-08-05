@@ -16,20 +16,22 @@ limitations under the License.
 
 
 /**
-* @file MatrixGeneric.cpp
-*
-* Implementation of the class MatriGeneric.
-*
-* As the class is templated, this file must not be compiled.
-* Instead it must be included after the class declaration in the .h file
-*
-* @author Jernej Kovacic
-*/
+ * @file MatrixGeneric.cpp
+ *
+ * Implementation of the class MatriGeneric.
+ *
+ * As the class is templated, this file must not be compiled.
+ * Instead it must be included after the class declaration in the .h file
+ *
+ * @author Jernej Kovacic
+ */
 
 
 #include <new>
 #include <stdexcept>
 #include <vector>
+#include <cstddef>
+#include <ostream>
 
 // Deliberately there is no #include "MatrixGeneric.h" !
 #include "MatrixException.h"

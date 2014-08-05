@@ -27,6 +27,8 @@ limitations under the License.
  */
 
 // deliberately there is no #include "LinearEquationSolverGeneric.h" !
+#include <cstddef>
+
 #include "MatrixException.h"
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
@@ -176,7 +178,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
     const size_t Nmax = (N>=NT ? N : NT); // max. of both values
 
     // Check of dimensions
-    if ( N!=this->m_term.nrRows() )
+    if ( N != this->m_term.nrRows() )
     {
         throw math::LinearEquationSolverException(math::LinearEquationSolverException::INVALID_DIMENSION);
     }

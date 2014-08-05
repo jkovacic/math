@@ -81,14 +81,14 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::list<T>& el) throw (m
         }
         
         // copy elements of 'el' into 'elems'
-        elems.clear();
-        elems.reserve(N);
+        this->elems.clear();
+        this->elems.reserve(N);
         for ( typename std::list<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
         {
-            elems.push_back(*it);
+            this->elems.push_back(*it);
         }
         
-        init();
+        this->init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -115,14 +115,14 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::set<T>& el) throw (ma
         }
         
         // copy elements of 'el' into 'elems'
-        elems.clear();
-        elems.reserve(N);
+        this->elems.clear();
+        this->elems.reserve(N);
         for ( typename std::set<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
         {
-            elems.push_back(*it);
+            this->elems.push_back(*it);
         }
         
-        init();
+        this->init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -149,14 +149,14 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (
         }
         
         // copy elements of 'el' into 'elems'
-        elems.clear();
-        elems.reserve(N);
+        this->elems.clear();
+        this->elems.reserve(N);
         for ( typename std::deque<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
         {
-            elems.push_back(*it);
+            this->elems.push_back(*it);
         }
         
-        init();
+        this->init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -186,19 +186,19 @@ math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) th
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
         }
         
-        if ( len>elems.max_size() )
+        if ( len>this->elems.max_size() )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
         
-        elems.clear();
-        elems.reserve(len);
+        this->elems.clear();
+        this->elems.reserve(len);
         for ( size_t i=0; i<len; ++i )
         {
-            elems.push_back(elarray[i]);
+            this->elems.push_back(elarray[i]);
         }
         
-        init();
+        this->init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -216,16 +216,16 @@ void math::PermutationGeneric<T>::init() throw (math::CombinatoricsException)
 {
     try
     {
-        morePermutations = true;
-        started = false;
-        N_len = elems.size();
+        this->morePermutations = true;
+        this->started = false;
+        this->N_len = this->elems.size();
         
         // Initially 'addr' is filled by consecutive integers from 0 to N-1
-        addr.clear();
-        addr.reserve(N_len);
-        for ( size_t i=0; i<N_len; ++i )
+        this->addr.clear();
+        this->addr.reserve( this->N_len );
+        for ( size_t i=0; i<this->N_len; ++i )
         {
-            addr.push_back(i);
+            this->addr.push_back(i);
         }
     }
     catch ( const std::bad_alloc& ba )
@@ -264,7 +264,7 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
     {
         // N_len is used frequently inside this function. As it is intended to
         // remain constant, a const ref. is used to prevent unintentional modifications.
-        const size_t& N = N_len;
+        const size_t& N = this->N_len;
         std::list<std::list<T> > retVal;
         retVal.clear();
         
@@ -275,20 +275,20 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
         }
         
         // At maximum 'n' permutations will be returned
-        for ( size_t cnt=0; true==morePermutations && cnt<n; ++cnt )
+        for ( size_t cnt=0; true==this->morePermutations && cnt<n; ++cnt )
         {
             /*
              * The first permutation ('elems' in unmodified order) 
              * is not handled by the algorithm so it
              * must be handled separately. 
              */
-            if ( false==started )
+            if ( false==this->started )
             {
                 std::list<T> temp;
                 temp.clear();
                 
                 // just copy elements of 'elems' into temp:
-                for ( typename std::vector<T>::const_iterator it=elems.begin(); it!=elems.end(); ++it )
+                for ( typename std::vector<T>::const_iterator it=this->elems.begin(); it!=this->elems.end(); ++it )
                 {
                     temp.push_back(*it);
                 }
@@ -297,7 +297,7 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
                 
                 // set the flag indicating that the initial permutation
                 // has already been returned
-                started = true;
+                this->started = true;
                 
                 // skip the rest of the loop to increment 'cnt'
                 continue;  // for cnt
@@ -316,25 +316,25 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
             for ( size_t i=N-1; i>0; --i )
             {
                 // if the 'addr' is greater than the previous one
-                if ( addr.at(i) > addr.at(i-1) )
+                if ( this->addr.at(i) > this->addr.at(i-1) )
                 {
                     // Find the smallest 'addr' larger than current one and 
                     // still behind the current one
                     size_t k = N - 1;
-                    for ( k=N-1; addr.at(i-1)>addr.at(k); --k );
+                    for ( k=N-1; this->addr.at(i-1)>this->addr.at(k); --k );
                     // swap the addresses
-                    size_t swap = addr.at(i-1);
-                    addr.at(i-1) = addr.at(k);
-                    addr.at(k) = swap;
+                    size_t swap = this->addr.at(i-1);
+                    this->addr.at(i-1) = this->addr.at(k);
+                    this->addr.at(k) = swap;
                     
                     // revert the order behind i-1 
                     size_t start;
                     size_t end;
                     for ( start=i, end=N-1; start<end; ++start, --end )
                     {
-                        size_t swap = addr.at(start);
-                        addr.at(start) = addr.at(end);
-                        addr.at(end) = swap;
+                        size_t swap = this->addr.at(start);
+                        this->addr.at(start) = this->addr.at(end);
+                        this->addr.at(end) = swap;
                     }
                     
                     // and generate the next permutation based on 'addr'
@@ -343,7 +343,7 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
                     
                     for ( size_t j=0; j<N; ++j )
                     {
-                        temp.push_back(elems.at(addr.at(j)));
+                        temp.push_back(this->elems.at(this->addr.at(j)));
                     }
                     
                     // append it to retVal
@@ -362,7 +362,7 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
             if ( false==pfound )
             {
                 // mark the class's flag
-                morePermutations = false;
+                this->morePermutations = false;
                 // no need to break as "for cnt" checks the value of 'morePermutations'
                 //break; // out of for cnt
             }
@@ -382,7 +382,7 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
 template<class T>
 bool math::PermutationGeneric<T>::hasNext() const
 {
-    return morePermutations;
+    return this->morePermutations;
 }
 
 /**
@@ -392,6 +392,6 @@ template<class T>
 math::PermutationGeneric<T>::~PermutationGeneric()
 {
     // probably vector's destructors would clean this automatically...
-    elems.clear();
-    addr.clear();
+    this->elems.clear();
+    this->addr.clear();
 }

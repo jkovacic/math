@@ -16,18 +16,18 @@ limitations under the License.
 
 
 /**
-@file MatrixException.h
-
-Declaration of the class MatrixException
-
-@author Jernej Kovacic
-*/
+ * @file MatrixException.h
+ *
+ * Declaration of the class MatrixException
+ *
+ * @author Jernej Kovacic
+ */
 
 
 #ifndef _MATH_MATRIXEXCEPTION_H_
 #define	_MATH_MATRIXEXCEPTION_H_
 
-#include <iostream>
+#include <ostream>
 
 #include "IMathException.h"
 

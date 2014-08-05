@@ -16,12 +16,14 @@ limitations under the License.
 
 
 /**
-@file MatrixException.cpp
+ * @file MatrixException.cpp
+ *
+ * Implementation of the class MatrixException
+ *
+ * @author Jernej Kovacic
+ */
 
-Implementation of the class MatrixException
-
-@author Jernej Kovacic
-*/
+#include <ostream>
 
 #include "MatrixException.h"
 

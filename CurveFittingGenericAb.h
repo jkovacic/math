@@ -29,6 +29,7 @@ limitations under the License.
 #define _MATH_CURVEFITTINGGENERICAB_H_
 
 #include <list>
+#include <cstddef>
 
 #include "CurveFittingException.h"
 

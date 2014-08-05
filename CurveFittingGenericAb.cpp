@@ -28,6 +28,7 @@ limitations under the License.
 
 // Deliberately there is no #include "CurveFittingGenericAb.h" !
 #include <new>
+#include <cstddef>
 
 #include "NumericUtil.h"
 #include "CurveFittingException.h"

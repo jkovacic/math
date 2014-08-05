@@ -15,17 +15,17 @@ limitations under the License.
 */
 
 /**
-@file LinearEquationSolverException.h
-
-Declaration of the class LinearEquationSolverException
-
-@author Jernej Kovacic
-*/
+ * @file LinearEquationSolverException.h
+ *
+ * Declaration of the class LinearEquationSolverException
+ *
+ * @author Jernej Kovacic
+ */
 
 #ifndef _MATH_LINEAREQUATIONSOLVEREXCEPTION_H_
 #define _MATH_LINEAREQUATIONSOLVEREXCEPTION_H_
 
-#include <iostream>
+#include <ostream>
 
 #include "IMathException.h"
 

@@ -125,7 +125,7 @@ unsigned long long int math::IntCombinatorics::risingFactorial(unsigned long lon
     }
     
     // The algorithm is already implemented by fallingFactorial
-    return fallingFactorial(N-1+K, K);
+    return math::IntCombinatorics::fallingFactorial(N-1+K, K);
 }
 
 /**
@@ -181,7 +181,7 @@ unsigned long long int math::IntCombinatorics::factorial(unsigned long long int 
      * 'from' is always greater than 0 and less than or equal to N.
      * This means, N-from+1 cannot be out of integer range.
      */
-    return fallingFactorial(N, N-from+1);
+    return math::IntCombinatorics::fallingFactorial(N, N-from+1);
 }
 
 /**
@@ -252,7 +252,7 @@ unsigned long long int math::IntCombinatorics::multiFactorial(unsigned long long
 unsigned long long int math::IntCombinatorics::doubleFactorial(unsigned long long int N) throw(math::CombinatoricsException)
 {
     // double factorial is a multi factorial with K=2
-    return multiFactorial(N, 2);
+    return math::IntCombinatorics::multiFactorial(N, 2);
 }
     
 /**

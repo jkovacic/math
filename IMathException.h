@@ -16,13 +16,13 @@ limitations under the License.
 
 
 /**
-@file IMathException.h
-
-Common interface (pure virtual class) for various mathematical exceptions,
-e.g. MatrixException, RationalException, etc.
-
-@author Jernej Kovacic
-*/
+ * @file IMathException.h
+ *
+ * Common interface (pure virtual class) for various mathematical exceptions,
+ * e.g. MatrixException, RationalException, etc.
+ *
+ * @author Jernej Kovacic
+ */
 
 #ifndef _MATH_IMATHEXCEPTION_H_
 #define	_MATH_IMATHEXCEPTION_H_

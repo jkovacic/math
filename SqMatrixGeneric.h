@@ -16,17 +16,20 @@ limitations under the License.
 
 
 /**
-@file SqMatrixGeneric.h
-
-Declaration of the class SqMatrixGeneric, representing square matrices.
-The class is derived from MatrixGeneric and has additional functions defined
-for square matrices only
-
-@author Jernej Kovacic
-*/
+ * @file SqMatrixGeneric.h
+ *
+ * Declaration of the class SqMatrixGeneric, representing square matrices.
+ * The class is derived from MatrixGeneric and has additional functions defined
+ * for square matrices only
+ *
+ * @author Jernej Kovacic
+ */
 
 #ifndef _MATH_SQMATRIXGENERIC_H_
 #define	_MATH_SQMATRIXGENERIC_H_
+
+
+#include <cstddef>
 
 #include "MatrixGeneric.h"
 

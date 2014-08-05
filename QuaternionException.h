@@ -16,16 +16,17 @@ limitations under the License.
 
 
 /**
-@file QuaternionException.h
-
-Declaration of the class QuaternionException
-
-@author Jernej Kovacic
-*/
+ * @file QuaternionException.h
+ *
+ * Declaration of the class QuaternionException
+ *
+ * @author Jernej Kovacic
+ */
 
 #ifndef _MATH_QUATERNIONEXCEPTION_H_
 #define _MATH_QUATERNIONEXCEPTION_H_
 
+#include <ostream>
 #include "IMathException.h"
 
 namespace math

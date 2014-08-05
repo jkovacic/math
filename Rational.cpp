@@ -31,6 +31,7 @@ limitations under the License.
 #include <limits>
 #include <cstdio>
 #include <new>
+#include <ostream>
 
 
 /**
@@ -289,8 +290,8 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
                 buf.erase(decPoint, 1);
             }
 
-            num1 = str2ll(buf);
-            den1 = ( LEN==decPoint ? 1 : pow10(LEN-decPoint-1) );
+            num1 = math::Rational::str2ll(buf);
+            den1 = ( LEN==decPoint ? 1 : math::Rational::pow10(LEN-decPoint-1) );
         }
         else
         {
@@ -317,12 +318,12 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
              *                   9990
              */
             buf.erase(decPoint, 1);
-            num1 = str2ll(buf);
+            num1 = math::Rational::str2ll(buf);
             buf.erase(LEN-1-repSeqLen, repSeqLen);
-            num2 = str2ll(buf);
+            num2 = math::Rational::str2ll(buf);
 
-            den1 = pow10(LEN-1-decPoint);
-            den2 = pow10(LEN-1-decPoint-repSeqLen);
+            den1 = math::Rational::pow10(LEN-1-decPoint);
+            den2 = math::Rational::pow10(LEN-1-decPoint-repSeqLen);
         }
 
         /*

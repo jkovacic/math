@@ -24,6 +24,8 @@ Implementation of the class CombinatoricsException
 */
 
 
+#include <ostream>
+
 #include "CombinatoricsException.h"
 
 

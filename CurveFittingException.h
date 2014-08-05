@@ -16,12 +16,12 @@ limitations under the License.
 
 
 /**
-@file CurveFittingException.h
-
-Declaration of the class CurveFittingException
-
-@author Jernej Kovacic
-*/
+ * @file CurveFittingException.h
+ *
+ * Declaration of the class CurveFittingException
+ *
+ *@author Jernej Kovacic
+ */
 
 #ifndef _MATH_CURVEFITTINGEXCEPTION_H_
 #define _MATH_CURVEFITTINGEXCEPTION_H_

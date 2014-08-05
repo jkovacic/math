@@ -27,6 +27,7 @@ limitations under the License.
 #ifndef _MATH_POLYNOMIALREGRESSIONGENERIC_H_
 #define _MATH_POLYNOMIALREGRESSIONGENERIC_H_
 
+#include <cstddef>
 
 #include "PolynomialFittingGenericAb.h"
 #include "CurveFittingException.h"

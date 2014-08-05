@@ -192,7 +192,7 @@ unsigned long int math::IntFactorization::leastCommonMultiple(unsigned long int 
     }
 
     // At this point the GCD will be no less than 1, definitely not 0
-    const unsigned long int GCD = greatestCommonDivisor(first, second);
+    const unsigned long int GCD = math::IntFactorization::greatestCommonDivisor(first, second);
 
     // so it's safe to divide
     unsigned long long int retVal = first*second/GCD;
@@ -278,7 +278,7 @@ unsigned long int math::IntFactorization::nextPrime(unsigned long int n) throw(m
         
         retVal += summand;
     }
-    while ( false==isPrime(retVal) );
+    while ( false==math::IntFactorization::isPrime(retVal) );
         
     return retVal;
 }
@@ -357,7 +357,7 @@ std::map<unsigned long int, unsigned int> math::IntFactorization::factor(unsigne
          * For each successful division by a prime, update the value for the 
          * prime key and update the "remainder". 
          */
-        for ( pf=2; pf<=comp; pf=nextPrime(pf) )
+        for ( pf=2; pf<=comp; pf=math::IntFactorization::nextPrime(pf) )
         {
             // Check divisibility by the current prime:
             if ( 0!=comp%pf )

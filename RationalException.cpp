@@ -16,13 +16,15 @@ limitations under the License.
 
 
 /**
-@file RationalException.cpp
+ * @file RationalException.cpp
+ *
+ * Implementation of the class RationalException
+ *
+ * @author Jernej Kovacic
+ */
 
-Implementation of the class RationalException
 
-@author Jernej Kovacic
-*/
-
+#include <ostream>
 
 #include "RationalException.h"
 
@@ -44,7 +46,7 @@ math::RationalException::RationalException(err_codes err)
  */
 void math::RationalException::display(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case ZERO_DENOMINATOR:
             str << "Zero denominator is forbidden.";

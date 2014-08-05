@@ -15,13 +15,15 @@ limitations under the License.
 */
 
 /**
-@file QuaternionException.cpp
+ * @file QuaternionException.cpp
+ *
+ * Implementation of the class QuaternionException
+ *
+ * @author Jernej Kovacic
+ */
 
-Implementation of the class QuaternionException
 
-@author Jernej Kovacic
-*/
-
+#include <ostream>
 
 #include "QuaternionException.h"
 
@@ -43,7 +45,7 @@ math::QuaternionException::QuaternionException(err_codes err)
  */
 void math::QuaternionException::display(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case UNSUPPORTED_TYPE:
             str << "The operation is not supported for the specified type T";
