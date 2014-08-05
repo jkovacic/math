@@ -31,7 +31,7 @@ limitations under the License.
 #include "omp_settings.h"
 
 #include <vector>
-#include <cstdlib>
+#include <cstddef>
 #include <new>
 #include <stdexcept>
 #include <limits>
@@ -741,13 +741,13 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
  * A static utility function that divides twov polynomials and returns
  * their quotient an remainder.
  *
- * @note 'q' and 'rem' must be defined by the caller and passed by their
- *       references, this function will fill in their coefficients appropriately.
+ * @note If 'q' or 'rem' is a NULL pointer, it will not be filled by
+ *       quotient or remainder coeficients, respectively.
  * 
- * @param p1 - dividined polynomial (input)
- * @param p2 - divisor polynomial (input)
- * @param q - p1 / p2 (output)
- * @param rem - p1 mod p2 (output)
+ * @param p1 - dividend polynomial
+ * @param p2 - divisor polynomial
+ * @param q - pointer to a polynomial that will be assigned "p1 / p2"
+ * @param rem - pointer to a polynomial that will be assigned "p1 mod p2"
  *
  * @throw PolynomilExcpetion if attempting to divide by a zero polynomial
  */
@@ -755,14 +755,20 @@ template<class T>
 void math::PolynomialGeneric<T>::polyDivision(
         const math::PolynomialGeneric<T>& p1,
         const math::PolynomialGeneric<T>& p2,
-        math::PolynomialGeneric<T>& q,
-        math::PolynomialGeneric<T>& rem ) 
+        math::PolynomialGeneric<T>* q,
+        math::PolynomialGeneric<T>* rem )
     throw (math::PolynomialException)
 {
     // Division by zero is not permitted
     if ( true == p2.isZero() )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
+    }
+
+    // Nothing to do if no output is specified
+    if ( NULL==q && NULL==rem )
+    {
+        return;
     }
 
     // Degrees of 'p1' and 'p2':
@@ -772,16 +778,32 @@ void math::PolynomialGeneric<T>::polyDivision(
     // Use specialized operators of 'p2' is a scalar
     if ( Np2==0 && false==math::NumericUtil<T>::isZero(p2.coef.at(0)) )
     {
-        q = p1 / p2.get(0);
-        rem = math::PolynomialGeneric<T>( math::NumericUtil<T>::ZERO );
+        if ( NULL != q )
+        {
+            *q = p1 / p2.get(0);
+        }
+
+        if ( NULL != rem )
+        {
+            rem->coef.resize(1, math::NumericUtil<T>::ZERO);
+        }
+
         return;
     }
 
     // Handling of situations when p2's degree is higher than p1's
     if ( Np2 > Np1 )
     {
-        q = math::PolynomialGeneric<T>( math::NumericUtil<T>::ZERO );
-        rem = p1;
+        if ( NULL != q )
+        {
+            q->coef.resize(1, math::NumericUtil<T>::ZERO );
+        }
+
+        if ( NULL != rem )
+        {
+            *rem = p1;
+        }
+
         return;
     }
 
@@ -796,7 +818,10 @@ void math::PolynomialGeneric<T>::polyDivision(
     const T Cdiv = p2.coef.at( Np2 );
 
     // Preallocate q's vector of coefficients
-    q.coef.resize(Nq+1, math::NumericUtil<T>::ZERO);
+    if ( NULL != q )
+    {
+        q->coef.resize(Nq+1, math::NumericUtil<T>::ZERO);
+    }
 
     // This for loop sequentially updates 'p' so it is
     // not suitable for parallelization
@@ -805,7 +830,10 @@ void math::PolynomialGeneric<T>::polyDivision(
         // Divide p's and p2's highest order coefficients...
         const T c = p.at(Np1-i) / Cdiv;
         // ... the quotient is also one of q's coefficients...
-        q.coef.at(Nq-i) = c;
+        if ( NULL != q )
+        {
+            q->coef.at(Nq-i) = c;
+        }
 
         // If the for loop below were extended by one iteration,
         // it would also calculate this p's coefficients to 0
@@ -827,8 +855,11 @@ void math::PolynomialGeneric<T>::polyDivision(
     }
 
     // Finally assign the remainder of 'p' to 'rem'
-    rem.coef = p;
-    rem.reduce();
+    if ( NULL != rem )
+    {
+        rem->coef = p;
+        rem->reduce();
+    }
 }
 
 
@@ -1069,9 +1100,8 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const math::P
     }
 
     math::PolynomialGeneric<T> quot;
-    math::PolynomialGeneric<T> temp;
 
-    math::PolynomialGeneric<T>::polyDivision(*this, poly, quot, temp);
+    math::PolynomialGeneric<T>::polyDivision(*this, poly, &quot, NULL);
     *this = quot;
 
     return *this;
@@ -1098,9 +1128,8 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator%=(const math::P
     }
 
     math::PolynomialGeneric<T> rem;
-    math::PolynomialGeneric<T> temp;
 
-    math::PolynomialGeneric<T>::polyDivision(*this, poly, temp, rem);
+    math::PolynomialGeneric<T>::polyDivision(*this, poly, NULL, &rem);
     *this= rem;
 
     return *this;
@@ -1490,9 +1519,8 @@ math::PolynomialGeneric<T> math::operator/(const math::PolynomialGeneric<T>& p1,
     }
 
     math::PolynomialGeneric<T> retVal;
-    math::PolynomialGeneric<T> temp;
 
-    math::PolynomialGeneric<T>::polyDivision(p1, p2, retVal, temp);
+    math::PolynomialGeneric<T>::polyDivision(p1, p2, &retVal, NULL);
     return retVal;
 }
 
@@ -1517,9 +1545,8 @@ math::PolynomialGeneric<T> math::operator%(const math::PolynomialGeneric<T>& p1,
     }
 
     math::PolynomialGeneric<T> retVal;
-    math::PolynomialGeneric<T> temp;
 
-    math::PolynomialGeneric<T>::polyDivision(p1, p2, temp, retVal);
+    math::PolynomialGeneric<T>::polyDivision(p1, p2, NULL, &retVal);
     return retVal;
 }
 

@@ -28,6 +28,7 @@ limitations under the License.
 
 #include <vector>
 #include <iostream>
+#include<cstdlib>
 
 #include "NumericUtil.h"
 #include "PolynomialException.h"
@@ -112,11 +113,11 @@ private:
     // A utility function that copies vector's coefficients
     void copyCoefs(const std::vector<T>& cvect) throw (PolynomialException);
 
-    // A utility function that reduces zero-coeeficients from the highest terms
+    // A utility function that reduces zero-coefficients from the highest terms
     void reduce();
 
     // A utility function for polynomial division
-    static void polyDivision(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2, PolynomialGeneric<T>& q, PolynomialGeneric<T>& rem) throw (PolynomialException);
+    static void polyDivision(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2, PolynomialGeneric<T>* q, PolynomialGeneric<T>* rem) throw (PolynomialException);
 
     // Is this a zero polynomial
     inline bool isZero() const;
