@@ -119,8 +119,14 @@ private:
     // A utility function for polynomial division
     static void polyDivision(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2, PolynomialGeneric<T>* q, PolynomialGeneric<T>* rem) throw (PolynomialException);
 
-    // Is this a zero polynomial
-    inline bool isZero() const;
+    /*
+     * @return whether the polynomial is of zero degree and its only coefficient equals 0
+     */
+    inline bool isZero() const
+    {
+        return ( 1==this->coef.size() && true==math::NumericUtil<T>::isZero(this->coef.at(0)) );
+    }
+
 
 public:
     // Constructors

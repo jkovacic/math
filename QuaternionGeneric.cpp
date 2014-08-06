@@ -481,25 +481,6 @@ math::QuaternionGeneric<T>& math::QuaternionGeneric<T>::conjugated()
 }
 
 
-/*
- * A utility function that calculates a sum of components' squares.
- * The function is called  by other public methods, such as norm, reciprocal, unit, etc.
- *
- * As the function is short, it is declared as inline to slightly reduce overhead
- *
- * @return sum of all components' squares
- */
-template<class T>
-inline T math::QuaternionGeneric<T>::sqsum() const
-{
-    return (
-            this->quat_o * this->quat_o +
-            this->quat_i * this->quat_i +
-            this->quat_j * this->quat_j +
-            this->quat_k * this->quat_k );
-}
-
-
 /**
  * Norm of the quaternion.
  *

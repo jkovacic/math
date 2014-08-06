@@ -39,12 +39,6 @@ limitations under the License.
 #include "omp_settings.h"
 
 
-// A zero constant has already been defined in the class NumericUtil.
-// It can only be accessed as math::NumericUtil<T>::ZERO
-// As this notation is a bit long, this convenience macro is defined:
-#define ZERO math::NumericUtil<T>::ZERO
-
-
 /**
  * Constructor.
  * Creates an instance of a matrix with the specified number of rows and columns.
@@ -78,7 +72,7 @@ math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::M
         // make sure, the vector will be empty
         this->elems.clear();
         // allocate memory for required number of elements, initialize each of them
-        this->elems.resize(rows*columns, ZERO);
+        this->elems.resize(rows*columns, math::NumericUtil<T>::ZERO);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -101,26 +95,6 @@ template<class T>
 math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
     copyElems(orig);
-}
-
-
-/*
- * A utility function that returns the position of element's "coordinates"
- * within the matrix's internal vector (r*cols+c). As this functionality
- * is used often, the purpose of this function is to define it only once
- * and to eliminate possibilities of typing errors.
- *
- * As the function is simple (short) and called frequently, it is declared
- * as an inline function to reduce overhead.
- *
- * Note: no checks are performed inside the function. The results of the
- * function are usually passed directly to std::vector.at() which throws
- * an exception if 'pos' is out of the vector's range.
- */
-template <class T>
-inline size_t math::MatrixGeneric<T>::pos(size_t row, size_t column) const
-{
-    return ( row * this->cols + column );
 }
 
 
@@ -969,7 +943,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
         {
             for ( size_t c=0; c<m2.cols; ++c)
             {
-                T sum = ZERO;
+                T sum = math::NumericUtil<T>::ZERO;
                 for ( size_t i=0; i<m1.cols; ++i )
                 {
                     sum += m1.elems.at(m1.pos(r, i)) * m2.elems.at(m2.pos(i, c));
@@ -1045,8 +1019,3 @@ math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>
     MatrixGeneric<T> retVal = m * sc;
     return retVal;
 }
-
-
-// This macro was defined especially for this file. To prevent any possible
-// conflicts, it will be #undef'ed
-#undef ZERO

@@ -87,9 +87,24 @@ private:
     T quat_j;    /// element 'j'
     T quat_k;    /// element 'k'
 
-    // A utility function to calculate a sum of all elements' squares,
-    // only called by some methods of the class
-    inline T sqsum() const;
+
+    /*
+     * A utility function that calculates a sum of components' squares.
+     * The function is called  by other public methods, such as norm, reciprocal, unit, etc.
+     *
+     * As the function is short, it is declared as inline to slightly reduce overhead
+     *
+     * @return sum of all components' squares
+     */
+    inline T sqsum() const
+    {
+        return (
+                this->quat_o * this->quat_o +
+                this->quat_i * this->quat_i +
+                this->quat_j * this->quat_j +
+                this->quat_k * this->quat_k );
+    }
+
 
 public:
     // Constructor

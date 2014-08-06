@@ -39,13 +39,6 @@ limitations under the License.
 #include <vector>
 
 
-// 'Zero' and 'one' constant have already been defined in the class NumericUtil.
-// They can only be accessed as math::NumericUtil<T>::ZERO or math::NumericUtil<T>::ONE, respectively
-// As this notation is a bit long, these convenience macro are defined:
-#define ZERO math::NumericUtil<T>::ZERO
-#define ONE  math::NumericUtil<T>::ONE
-
-
 /**
  * Constructor.
  * Creates an instance of a square matrix with the specified number of rows and columns.
@@ -139,7 +132,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         {
             for ( size_t c=0; c<N; ++c )
             {
-                this->elems.at(this->pos(r, c)) = ( r==c ? scalar : ZERO );
+                this->elems.at(this->pos(r, c)) = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
             }  // for c
         }  // for r
 
@@ -166,7 +159,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setUnit() throw(math::Matrix
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal
-    setDiag(ONE);
+    setDiag(math::NumericUtil<T>::ONE);
 
     return *this;
 }
@@ -196,7 +189,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
     // Initial value. It will be negated each time two lines need to be swapped.
     // At the end of the algorithm it will be multiplied by all diagonal elements
-    T retVal = ONE;
+    T retVal = math::NumericUtil<T>::ONE;
 
     try
     {
@@ -239,7 +232,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // and the method is finished
                 if ( N == r )
                 {
-                    return ZERO;
+                    return math::NumericUtil<T>::ZERO;
                 }
 
                 // otherwise swap the lines one element by one
@@ -477,7 +470,3 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr, con
     (void) colNr;
     (void) el;
 }
-
-// The macros were defined for implementation in this file only. Undef them now
-#undef ZERO
-#undef ONE

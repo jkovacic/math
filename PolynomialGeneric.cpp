@@ -271,16 +271,6 @@ void math::PolynomialGeneric<T>::reduce()
 }
 
 
-/*
- * @return whether the polynomial is of zero degree and its only coefficient equals 0
- */
-template<class T>
-bool math::PolynomialGeneric<T>::isZero() const
-{
-    return ( 1==this->coef.size() && true==math::NumericUtil<T>::isZero(this->coef.at(0)) );
-}
-
-
 /**
  * Assignment operator (=)
  *

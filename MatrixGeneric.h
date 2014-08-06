@@ -86,8 +86,23 @@ protected:
     // so it should be 'protected' instead of 'private'
     void copyElems(const MatrixGeneric& orig) throw (MatrixException);
 
-    // position of the element within the internal vector
-    inline size_t pos(size_t row, size_t column) const;
+    /*
+     * A utility function that returns the position of element's "coordinates"
+     * within the matrix's internal vector (r*cols+c). As this functionality
+     * is used often, the purpose of this function is to define it only once
+     * and to eliminate possibilities of typing errors.
+     *
+     * As the function is simple (short) and called frequently, it is declared
+     * as an inline function to reduce overhead.
+     *
+     * Note: no checks are performed inside the function. The results of the
+     * function are usually passed directly to std::vector.at() which throws
+     * an exception if 'pos' is out of the vector's range.
+     */
+    inline size_t pos(size_t row, size_t column) const
+    {
+        return ( row * this->cols + column );
+    }
 
 public:
     // Constructor
