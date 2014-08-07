@@ -66,8 +66,6 @@ public:
     // Inverse matrix
     SqMatrixGeneric<T> inverse() const throw(MatrixException);
 
-    // TODO eigenvalues(), eigenvectors()
-    
     // Special (memory efficient) reimplementation of a virtual method
     SqMatrixGeneric<T>& transposed() throw(MatrixException);
 
