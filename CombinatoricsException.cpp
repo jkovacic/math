@@ -16,12 +16,12 @@ limitations under the License.
 
 
 /**
-@file CombinatoricsException.cpp
-
-Implementation of the class CombinatoricsException
-
-@author Jernej Kovacic
-*/
+ * @file CombinatoricsException.cpp
+ *
+ * Implementation of the class CombinatoricsException
+ *
+ * @author Jernej Kovacic
+ */
 
 
 #include <ostream>

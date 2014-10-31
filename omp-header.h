@@ -63,10 +63,10 @@ limitations under the License.
      * Returns the number of threads in the current team. In a sequential section of
      * the program omp_get_num_threads returns 1.
      */
-     inline int omp_get_num_threads(void)
-     {
-         return 1;
-     }
+    inline int omp_get_num_threads(void)
+    {
+        return 1;
+    }
 
     /*
      * Returns a unique thread identification number within the current team. In a

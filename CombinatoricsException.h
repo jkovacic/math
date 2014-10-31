@@ -16,12 +16,12 @@ limitations under the License.
 
 
 /**
-@file CombinatoricsException.h
-
-Declaration of the class CombinatoricsException
-
-@author Jernej Kovacic
-*/
+ * @file CombinatoricsException.h
+ *
+ * Declaration of the class CombinatoricsException
+ *
+ * @author Jernej Kovacic
+ */
 
 #ifndef _MATH_COMBINATORICSEXCEPTION_H_
 #define	_MATH_COMBINATORICSEXCEPTION_H_
@@ -40,7 +40,8 @@ namespace math
 struct CombinatoricsException : public IMathException
 {
     /// Enum with possible error codes
-    enum err_codes {
+    enum err_codes
+    {
         OUT_OF_RANGE,       /// result is out of integer range
         INVALID_INPUT,      /// operation does not make any sense with this input argument
         OUT_OF_MEMORY       /// allocation of memory failed
