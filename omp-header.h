@@ -19,8 +19,8 @@ limitations under the License.
  *
  * A "dummy" header that declares some OpenMP functions regardless whether
  * OpenMP is enabled or not. If it is enabled, "omp.h" is included.
- * Otherwise some OpenMP functions will be "declared" as macros that "return"
- * appropriate values for single threaded environments.
+ * Otherwise some OpenMP functions will be defined as short inline functions
+ * that return appropriate values for single threaded environments.
  *
  * The purpose of this header is to avoid using numerous #ifdef's within
  * applications that make the code less readable.
@@ -53,8 +53,8 @@ limitations under the License.
 #else
 
     /*
-     * Otherwise "declare" necessary OpenMP commands as macros that "return"
-     * typical values for single threaded situations, e.g. 1 thread,
+     * Otherwise define necessary OpenMP commands as inline functions that
+     * return typical values for single threaded situations, e.g. 1 thread,
      * its thread number equaling 0, etc.
      */
 
@@ -93,7 +93,7 @@ limitations under the License.
      * if those do not specify a num_threads clause. The argument of omp_set_num_threads
      * shall be a positive integer.
      */
-    void omp_set_num_threads(int num_threads)
+    inline void omp_set_num_threads(int num_threads)
     {
         /* nothing to do in single threaded mode */
         (void) num_threads;
