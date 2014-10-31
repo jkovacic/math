@@ -44,18 +44,60 @@ limitations under the License.
 
     /*
      * If the macro is defined, just include the original OpenMP header.
+     *
+     * Note: typically the original header already does take care of
+     * including C code into C++ code, so no 'extern "C"' is necessary.
      */
     #include <omp.h>
 
 #else
 
-   /*
-    * Otherwise "declare" necessary OpenMP commands as macros that "return"
-    * typical values for single threaded situations, e.g. 1 thread,
-    * its thread number equaling 0, etc.
-    */
-   #define omp_get_num_threads()                 ( 1 )
-   #define omp_get_thread_num()                  ( 0 )
+    /*
+     * Otherwise "declare" necessary OpenMP commands as macros that "return"
+     * typical values for single threaded situations, e.g. 1 thread,
+     * its thread number equaling 0, etc.
+     */
+
+
+    /*
+     * Returns the number of threads in the current team. In a sequential section of
+     * the program omp_get_num_threads returns 1.
+     */
+     inline int omp_get_num_threads(void)
+     {
+         return 1;
+     }
+
+    /*
+     * Returns a unique thread identification number within the current team. In a
+     * sequential parts of the program, omp_get_thread_num always returns 0. In parallel
+     * regions the return value varies from 0 to omp_get_num_threads-1 inclusive. The
+     * return value of the master thread of a team is always 0.
+     */
+    inline int omp_get_thread_num(void)
+    {
+        return 0;
+    }
+
+    /*
+     * Return the maximum number of threads used for the current parallel region that does
+     * not use the clause num_threads.
+     */
+    inline int omp_get_max_threads(void)
+    {
+        return 1;
+    }
+
+    /*
+     * Specifies the number of threads used by default in subsequent parallel sections,
+     * if those do not specify a num_threads clause. The argument of omp_set_num_threads
+     * shall be a positive integer.
+     */
+    void omp_set_num_threads(int num_threads)
+    {
+        /* nothing to do in single threaded mode */
+        (void) num_threads;
+    }
 
 #endif  /* _OPENMP */
 
