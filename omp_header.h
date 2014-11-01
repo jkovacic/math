@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 /**
- * @file omp-header.h
+ * @file omp_header.h
  *
  * A "dummy" header that declares some OpenMP functions regardless whether
  * OpenMP is enabled or not. If it is enabled, "omp.h" is included.
