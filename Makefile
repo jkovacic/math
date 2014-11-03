@@ -83,6 +83,7 @@ EXCEPTIONCLASS += LinearEquationSolverException
 EXCEPTIONCLASS += CurveFittingException
 EXCEPTIONCLASS += CombinatoricsException
 EXCEPTIONCLASS += IntFactorizationException
+EXCEPTIONCLASS += StatisticsException
 
 # Nontemplated classes, i.e. their source files will be compiled.
 # Note that appropriate file sufixes will be appended later.
@@ -107,6 +108,7 @@ GENERICCLASS += PolynomialRegressionGeneric
 GENERICCLASS += LinearEquationSolverGeneric
 GENERICCLASS += CombinationGeneric
 GENERICCLASS += PermutationGeneric
+GENERICCLASS += SampleStatGeneric
 
 
 # Append file name extensions to exception classes
@@ -208,6 +210,9 @@ $(OBJDIR)CombinatoricsException$(OBJSUFFIX) : CombinatoricsException.cpp
 $(OBJDIR)IntFactorizationException$(OBJSUFFIX) : IntFactorizationException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
+$(OBJDIR)StatisticsException$(OBJSUFFIX) : StatisticsException.cpp
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+
 
 # Build rules for nontemplated classes
 $(OBJDIR)Rational$(OBJSUFFIX) : Rational.cpp
@@ -229,6 +234,7 @@ $(OBJDIR)maintest$(OBJSUFFIX) : maintest.cpp
 $(TARGET) : $(OBJDIR) $(BUILDDIR) $(OBJS) $(GENERICHEADER) $(GENERICSRC)
 	$(LINKER) $(LDFLAGS) $(OBJS) -o $@ 
 
+
 # Cleanup directives:
 
 clean_intermediate :
@@ -236,6 +242,7 @@ clean_intermediate :
 
 clean : clean_intermediate
 	$(RM) -r $(BUILDDIR)
+
 
 # Short help instructions:
 

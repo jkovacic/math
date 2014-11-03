@@ -38,12 +38,14 @@ limitations under the License.
 #include "IntCombinatorics.h"
 #include "PermutationGeneric.h"
 #include "CombinationGeneric.h"
+#include "SampleStatGeneric.h"
 
 #include <iostream>
 #include <cmath>
 #include <complex>
 #include <map>
 #include <set>
+#include <stdexcept>
 
 
 using namespace std;
@@ -1146,6 +1148,85 @@ void combinatoricsTest()
 }
 
 /*
+ * Test of classes that perform statistical operations
+ */
+void statisticsTest()
+{
+    try
+    {
+        /* Cars' mpg (miles per gallon) from R's data frame 'mtcars' */
+        const double ampgs[] =
+            { 21.0, 21.0, 22.8, 21.4, 18.7, 18.1, 14.3, 24.4,
+              22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4,
+              14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3,
+              19.2, 27.3, 26.0, 30.4, 15.8, 19.7, 15.0, 21.4 };
+
+        vector<double> vmpgs;
+        vmpgs.reserve(32);
+        vmpgs.assign(ampgs, ampgs+32);
+
+        /*
+           # Equivalent of the followingcommand in R:
+           data(mtcars)
+         */
+        SampleStat s(vmpgs);
+        s.process();
+
+        /*
+           length(mtcars$mpg)
+           [1] 32
+         */
+        cout << "size of the sample: " << s.sampleSize() << " (expected: 32)" << endl;
+
+        /*
+           mean(mtcars$mpg)
+           [1] 20.09062
+         */
+        cout << "Sample mean: " << s.mean() << " (expected: 20.09062)" << endl;
+
+        /*
+           var(mtcars$mpg)
+           [1] 36.3241
+         */
+        cout << "Sample variance: " << s.var() << " (expected: 36.3241)" << endl;
+
+        /*
+           sd(mtcars$mpg)
+           [1] 6.026948
+         */
+        cout << "Sample standard deviation: " << s.stdev() << " (expected: 6.026948)" << endl;
+
+        /*
+          n <- length(mtcars$mpg)
+          (n-1)/n * var(mtcars$mpg)
+          [1] 35.18897
+         */
+        cout << "Population variance (w/o Bessel's correction): " << s.var(false) << " (expected: 35.18897)" << endl;
+
+        /*
+           n <- length(mtcars$mpg)
+           sqrt((n-1)/n) * sd(mtcars$mpg)
+           [1] 5.93203
+         */
+        cout << "Population standard deviation (w/o Bessel's correction): " << s.stdev(false) << " (expected: 5.93203)" << endl;
+    }
+    catch ( const StatisticsException& ex )
+    {
+        cerr << "Statistics exception caught: ";
+        ex.display();
+        cerr << endl;
+    }
+    catch ( const bad_alloc& ba )
+    {
+        cerr << "Could not allocate memory." << endl;
+    }
+    catch (...)
+    {
+        cerr << "Other exception caught.";
+    }
+}
+
+/*
  * Main function that starts several groups of unit tests
  */
 int main(int argc, const char* argv[])
@@ -1183,6 +1264,9 @@ int main(int argc, const char* argv[])
     
     cout << endl << "C O M B I N A T O R I C S   T E S T" << endl << endl;
     combinatoricsTest();
+
+    cout << endl << "S T A T I S T I C S   T E S T" << endl << endl;
+    statisticsTest();
 
     return 0;
 

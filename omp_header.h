@@ -79,26 +79,6 @@ limitations under the License.
         return 0;
     }
 
-    /*
-     * Return the maximum number of threads used for the current parallel region that does
-     * not use the clause num_threads.
-     */
-    inline int omp_get_max_threads(void)
-    {
-        return 1;
-    }
-
-    /*
-     * Specifies the number of threads used by default in subsequent parallel sections,
-     * if those do not specify a num_threads clause. The argument of omp_set_num_threads
-     * shall be a positive integer.
-     */
-    inline void omp_set_num_threads(int num_threads)
-    {
-        /* nothing to do in single threaded mode */
-        (void) num_threads;
-    }
-
 #endif  /* _OPENMP */
 
 #endif  /* OMP_HEADER_H_ */
