@@ -128,7 +128,7 @@ void math::SampleStatGeneric<T>::process()
 
     // When the sum is known, it is trivial to obtain the sample's mean:
     this->m_sum = tempSum;
-    this->m_mean = this->m_sum / this->m_N;
+    this->m_mean = this->m_sum / static_cast<T>(this->m_N);
 
     // Fork threads once more, this time calculate the sum of
     // squared deviations from the mean.
