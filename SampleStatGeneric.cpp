@@ -389,8 +389,8 @@ T math::SampleStatGeneric<T>::stdev(size_t df_sub) const throw(math::StatisticsE
      */
 
     /*
-     *  This operation is only supported for T=float or T=double.
-     *  Specialized implementation is provided below for these two types.
+     *  This operation is only supported for T=float, T=double or T=long double.
+     *  Specialized implementation is provided below for these three types.
      *
      *  For any other type, the operation is (probably) not supported
      *  as sqrt may not be defined for the type. In such a case throw an

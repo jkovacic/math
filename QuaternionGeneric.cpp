@@ -503,8 +503,8 @@ T math::QuaternionGeneric<T>::norm() const throw (math::QuaternionException)
     */
 
     /*
-        This operation is only supported for T=float or T=double.
-        Specialized implementation is provided below for these two types.
+        This operation is only supported for T=float, T=double or T=long double.
+        Specialized implementation is provided below for these three types.
 
         For any other type, the operation is (probably) not supported
         as sqrt may not be defined for the type. In such a case throw an
@@ -569,8 +569,8 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::unit() const throw (math:
     */
 
     /*
-        This operation is only supported for T=float or T=double.
-        Specialized implementation is provided below for these two types.
+        This operation is only supported for T=float, T=double or T=long double
+        Specialized implementation is provided below for these three types.
 
         For any other type, the operation is (probably) not supported
         as norm may not be defined for the type. In such a case throw an
