@@ -43,7 +43,7 @@ math::StatisticsException::StatisticsException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::StatisticsException::display(std::ostream& str) const
+void math::StatisticsException::what(std::ostream& str) const
 {
     switch (error)
     {

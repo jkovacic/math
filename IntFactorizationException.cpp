@@ -43,7 +43,7 @@ math::IntFactorizationException::IntFactorizationException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::IntFactorizationException::display(std::ostream& str) const
+void math::IntFactorizationException::what(std::ostream& str) const
 {
     switch (error)
     {

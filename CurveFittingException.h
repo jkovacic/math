@@ -56,7 +56,7 @@ struct CurveFittingException
     // Constructor
     CurveFittingException(err_codes err);
     // Output a short description of the error
-    void display(std::ostream& str = std::cerr) const;
+    void what(std::ostream& str = std::cerr) const;
 };
 
 } // namespace math

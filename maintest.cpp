@@ -185,7 +185,7 @@ void rationalTest()
     catch ( const RationalException& ex )
     {
         cerr << "RationalException caught: '";
-        ex.display();
+        ex.what();
         cerr << "'" << endl;
     }  // catch RationalException
     catch (...)
@@ -211,7 +211,7 @@ void rationalTest()
         else
         {
             cerr << "Unexpected exception: ";
-            zeroEx.display();
+            zeroEx.what();
             cerr << endl;
         }
     }
@@ -234,7 +234,7 @@ void rationalTest()
         else
         {
             cerr << "Unexpected exception: ";
-            inversion.display();
+            inversion.what();
             cerr << endl;
         }
     } // catch inversion
@@ -258,7 +258,7 @@ void rationalTest()
         else
         {
             cerr << "Unexpected exception: ";
-            inversion.display();
+            inversion.what();
             cerr << endl;
         }
     } // catch inversion
@@ -281,7 +281,7 @@ void rationalTest()
         else
         {
             cerr << "Unexpected exception: ";
-            zerEx.display();
+            zerEx.what();
             cerr << endl;
         }
     }
@@ -431,7 +431,7 @@ void matrixTest()
     catch ( const MatrixException& ex )
     {
         cerr << "MatrixException caught: '";
-        ex.display();
+        ex.what();
         cerr << "'" << endl;
     }
     catch (...)
@@ -476,13 +476,13 @@ void rationalMatrixTest()
     catch ( const RationalException& rex )
     {
         cerr << "RationalException caught: '";
-        rex.display();
+        rex.what();
         cerr << "'" << endl;
     }
     catch ( const MatrixException& mex )
     {
         cerr << "MatrixException caught: '";
-        mex.display();
+        mex.what();
         cerr << "'" << endl;
     }
     catch (...)
@@ -539,7 +539,7 @@ void quaternionTest()
     catch ( const QuaternionException& qex )
     {
         cerr << "QuaternionException caught: '";
-        qex.display();
+        qex.what();
         cerr << "'" << endl;
     }
     catch (...)
@@ -643,7 +643,7 @@ void polynomialTest()
     catch ( const PolynomialException& pex )
     {
         cerr << "PolynomialException caught: '";
-        pex.display();
+        pex.what();
         cerr << "'" << endl;
     }
     catch (...)
@@ -690,7 +690,7 @@ void lineqSolverTest()
     catch ( const LinearEquationSolverException& leqex )
     {
         cerr << "LinearEquationSolverException caught: '";
-        leqex.display();
+        leqex.what();
         cerr << "'" << endl;
     }
     catch (...)
@@ -829,7 +829,7 @@ void curveFittingTest()
     catch ( const CurveFittingException& cfex )
     {
         cerr << "CurveFittingException caught: ";
-        cfex.display();
+        cfex.what();
         cerr << endl;
     }
     catch (...)
@@ -903,7 +903,7 @@ void intExponentiaorTest()
     catch ( IMathException& ex )
     {
         cerr << "Math exception caught: ";
-        ex.display();
+        ex.what();
         cerr << endl;
     }
     catch (...)
@@ -1026,7 +1026,7 @@ void intFactorizationTest()
     catch ( const IntFactorizationException& ex )
     {
         cerr << "IntFactorization exception caught: ";
-        ex.display();
+        ex.what();
         cerr << endl;
     }
     catch (...)
@@ -1071,7 +1071,7 @@ void intCombinatoricsTest()
     catch ( const CombinatoricsException& ex )
     {
         cerr << "Combinatorics exception caught: ";
-        ex.display();
+        ex.what();
         cerr << endl;
     }
     catch (...)
@@ -1138,7 +1138,7 @@ void combinatoricsTest()
     catch ( const CombinatoricsException& ex )
     {
         cerr << "Combinatorics exception caught: ";
-        ex.display();
+        ex.what();
         cerr << endl;
     }
     catch (...)
@@ -1213,7 +1213,7 @@ void statisticsTest()
     catch ( const StatisticsException& ex )
     {
         cerr << "Statistics exception caught: ";
-        ex.display();
+        ex.what();
         cerr << endl;
     }
     catch ( const bad_alloc& ba )

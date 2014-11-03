@@ -42,7 +42,7 @@ math::CurveFittingException::CurveFittingException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::CurveFittingException::display(std::ostream& str) const
+void math::CurveFittingException::what(std::ostream& str) const
 {
     switch (error)
     {

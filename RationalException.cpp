@@ -44,7 +44,7 @@ math::RationalException::RationalException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::RationalException::display(std::ostream& str) const
+void math::RationalException::what(std::ostream& str) const
 {
     switch (this->error)
     {

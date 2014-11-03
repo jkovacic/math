@@ -42,7 +42,7 @@ struct IMathException
     *
     * @param str - stream, the error description will be written in (default: cerr) 
     */
-    virtual void display(std::ostream& str = std::cerr) const = 0;
+    virtual void what(std::ostream& str = std::cerr) const = 0;
 
     virtual ~IMathException();
 };

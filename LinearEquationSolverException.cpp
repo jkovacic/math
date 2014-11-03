@@ -44,7 +44,7 @@ math::LinearEquationSolverException::LinearEquationSolverException(err_codes err
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::LinearEquationSolverException::display(std::ostream& str) const
+void math::LinearEquationSolverException::what(std::ostream& str) const
 {
     switch (error)
     {

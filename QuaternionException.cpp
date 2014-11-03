@@ -43,7 +43,7 @@ math::QuaternionException::QuaternionException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::QuaternionException::display(std::ostream& str) const
+void math::QuaternionException::what(std::ostream& str) const
 {
     switch (this->error)
     {
