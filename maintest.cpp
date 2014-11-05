@@ -39,6 +39,7 @@ limitations under the License.
 #include "PermutationGeneric.h"
 #include "CombinationGeneric.h"
 #include "SampleStatGeneric.h"
+#include "SampleQuantileGeneric.h"
 
 #include <iostream>
 #include <cmath>
@@ -1166,7 +1167,7 @@ void statisticsTest()
         vmpgs.assign(ampgs, ampgs+32);
 
         /*
-           # Equivalent of the followingcommand in R:
+           # Equivalent of the following command in R:
            data(mtcars)
          */
         SampleStat s(vmpgs);
@@ -1175,40 +1176,49 @@ void statisticsTest()
         /*
            length(mtcars$mpg)
            [1] 32
-         */
-        cout << "size of the sample: " << s.sampleSize() << " (expected: 32)" << endl;
-
-        /*
            mean(mtcars$mpg)
            [1] 20.09062
-         */
-        cout << "Sample mean: " << s.mean() << " (expected: 20.09062)" << endl;
-
-        /*
            var(mtcars$mpg)
            [1] 36.3241
-         */
-        cout << "Sample variance: " << s.var() << " (expected: 36.3241)" << endl;
-
-        /*
            sd(mtcars$mpg)
            [1] 6.026948
-         */
-        cout << "Sample standard deviation: " << s.stdev() << " (expected: 6.026948)" << endl;
-
-        /*
-          n <- length(mtcars$mpg)
-          (n-1)/n * var(mtcars$mpg)
-          [1] 35.18897
-         */
-        cout << "Population variance (w/o Bessel's correction): " << s.var(false) << " (expected: 35.18897)" << endl;
-
-        /*
+           n <- length(mtcars$mpg)
+           (n-1)/n * var(mtcars$mpg)
+           [1] 35.18897
            n <- length(mtcars$mpg)
            sqrt((n-1)/n) * sd(mtcars$mpg)
            [1] 5.93203
          */
+        cout << "size of the sample: " << s.sampleSize() << " (expected: 32)" << endl;
+        cout << "Sample mean: " << s.mean() << " (expected: 20.09062)" << endl;
+        cout << "Sample variance: " << s.var() << " (expected: 36.3241)" << endl;
+        cout << "Sample standard deviation: " << s.stdev() << " (expected: 6.026948)" << endl;
+        cout << "Population variance (w/o Bessel's correction): " << s.var(false) << " (expected: 35.18897)" << endl;
         cout << "Population standard deviation (w/o Bessel's correction): " << s.stdev(false) << " (expected: 5.93203)" << endl;
+
+        /*
+         * R code to perform basic unit test of quantiles:
+
+           data(mtcars)
+           median(mtcars$mpg)
+           [1] 19.2
+           quantile(mtcars$mpg, c(0.25, 0.75))
+              25%    75%
+           15.425 22.800
+           IQR(mtcars$mpg)
+           [1] 7.375
+           quantile(mtcars$mpg, 0.63)
+              63%
+           21.212
+         */
+        SampleQuantile q(vmpgs);
+        cout << "Median: " << q.median() << " (expected: 19.2)" << endl;
+        cout << "1st quartile: " << q.qntl(1, 4) << " (expected: 15.425)" << endl;
+        cout << "3rd quartile: " << q.qntl(3, 4) << " (expected: 22.800)" << endl;
+        cout << "IQR: " << q.iqr() << " (expected: 7.375)" << endl;
+        cout << "63th percentile: " << q.qntl(0.63) << " (expected: 21.212)" << endl;
+
+        //TODO more thorough quantile unit tests to follow ASAP
     }
     catch ( const StatisticsException& ex )
     {

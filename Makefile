@@ -109,6 +109,7 @@ GENERICCLASS += LinearEquationSolverGeneric
 GENERICCLASS += CombinationGeneric
 GENERICCLASS += PermutationGeneric
 GENERICCLASS += SampleStatGeneric
+GENERICCLASS += SampleQuantileGeneric
 
 
 # Append file name extensions to exception classes
