@@ -17,7 +17,7 @@ limitations under the License.
 /**
  * @file SampleStatGeneric.h
  *
- * Declaration of the class SampleStaGeneric that calculates sample's
+ * Declaration of the class SampleStatGeneric that calculates sample's
  * mean, variance, standard deviation, sum, etc.
  *
  * @author Jernej Kovacic
@@ -74,22 +74,22 @@ public:
     void process();
 
     // Methods to obtain results of the processed sample
-    bool processed() const;
-    size_t sampleSize() const;
-    T sum() const throw(StatisticsException);
-    T mean() const throw(StatisticsException);
-    T var(bool sample=true) const throw(StatisticsException);
-    T var(size_t df_sub) const throw(StatisticsException);
-    T stdev(bool samplen=true) const throw(StatisticsException);
-    T stdev(size_t df_sub) const throw(StatisticsException);
+    bool processed();
+    size_t sampleSize();
+    T sum() throw(StatisticsException);
+    T mean() throw(StatisticsException);
+    T var(bool sample=true) throw(StatisticsException);
+    T var(size_t df_sub) throw(StatisticsException);
+    T stdev(bool samplen=true) throw(StatisticsException);
+    T stdev(size_t df_sub) throw(StatisticsException);
 };  // class SampleStatGeneric
 
 
 // Declaration of specialized methods inside the name space declaration
 // is essential if implemented elsewhere:
-template<> float SampleStatGeneric<float>::stdev(size_t df_sub) const throw (StatisticsException);
-template<> double SampleStatGeneric<double>::stdev(size_t df_sub) const throw (StatisticsException);
-template<> long double SampleStatGeneric<long double>::stdev(size_t df_sub) const throw (StatisticsException);
+template<> float SampleStatGeneric<float>::stdev(size_t df_sub) throw (StatisticsException);
+template<> double SampleStatGeneric<double>::stdev(size_t df_sub) throw (StatisticsException);
+template<> long double SampleStatGeneric<long double>::stdev(size_t df_sub) throw (StatisticsException);
 
 
 // Samples with elements of types float, double and long double

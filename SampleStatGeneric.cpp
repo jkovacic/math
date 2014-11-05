@@ -17,7 +17,7 @@ limitations under the License.
 /**
  * @file SampleStatGeneric.cpp
  *
- * Implementation of the class SampleStaGeneric that calculates sample's
+ * Implementation of the class SampleStatGeneric that calculates sample's
  * mean, variance, standard deviation, sum, etc.
  *
  * As the class is templated, this file must not be compiled.
@@ -99,7 +99,7 @@ void math::SampleStatGeneric<T>::process()
     /*
      * In the first step, each thread calculates the sum of its block
      */
-    T tempSum = NumericUtil<T>::ZERO;
+    T tempSum = math::NumericUtil<T>::ZERO;
     #pragma omp parallel num_threads(ideal) \
                     if(this->m_N>OMP_CHUNKS_PER_THREAD) \
                     default(none) \
@@ -133,7 +133,7 @@ void math::SampleStatGeneric<T>::process()
     // Fork threads once more, this time calculate the sum of
     // squared deviations from the mean.
     // Apply exactly the same approach as above.
-    tempSum = NumericUtil<T>::ZERO;
+    tempSum = math::NumericUtil<T>::ZERO;
     #pragma omp parallel num_threads(ideal) \
                  if(this->m_N>OMP_CHUNKS_PER_THREAD) \
                  default(none) \
@@ -154,7 +154,6 @@ void math::SampleStatGeneric<T>::process()
         }
 
         tempSum += partsum;
-
     }
 
     // The sum of squared deviations will be used by other functions to
@@ -173,7 +172,7 @@ void math::SampleStatGeneric<T>::process()
  * @return a logical value indicating whether the samples have already been processed
  */
 template <class T>
-bool math::SampleStatGeneric<T>::processed() const
+bool math::SampleStatGeneric<T>::processed()
 {
     return this->m_processed;
 }
@@ -183,7 +182,7 @@ bool math::SampleStatGeneric<T>::processed() const
  * @return number of samples or 0 if process() has not been called yet
  */
 template <class T>
-size_t math::SampleStatGeneric<T>::sampleSize() const
+size_t math::SampleStatGeneric<T>::sampleSize()
 {
     return this->m_N;
 }
@@ -195,7 +194,7 @@ size_t math::SampleStatGeneric<T>::sampleSize() const
  * @throw StatisticsException if process() has not been called yet
  */
 template <class T>
-T math::SampleStatGeneric<T>::sum() const throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::sum() throw(math::StatisticsException)
 {
     if ( false == this->m_processed )
     {
@@ -214,7 +213,7 @@ T math::SampleStatGeneric<T>::sum() const throw(math::StatisticsException)
  * @throw StatisticsException if process() has not been called yet
  */
 template <class T>
-T math::SampleStatGeneric<T>::mean() const throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::mean() throw(math::StatisticsException)
 {
     /*
      * Arithmetical mean is calculated as:
@@ -251,7 +250,7 @@ T math::SampleStatGeneric<T>::mean() const throw(math::StatisticsException)
  * @throw StatisticsException if process() has not been called yet or if 'df_sub' exceeds sample's size
  */
 template <class T>
-T math::SampleStatGeneric<T>::var(size_t df_sub) const throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::var(size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Variance of the sample is calculated as:
@@ -291,7 +290,7 @@ T math::SampleStatGeneric<T>::var(size_t df_sub) const throw(math::StatisticsExc
  * @throw StatisticsException if process() has not been called yet or if the sample is too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::var(bool sample) const throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::var(bool sample) throw(math::StatisticsException)
 {
     /*
      * Variance of the sample, calculated as:
@@ -333,7 +332,7 @@ T math::SampleStatGeneric<T>::var(bool sample) const throw(math::StatisticsExcep
  * @throw StatisticsException if process() has not been called yet or if the sample is too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::stdev(bool sample) const throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::stdev(bool sample) throw(math::StatisticsException)
 {
     /*
      * Standard deviation is calculated as:
@@ -372,13 +371,13 @@ T math::SampleStatGeneric<T>::stdev(bool sample) const throw(math::StatisticsExc
  * @throw StatisticsException if process() has not been called yet or if 'df_sub' exceeds sample's size
  */
 template <class T>
-T math::SampleStatGeneric<T>::stdev(size_t df_sub) const throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::stdev(size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * (Generalized) standard deviation is calculated as:
      *
      *                            -------------------------------------
-     *                           /               N                    |
+     *                           /                N                   |
      *                          /               -----
      *              ---        /     1          \                 2
      *   stdev(X) =    \      / ------------     >   (X(i) - mean)
@@ -415,7 +414,7 @@ T math::SampleStatGeneric<T>::stdev(size_t df_sub) const throw(math::StatisticsE
 
 #define _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(FD) \
 template<> \
-FD math::SampleStatGeneric<FD>::stdev(size_t df_sub) const throw (math::StatisticsException) \
+FD math::SampleStatGeneric<FD>::stdev(size_t df_sub) throw (math::StatisticsException) \
 { \
     return std::sqrt( this->var(df_sub) ); \
 }
