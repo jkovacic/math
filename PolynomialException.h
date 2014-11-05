@@ -16,12 +16,11 @@ limitations under the License.
 
 
 /**
- * @file PolynomialException.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class PolynomialException
- *
- * @author Jernej Kovacic
-*/
+ */
 
 #ifndef _MATH_POLYNOMIALEXCEPTION_H_
 #define _MATH_POLYNOMIALEXCEPTION_H_

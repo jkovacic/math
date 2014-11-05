@@ -15,12 +15,11 @@ limitations under the License.
 */
 
 /**
- * @file SampleStatGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class SampleStatGeneric that calculates sample's
  * mean, variance, standard deviation, sum, etc.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_SAMPLESTATGENERIC_H_

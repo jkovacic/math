@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 /**
- * @file omp_header.h
+ * @file
+ * @author Jernej Kovacic
  *
  * A "dummy" header that declares some OpenMP functions regardless whether
  * OpenMP is enabled or not. If it is enabled, "omp.h" is included.
@@ -26,8 +27,6 @@ limitations under the License.
  * applications that make the code less readable.
  *
  * @note The header can also be included into C code.
- *
- * @author Jernej Kovacic
  */
 
 

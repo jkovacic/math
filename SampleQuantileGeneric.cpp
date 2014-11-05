@@ -15,15 +15,14 @@ limitations under the License.
 */
 
 /**
- * @file SampleQuantileGeneric.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class SampleQuantileGeneric that estimates
  * quantiles of a sample.
  *
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 

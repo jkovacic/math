@@ -16,14 +16,13 @@ limitations under the License.
 
 
 /**
- * @file CurveFittingGenericAb.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class CurveFittingGenericAb.
  *
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 // Deliberately there is no #include "CurveFittingGenericAb.h" !

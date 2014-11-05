@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 /**
- * @file IntFactorization.h
+ * @file
+ * @author Jernej Kovacic
  * 
  * Declaration of the class IntFactorization with static
  * functions for factorization of integers and some 

@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 /**
- * @file StatisticsException.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class StatisticsException
- *
- * @author Jernej Kovacic
  */
 
 

@@ -15,12 +15,11 @@ limitations under the License.
 */
 
 /**
- * @file PermutationGeneric.h
+ * @file
+ * @author Jernej Kovacic
  * 
  * Declaration of the class PermutationGeneric that gradually lists
  * all permutations of a sequence of objects.
- * 
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_PERMUTATIONGENERIC_H_

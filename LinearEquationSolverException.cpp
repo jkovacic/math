@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file LinearEquationSolverException.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class LinearEquationSolverException
- *
- * @author Jernej Kovacic
  */
 
 

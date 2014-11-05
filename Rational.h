@@ -16,12 +16,11 @@ limitations under the License.
 
 
 /**
- * @file Rational.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class Rational, representing mathematical rational numbers,
  * i.e. reduced fractions of two integers
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_RATIONAL_H_

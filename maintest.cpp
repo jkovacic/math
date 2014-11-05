@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file maintest.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Collection of basic unit tests for all mathematical classes
- *
- * @author Jernej Kovacic
  */
 
 //TODO rearrange tests, possibly into several files

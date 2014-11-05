@@ -15,15 +15,14 @@ limitations under the License.
 */
 
 /**
- * @file IntCombinatorics.cpp
+ * @file
+ * @author Jernej Kovacic
  * 
  * Implementation of the class IntCombinatorics with static
  * functions for calculation of factorials, binomial coefficients, etc.
  *
  * As all functions are static, no instantiation of this 
  * class is necessary.
- *  
- * @author Jernej Kovacic
  */
 
 #include "IntCombinatorics.h"

@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 /**
- * @file QuaternionException.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class QuaternionException
- *
- * @author Jernej Kovacic
  */
 
 

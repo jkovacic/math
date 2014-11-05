@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file PolynomialGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class PolynomialGeneric, representing polynomials.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_POLYNOMIALGENERIC_H_

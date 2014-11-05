@@ -15,15 +15,14 @@ limitations under the License.
 */
 
 /**
- * @file PermutationGeneric.cpp
+ * @file
+ * @author Jernej Kovacic
  * 
  * Implementation of the class PermutationGeneric that gradually lists
  * all permutations of a sequence of objects.
  * 
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- * 
- * @author Jernej Kovacic
  */
 
 // deliberately there is no #include "PermutationGeneric.h" !

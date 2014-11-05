@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file CombinatoricsException.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class CombinatoricsException
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_COMBINATORICSEXCEPTION_H_

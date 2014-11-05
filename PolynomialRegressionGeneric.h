@@ -16,12 +16,11 @@ limitations under the License.
 
 
 /**
- * @file PolynomialRegressionGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class PolynomialFittingGenericAb.h that calculates 
  * a regression polynomial using the method of least squares.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_POLYNOMIALREGRESSIONGENERIC_H_

@@ -16,12 +16,11 @@ limitations under the License.
 
 
 /**
- * @file LinearEquationSolverGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class LinearEquationSolverGeneric that solves
  * systems of linear equations
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_LINEAREQUATIONSOLVERGENERIC_H_

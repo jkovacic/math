@@ -16,12 +16,11 @@ limitations under the License.
 
 
 /**
- * @file PolynomialInterpolationGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class PolynomialInterpolationGeneric.h that calculates 
  * an interpolation polynomial that goes exactly through entered points.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_POLYNOMIALINTERPOLATIONGENERIC_H_

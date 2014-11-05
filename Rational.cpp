@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file Rational.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class Rational
- *
- * @author Jernej Kovacic
  */
 
 

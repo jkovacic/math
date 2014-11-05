@@ -16,13 +16,12 @@ limitations under the License.
 
 
 /**
- * @file NumericUtil.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation  of the class NumericUtil, a collection of some useful
  * numerical utilities. This is a templated class and must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 // Deliberately there is no #include "NumericUtil.h"

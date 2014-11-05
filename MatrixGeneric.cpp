@@ -16,14 +16,13 @@ limitations under the License.
 
 
 /**
- * @file MatrixGeneric.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class MatriGeneric.
  *
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 

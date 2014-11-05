@@ -15,12 +15,11 @@ limitations under the License.
 */
 
 /**
- * @file SampleQuantileGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class SampleQuantileGeneric that estimates
  * quantiles of a sample.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_SAMPLEQUANTILEGENERIC_H_

@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 /**
- * @file StatisticsException.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class StatisticsException
- *
- * @author Jernej Kovacic
  */
 
 

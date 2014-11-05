@@ -15,12 +15,11 @@ limitations under the License.
 */
 
 /**
- * @file NumericUtil.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class NumericUtil, a collection of some useful
  * numerical utilities.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_NUMERICUTIL_H_

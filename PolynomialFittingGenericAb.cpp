@@ -16,7 +16,8 @@ limitations under the License.
 
 
 /**
- * @file PolynomialFittingGenericAb.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class PolynomialFittingGenericAb. This is an abstract 
  * class with implemented some functionality, common to all classes
@@ -24,8 +25,6 @@ limitations under the License.
  *
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 // Deliberately there is no #include "PolynomialFittingGenericAb.h"

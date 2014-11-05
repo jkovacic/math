@@ -16,13 +16,12 @@ limitations under the License.
 
 
 /**
- * @file CurveFittingGenericAb.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class CurveFittingGenericAb.h. This is an
  * abstract class, its derived classes implement various
  * curve fitting algorithms.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_CURVEFITTINGGENERICAB_H_

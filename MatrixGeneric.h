@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file MatrixGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class MatrixGeneric, representing generic matrices.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_MATRIXGENERIC_H_

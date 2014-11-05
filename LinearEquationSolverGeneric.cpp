@@ -16,14 +16,13 @@ limitations under the License.
 
 
 /**
- * @file LinearEquationSolverGeneric.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class LinearEquationSolverGeneric.
  *
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 // deliberately there is no #include "LinearEquationSolverGeneric.h" !

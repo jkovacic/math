@@ -16,13 +16,12 @@ limitations under the License.
 
 
 /**
- * @file PolynomialFittingGenericAb.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class PolynomialFittingGenericAb.h. This is an 
  * abstract class with some functionality common to all derived classes
  * that perform polynomial interpolation, regression, etc.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_POLYNOMIALFITTINGGENERICAB_H_

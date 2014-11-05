@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file IntFactorizationException.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class IntFactorizationException
- *
- * @author Jernej Kovacic
  */
 
 

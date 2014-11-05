@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file MatrixException.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class MatrixException
- *
- * @author Jernej Kovacic
  */
 
 

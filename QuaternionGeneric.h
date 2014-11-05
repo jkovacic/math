@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file QuaternionGeneric.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class QuaternionGeneric, representing quaternions.
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_QUATERNIONGENERIC_H_

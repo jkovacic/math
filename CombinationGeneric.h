@@ -15,12 +15,11 @@ limitations under the License.
 */
 
 /**
- * @file CombinationGeneric.h
+ * @file
+ * @author Jernej Kovacic
  * 
  * Declaration of the class CombinationGeneric that gradually lists
  * all combinations of a sequence of objects.
- * 
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_COMBINATIONGENERIC_H

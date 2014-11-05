@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 /**
- * @file CurveFittingException.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class CurveFittingException
- *
- * @author Jernej Kovacic
 */
 
 

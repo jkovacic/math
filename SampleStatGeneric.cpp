@@ -15,15 +15,14 @@ limitations under the License.
 */
 
 /**
- * @file SampleStatGeneric.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class SampleStatGeneric that calculates sample's
  * mean, variance, standard deviation, sum, etc.
  *
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 

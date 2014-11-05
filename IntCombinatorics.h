@@ -15,12 +15,11 @@ limitations under the License.
 */
 
 /**
- * @file IntCombinatorics.h
+ * @file
+ * @author Jernej Kovacic
  * 
  * Declaration of the class IntCombinatorics with static
  * functions for calculation of factorials, binomial coefficients, etc.
- * 
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_INTCOMBINATORICS_H_

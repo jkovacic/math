@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file RationalException.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class RationalException
- *
- * @author Jernej Kovacic
  */
 
 

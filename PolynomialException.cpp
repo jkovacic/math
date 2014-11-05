@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 /**
- * @file PolynomialException.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class PolynomialException
- *
- * @author Jernej Kovacic
  */
 
 

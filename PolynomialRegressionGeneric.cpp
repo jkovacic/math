@@ -16,15 +16,14 @@ limitations under the License.
 
 
 /**
- * @file PolynomialRegressionGeneric.cpp
+ * @file
+ * @author Jernej Kovacic
  *
  * Implementation of the class PolynomialRegressionGeneric. The class
  * calculates a regression polynomial using the method of least squares.
  * 
  * As the class is templated, this file must not be compiled.
  * Instead it must be included after the class declaration in the .h file
- *
- * @author Jernej Kovacic
  */
 
 // Deliberately there is no #include "PolynomialRegressionGeneric.h" !

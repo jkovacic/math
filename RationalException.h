@@ -16,11 +16,10 @@ limitations under the License.
 
 
 /**
- * @file RationalException.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Declaration of the class RationalException
- *
- * @author Jernej Kovacic
  */
 
 #ifndef _MATH_RATIONALEXCEPTION_H_

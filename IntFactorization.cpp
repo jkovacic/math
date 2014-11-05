@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 /**
- * @file IntFactorization.cpp
+ * @file
+ * @author Jernej Kovacic
  * 
  * Implementation of the class IntFactorization with static
  * functions for factorization of integers and some 
@@ -23,8 +24,6 @@ limitations under the License.
  * 
  * As all functions are static, no instantiation of this 
  * class is necessary.
- * 
- * @author Jernej Kovacic
  */
 
 #include "IntFactorization.h"

@@ -16,12 +16,11 @@ limitations under the License.
 
 
 /**
-@file IntFactorizationException.h
-
-Declaration of the class IntFactorizationException
-
-@author Jernej Kovacic
-*/
+ * @file
+ * @author Jernej Kovacic
+ *
+ * Declaration of the class IntFactorizationException
+ */
 
 #ifndef _MATH_INTFACTORIZATIONEXCEPTION_H_
 #define	_MATH_INTFACTORIZATIONEXCEPTION_H_

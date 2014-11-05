@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 /**
- * @file omp_settings.h
+ * @file
+ * @author Jernej Kovacic
  *
  * Some reasonable default settings for OpenMP.
- *
- * @author Jernej Kovacic
  */
 
 
