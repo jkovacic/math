@@ -82,7 +82,7 @@ public:
 
     // Methods to obtain quantiles of the sample:
     size_t sampleSize();
-    T qntl(size_t num, size_t den, quant_types method=R7) throw(StatisticsException);
+    T quantile(size_t num, size_t den, quant_types method=R7) throw(StatisticsException);
     T qntl(double p, quant_types method=R7) throw(StatisticsException);
     T median();
     T iqr(quant_types method=R7);

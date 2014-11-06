@@ -1212,12 +1212,55 @@ void statisticsTest()
          */
         SampleQuantile q(vmpgs);
         cout << "Median: " << q.median() << " (expected: 19.2)" << endl;
-        cout << "1st quartile: " << q.qntl(1, 4) << " (expected: 15.425)" << endl;
-        cout << "3rd quartile: " << q.qntl(3, 4) << " (expected: 22.800)" << endl;
+        cout << "1st quartile: " << q.quantile(1, 4) << " (expected: 15.425)" << endl;
+        cout << "3rd quartile: " << q.quantile(3, 4) << " (expected: 22.800)" << endl;
         cout << "IQR: " << q.iqr() << " (expected: 7.375)" << endl;
         cout << "63th percentile: " << q.qntl(0.63) << " (expected: 21.212)" << endl;
 
-        //TODO more thorough quantile unit tests to follow ASAP
+        const double probs[] = { 0.01, 0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.9, 0.99 };
+        const size_t N_PROBS = 9;
+        const char* exp[] =
+        {
+            "10.4\t14.3\t15.2\t17.3\t19.2\t21.0\t22.8\t30.4\t33.9",
+            "10.40\t14.30\t15.35\t17.55\t19.20\t21.20\t22.80\t30.40\t33.90",
+            "10.4\t13.3\t15.2\t17.3\t19.2\t21.0\t22.8\t30.4\t33.9",
+            "10.40\t13.50\t15.20\t17.30\t19.20\t21.00\t22.80\t29.78\t33.42",
+            "10.40\t14.00\t15.35\t17.55\t19.20\t21.20\t22.80\t30.40\t33.90",
+            "10.4000\t13.6000\t15.2750\t17.4875\t19.2000\t21.2500\t22.8000\t30.4000\t33.9000",
+            "10.4000\t14.3400\t15.4250\t17.6125\t19.2000\t21.1500\t22.8000\t30.0900\t33.4350",
+            "10.40\t13.8667\t15.325\t17.5292\t19.200\t21.2167\t22.80\t30.40\t33.90",
+            "10.40\t13.90\t15.3312\t17.5344\t19.20\t21.2125\t22.80\t30.40\t33.90"
+        };
+
+        /*
+         * R code to test various probabilities and various methods:
+         *
+             data(mtcars);   x <- mtcars$mpg
+             types <- 1:9
+             p <- c(0.01, 0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.9, 0.99)
+             for (t in types)
+             {
+               print(quantile(x, p, type=t, names=FALSE))
+             }
+         */
+
+        cout << "Test of various quantile methods:" << endl;
+
+        // Not really the best practice, but as long as the enum is contiguous...
+        for ( int type=math::SampleQuantile::R1; type<=math::SampleQuantile::R9; ++type )
+        {
+            cout << "R" << 1+type << ":\t";
+            for ( size_t i=0; i<N_PROBS; ++i )
+            {
+                cout << q.qntl(probs[i], static_cast<math::SampleQuantile::quant_types>(type));
+                if ( i < N_PROBS-1 )
+                {
+                    cout << "\t";
+                }
+            }
+            cout << endl;
+            cout << "Exp.:\t" << exp[type] << endl;
+        }
     }
     catch ( const StatisticsException& ex )
     {

@@ -63,7 +63,7 @@ math::SampleQuantileGeneric<T>::SampleQuantileGeneric(const std::vector<T>& samp
         // and sort it in ascending order
         std::sort(this->m_v.begin(), this->m_v.end());
     }
-    catch ( const std::bad_alloc& ex)
+    catch ( const std::bad_alloc& ex )
     {
         throw math::StatisticsException(math::StatisticsException::OUT_OF_MEMORY);
     }
@@ -98,7 +98,7 @@ size_t math::SampleQuantileGeneric<T>::sampleSize()
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::qntl(size_t num, size_t den, quant_types method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, quant_types method) throw(math::StatisticsException)
 {
     if ( 0==num || den<2 || num>=den )
     {
@@ -362,7 +362,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, quant_types method) throw(math:
         }
         else
         {
-            retVal = this->linIntrp((N - 1.0/3.0) * p + 1.0/3.0);
+            retVal = this->linIntrp((N + 1.0/3.0) * p + 1.0/3.0);
         }
 
         break;
