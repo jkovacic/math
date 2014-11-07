@@ -309,7 +309,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     }
 
     case math::EQntlType::R6 :
-    case math::EQntlType::SAS4:
+    case math::EQntlType::SAS4 :
     case math::EQntlType::SCIPY_0_0 :
     {
         // Linear interpolation of the expectations for the order statistics
@@ -331,7 +331,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     }
 
     case math::EQntlType::R7 :
-    case math::EQntlType::SCIPY_1_1:
+    case math::EQntlType::SCIPY_1_1 :
     case math::EQntlType::EXCEL :
     {
         // Linear interpolation of the modes for the order statistics for
@@ -368,7 +368,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
         break;
     }
 
-    case math::EQntlType::R9:
+    case math::EQntlType::R9 :
     case math::EQntlType::SCIPY_38_38 :
     {
         // The resulting quantile estimates are approximately unbiased for the
