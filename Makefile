@@ -32,7 +32,7 @@ AS = $(TOOLCHAIN)as
 OBJCOPY = $(TOOLCHAIN)objcopy
 AR = $(TOOLCHAIN)ar
 
-# Typical file sufixes
+# Typical file suffixes
 OBJSUFFIX = .o
 CPPSUFFIX = .cpp
 HEADERSUFFIX = .hpp
@@ -73,8 +73,8 @@ BUILDDIR = build/
 TARGETROOT = maintest
 
 
-# Exception class names. Any nonapplicable classes may be commented out.
-# Note that appropriate file sufixes will be appended later.
+# Exception class names. Any non-applicable classes may be commented out.
+# Note that appropriate file suffixes will be appended later.
 EXCEPTIONCLASS = $(LIBEXCPDIR)IMathException
 EXCEPTIONCLASS += $(LIBEXCPDIR)MatrixException
 EXCEPTIONCLASS += $(LIBEXCPDIR)PolynomialException
@@ -88,7 +88,7 @@ EXCEPTIONCLASS += $(LIBEXCPDIR)StatisticsException
 
 
 # Nontemplated classes, i.e. their source files will be compiled.
-# Note that appropriate file sufixes will be appended later.
+# Note that appropriate file suffixes will be appended later.
 COMPILECLASS =
 COMPILECLASS += $(LIBRATIONALDIR)Rational
 COMPILECLASS += $(LIBCOMBDIR)IntCombinatorics
@@ -96,7 +96,7 @@ COMPILECLASS += $(LIBINTUTILDIR)IntFactorization
 
 # Templated classes. These classes are not compiled directly, instead 
 # their source code will be included into files that need it.
-# Note that appropriate file sufixes will be appended later.
+# Note that appropriate file suffixes will be appended later.
 GENERICCLASS =
 GENERICCLASS += $(LIBUTILDIR)NumericUtil
 GENERICCLASS += $(LIBMATRIXDIR)MatrixGeneric
@@ -144,7 +144,7 @@ OBJS := $(addprefix $(OBJDIR), $(OBJS) )
 SRC = $(EXCEPTIONSRC) $(COMPILESRC) $(TARGETSRC)
 
 
-# Compiler flags to produce deugging symbols and
+# Compiler flags to produce debugging symbols and
 # support OpenMP, respectively.
 #
 # Note: you should edit these variables if you
@@ -152,7 +152,7 @@ SRC = $(EXCEPTIONSRC) $(COMPILESRC) $(TARGETSRC)
 DEBUG_FLAG = -g
 OPENMP_FLAG = -fopenmp
 
-# Compiler flags to produce deugging symbols and
+# Compiler flags to produce debugging symbols and
 # support OpenMP, respectively.
 #
 # Note: you should edit these variables if you
@@ -173,7 +173,7 @@ OMPLIBDEP = $(LIBOMPDIR)omp_header.h
 # Optional compiler flags
 CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas $(LIBINCFLAG)
 
-# Optional preprocesor macros
+# Optional preprocessor macros
 MACROS =
 
 # Optional linker flags
@@ -213,7 +213,7 @@ _openmp_flags :
 	$(eval CPPFLAGS += $(OPENMP_FLAG))
 	$(eval LDFLAGS += $(OPENMP_FLAG))
 #	
-#	Typicaly a C++ compiler should automatically
+#	Typically a C++ compiler should automatically
 #	predefine the _OPENMP macro if OpenMP is enabled.
 #	If this is not the case, the line below must be uncommented:
 #	
@@ -264,7 +264,8 @@ $(OBJDIR)IntFactorization$(OBJSUFFIX) : $(LIBINTUTILDIR)IntFactorization.cpp
 
 
 # Build rule for the application that uses the library
-$(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp $(GENERICHEADER) $(GENERICSRC) $(OMPLIBDEP) $(OMPSETTINGDEP)
+$(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp $(GENERICHEADER) $(GENERICSRC) \
+                                $(OMPLIBDEP) $(OMPSETTINGDEP)
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
 
