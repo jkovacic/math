@@ -98,7 +98,7 @@ size_t math::SampleQuantileGeneric<T>::sampleSize()
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlType method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlType::type method) throw(math::StatisticsException)
 {
     if ( 0==num || den<2 || num>=den )
     {
@@ -160,7 +160,7 @@ T math::SampleQuantileGeneric<T>::linIntrp(double h)
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) throw(math::StatisticsException)
 {
     T retVal;
 
@@ -185,8 +185,8 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
 
     switch (method)
     {
-    case R1 :
-    case SAS3 :
+    case math::EQntlType::R1 :
+    case math::EQntlType::SAS3 :
     {
         // Inverse of empirical distribution function
         if ( true == math::NumericUtil<double>::isZero(p) )
@@ -202,8 +202,8 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R2 :
-    case SAS5 :
+    case math::EQntlType::R2 :
+    case math::EQntlType::SAS5 :
     {
         // Inverse of empirical distribution function
         // with averaging at discontinuities
@@ -226,8 +226,8 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R3 :
-    case SAS2 :
+    case math::EQntlType::R3 :
+    case math::EQntlType::SAS2 :
     {
         // Observation closest to N*p
         if ( p < 0.5/N )
@@ -266,9 +266,9 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R4 :
-    case SAS1 :
-    case SCIPY_0_1 :
+    case math::EQntlType::R4 :
+    case math::EQntlType::SAS1 :
+    case math::EQntlType::SCIPY_0_1 :
     {
         // Linear interpolation of the empirical distribution function
         if ( p < 1.0/N )
@@ -287,8 +287,8 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R5 :
-    case SCIPY_05_05 :
+    case math::EQntlType::R5 :
+    case math::EQntlType::SCIPY_05_05 :
     {
         // Piecewise linear function where the knots are the values midway
         // through the steps of the empirical distribution function
@@ -308,9 +308,9 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R6 :
-    case SAS4:
-    case SCIPY_0_0 :
+    case math::EQntlType::R6 :
+    case math::EQntlType::SAS4:
+    case math::EQntlType::SCIPY_0_0 :
     {
         // Linear interpolation of the expectations for the order statistics
         // for the uniform distribution on [0,1]
@@ -330,9 +330,9 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R7 :
-    case SCIPY_1_1:
-    case EXCEL :
+    case math::EQntlType::R7 :
+    case math::EQntlType::SCIPY_1_1:
+    case math::EQntlType::EXCEL :
     {
         // Linear interpolation of the modes for the order statistics for
         // the uniform distribution on [0,1]
@@ -348,8 +348,8 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R8 :
-    case SCIPY_13_13 :
+    case math::EQntlType::R8 :
+    case math::EQntlType::SCIPY_13_13 :
     {
         // Linear interpolation of the approximate medians for order statistics
         if ( p < (2.0/3.0)/(N+1.0/3.0) )
@@ -368,8 +368,8 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case R9:
-    case SCIPY_38_38 :
+    case math::EQntlType::R9:
+    case math::EQntlType::SCIPY_38_38 :
     {
         // The resulting quantile estimates are approximately unbiased for the
         // expected order statistics if x is normally distributed
@@ -389,7 +389,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(m
         break;
     }
 
-    case SCIPY_N05_N05 :
+    case math::EQntlType::SCIPY_N05_N05 :
     {
         // If h were rounded, this would give the order statistic with the least
         // expected square deviation relative to p
@@ -462,7 +462,7 @@ T math::SampleQuantileGeneric<T>::median()
  * @return sample's interquartile range (difference between the 3rd and the 1st quartile)
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::iqr(math::EQntlType method)
+T math::SampleQuantileGeneric<T>::iqr(math::EQntlType::type method)
 {
     return this->qntl(0.75, method) - this->qntl(0.25, method);
 }

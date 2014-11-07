@@ -1247,14 +1247,12 @@ void statisticsTest()
         cout << "Test of various quantile methods:" << endl;
 
         // Not really the best practice, but as long as the enum is contiguous...
-        const EQntlType from = R1;
-        const EQntlType to = R9;
-        for ( int type=static_cast<int>(from); type<=static_cast<int>(to); ++type )
+        for ( int type=EQntlType::R1; type<=EQntlType::R9; ++type )
         {
             cout << "R" << 1+type << ":\t";
             for ( size_t i=0; i<N_PROBS; ++i )
             {
-                cout << q.qntl(probs[i], static_cast<EQntlType>(type));
+                cout << q.qntl(probs[i], static_cast<EQntlType::type>(type));
                 if ( i < N_PROBS-1 )
                 {
                     cout << "\t";

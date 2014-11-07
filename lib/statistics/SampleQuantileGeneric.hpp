@@ -40,30 +40,33 @@ namespace math
 /**
  * @brief Supported methods to estimate a sample quantile.
  */
-enum EQntlType
+struct EQntlType
 {
-    R1,                       /// R quantile, type 1
-    R2,                       /// R quantile, type 2
-    R3,                       /// R quantile, type 3
-    R4,                       /// R quantile, type 4
-    R5,                       /// R quantile, type 5
-    R6,                       /// R quantile, type 6
-    R7,                       /// R quantile, type 7
-    R8,                       /// R quantile, type 8
-    R9,                       /// R quantile, type 9
-    SAS1,                     /// SAS QNTL, method 1
-    SAS2,                     /// SAS QNTL, method 2
-    SAS3,                     /// SAS QNTL, method 3
-    SAS4,                     /// SAS QNTL, method 4
-    SAS5,                     /// SAS QNTL, method 5
-    EXCEL,                    /// MS Excel, function PERCENTILE
-    SCIPY_0_0,                /// SciPy scipy.stats.mstats.mquantiles, alphap=0, betap=0
-    SCIPY_0_1,                /// SciPy scipy.stats.mstats.mquantiles, alphap=0, betap=1
-    SCIPY_05_05,              /// SciPy scipy.stats.mstats.mquantiles, alphap=0.5, betap=0.5
-    SCIPY_1_1,                /// SciPy scipy.stats.mstats.mquantiles, alphap=1, betap=1
-    SCIPY_13_13,              /// SciPy scipy.stats.mstats.mquantiles, alphap=1/3, betap=1/3
-    SCIPY_38_38,              /// SciPy scipy.stats.mstats.mquantiles, alphap=3/8, betap=3/8
-    SCIPY_N05_N05,            /// SciPy scipy.stats.mstats.mquantiles, alphap=-1/2, betap=-1/2
+    enum type
+    {
+        R1,                       /// R quantile, type 1
+        R2,                       /// R quantile, type 2
+        R3,                       /// R quantile, type 3
+        R4,                       /// R quantile, type 4
+        R5,                       /// R quantile, type 5
+        R6,                       /// R quantile, type 6
+        R7,                       /// R quantile, type 7
+        R8,                       /// R quantile, type 8
+        R9,                       /// R quantile, type 9
+        SAS1,                     /// SAS QNTL, method 1
+        SAS2,                     /// SAS QNTL, method 2
+        SAS3,                     /// SAS QNTL, method 3
+        SAS4,                     /// SAS QNTL, method 4
+        SAS5,                     /// SAS QNTL, method 5
+        EXCEL,                    /// MS Excel, function PERCENTILE
+        SCIPY_0_0,                /// SciPy scipy.stats.mstats.mquantiles, alphap=0, betap=0
+        SCIPY_0_1,                /// SciPy scipy.stats.mstats.mquantiles, alphap=0, betap=1
+        SCIPY_05_05,              /// SciPy scipy.stats.mstats.mquantiles, alphap=0.5, betap=0.5
+        SCIPY_1_1,                /// SciPy scipy.stats.mstats.mquantiles, alphap=1, betap=1
+        SCIPY_13_13,              /// SciPy scipy.stats.mstats.mquantiles, alphap=1/3, betap=1/3
+        SCIPY_38_38,              /// SciPy scipy.stats.mstats.mquantiles, alphap=3/8, betap=3/8
+        SCIPY_N05_N05,            /// SciPy scipy.stats.mstats.mquantiles, alphap=-1/2, betap=-1/2
+    };
 };
 
 
@@ -87,10 +90,10 @@ public:
 
     // Methods to obtain quantiles of the sample:
     size_t sampleSize();
-    T quantile(size_t num, size_t den, EQntlType method=R7) throw(StatisticsException);
-    T qntl(double p, EQntlType method=R7) throw(StatisticsException);
+    T quantile(size_t num, size_t den, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
+    T qntl(double p, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
     T median();
-    T iqr(EQntlType method=R7);
+    T iqr(EQntlType::type method=EQntlType::R7);
 
     // Destructor
     virtual ~SampleQuantileGeneric();
