@@ -98,7 +98,7 @@ size_t math::SampleQuantileGeneric<T>::sampleSize()
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, quant_types method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlType method) throw(math::StatisticsException)
 {
     if ( 0==num || den<2 || num>=den )
     {
@@ -160,7 +160,7 @@ T math::SampleQuantileGeneric<T>::linIntrp(double h)
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::qntl(double p, quant_types method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType method) throw(math::StatisticsException)
 {
     T retVal;
 
@@ -462,7 +462,7 @@ T math::SampleQuantileGeneric<T>::median()
  * @return sample's interquartile range (difference between the 3rd and the 1st quartile)
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::iqr(quant_types method)
+T math::SampleQuantileGeneric<T>::iqr(math::EQntlType method)
 {
     return this->qntl(0.75, method) - this->qntl(0.25, method);
 }
