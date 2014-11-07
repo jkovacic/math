@@ -10,6 +10,8 @@ build/
 # Backup files of some editors:
 *~
 
+.gitattributes
+
 # Eclipse files:
 .project
 .cproject
