@@ -1,0 +1,528 @@
+Q U A T E R N I O N   T E S T
+
+zero: (0+0i+0j+0k)
+q: (1-0.5i+1.2j-2.3k)
+q: 1: 1   i: -0.5   j: 1.2   k: -2.3
+U(q): (0.353996-0.176998i+0.424795j-0.814191k)	norm(U(q)): 1
+i*j: (0+0i+0j+1k)	j*i: (0+0i+0j-1k)
+j*k: (0+1i+0j+0k)	k*j: (0-1i+0j+0k)
+k*i: (0+0i+1j+0k)	i*k: (0+0i-1j+0k)
+p: (1+2i+3j+4k)	q: (1-0.5i+1.2j-2.3k)
+p+q: (2+1.5i+4.2j+1.7k)	p-q: (0+2.5i+1.8j+6.3k)
+p*q: (7.6-10.2i+6.8j+5.6k)	q*p: (7.6+13.2i+1.6j-2.2k)
+p+5: (6+2i+3j+4k)	3+p: (4+2i+3j+4k)
+p-4: (-3+2i+3j+4k)	1-p: (0-2i-3j-4k)
+p+2: (3+2i+3j+4k)	p+2-2: (1+2i+3j+4k)
+-0.5f*(q+i*q*i+j*q*j+k*q*k)=(1+0.5i-1.2j+2.3k)  q conj: (1+0.5i-1.2j+2.3k)
+qrec: (0.125313+0.0626566i-0.150376j+0.288221k)	q*qrec=(1+0i+0j+0k)	qrec*q=(1+0i+0j+0k)
+
+R A T I O N A L   T E S T
+
+s = -12 = -12/1	expected -12/1
+s = 34.824 = 4353/125	expected 4353/125
+s = -4.|285714 = -30/7	expected -30/7
+s = 3.5|167 = 17566/4995	expected 17566/4995
+
+a = 3/4 = 60/80
+b = 3/4  c = 0/1  c = 3/4
+a = 3/4  b = 4/3  c = 2/5  c^(-1) = 5/2
+1/3 + 1/2 = 5/6 = 0.833333
+5/6 - 1/4 = 7/12 = 0.583333
+-1/3 * 5/6 = -5/18
+5/6 / -1/3 = -5/2
+a = -5/2 isZero: 0 isPositive: 0 isNegative: 1
+b = 5/6 isZero: 0 isPositive: 1 isNegative: 0
+c = 0/1 isZero: 1 isPositive: 0 isNegative: 0
+-5/2 + 2 = -1/2
+a = -5/2  b = 5/6  c = -5/2
+a == c   a != b
+a == c   a != b
+Successfully detected attempt of a zero denominator
+zero = 0/1
+zero is uninvertible
+Inversion of zero failed again. It's OK
+Attempt of divison by zero successfully detected.
+
+M A T R I X   T E S T
+
+f:
+1	0.5	4.5	
+0	1	0.4	
+f multiplied by 3
+3	1.5	13.5	
+0	3	1.2	
+
+f multiplied by 0.5
+0.5	0.25	2.25	
+0	0.5	0.2	
+
+t = f transposed:
+1	0	
+0.5	1	
+4.5	0.4	
+
+t * f:
+1	0.5	4.5	
+0.5	1.25	2.65	
+4.5	2.65	20.41	
+
+f * t:
+21.5	2.3	
+2.3	1.16	
+
+3x3 unit matrix:
+1	0	0	
+0	1	0	
+0	0	1	
+
+m1:
+1	2.4	-1.4	0	
+4.5	1	0	-0.5	
+0	1.75	1	2	
+
+removed the 3rd column:
+1	2.4	0	
+4.5	1	-0.5	
+0	1.75	2	
+
+inserted a column (zeroes) between the 1st and the 2nd column:
+1	0	2.4	0	
+4.5	0	1	-0.5	
+0	0	1.75	2	
+
+removed the 2nd row
+1	0	2.4	0	
+0	0	1.75	2	
+
+inserted a row (zeroes) between the 1st and 2nd row:
+1	0	2.4	0	
+0	0	0	0	
+0	0	1.75	2	
+
+transposed the previous matrix:
+1	0	0	
+0	0	0	
+2.4	0	1.75	
+0	0	2	
+
+kv:
+1	2	
+3	4	
+
+-kv:
+-1	-2	
+-3	-4	
+
+a1:
+1	2	3	
+4	5	6	
+7	9	8	
+
+Determinant of a1: 9
+
+inv = inverse of a1:
+-1.55556	1.22222	-0.333333	
+1.11111	-1.44444	0.666667	
+0.111111	0.555556	-0.333333	
+
+a1 * inv   (must be a unit matrix):
+1	-1.19209e-07	0	
+0	1	0	
+-9.53674e-07	-4.76837e-07	1	
+
+inv transposed:
+-1.55556	1.11111	0.111111	
+1.22222	-1.44444	0.555556	
+-0.333333	0.666667	-0.333333	
+
+Add 0.5 to inv(2, 0):
+-1.55556	1.11111	0.111111	
+1.22222	-1.44444	0.555556	
+0.166667	0.666667	-0.333333	
+
+
+R A T I O N A L   M A T R I X   T E S T
+
+a:
+-1/2	2/5	
+3/4	-1/3	
+
+inverse of a
+5/2	3/1	
+45/8	15/4	
+
+a + inv:
+2/1	17/5	
+51/8	41/12	
+
+deteminant of inv * (a+inv): 1781/16
+
+L I N E A R   E Q U A T I O N   S O L V E R   T E S T
+
+Matrix of coefficients:
+(1,1)	(2,-1)	(-1,0.5)	
+(0,1)	(0.25,3)	(-2,-0.5)	
+(3,0)	(2,-3)	(-0.5,1)	
+
+Vector of constant terms:
+(1,0.2)	
+(-2,-1)	
+(1,0)	
+
+Solution:
+(-0.663164,-0.362612)	
+(0.163019,1.05057)	
+(-0.224093,0.60029)	
+
+P O L Y N O M I A L   T E S T
+
+t(x) = 2.1 +1*x -0.72*x^2 +1*x^3
+a0=2.1 a1=1 a2=-0.72 a3=1
+Remove the 2nd coef. from t(x): 2.1 -0.72*x +1*x^2
+Insert 0.2 to the 3rd pos. of t(x): 2.1 -0.72*x +0.2*x^2 +1*x^3
+Insert 5 to the 8th pos. of t(x): 2.1 -0.72*x +0.2*x^2 +1*x^3 +0*x^4 +0*x^5 +0*x^6 +5*x^7
+Zero polynomial: 0
+p(x)=2 +3*x -4*x^2 -7*x^3 +2*x^4 +1*x^5
+q(x)=-1 +5*x -3*x^2 +1*x^3
+p(-1.2) = 6.39488
+q(0.7) = 1.373
+p+q: 1 +8*x -7*x^2 -6*x^3 +2*x^4 +1*x^5
+q+p: 1 +8*x -7*x^2 -6*x^3 +2*x^4 +1*x^5
+p-q: 3 -2*x -1*x^2 -8*x^3 +2*x^4 +1*x^5
+q-p: -3 +2*x +1*x^2 +8*x^3 -2*x^4 -1*x^5
+p*q: -2 +7*x +13*x^2 -20*x^3 -22*x^4 +26*x^5 -8*x^6 -1*x^7 +1*x^8
+q*p: -2 +7*x +13*x^2 -20*x^3 -22*x^4 +26*x^5 -8*x^6 -1*x^7 +1*x^8
+0.3 * p(x) = 0.6 +0.9*x -1.2*x^2 -2.1*x^3 +0.6*x^4 +0.3*x^5
+0.5 * q(x) = -0.5 +2.5*x -1.5*x^2 +0.5*x^3
+p(x) + 2 = 4 +3*x -4*x^2 -7*x^3 +2*x^4 +1*x^5
+2 + p(x) = 4 +3*x -4*x^2 -7*x^3 +2*x^4 +1*x^5
+q(x) - 3 = -4 +5*x -3*x^2 +1*x^3
+4 - q(x) = 5 -5*x +3*x^2 -1*x^3
+p(x) + 10 = 12 +3*x -4*x^2 -7*x^3 +2*x^4 +1*x^5
+p(x) + 10 - 10 = 2 +3*x -4*x^2 -7*x^3 +2*x^4 +1*x^5
+p(x)' = 3 -8*x -21*x^2 +8*x^3 +5*x^4
+I(q(x))dx = 0 -1*x +2.5*x^2 -1*x^3 +0.25*x^4
+int(q(x))' = -1 +5*x -3*x^2 +1*x^3
+q / 5 = -0.2 +1*x -0.6*x^2 +0.2*x^3
+q mod 5 = 0
+2 / q = 0
+2 mod q = 2
+q / 2 = -0.5 +2.5*x -1.5*x^2 +0.5*x^3
+q mod 2 = 0
+p = -1 +0*x +1*x^2 +2*x^3 -1*x^4 +4*x^5
+q = 1 +0*x +1*x^2
+p / q = 2 -2*x -1*x^2 +4*x^3
+p mod q = -3 +2*x
+p = -4 +0*x -2*x^2 +1*x^3
+q = -3 +1*x
+p / q = 3 +1*x +1*x^2
+p mod q = 5
+p = -5 +3*x +0*x^2 -6*x^3 +4*x^4
+q = -1 +2*x
+p / q = 1 -1*x -2*x^2 +2*x^3
+p mod q = -4
+
+C U R V E   F I T T I N G   T E S T
+
+Lower bound: 0
+Upper bound: 5
+1st degree polynomial: 0.698763 -0.174301*x
+2nd degree polynomial: 0.931323 -0.523141*x +0.0697679*x^2
+3rd degree polynomial: 0.9918 -0.799322*x +0.220962*x^2 -0.0201592*x^3
+Interpolation polynomial: 1.90735e-06 -1.47747*x +0*x^2 +4.83485*x^3
+3rd degree regression polynomial: -4.84406e-07 -1.47748*x +4.30583e-07*x^2 +4.83485*x^3
+Exp's regression polynomial: 1.00002 -0.978155*x +0.444662*x^2 -0.113354*x^3 +0.0155006*x^4 -0.000876062*x^5
+Exp's interpolation polynomial: 1 -0.976202*x +0.441309*x^2 -0.111449*x^3 +0.015063*x^4 -0.000841043*x^5
+
+I N T E X P O N E N T I A T O R   T E S T
+
+5^0 = 1
+2^10 = 1024
+(-3)^17 = -129140163
+5^12 = 244140625
+(-7)^4 = 2401
+sqrt(2)^30 = 32768
+
+m =
+0.1	-0.2	0.3	
+-0.4	0.5	-0.6	
+0.7	-0.8	0.9	
+m^0 =
+1	0	0	
+0	1	0	
+0	0	1	
+m^5 =
+1.21824	-1.49688	1.77552	
+-2.75886	3.38985	-4.02084	
+4.29948	-5.28282	6.26616	
+
+q = (1-0.8i+1.2j-1.5k)
+q^0 = (1+0i+0j+0k)
+q^10 = (991.414+1609.27i-2413.91j+3017.39k)
+
+f = -3/4
+f^0 = 1/1
+f^7 = -2187/16384
+
+p(x) = 0.2 -0.5*x +1*x^2
+p(x)^0 = 1
+p(x)^6 = 6.4e-05 -0.00096*x +0.00792*x^2 -0.044*x^3 +0.1815*x^4 -0.5775*x^5 +1.45063*x^6 -2.8875*x^7 +4.5375*x^8 -5.5*x^9 +4.95*x^10 -3*x^11 +1*x^12
+
+I N T   F A C T O R I Z A T I O N   T E S T
+
+Int sqrt of 12: 3
+Int sqrt of 100: 10
+Int sqrt of 37423: 193
+
+3 is a prime	Next prime: 5
+6 is not a prime	Next prime: 7
+15 is not a prime	Next prime: 17
+37 is a prime	Next prime: 41
+257 is a prime	Next prime: 263
+703 is not a prime	Next prime: 709
+907 is a prime	Next prime: 911
+101861 is not a prime	Next prime: 101863
+102601 is not a prime	Next prime: 102607
+104597 is a prime	Next prime: 104623
+
+245 = 5 * 7^2	divisors: 1, 5, 7, 35, 49, 245
+6784 = 2^7 * 53	divisors: 1, 2, 4, 8, 16, 32, 53, 64, 106, 128, 212, 424, 848, 1696, 3392, 6784
+21737 = 21737	divisors: 1, 21737
+195327 = 3^2 * 11 * 1973	divisors: 1, 3, 9, 11, 33, 99, 1973, 5919, 17757, 21703, 65109, 195327
+3428543 = 17 * 41 * 4919	divisors: 1, 17, 41, 697, 4919, 83623, 201679, 3428543
+
+n1 = 500, n2 = 1000: gcd = 500, lcm = 1000, gcd*lcm = 500000, n1*n2 = 500000
+n1 = 85, n2 = 3428543: gcd = 17, lcm = 17142715, gcd*lcm = 291426155, n1*n2 = 291426155
+n1 = 15, n2 = 100: gcd = 5, lcm = 300, gcd*lcm = 1500, n1*n2 = 1500
+n1 = 3, n2 = 57: gcd = 3, lcm = 57, gcd*lcm = 171, n1*n2 = 171
+n1 = 234, n2 = 7643: gcd = 1, lcm = 1788462, gcd*lcm = 1788462, n1*n2 = 1788462
+
+
+I N T   C O M B I N A T O R I C S   T E S T
+
+5! = 120  expected: 120
+20! = 2432902008176640000  expected: 2432902008176640000 
+15!/5! = 10897286400  expected: 10897286400
+
+falling factorial: (10)_4 = 5040  expected:  5040
+falling factorial: (12)_8 = 19958400  expected:  19958400
+rising factorial: 5^(6) = 151200  expected :  151200
+rising factorial: 16^(10) = 11861676288000  expected :  11861676288000
+
+18!^(3) = 524880  expected:  524880
+19!^(3) = 1106560  expected:  1106560
+20!^(3) = 2094400  expected:  2094400
+21!^(3) = 11022480  expected:  11022480
+15!! = 2027025  expected:  2027025
+22!! = 81749606400  expected:  81749606400
+27!! = 213458046676875  expected:  213458046676875
+
+14 choose 4 = 1001  expected: 1001
+14 choose 10 = 1001  expected: 1001
+50 choose 41 = 2505433700  expected:  2505433700
+
+C O M B I N A T O R I C S   T E S T
+
+Permutations:
+1: abcde
+2: abced
+3: abdce
+4: abdec
+5: abecd
+6: abedc
+7: acbde
+8: acbed
+9: acdbe
+10: acdeb
+11: acebd
+12: acedb
+13: adbce
+14: adbec
+15: adcbe
+16: adceb
+17: adebc
+18: adecb
+19: aebcd
+20: aebdc
+21: aecbd
+22: aecdb
+23: aedbc
+24: aedcb
+25: bacde
+26: baced
+27: badce
+28: badec
+29: baecd
+30: baedc
+31: bcade
+32: bcaed
+33: bcdae
+34: bcdea
+35: bcead
+36: bceda
+37: bdace
+38: bdaec
+39: bdcae
+40: bdcea
+41: bdeac
+42: bdeca
+43: beacd
+44: beadc
+45: becad
+46: becda
+47: bedac
+48: bedca
+49: cabde
+50: cabed
+51: cadbe
+52: cadeb
+53: caebd
+54: caedb
+55: cbade
+56: cbaed
+57: cbdae
+58: cbdea
+59: cbead
+60: cbeda
+61: cdabe
+62: cdaeb
+63: cdbae
+64: cdbea
+65: cdeab
+66: cdeba
+67: ceabd
+68: ceadb
+69: cebad
+70: cebda
+71: cedab
+72: cedba
+73: dabce
+74: dabec
+75: dacbe
+76: daceb
+77: daebc
+78: daecb
+79: dbace
+80: dbaec
+81: dbcae
+82: dbcea
+83: dbeac
+84: dbeca
+85: dcabe
+86: dcaeb
+87: dcbae
+88: dcbea
+89: dceab
+90: dceba
+91: deabc
+92: deacb
+93: debac
+94: debca
+95: decab
+96: decba
+97: eabcd
+98: eabdc
+99: eacbd
+100: eacdb
+101: eadbc
+102: eadcb
+103: ebacd
+104: ebadc
+105: ebcad
+106: ebcda
+107: ebdac
+108: ebdca
+109: ecabd
+110: ecadb
+111: ecbad
+112: ecbda
+113: ecdab
+114: ecdba
+115: edabc
+116: edacb
+117: edbac
+118: edbca
+119: edcab
+120: edcba
+
+Combinations:
+
+K = 1 : 
+
+1: a
+2: b
+3: c
+4: d
+5: e
+
+K = 2 : 
+
+1: ab
+2: ac
+3: ad
+4: ae
+5: bc
+6: bd
+7: be
+8: cd
+9: ce
+10: de
+
+K = 3 : 
+
+1: abc
+2: abd
+3: abe
+4: acd
+5: ace
+6: ade
+7: bcd
+8: bce
+9: bde
+10: cde
+
+K = 4 : 
+
+1: abcd
+2: abce
+3: abde
+4: acde
+5: bcde
+
+K = 5 : 
+
+1: abcde
+
+
+S T A T I S T I C S   T E S T
+
+size of the sample: 32 (expected: 32)
+Sample mean: 20.0906 (expected: 20.09062)
+Sample variance: 36.3241 (expected: 36.3241)
+Sample standard deviation: 6.02695 (expected: 6.026948)
+Population variance (w/o Bessel's correction): 35.189 (expected: 35.18897)
+Population standard deviation (w/o Bessel's correction): 5.93203 (expected: 5.93203)
+Median: 19.2 (expected: 19.2)
+1st quartile: 15.425 (expected: 15.425)
+3rd quartile: 22.8 (expected: 22.800)
+IQR: 7.375 (expected: 7.375)
+63th percentile: 21.212 (expected: 21.212)
+Test of various quantile methods:
+R1:	10.4	14.3	15.2	17.3	19.2	21	22.8	30.4	33.9
+Exp.:	10.4	14.3	15.2	17.3	19.2	21.0	22.8	30.4	33.9
+R2:	10.4	14.3	15.35	17.55	19.2	21.2	22.8	30.4	33.9
+Exp.:	10.40	14.30	15.35	17.55	19.20	21.20	22.80	30.40	33.90
+R3:	10.4	13.3	15.2	17.3	19.2	21	22.8	30.4	33.9
+Exp.:	10.4	13.3	15.2	17.3	19.2	21.0	22.8	30.4	33.9
+R4:	10.4	13.5	15.2	17.3	19.2	21	22.8	29.78	33.42
+Exp.:	10.40	13.50	15.20	17.30	19.20	21.00	22.80	29.78	33.42
+R5:	10.4	14	15.35	17.55	19.2	21.2	22.8	30.4	33.9
+Exp.:	10.40	14.00	15.35	17.55	19.20	21.20	22.80	30.40	33.90
+R6:	10.4	13.6	15.275	17.4875	19.2	21.25	22.8	30.4	33.9
+Exp.:	10.4000	13.6000	15.2750	17.4875	19.2000	21.2500	22.8000	30.4000	33.9000
+R7:	10.4	14.34	15.425	17.6125	19.2	21.15	22.8	30.09	33.435
+Exp.:	10.4000	14.3400	15.4250	17.6125	19.2000	21.1500	22.8000	30.0900	33.4350
+R8:	10.4	13.8667	15.325	17.5292	19.2	21.2167	22.8	30.4	33.9
+Exp.:	10.40	13.8667	15.325	17.5292	19.200	21.2167	22.80	30.40	33.90
+R9:	10.4	13.9	15.3312	17.5344	19.2	21.2125	22.8	30.4	33.9
+Exp.:	10.40	13.90	15.3312	17.5344	19.20	21.2125	22.80	30.40	33.90

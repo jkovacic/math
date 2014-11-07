@@ -32,6 +32,117 @@ AS = $(TOOLCHAIN)as
 OBJCOPY = $(TOOLCHAIN)objcopy
 AR = $(TOOLCHAIN)ar
 
+# Typical file sufixes
+OBJSUFFIX = .o
+CPPSUFFIX = .cpp
+HEADERSUFFIX = .hpp
+
+# Top directory with the library's source code
+LIBDIR = lib/
+
+# Applications should include header files from this directory
+APPINCDIR = include/
+
+# Subdirectories of LIBDIR:
+LIBEXCPDIR = $(LIBDIR)exception/
+LIBUTILDIR = $(LIBDIR)util/
+LIBMATRIXDIR = $(LIBDIR)matrix/
+LIBLINEQDIR = $(LIBDIR)lineq/
+LIBPOLYDIR = $(LIBDIR)polynomial/
+LIBCOMBDIR = $(LIBDIR)combinatorics/
+LIBSTATDIR = $(LIBDIR)statistics/
+LIBCURVEFITDIR = $(LIBDIR)curve_fit/
+LIBQUATDIR = $(LIBDIR)quaternion/
+LIBRATIONALDIR = $(LIBDIR)rational/
+LIBINTUTILDIR = $(LIBDIR)int_util/
+
+# Directory with unit testing files
+TESTDIR = test/
+
+# Directory with settings file(s)
+SETTINGDIR = settings/
+
+# Directory for all *.o and other intermediate files:
+OBJDIR = obj/
+
+# Directory for the target binary
+BUILDDIR = build/
+
+# Target binary, without any prefixes and suffixes
+TARGETROOT = maintest
+
+
+# Exception class names. Any nonapplicable classes may be commented out.
+# Note that appropriate file sufixes will be appended later.
+EXCEPTIONCLASS = $(LIBEXCPDIR)IMathException
+EXCEPTIONCLASS += $(LIBEXCPDIR)MatrixException
+EXCEPTIONCLASS += $(LIBEXCPDIR)PolynomialException
+EXCEPTIONCLASS += $(LIBEXCPDIR)RationalException
+EXCEPTIONCLASS += $(LIBEXCPDIR)QuaternionException
+EXCEPTIONCLASS += $(LIBEXCPDIR)LinearEquationSolverException
+EXCEPTIONCLASS += $(LIBEXCPDIR)CurveFittingException
+EXCEPTIONCLASS += $(LIBEXCPDIR)CombinatoricsException
+EXCEPTIONCLASS += $(LIBEXCPDIR)IntFactorizationException
+EXCEPTIONCLASS += $(LIBEXCPDIR)StatisticsException
+
+
+# Nontemplated classes, i.e. their source files will be compiled.
+# Note that appropriate file sufixes will be appended later.
+COMPILECLASS =
+COMPILECLASS += $(LIBRATIONALDIR)Rational
+COMPILECLASS += $(LIBCOMBDIR)IntCombinatorics
+COMPILECLASS += $(LIBINTUTILDIR)IntFactorization
+
+# Templated classes. These classes are not compiled directly, instead 
+# their source code will be included into files that need it.
+# Note that appropriate file sufixes will be appended later.
+GENERICCLASS =
+GENERICCLASS += $(LIBUTILDIR)NumericUtil
+GENERICCLASS += $(LIBMATRIXDIR)MatrixGeneric
+GENERICCLASS += $(LIBMATRIXDIR)SqMatrixGeneric
+GENERICCLASS += $(LIBPOLYDIR)PolynomialGeneric
+GENERICCLASS += $(LIBQUATDIR)QuaternionGeneric
+GENERICCLASS += $(LIBCURVEFITDIR)CurveFittingGenericAb
+GENERICCLASS += $(LIBCURVEFITDIR)PolynomialFittingGenericAb
+GENERICCLASS += $(LIBCURVEFITDIR)PolynomialInterpolationGeneric
+GENERICCLASS += $(LIBCURVEFITDIR)PolynomialRegressionGeneric
+GENERICCLASS += $(LIBLINEQDIR)LinearEquationSolverGeneric
+GENERICCLASS += $(LIBCOMBDIR)CombinationGeneric
+GENERICCLASS += $(LIBCOMBDIR)PermutationGeneric
+GENERICCLASS += $(LIBSTATDIR)SampleStatGeneric
+GENERICCLASS += $(LIBSTATDIR)SampleQuantileGeneric
+
+
+# Append file name extensions to exception classes
+EXCEPTIONHEADER = $(addsuffix $(HEADERSUFFIX), $(EXCEPTIONCLASS) )
+EXCEPTIONSRC = $(addsuffix $(CPPSUFFIX), $(EXCEPTIONCLASS) )
+EXCEPTIONOBJ = $(addsuffix $(OBJSUFFIX), $(notdir $(EXCEPTIONCLASS)) )
+
+# Append file name extensions to nontemplated (compiled) classes
+COMPILEHEADER = $(addsuffix $(HEADERSUFFIX), $(COMPILECLASS) )
+COMPILESRC = $(addsuffix $(CPPSUFFIX), $(COMPILECLASS) )
+COMPILEOBJ = $(addsuffix $(OBJSUFFIX), $(notdir $(COMPILECLASS)) )
+
+# Append file name extensions to templated classes.
+# Note that these classes are not compiled so no *.o filenames are created
+GENERICHEADER = $(addsuffix $(HEADERSUFFIX), $(GENERICCLASS) )
+GENERICSRC = $(addsuffix $(CPPSUFFIX), $(GENERICCLASS) )
+
+# Append file name extensions and a prefix to the final binary
+TARGETSRC = $(addsuffix $(CPPSUFFIX), $(TARGETROOT) )
+TARGETOBJ = $(addsuffix $(OBJSUFFIX), $(TARGETROOT) )
+TARGET = $(addprefix $(BUILDDIR), $(TARGETROOT) )
+
+
+# Join all desired *.o files into a single variable... 
+OBJS = $(EXCEPTIONOBJ) $(COMPILEOBJ) $(TARGETOBJ)
+# and prepend OBJDIR to each one.
+OBJS := $(addprefix $(OBJDIR), $(OBJS) )
+
+# Join all compilable source files into a single variable.
+SRC = $(EXCEPTIONSRC) $(COMPILESRC) $(TARGETSRC)
+
+
 # Compiler flags to produce deugging symbols and
 # support OpenMP, respectively.
 #
@@ -48,99 +159,20 @@ OPENMP_FLAG = -fopenmp
 DEBUG_MACRO = -D_DEBUG
 OPENMP_MACRO = -D_OPENMP
 
+# GCC flag and paths to include directories
+INCLUDEFLAG = -I
+INCLIB = $(LIBDIR)
+LIBINCFLAG = $(INCLUDEFLAG)$(INCLIB)
+APPINCFLAG = $(INCLUDEFLAG)$(APPINCDIR)
+
 # Optional compiler flags
-CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas
+CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas $(LIBINCFLAG)
 
 # Optional preprocesor macros
 MACROS =
 
 # Optional linker flags
 LDFLAGS =
-
-# Typical file sufixes
-OBJSUFFIX = .o
-CPPSUFFIX = .cpp
-HEADERSUFFIX = .h
-
-# Directory for all *.o and other intermediate files:
-OBJDIR = obj/
-
-# Directory for the target binary
-BUILDDIR = build/
-
-# Target binary, without any prefixes and suffixes
-TARGETROOT = maintest
-
-
-# Exception class names. Any nonapplicable classes may be commented out.
-# Note that appropriate file sufixes will be appended later.
-EXCEPTIONCLASS = IMathException
-EXCEPTIONCLASS += MatrixException
-EXCEPTIONCLASS += PolynomialException
-EXCEPTIONCLASS += RationalException
-EXCEPTIONCLASS += QuaternionException
-EXCEPTIONCLASS += LinearEquationSolverException
-EXCEPTIONCLASS += CurveFittingException
-EXCEPTIONCLASS += CombinatoricsException
-EXCEPTIONCLASS += IntFactorizationException
-EXCEPTIONCLASS += StatisticsException
-
-# Nontemplated classes, i.e. their source files will be compiled.
-# Note that appropriate file sufixes will be appended later.
-COMPILECLASS =
-COMPILECLASS += Rational
-COMPILECLASS += IntCombinatorics
-COMPILECLASS += IntFactorization
-
-# Templated classes. These classes are not compiled directly, instead 
-# their source code will be included into files that need it.
-# Note that appropriate file sufixes will be appended later.
-GENERICCLASS =
-GENERICCLASS += NumericUtil
-GENERICCLASS += MatrixGeneric
-GENERICCLASS += SqMatrixGeneric
-GENERICCLASS += PolynomialGeneric
-GENERICCLASS += QuaternionGeneric
-GENERICCLASS += CurveFittingGenericAb
-GENERICCLASS += PolynomialFittingGenericAb
-GENERICCLASS += PolynomialInterpolationGeneric
-GENERICCLASS += PolynomialRegressionGeneric
-GENERICCLASS += LinearEquationSolverGeneric
-GENERICCLASS += CombinationGeneric
-GENERICCLASS += PermutationGeneric
-GENERICCLASS += SampleStatGeneric
-GENERICCLASS += SampleQuantileGeneric
-
-
-# Append file name extensions to exception classes
-EXCEPTIONHEADER = $(addsuffix $(HEADERSUFFIX), $(EXCEPTIONCLASS) )
-EXCEPTIONSRC = $(addsuffix $(CPPSUFFIX), $(EXCEPTIONCLASS) )
-EXCEPTIONOBJ = $(addsuffix $(OBJSUFFIX), $(EXCEPTIONCLASS) )
-
-# Append file name extensions to nontemplated (compiled) classes
-COMPILEHEADER = $(addsuffix $(HEADERSUFFIX), $(COMPILECLASS) )
-COMPILESRC = $(addsuffix $(CPPSUFFIX), $(COMPILECLASS) )
-COMPILEOBJ = $(addsuffix $(OBJSUFFIX), $(COMPILECLASS) )
-
-# Append file name extensions to templated classes.
-# Note that these classes are not compiled so no *.o filenames are created
-GENERICHEADER = $(addsuffix $(HEADERSUFFIX), $(GENERICCLASS) )
-GENERICSRC = $(addsuffix $(CPPSUFFIX), $(GENERICCLASS) )
-
-# Append file name extensions and a prefix to the final binary
-TARGETSRC = $(addsuffix $(CPPSUFFIX), $(TARGETROOT) )
-TARGETOBJ = $(addsuffix $(OBJSUFFIX), $(TARGETROOT) )
-TARGET = $(addprefix $(BUILDDIR), $(TARGETROOT) )
-
-
-#Join all desired *.o files into a single variable... 
-OBJS = $(EXCEPTIONOBJ) $(COMPILEOBJ) $(TARGETOBJ)
-# and append OBJDIR to each one.
-OBJS := $(addprefix $(OBJDIR), $(OBJS) )
-
-# Join all source files to be compiled into a single variable.
-SRC = $(EXCEPTIONSRC) $(COMPILESRC) $(TARGETSRC)
-
 
 #
 # Make rules:
@@ -183,52 +215,52 @@ _openmp_flags :
 #	$(eval MACROS += $(OPENMP_MACRO))
 
 
-#Build rules for exception classes
-$(OBJDIR)IMathException$(OBJSUFFIX) : IMathException.cpp
+# Build rules for exception classes
+$(OBJDIR)IMathException$(OBJSUFFIX) : $(LIBEXCPDIR)IMathException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)MatrixException$(OBJSUFFIX) : MatrixException.cpp
+$(OBJDIR)MatrixException$(OBJSUFFIX) : $(LIBEXCPDIR)MatrixException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)PolynomialException$(OBJSUFFIX) : PolynomialException.cpp
+$(OBJDIR)PolynomialException$(OBJSUFFIX) : $(LIBEXCPDIR)PolynomialException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)RationalException$(OBJSUFFIX) : RationalException.cpp
+$(OBJDIR)RationalException$(OBJSUFFIX) : $(LIBEXCPDIR)RationalException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)QuaternionException$(OBJSUFFIX) : QuaternionException.cpp
+$(OBJDIR)QuaternionException$(OBJSUFFIX) : $(LIBEXCPDIR)QuaternionException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)LinearEquationSolverException$(OBJSUFFIX) : LinearEquationSolverException.cpp
+$(OBJDIR)LinearEquationSolverException$(OBJSUFFIX) : $(LIBEXCPDIR)LinearEquationSolverException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)CurveFittingException$(OBJSUFFIX) : CurveFittingException.cpp
+$(OBJDIR)CurveFittingException$(OBJSUFFIX) : $(LIBEXCPDIR)CurveFittingException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)CombinatoricsException$(OBJSUFFIX) : CombinatoricsException.cpp
+$(OBJDIR)CombinatoricsException$(OBJSUFFIX) : $(LIBEXCPDIR)CombinatoricsException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)IntFactorizationException$(OBJSUFFIX) : IntFactorizationException.cpp
+$(OBJDIR)IntFactorizationException$(OBJSUFFIX) : $(LIBEXCPDIR)IntFactorizationException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)StatisticsException$(OBJSUFFIX) : StatisticsException.cpp
+$(OBJDIR)StatisticsException$(OBJSUFFIX) : $(LIBEXCPDIR)StatisticsException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 
 # Build rules for nontemplated classes
-$(OBJDIR)Rational$(OBJSUFFIX) : Rational.cpp
+$(OBJDIR)Rational$(OBJSUFFIX) : $(LIBRATIONALDIR)Rational.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)IntCombinatorics$(OBJSUFFIX) : IntCombinatorics.cpp
+$(OBJDIR)IntCombinatorics$(OBJSUFFIX) : $(LIBCOMBDIR)IntCombinatorics.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)IntFactorization$(OBJSUFFIX) : IntFactorization.cpp
+$(OBJDIR)IntFactorization$(OBJSUFFIX) : $(LIBINTUTILDIR)IntFactorization.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 
 # Build rule for the application that uses the library
-$(OBJDIR)maintest$(OBJSUFFIX) : maintest.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+$(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
 
 # Build rule for linking the final binary
