@@ -71,6 +71,6 @@ typedef PolynomialInterpolationGeneric<double>  PolynomialInterpolation;
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
 
-#include "PolynomialInterpolationGeneric.cpp"
+#include "curve_fit/PolynomialInterpolationGeneric.cpp"
 
 #endif // _MATH_POLYNOMIALINTERPOLATIONGENERIC_HPP_

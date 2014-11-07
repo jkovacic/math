@@ -106,6 +106,6 @@ typedef SampleStatGeneric<long double>  LDSampleStat;
 // This is a templated class, so its definition must follow its declaration.
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
-#include "SampleStatGeneric.cpp"
+#include "statistics/SampleStatGeneric.cpp"
 
 #endif  // _MATH_SAMPLESTATGENERIC_HPP_

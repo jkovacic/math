@@ -76,6 +76,6 @@ typedef PolynomialRegressionGeneric<double>  PolynomialRegression;
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
 
-#include "PolynomialRegressionGeneric.cpp"
+#include "curve_fit/PolynomialRegressionGeneric.cpp"
 
 #endif  // _MATH_POLYNOMIALREGRESSIONGENERIC_HPP_

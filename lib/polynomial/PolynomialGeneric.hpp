@@ -219,6 +219,6 @@ typedef PolynomialGeneric<double> Polynomial;
 // This is a templated class, so its definition must follow its declaration.
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
-#include "PolynomialGeneric.cpp"
+#include "polynomial/PolynomialGeneric.cpp"
 
 #endif // _MATH_POLYNOMIALGENERIC_HPP_

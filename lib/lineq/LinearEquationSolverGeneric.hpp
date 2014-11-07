@@ -86,7 +86,7 @@ typedef LinearEquationSolverGeneric<std::complex<double> > CLinearEquationsolver
 // This is a templated class, so its definition must follow its declaration.
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
-#include "LinearEquationSolverGeneric.cpp"
+#include "lineq/LinearEquationSolverGeneric.cpp"
 
 
 #endif // _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_

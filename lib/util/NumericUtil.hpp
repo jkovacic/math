@@ -89,6 +89,6 @@ template<> bool NumericUtil<std::complex<long double> >::isZero(const std::compl
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
 
-#include "NumericUtil.cpp"
+#include "util/NumericUtil.cpp"
 
 #endif	// _MATH_NUMERICUTIL_HPP_

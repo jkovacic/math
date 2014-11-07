@@ -169,6 +169,6 @@ typedef MatrixGeneric<double> Matrix;
 // This is a templated class, so its definition must follow its declaration.
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
-#include "MatrixGeneric.cpp"
+#include "matrix/MatrixGeneric.cpp"
 
 #endif	// _MATH_MATRIXGENERIC_HPP_

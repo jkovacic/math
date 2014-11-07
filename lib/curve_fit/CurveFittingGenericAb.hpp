@@ -122,6 +122,6 @@ public:
 // This is a templated class, so its definition must follow its declaration.
 // When building, THIS file must be compiled.
 // Alternatively the definition can be included into this file.
-#include "CurveFittingGenericAb.cpp"
+#include "curve_fit/CurveFittingGenericAb.cpp"
 
 #endif // _MATH_CURVEFITTINGGENERICAB_HPP_
