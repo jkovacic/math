@@ -55,6 +55,7 @@ LIBCURVEFITDIR = $(LIBDIR)curve_fit/
 LIBQUATDIR = $(LIBDIR)quaternion/
 LIBRATIONALDIR = $(LIBDIR)rational/
 LIBINTUTILDIR = $(LIBDIR)int_util/
+LIBOMPDIR = $(LIBDIR)omp/
 
 # Directory with unit testing files
 TESTDIR = test/
@@ -165,6 +166,10 @@ INCLIB = $(LIBDIR)
 LIBINCFLAG = $(INCLUDEFLAG)$(INCLIB)
 APPINCFLAG = $(INCLUDEFLAG)$(APPINCDIR)
 
+# Dependencies of OpenMP related files
+OMPSETTINGDEP = $(SETTINGDIR)omp_settings.h
+OMPLIBDEP = $(LIBOMPDIR)omp_header.h
+
 # Optional compiler flags
 CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas $(LIBINCFLAG)
 
@@ -259,12 +264,12 @@ $(OBJDIR)IntFactorization$(OBJSUFFIX) : $(LIBINTUTILDIR)IntFactorization.cpp
 
 
 # Build rule for the application that uses the library
-$(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp
+$(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp $(GENERICHEADER) $(GENERICSRC) $(OMPLIBDEP) $(OMPSETTINGDEP)
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
 
 # Build rule for linking the final binary
-$(TARGET) : $(OBJDIR) $(BUILDDIR) $(OBJS) $(GENERICHEADER) $(GENERICSRC)
+$(TARGET) : $(OBJDIR) $(BUILDDIR) $(OBJS) 
 	$(LINKER) $(LDFLAGS) $(OBJS) -o $@ 
 
 
