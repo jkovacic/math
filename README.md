@@ -6,14 +6,14 @@ etc. See `test/maintest.cpp` as a basic demonstration. Or use Doxygen to
 generate documentation about the API.
 
 ##Usage
-Only headers (*.h files) from the directory `include` sholuld be included
+Only headers (*.h files) from the directory `include` should be included
 into applications. The included headers may additionally include several
 templated classes that cannot be compiled separately. See _Makefile_ for
 more info about the templated classes.
 
 Additionally a simple demo application `test/maintest.cpp` is included
 that performs a few basic unit tests. Its expected output can be found
-in the file `test/test_output.txt`.
+in the file `test/test_output.out`.
 
 ##Build
 An example _Makefile_ with instructions to build a simple demo application
@@ -43,7 +43,7 @@ To build a parallelized version of the application, your compiler must
 support __OpenMP version 3.0__ or higher.
 
 ##License
-The library is licenced under the
+The library is licensed under the
 [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
 See LICENSE.txt for more details.
 
