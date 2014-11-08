@@ -44,7 +44,6 @@ struct StatisticsException : public IMathException
     /// Enum with possible error codes
     enum err_codes
     {
-        SAMPLE_NOT_PROCESSED_YET,       /// sample not processed yet
         SAMPLE_EMPTY,                   /// empty sample
         SAMPLE_TOO_SMALL,               /// sample too small
         DF_SUBTRAHEND_TOO_LARGE,        /// DF subtrahend too large

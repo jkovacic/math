@@ -41,57 +41,28 @@ namespace math
  * @brief A class that calculates sample's basic statistics, such as
  * mean, variance, standard deviation, sum, etc.
  *
- * The class is stateful. A vector of samples can only be passed to the class's
- * constructor. Before any getter methods are called, process() must be executed
- * on an instance of the class. This method calculates and internally keeps all
- * values that are necessary by getter methods. The method processed() may be used
- * to verify whether the results are available to getter methods.
- *
- * Please note that an instance of this class does not create its own copy
- * of the sample vector. Instead it only keeps a reference to a vector. The
- * vector of samples should not be modified until process() is finished!
- * Hence the class cannot be considered as thread safe, however this behavior
- * is acceptable for majority of applications. After process() is finished,
- * the instance of this class will not need the vector of samples anymore.
- *
- * The class itself does not modify the vector of samples at all.
+ * The whole class is static, so no instantiation is necessary.
  */
 template <class T>
 class SampleStatGeneric
 {
 
-private:
-    const std::vector<T>* m_pData;
-    size_t m_N;
-    T m_sum;
-    T m_sumSqDev;
-    T m_mean;
-    bool m_processed;
-
 public:
-    // Constructor
-    SampleStatGeneric(const std::vector<T>& sample) throw(StatisticsException);
+    static T sum(const std::vector<T>& x);
+    static T mean(const std::vector<T>& x) throw(StatisticsException);
+    static T var(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
+    static T var(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
+    static T stdev(const std::vector<T>& x, bool samplen=true) throw(StatisticsException);
+    static T stdev(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
 
-    // Process
-    void process();
-
-    // Methods to obtain results of the processed sample
-    bool processed();
-    size_t sampleSize();
-    T sum() throw(StatisticsException);
-    T mean() throw(StatisticsException);
-    T var(bool sample=true) throw(StatisticsException);
-    T var(size_t df_sub) throw(StatisticsException);
-    T stdev(bool samplen=true) throw(StatisticsException);
-    T stdev(size_t df_sub) throw(StatisticsException);
 };  // class SampleStatGeneric
 
 
 // Declaration of specialized methods inside the name space declaration
 // is essential if implemented elsewhere:
-template<> float SampleStatGeneric<float>::stdev(size_t df_sub) throw (StatisticsException);
-template<> double SampleStatGeneric<double>::stdev(size_t df_sub) throw (StatisticsException);
-template<> long double SampleStatGeneric<long double>::stdev(size_t df_sub) throw (StatisticsException);
+template<> float SampleStatGeneric<float>::stdev(const std::vector<float>& x, size_t df_sub) throw (StatisticsException);
+template<> double SampleStatGeneric<double>::stdev(const std::vector<double>& x, size_t df_sub) throw (StatisticsException);
+template<> long double SampleStatGeneric<long double>::stdev(const std::vector<long double>& x, size_t df_sub) throw (StatisticsException);
 
 
 // Samples with elements of types float, double and long double

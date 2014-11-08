@@ -46,9 +46,6 @@ void math::StatisticsException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case SAMPLE_NOT_PROCESSED_YET :
-            str << "The sample has not been processed yet.";
-            break;
         case SAMPLE_EMPTY :
             str << "The sample is empty.";
             break;

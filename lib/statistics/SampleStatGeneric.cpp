@@ -39,49 +39,18 @@ limitations under the License.
 
 
 /**
- * Constructor. Initializes all internal variables but does not
- * calculate anything yet.
+ * @param x - vector of sample elements
  *
- * @param sample - a vector of samples
- *
- * @throw StatisticsException if 'sample' is an empty vector
+ * @return sum of all sample values
  */
 template <class T>
-math::SampleStatGeneric<T>::SampleStatGeneric(const std::vector<T>& sample) throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
 {
-    this->m_processed = false;
-    this->m_N = 0;
-    this->m_sum = math::NumericUtil<T>::ZERO;
-    this->m_mean = math::NumericUtil<T>::ZERO;
-    this->m_sumSqDev = math::NumericUtil<T>::ZERO;
-    this->m_pData = NULL;
+    const size_t N = x.size();
 
-    if ( 0 == sample.size() )
+    if ( 0 == N )
     {
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
-    }
-
-    this->m_N = sample.size();
-    this->m_pData = &sample;
-}
-
-
-/**
- * Calculates values of all necessary internal variables which become
- * available to be returned by getter methods.
- *
- * Nothing is done if process() has been called before on the same object.
- *
- * After this method is finished, the original vector of samples may be freely
- * modified as other methods do not need it anymore.
- */
-template <class T>
-void math::SampleStatGeneric<T>::process()
-{
-    // Check whether the sample has already been processed.
-    if ( true == this->m_processed )
-    {
-        return;
+        return static_cast<T>(0);
     }
 
     /*
@@ -92,75 +61,40 @@ void math::SampleStatGeneric<T>::process()
 
     // Ideal number of threads
     // (if each one processes approx. OMP_CHUNKS_PER_THREAD items):
-    const size_t ideal = this->m_N / OMP_CHUNKS_PER_THREAD +
-                         ( 0 == this->m_N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                         ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
 
     /*
      * In the first step, each thread calculates the sum of its block
      */
-    T tempSum = math::NumericUtil<T>::ZERO;
+    T sum = math::NumericUtil<T>::ZERO;
     #pragma omp parallel num_threads(ideal) \
-                    if(this->m_N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) \
-                    reduction(+ : tempSum)
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(x) \
+                    reduction(+ : sum)
     {
         // Depending on the number of available threads,
-    	// determine the ideal nr.of samples per thread,
-    	// and start and sample of a block that each thread will process.
+        // determine the ideal nr.of samples per thread,
+        // and start and sample of a block that each thread will process.
         const size_t thrnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
 
-        const size_t samples_per_thread = (this->m_N + nthreads -1) / nthreads;
+        const size_t samples_per_thread = (N + nthreads -1) / nthreads;
         const size_t istart = samples_per_thread * thrnr;
         const size_t iend = istart + samples_per_thread;
 
         // Calculate the sum of the assigned block...
         T partsum = math::NumericUtil<T>::ZERO;
-        for ( size_t i=istart; i<iend && i<this->m_N; ++i )
+        for ( size_t i=istart; i<iend && i<N; ++i )
         {
-            partsum += this->m_pData->at(i);
+            partsum += x.at(i);
         }
 
         // ... and add it to the total sum in a thread safe manner.
-        tempSum += partsum;
+        sum += partsum;
     }
 
-    // When the sum is known, it is trivial to obtain the sample's mean:
-    this->m_sum = tempSum;
-    this->m_mean = this->m_sum / static_cast<T>(this->m_N);
-
-    // Fork threads once more, this time calculate the sum of
-    // squared deviations from the mean.
-    // Apply exactly the same approach as above.
-    tempSum = math::NumericUtil<T>::ZERO;
-    #pragma omp parallel num_threads(ideal) \
-                 if(this->m_N>OMP_CHUNKS_PER_THREAD) \
-                 default(none) \
-                 reduction(+ : tempSum)
-    {
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t samples_per_thread = (this->m_N + nthreads -1) / nthreads;
-        const size_t istart = samples_per_thread * thrnr;
-        const size_t iend = istart + samples_per_thread;
-
-        T partsum = math::NumericUtil<T>::ZERO;
-        for ( size_t i=istart; i<iend && i<this->m_N; ++i )
-        {
-            T diff = this->m_pData->at(i) - this->m_mean;
-            partsum += diff * diff;
-        }
-
-        tempSum += partsum;
-    }
-
-    // The sum of squared deviations will be used by other functions to
-    // calculate the sample's variance and standard deviation.
-    this->m_sumSqDev = tempSum;
-
-    // Flag the sample as processed
-    this->m_processed = true;
+    return sum;
 
     // In serial mode this variable is never used.
     (void) ideal;
@@ -168,51 +102,16 @@ void math::SampleStatGeneric<T>::process()
 
 
 /**
- * @return a logical value indicating whether the samples have already been processed
- */
-template <class T>
-bool math::SampleStatGeneric<T>::processed()
-{
-    return this->m_processed;
-}
-
-
-/**
- * @return number of samples or 0 if process() has not been called yet
- */
-template <class T>
-size_t math::SampleStatGeneric<T>::sampleSize()
-{
-    return this->m_N;
-}
-
-
-/**
- * @return sum of all sample values
- *
- * @throw StatisticsException if process() has not been called yet
- */
-template <class T>
-T math::SampleStatGeneric<T>::sum() throw(math::StatisticsException)
-{
-    if ( false == this->m_processed )
-    {
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_NOT_PROCESSED_YET);
-    }
-
-    return this->m_sum;
-}
-
-
-/**
  * Arithmetical mean (or average) of the sample.
+ *
+ * @param x - vector of sample elements
  *
  * @return mean value of the sample
  *
  * @throw StatisticsException if process() has not been called yet
  */
 template <class T>
-T math::SampleStatGeneric<T>::mean() throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::mean(const std::vector<T>& x) throw(math::StatisticsException)
 {
     /*
      * Arithmetical mean is calculated as:
@@ -220,19 +119,21 @@ T math::SampleStatGeneric<T>::mean() throw(math::StatisticsException)
      *                   N
      *                 -----
      *             1   \
-     * mean(X) = -----  >  X(i)
+     * mean(X) = -----  >  X[i]
      *             N   /
      *                 -----
      *                  i=1
      *
      */
 
-    if ( false == this->m_processed )
+	const size_t N = x.size();
+
+    if ( 0 == N )
     {
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_NOT_PROCESSED_YET);
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
-    return this->m_mean;
+    return sum(x) / static_cast<T>(N);
 }
 
 
@@ -242,6 +143,7 @@ T math::SampleStatGeneric<T>::mean() throw(math::StatisticsException)
  * positive integer number 'df_sub' as long as it is strictly smaller than
  * the sample size.
  *
+ * @param x - vector of sample elements
  * @param df_sub - generalized Bessel's correction value (typically 1 or 0)
  *
  * @return variance of the sample, depending on the given 'df_sub'
@@ -249,31 +151,108 @@ T math::SampleStatGeneric<T>::mean() throw(math::StatisticsException)
  * @throw StatisticsException if process() has not been called yet or if 'df_sub' exceeds sample's size
  */
 template <class T>
-T math::SampleStatGeneric<T>::var(size_t df_sub) throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
 {
     /*
-     * Variance of the sample is calculated as:
+     * The best known algorithm to calculate a variance is:
      *
      *                              N
      *                            -----
      *                  1         \                 2
-     *   var(X) = ------------     >   (X(i) - mean)
+     *   var(X) = ------------     >   (X[i] - mean)
      *             N - df_sub     /
      *                            -----
      *                             i=1
+     *
+     * It is called a two step algorithm as it must calculate the sample mean
+     * in the first step, followed by the algorithm above to calculate the variance.
+     *
+     * When the mean is not required, the expression above can be replaced by the
+     * one step algorithm:
+     *
+     *
+     *               N                       /   N           \  2
+     *             -----                     | -----         |
+     *             \              2      1   | \             |
+     *              >     (X[i]-K)   -  ---  |  >   (X[i]-K) |
+     *             /                     N   | /             |
+     *             -----                     | -----         |
+     *              i=1                      \  i=1          /
+     *   var(X) = --------------------------------------------------
+     *                               N - df_sub
+     *
+     * Where K may be an arbitrary value. Typically it is recommended to
+     * not equal 0 to avoid the catastrophic cancellation (both terms may be
+     * of very similar). Typically it can be assigned any element's value,
+     * ideally close to the sample's mean.
+     *
+     * For more details, see:
+     * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
      */
 
-    if ( false == this->m_processed )
-	{
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_NOT_PROCESSED_YET);
+    const size_t N = x.size();
+
+    if ( 0 == N )
+    {
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
-    if ( df_sub >= this->m_N )
+    if ( df_sub >= N )
     {
         throw math::StatisticsException(math::StatisticsException::DF_SUBTRAHEND_TOO_LARGE);
     }
 
-    return this->m_sumSqDev / static_cast<T>(this->m_N - df_sub);
+    // Let K be equal to the first element:
+    const T K = x.at(0);
+
+    T sum  = math::NumericUtil<T>::ZERO;
+    T sum2 = math::NumericUtil<T>::ZERO;
+
+    /*
+     * Coarse grained parallelism will be applied, i.e. each thread will be
+     * assigned an (approximately) equally sized contiguous block of data
+     * to be processed.
+     */
+
+    // Ideal number of threads
+    // (if each one processes approx. OMP_CHUNKS_PER_THREAD items):
+    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                         ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(x) \
+                reduction(+ : sum, sum2)
+    {
+    	// Depending on the number of available threads,
+        // determine the ideal nr.of samples per thread,
+        // and start and sample of a block that each thread will process.
+        const size_t thrnr = omp_get_thread_num();
+        const size_t nthreads = omp_get_num_threads();
+
+        const size_t samples_per_thread = (N + nthreads -1) / nthreads;
+        const size_t istart = samples_per_thread * thrnr;
+        const size_t iend = istart + samples_per_thread;
+
+        // Calculate both sums of the assigned block...
+        T partsum  = math::NumericUtil<T>::ZERO;
+        T partsum2 = math::NumericUtil<T>::ZERO;
+        for ( size_t i=istart; i<iend && i<N; ++i )
+        {
+            const T diff = x.at(i) - K;
+            partsum  += diff;
+            partsum2 += diff * diff;
+        }
+
+        // ... and add them to the total sums in a thread safe manner.
+        sum  += partsum;
+        sum2 += partsum2;
+    }
+
+    return (sum2 - (sum*sum)/static_cast<T>(N)) / static_cast<T>(N - df_sub);
+
+    // In serial mode this variable is never used.
+    (void) ideal;
 }
 
 
@@ -282,6 +261,7 @@ T math::SampleStatGeneric<T>::var(size_t df_sub) throw(math::StatisticsException
  * Calculates either variance of a sample (sum of square deviations from
  * the mean is divided by N-1) or of a population (sum of squares divided by N).
  *
+ * @param x - vector of sample elements
  * @param sample - if 'true', sum of squared deviations is divided by (N-1), otherwise by N
  *
  * @return variance of the sample depending on 'sample'
@@ -289,33 +269,9 @@ T math::SampleStatGeneric<T>::var(size_t df_sub) throw(math::StatisticsException
  * @throw StatisticsException if process() has not been called yet or if the sample is too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::var(bool sample) throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::var(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
 {
-    /*
-     * Variance of the sample, calculated as:
-     *
-     *                         N
-     *                       -----
-     *                1      \                 2
-     *   var(X) = --------    >   (X(i) - mean)
-     *             N - BC    /
-     *                       -----
-     *                        i=1
-     *
-     * where BC (Bessel's correction) equals 1 if 'sample' is 'true', otherwise it equals 0.
-     */
-
-    if ( false == this->m_processed )
-    {
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_NOT_PROCESSED_YET);
-    }
-
-    if ( true==sample && 1==this->m_N )
-    {
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_TOO_SMALL);
-    }
-
-    return this->var( static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return var( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -324,6 +280,7 @@ T math::SampleStatGeneric<T>::var(bool sample) throw(math::StatisticsException)
  * Calculates either standard deviation of a sample (sum of square deviations from
  * the mean is divided by N-1) or of a population (sum of squares divided by N).
  *
+ * @param x - vector of sample elements
  * @param sample - if 'true', sum of squared deviations is divided by (N-1), otherwise by N
  *
  * @return standard deviation of the sample depending on 'sample'
@@ -331,29 +288,9 @@ T math::SampleStatGeneric<T>::var(bool sample) throw(math::StatisticsException)
  * @throw StatisticsException if process() has not been called yet or if the sample is too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::stdev(bool sample) throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
 {
-    /*
-     * Standard deviation is calculated as:
-     *
-     *                            ---------------------------------
-     *                           /            N                   |
-     *                          /           -----
-     *              ---        /    1       \                 2
-     *   stdev(X) =    \      /  --------    >   (X(i) - mean)
-     *                  \    /    N - BC    /
-     *                   \  /               -----
-     *                    \/                 i=1
-     *
-     * where BC (Bessel's correction) equals 1 if 'sample' is 'true', otherwise it equals 0.
-     */
-
-    if ( true==sample && 1==this->m_N )
-    {
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_TOO_SMALL);
-    }
-
-    return this->stdev( static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return stdev( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -363,6 +300,7 @@ T math::SampleStatGeneric<T>::stdev(bool sample) throw(math::StatisticsException
  * positive integer number 'df_sub' as long as it is strictly smaller than
  * the sample size.
  *
+ * @param x - vector of sample elements
  * @param df_sub - generalized Bessel's correction value (typically 1 or 0)
  *
  * @return standard deviation of the sample, depending on the given 'df_sub'
@@ -370,20 +308,11 @@ T math::SampleStatGeneric<T>::stdev(bool sample) throw(math::StatisticsException
  * @throw StatisticsException if process() has not been called yet or if 'df_sub' exceeds sample's size
  */
 template <class T>
-T math::SampleStatGeneric<T>::stdev(size_t df_sub) throw(math::StatisticsException)
+T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
 {
     /*
-     * (Generalized) standard deviation is calculated as:
-     *
-     *                            -------------------------------------
-     *                           /                N                   |
-     *                          /               -----
-     *              ---        /     1          \                 2
-     *   stdev(X) =    \      / ------------     >   (X(i) - mean)
-     *                  \    /   N - df_sub     /
-     *                   \  /                   -----
-     *                    \/                     i=1
-     *
+     * Standard deviation is calculated as square root
+     * of the variance.
      */
 
     /*
@@ -398,7 +327,7 @@ T math::SampleStatGeneric<T>::stdev(size_t df_sub) throw(math::StatisticsExcepti
     throw math::StatisticsException(math::StatisticsException::UNSUPPORTED_TYPE);
 
     // will never execute, but some compilers may produce a warning if nothing is returned
-    return math::NumericUtil<T>::ONE;
+    return math::NumericUtil<T>::ZERO;
 }
 
 
@@ -413,9 +342,9 @@ T math::SampleStatGeneric<T>::stdev(size_t df_sub) throw(math::StatisticsExcepti
 
 #define _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(FD) \
 template<> \
-FD math::SampleStatGeneric<FD>::stdev(size_t df_sub) throw (math::StatisticsException) \
+FD math::SampleStatGeneric<FD>::stdev(const std::vector<FD>& x, size_t df_sub) throw (math::StatisticsException) \
 { \
-    return std::sqrt( this->var(df_sub) ); \
+    return std::sqrt( var(x, df_sub) ); \
 }
 // end of #define
 

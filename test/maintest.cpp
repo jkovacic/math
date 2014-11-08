@@ -1161,20 +1161,17 @@ void statisticsTest()
               14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3,
               19.2, 27.3, 26.0, 30.4, 15.8, 19.7, 15.0, 21.4 };
 
+        /*
+           # Equivalent of the following command in R:
+           data(mtcars)
+         */
         vector<double> vmpgs;
         vmpgs.reserve(32);
         vmpgs.assign(ampgs, ampgs+32);
 
         /*
-           # Equivalent of the following command in R:
-           data(mtcars)
-         */
-        SampleStat s(vmpgs);
-        s.process();
-
-        /*
-           length(mtcars$mpg)
-           [1] 32
+           sum(mtcars$mpg)
+           [1] 642.9
            mean(mtcars$mpg)
            [1] 20.09062
            var(mtcars$mpg)
@@ -1188,12 +1185,12 @@ void statisticsTest()
            sqrt((n-1)/n) * sd(mtcars$mpg)
            [1] 5.93203
          */
-        cout << "size of the sample: " << s.sampleSize() << " (expected: 32)" << endl;
-        cout << "Sample mean: " << s.mean() << " (expected: 20.09062)" << endl;
-        cout << "Sample variance: " << s.var() << " (expected: 36.3241)" << endl;
-        cout << "Sample standard deviation: " << s.stdev() << " (expected: 6.026948)" << endl;
-        cout << "Population variance (w/o Bessel's correction): " << s.var(false) << " (expected: 35.18897)" << endl;
-        cout << "Population standard deviation (w/o Bessel's correction): " << s.stdev(false) << " (expected: 5.93203)" << endl;
+        cout << "Sum of all elements: " << SampleStat::sum(vmpgs) << " (expected: 642.9)" << endl;
+        cout << "Sample mean: " << SampleStat::mean(vmpgs) << " (expected: 20.09062)" << endl;
+        cout << "Sample variance: " << SampleStat::var(vmpgs) << " (expected: 36.3241)" << endl;
+        cout << "Sample standard deviation: " << SampleStat::stdev(vmpgs) << " (expected: 6.026948)" << endl;
+        cout << "Population variance (w/o Bessel's correction): " << SampleStat::var(vmpgs, false) << " (expected: 35.18897)" << endl;
+        cout << "Population standard deviation (w/o Bessel's correction): " << SampleStat::stdev(vmpgs, false) << " (expected: 5.93203)" << endl;
 
         /*
          * R code to perform basic unit test of quantiles:
