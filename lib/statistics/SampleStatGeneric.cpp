@@ -50,7 +50,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
 
     if ( 0 == N )
     {
-        return static_cast<T>(0);
+        return math::NumericUtil<T>::ZERO;
     }
 
     /*
@@ -108,7 +108,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
  *
  * @return mean value of the sample
  *
- * @throw StatisticsException if process() has not been called yet
+ * @throw StatisticsException if 'x' is empty
  */
 template <class T>
 T math::SampleStatGeneric<T>::mean(const std::vector<T>& x) throw(math::StatisticsException)
@@ -126,7 +126,7 @@ T math::SampleStatGeneric<T>::mean(const std::vector<T>& x) throw(math::Statisti
      *
      */
 
-	const size_t N = x.size();
+    const size_t N = x.size();
 
     if ( 0 == N )
     {
@@ -148,7 +148,7 @@ T math::SampleStatGeneric<T>::mean(const std::vector<T>& x) throw(math::Statisti
  *
  * @return variance of the sample, depending on the given 'df_sub'
  *
- * @throw StatisticsException if process() has not been called yet or if 'df_sub' exceeds sample's size
+ * @throw StatisticsException if 'x' is empty or if 'df_sub' exceeds sample's size
  */
 template <class T>
 T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
@@ -266,7 +266,7 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
  *
  * @return variance of the sample depending on 'sample'
  *
- * @throw StatisticsException if process() has not been called yet or if the sample is too small
+ * @throw StatisticsException if the sample is empty or too small
  */
 template <class T>
 T math::SampleStatGeneric<T>::var(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
@@ -285,7 +285,7 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, bool sample) throw(ma
  *
  * @return standard deviation of the sample depending on 'sample'
  *
- * @throw StatisticsException if process() has not been called yet or if the sample is too small
+ * @throw StatisticsException if the sample is empty or too small
  */
 template <class T>
 T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
@@ -305,7 +305,7 @@ T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, bool sample) throw(
  *
  * @return standard deviation of the sample, depending on the given 'df_sub'
  *
- * @throw StatisticsException if process() has not been called yet or if 'df_sub' exceeds sample's size
+ * @throw StatisticsException if 'x' is empty or 'df_sub' exceeds sample's size
  */
 template <class T>
 T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)

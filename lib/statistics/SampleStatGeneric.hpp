@@ -52,7 +52,7 @@ public:
     static T mean(const std::vector<T>& x) throw(StatisticsException);
     static T var(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
     static T var(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
-    static T stdev(const std::vector<T>& x, bool samplen=true) throw(StatisticsException);
+    static T stdev(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
     static T stdev(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
 
 };  // class SampleStatGeneric
