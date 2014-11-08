@@ -79,15 +79,16 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
         const size_t thrnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
 
-        const size_t samples_per_thread = (N + nthreads -1) / nthreads;
+        const size_t samples_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = samples_per_thread * thrnr;
-        const size_t iend = istart + samples_per_thread;
 
         // Calculate the sum of the assigned block...
         T partsum = math::NumericUtil<T>::ZERO;
-        for ( size_t i=istart; i<iend && i<N; ++i )
+        size_t cntr = 0;
+        for ( typename std::vector<T>::const_iterator it = x.begin() + istart;
+              cntr<samples_per_thread && it!=x.end(); ++it, ++cntr )
         {
-            partsum += x.at(i);
+            partsum += *it;
         }
 
         // ... and add it to the total sum in a thread safe manner.
@@ -230,16 +231,17 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
         const size_t thrnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
 
-        const size_t samples_per_thread = (N + nthreads -1) / nthreads;
+        const size_t samples_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = samples_per_thread * thrnr;
-        const size_t iend = istart + samples_per_thread;
 
         // Calculate both sums of the assigned block...
         T partsum  = math::NumericUtil<T>::ZERO;
         T partsum2 = math::NumericUtil<T>::ZERO;
-        for ( size_t i=istart; i<iend && i<N; ++i )
+        size_t cntr = 0;
+        for ( typename std::vector<T>::const_iterator it = x.begin() + istart; 
+              cntr<samples_per_thread && it!=x.end(); ++it, ++cntr )
         {
-            const T diff = x.at(i) - K;
+            const T diff = *it - K;
             partsum  += diff;
             partsum2 += diff * diff;
         }
