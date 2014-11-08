@@ -92,9 +92,8 @@ bool math::NumericUtil<T>::isZero(const T& value)
      * The implementation for integers et al. where the == operator
      * does make sense and no comparison to EPS is necessary.
      */
-    bool retVal = ( ZERO==value ? true : false );
 
-    return retVal;
+    return ( ZERO==value ? true : false );
 }
 
 
@@ -112,9 +111,7 @@ bool math::NumericUtil<T>::isZero(const T& value)
 template<> \
 bool math::NumericUtil<FDL>::isZero(const FDL& value) \
 { \
-    bool retVal = false; \
-    retVal = ( value>-EPS && value<EPS ? true : false ); \
-    return retVal; \
+    return ( value>-EPS && value<EPS ? true : false ); \
 }
 // end of #define
 
@@ -142,10 +139,8 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(long double)
 template<> \
 bool math::NumericUtil<std::complex<FDL> >::isZero(const std::complex<FDL>& value) \
 { \
-    bool retVal = false; \
     const FDL eps = math::NumericUtil<FDL>::getEPS(); \
-    retVal = ( std::norm(value)<=eps*eps ? true : false ); \
-    return retVal; \
+    return ( std::norm(value)<=eps*eps ? true : false ); \
 }
 // end of #define
 
