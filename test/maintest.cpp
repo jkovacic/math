@@ -1215,7 +1215,7 @@ void statisticsTest()
            [1] 0.7528328
          */
         cout << "Sample covariance: " << SampleStat::cov(vmpgs, vwts) << " (expected: -5.116685)" << endl;
-        cout << "Population covariance (w/o B.c.: )" << SampleStat::cov(vmpgs, vwts, false) << " (expected: -4.956788)" << endl;
+        cout << "Population covariance (w/o B.c.): " << SampleStat::cov(vmpgs, vwts, false) << " (expected: -4.956788)" << endl;
         cout << "Pearson's r: " << SampleStat::cor(vmpgs, vwts) << " (expected: -0.8676594)" << endl;
         cout << "r^2: " << SampleStat::r2(vmpgs, vwts) << " (expected: 0.7528328)" << endl;
 
