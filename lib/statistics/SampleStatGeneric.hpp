@@ -22,7 +22,8 @@ limitations under the License.
  * @headername{SampleStatGeneric.h}
  *
  * Declaration of the class SampleStatGeneric that calculates sample's
- * mean, variance, standard deviation, sum, etc.
+ * sum, mean, variance, standard deviation, covariance, Pearson's r
+ * (correlation), r squared, etc.
  */
 
 #ifndef _MATH_SAMPLESTATGENERIC_HPP_
@@ -39,7 +40,8 @@ namespace math
 
 /**
  * @brief A class that calculates sample's basic statistics, such as
- * mean, variance, standard deviation, sum, etc.
+ * sum, mean, variance, standard deviation, covariance, Pearson'r
+ * (correlation), etc.
  *
  * The whole class is static, so no instantiation is necessary.
  */
@@ -54,6 +56,10 @@ public:
     static T var(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
     static T stdev(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
     static T stdev(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
+    static T cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(StatisticsException);
+    static T cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample=true) throw(StatisticsException);
+    static T cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
+    static T r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
 
 };  // class SampleStatGeneric
 

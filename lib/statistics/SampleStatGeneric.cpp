@@ -74,7 +74,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
                     reduction(+ : sum)
     {
         // Depending on the number of available threads,
-        // determine the ideal nr.of samples per thread,
+        // determine the ideal nr. of samples per thread,
         // and start and sample of a block that each thread will process.
         const size_t thrnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
@@ -183,9 +183,9 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
      *                               N - df_sub
      *
      * Where K may be an arbitrary value. Typically it is recommended to
-     * not equal 0 to avoid the catastrophic cancellation (both terms may be
-     * of very similar). Typically it can be assigned any element's value,
-     * ideally close to the sample's mean.
+     * not equal 0 to avoid the catastrophic cancellation (both terms can be
+     * of very similar values). Typically it can be assigned any element's
+     * value, ideally close to the sample's mean.
      *
      * For more details, see:
      * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
@@ -226,7 +226,7 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
                 reduction(+ : sum, sum2)
     {
     	// Depending on the number of available threads,
-        // determine the ideal nr.of samples per thread,
+        // determine the ideal nr. of samples per thread,
         // and start and sample of a block that each thread will process.
         const size_t thrnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
@@ -361,3 +361,233 @@ _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(long double)
 
 // definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM not needed anymore, #undef it
 #undef _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV
+
+
+
+/**
+ * Covariance of two equally sized samples.
+ *
+ * The method allows the divisor (sample size) to be reduced by an arbitrary
+ * positive integer number 'df_sub' as long as it is strictly smaller than
+ * a single sample's size.
+ *
+ * @param x1 - first vector of sample elements
+ * @param x2 - second vector of sample elements
+ * @param df_sub - generalized Bessel's correction value (typically 1 or 0)
+ *
+ * @return covariance of both samples, depending on the given 'df_sub'
+ *
+ * @throw StatisticsException if any vector is empty, if they are not of equal sizes or 'df_sub' exceeds single sample's size
+ */
+template <class T>
+T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(math::StatisticsException)
+{
+    /*
+     * Covariance of two equally sized samples (X1 and X2) can be
+     * calculated as:
+     *
+     *                              N
+     *                            -----
+     *                     1      \          --           --
+     * cov(X1, X2) = ------------  >  (X1[i]-X1) * (X2[i]-X2)
+     *                N - df_sub  /
+     *                            -----
+     *                             i=1
+     *
+     * It is called a two step algorithm as it must calculate the sample means
+     * in the first step, followed by the algorithm above to calculate the variance.
+     *
+     * When the means are not required, the expression above can be replaced by the
+     * one step algorithm:
+     *
+     *                  N                               N             N
+     *                -----                           -----         -----
+     *                \                            1  \             \
+     *                 >  (X1[i]-K1)*(X2[i]-K2) - ---  > (X1[i]-K1)  > (X2[i]-K2)
+     *                /                            N  /             /
+     *                -----                           -----         -----
+     *                 i=1                             i=1           i=1
+     * cov(X1, X2) = --------------------------------------------------------------
+     *                                        N - df_sub
+     *
+     * Where K1 and K2 may be arbitrary values. Typically it is recommended to
+     * not equal 0 to avoid the catastrophic cancellation (both terms may be
+     * be of very similar values). Typically they can be assigned any sample
+     * element's value, ideally close to the samples' means.
+     *
+     * For more details, see:
+     * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+     */
+
+    const size_t N1 = x1.size();
+    const size_t N2 = x2.size();
+
+    if ( 0==N1 || 0==N2 )
+    {
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
+    }
+
+    if ( df_sub >= N1 )
+    {
+        throw math::StatisticsException(math::StatisticsException::DF_SUBTRAHEND_TOO_LARGE);
+    }
+
+    if ( N1 != N2 )
+    {
+        throw math::StatisticsException(math::StatisticsException::UNEQUAL_SAMPLE_SIZES);
+    }
+
+    // K's are equal to the first elements of both samples
+    const T K1 = x1.at(0);
+    const T K2 = x2.at(0);
+
+    T sum  = math::NumericUtil<T>::ZERO;
+    T sum1 = math::NumericUtil<T>::ZERO;
+    T sum2 = math::NumericUtil<T>::ZERO;
+
+    /*
+     * Coarse grained parallelism will be applied, i.e. each thread will be
+     * assigned an (approximately) equally sized contiguous block of data
+     * to be processed.
+     */
+
+    // Ideal number of threads
+    // (if each one processes approx. OMP_CHUNKS_PER_THREAD items):
+    const size_t ideal = N1 / OMP_CHUNKS_PER_THREAD +
+                         ( 0 == N1 % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N1>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(x1, x2) \
+                reduction(+ : sum, sum1, sum2)
+    {
+    	// Depending on the number of available threads,
+        // determine the ideal nr. of samples per thread,
+        // and start and sample of a block that each thread will process.
+        const size_t thrnr = omp_get_thread_num();
+        const size_t nthreads = omp_get_num_threads();
+
+        const size_t samples_per_thread = (N1 + nthreads - 1) / nthreads;
+        const size_t istart = samples_per_thread * thrnr;
+
+        // Calculate both sums of the assigned block...
+        T partsum  = math::NumericUtil<T>::ZERO;
+        T partsum1 = math::NumericUtil<T>::ZERO;
+        T partsum2 = math::NumericUtil<T>::ZERO;
+        size_t cntr = 0;
+        typename std::vector<T>::const_iterator it1;
+        typename std::vector<T>::const_iterator it2;
+        for ( it1 = x1.begin() + istart, it2 = x2.begin() + istart;
+              cntr<samples_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
+        {
+            const T d1 = *it1 - K1;
+            const T d2 = *it2 - K2;
+            partsum  += d1 * d2;
+            partsum1 += d1;
+            partsum2 += d2;
+        }
+
+        // ... and add them to the total sums in a thread safe manner.
+        sum  += partsum;
+        sum1 += partsum1;
+        sum2 += partsum2;
+    }
+
+    return (sum - (sum1*sum2)/static_cast<T>(N1)) / static_cast<T>(N1 - df_sub);
+
+    // In serial mode this variable is never used.
+    (void) ideal;
+}
+
+
+/**
+ * Covariance of two equally sized samples.
+ *
+ * The method allows the divisor (sample size) to be reduced by an arbitrary
+ * positive integer number 'df_sub' as long as it is strictly smaller than
+ * a single sample's size.
+ *
+ * @param x1 - first vector of sample elements
+ * @param x2 - second vector of sample elements
+ * @param sample - if 'true', sum of squared deviations is divided by (N-1), otherwise by N
+ *
+ * @return covariance of both samples, depending on 'sample'
+ *
+ * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
+ */
+template <class T>
+T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample) throw(math::StatisticsException)
+{
+    return cov( x1, x2, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+}
+
+
+/**
+ * Correlation a.k.a. "Pearson's r" of two equally sized samples.
+ *
+ * It equals covariance, divided by the product of
+ * both samples' standard deviations.
+ *
+ * @param x1 - first vector of sample elements
+ * @param x2 - second vector of sample elements
+ *
+ * @return correlation of both samples, always between -1 and 1
+ *
+ * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
+ */
+template <class T>
+T math::SampleStatGeneric<T>::cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
+{
+    /*
+     * Correlation can be calculated as:
+     *
+     *                             cov(X1, X2)
+     *     r = cor(X1, X2) = -----------------------
+     *                        stdev(X1) * stdev(X2)
+     *
+     * It turns out that if the same divisor (N-df_sub) is applied at all operations,
+     * it cancels out, hence the correlation is independent on 'df_sub'.
+     */
+
+	// Apply the population covariance and standard deviations to
+	// allow smaller samples (at least one element each):
+    return cov(x1, x2, false) / ( stdev(x1, false) * stdev(x2, false) );
+}
+
+
+/**
+ * Coefficient of determination a.k.a. "r squared".
+ *
+ *     r^2 = cor(X1, X2)^2
+ *
+ * @param x1 - first vector of sample elements
+ * @param x2 - second vector of sample elements
+ *
+ * @return samples' coefficient of determination
+ *
+ * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
+ */
+template <class T>
+T math::SampleStatGeneric<T>::r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
+{
+    /*
+     * R squared can be calculated by squaring the samples' correlation:
+     *
+     *                                            2
+     *          2              2       cov(X1, X2)
+     * r(X1, X2)  = cor(X1, X2)  = -------------------
+     *                              var(X1) * var(X2)
+     *
+     * It can easily be proven that divisors (N - df_sub) cancel out
+     * if the same divisor is applied at each operation, hence
+     * r2 does not depend on 'df_sub'.
+     */
+
+    // The second formula above supports more types T.
+	// Additionally apply population covariance and variances
+	// to allow smaller samples (at least one element each).
+
+    const T cv = cov(x1, x2, false);
+
+    return (cv * cv) / ( var(x1, false) * var(x2, false) );
+}

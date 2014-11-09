@@ -58,11 +58,14 @@ void math::StatisticsException::what(std::ostream& str) const
         case UNSUPPORTED_TYPE :
             str << "Operation is not supported for the specified type T.";
             break;
+        case UNEQUAL_SAMPLE_SIZES :
+            str << "Sample sizes are not equal.";
+            break;
         case OUT_OF_MEMORY :
             str << "Could not allocate enough memory.";
             break;
         case INVALID_PROBABILTY :
-            str << "Probabilty is not within the valid range.";
+            str << "Probability is not within the valid range.";
             break;
         case UNSUPPORTED_QUANTILE_METHOD :
             str << "The method to estimate the quantile is not supported yet.";

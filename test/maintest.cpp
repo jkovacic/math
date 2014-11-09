@@ -1161,13 +1161,25 @@ void statisticsTest()
               14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3,
               19.2, 27.3, 26.0, 30.4, 15.8, 19.7, 15.0, 21.4 };
 
+        /* Cars' wt (weight in 1000 lbs) from R's data frame 'mtcars' */
+        const double awts[] =
+            { 2.620, 2.875, 2.320, 3.215, 3.440, 3.460, 3.570, 3.190,
+              3.150, 3.440, 3.440, 4.070, 3.730, 3.780, 5.250, 5.424,
+              5.345, 2.200, 1.615, 1.835, 2.465, 3.520, 3.435, 3.840,
+              3.845, 1.935, 2.140, 1.513, 3.170, 2.770, 3.570, 2.780 };
+
         /*
            # Equivalent of the following command in R:
            data(mtcars)
          */
         vector<double> vmpgs;
+        vector<double> vwts;
+
         vmpgs.reserve(32);
         vmpgs.assign(ampgs, ampgs+32);
+
+        vwts.reserve(32);
+        vwts.assign(awts, awts+32);
 
         /*
            sum(mtcars$mpg)
@@ -1191,6 +1203,21 @@ void statisticsTest()
         cout << "Sample standard deviation: " << SampleStat::stdev(vmpgs) << " (expected: 6.026948)" << endl;
         cout << "Population variance (w/o Bessel's correction): " << SampleStat::var(vmpgs, false) << " (expected: 35.18897)" << endl;
         cout << "Population standard deviation (w/o Bessel's correction): " << SampleStat::stdev(vmpgs, false) << " (expected: 5.93203)" << endl;
+
+        /*
+           cov(mtcars$mpg, mtcars$wt)
+           [1] -5.116685
+           (n-1)/n * cov(mtcars$mpg, mtcars$wt)
+           [1] -4.956788
+           cor(mtcars$mpg, mtcars$wt)
+           [1] -0.8676594
+           cor(mtcars$mpg, mtcars$wt)^2
+           [1] 0.7528328
+         */
+        cout << "Sample covariance: " << SampleStat::cov(vmpgs, vwts) << " (expected: -5.116685)" << endl;
+        cout << "Population covariance (w/o B.c.: )" << SampleStat::cov(vmpgs, vwts, false) << " (expected: -4.956788)" << endl;
+        cout << "Pearson's r: " << SampleStat::cor(vmpgs, vwts) << " (expected: -0.8676594)" << endl;
+        cout << "r^2: " << SampleStat::r2(vmpgs, vwts) << " (expected: 0.7528328)" << endl;
 
         /*
          * R code to perform basic unit test of quantiles:
