@@ -427,14 +427,14 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
         throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
-    if ( df_sub >= N1 )
-    {
-        throw math::StatisticsException(math::StatisticsException::DF_SUBTRAHEND_TOO_LARGE);
-    }
-
     if ( N1 != N2 )
     {
         throw math::StatisticsException(math::StatisticsException::UNEQUAL_SAMPLE_SIZES);
+    }
+
+    if ( df_sub >= N1 )
+    {
+        throw math::StatisticsException(math::StatisticsException::DF_SUBTRAHEND_TOO_LARGE);
     }
 
     // K's are equal to the first elements of both samples
