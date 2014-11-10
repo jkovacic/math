@@ -79,6 +79,17 @@ struct EQntlType
 template <class T>
 class SampleQuantileGeneric
 {
+private:
+    // Most common numerical constants, used internally within the class:
+    // The constants must be assigned outside the class declaration.
+    static const T ONE;
+    static const T TWO;
+    static const T THREE;
+    static const T FOUR;
+    static const T FIVE;
+    static const T EIGHT;
+    static const T HALF;
+    static const T QUARTER;
 
 private:
     std::vector<T> m_v;
@@ -91,7 +102,7 @@ public:
     // Methods to obtain quantiles of the sample:
     size_t sampleSize();
     T quantile(size_t num, size_t den, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
-    T qntl(double p, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
+    T qntl(const T& p, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
     T median();
     T iqr(EQntlType::type method=EQntlType::R7);
 
@@ -107,9 +118,12 @@ private:
      * than expected, so addition of 0.5 ensures that the number is
      * properly converted (truncated) to an integer.
      */
-    static inline size_t dbl2int(double n) { return static_cast<size_t>(n+0.5); }
+    static inline size_t toInt(const T& n)
+    {
+        return static_cast<size_t>(n + static_cast<T>(1)/static_cast<T>(2) );
+    }
 
-    T linIntrp(double h);
+    T linIntrp(const T& h);
 
 };  // class SampleQuantileGeneric
 

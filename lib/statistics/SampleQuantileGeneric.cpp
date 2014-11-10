@@ -36,6 +36,35 @@ limitations under the License.
 
 #include "exception/StatisticsException.hpp"
 #include "util/NumericUtil.hpp"
+#include "SampleQuantileGeneric.hpp"
+
+
+/*
+ * Definitions of the most commonly used numerical constants:
+ */
+template <class T>
+const T math::SampleQuantileGeneric<T>::ONE ( math::NumericUtil<T>::ONE );
+
+template <class T>
+const T math::SampleQuantileGeneric<T>::TWO ( static_cast<T>(2) );
+
+template <class T>
+const T math::SampleQuantileGeneric<T>::THREE ( static_cast<T>(3) );
+
+template <class T>
+const T math::SampleQuantileGeneric<T>::FOUR ( static_cast<T>(4) );
+
+template <class T>
+const T math::SampleQuantileGeneric<T>::FIVE ( static_cast<T>(5) );
+
+template <class T>
+const T math::SampleQuantileGeneric<T>::EIGHT ( static_cast<T>(8) );
+
+template <class T>
+const T math::SampleQuantileGeneric<T>::HALF ( ONE / static_cast<T>(2) );
+
+template <class T>
+const T math::SampleQuantileGeneric<T>::QUARTER ( ONE / static_cast<T>(4) );
 
 
 /**
@@ -105,7 +134,7 @@ T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlTy
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
 
-    return this->qntl( static_cast<double>(num) / static_cast<double>(den), method);
+    return this->qntl( static_cast<T>(num) / static_cast<T>(den), method);
 }
 
 
@@ -119,11 +148,11 @@ T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlTy
  * @return estimated quantile as a function of 'h'
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::linIntrp(double h)
+T math::SampleQuantileGeneric<T>::linIntrp(const T& h)
 {
 	// "rename" the vector as it is referred in statistical publications:
     const std::vector<T>& x = this->m_v;
-    const double hf = std::floor(h);
+    const T hf = std::floor(h);
 
     /*
      * if floor(h) is referred as 'hf', the quantile is estimated as:
@@ -139,7 +168,7 @@ T math::SampleQuantileGeneric<T>::linIntrp(double h)
      *   qp = x[hf-1] + (h - hf) * (x[hf] - x[hf-1])
      */
 
-    return ( x.at(dbl2int(hf)-1) + (h - hf) * (x.at(dbl2int(hf)) - x.at(dbl2int(hf)-1)) );
+    return ( x.at(toInt(hf)-1) + (h - hf) * (x.at(toInt(hf)) - x.at(toInt(hf)-1)) );
 }
 
 
@@ -160,7 +189,7 @@ T math::SampleQuantileGeneric<T>::linIntrp(double h)
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method) throw(math::StatisticsException)
 {
     T retVal;
 
@@ -169,7 +198,10 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     const size_t& N = this->m_N;
     const std::vector<T>& x = this->m_v;
 
-    if ( p<0.0 || p>1.0 )
+    // N casted to , used often in nonint expressions
+    const T NT = static_cast<T>(N);
+
+    if ( p<math::NumericUtil<T>::ZERO || p>ONE )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -189,14 +221,14 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     case math::EQntlType::SAS3 :
     {
         // Inverse of empirical distribution function
-        if ( true == math::NumericUtil<double>::isZero(p) )
+        if ( true == math::NumericUtil<T>::isZero(p) )
         {
             retVal = x.at(0);
         }
         else
         {
-            const double h = N * p + 0.5;
-            retVal = x.at(dbl2int(std::ceil(h-0.5)) - 1);
+            const T h = NT * p + HALF;
+            retVal = x.at(toInt(std::ceil(h-HALF)) - 1);
         }
 
         break;
@@ -207,20 +239,19 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     {
         // Inverse of empirical distribution function
         // with averaging at discontinuities
-        if ( true == math::NumericUtil<double>::isZero(p) )
+        if ( true == math::NumericUtil<T>::isZero(p) )
         {
             retVal = x.at(0);
         }
-        else if ( true == math::NumericUtil<double>::isZero(1.0-p) )
+        else if ( true == math::NumericUtil<T>::isZero(ONE-p) )
         {
             retVal = x.at(N - 1);
         }
         else
         {
-            const double h = N * p + 0.5;
-            retVal = ( x.at(dbl2int(std::ceil(h-0.5)) - 1) + x.at(dbl2int(std::floor(h+0.5)) - 1) )
-                / static_cast<T>(2);
-
+            const T h = NT * p + HALF;
+            retVal = ( x.at(toInt(std::ceil(h-HALF)) - 1) + 
+                       x.at(toInt(std::floor(h+HALF)) - 1) ) * HALF;
         }
 
         break;
@@ -230,15 +261,15 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     case math::EQntlType::SAS2 :
     {
         // Observation closest to N*p
-        if ( p < 0.5/N )
+        if ( p < HALF/NT )
         {
             retVal = x.at(0);
         }
         else
         {
-            const double h = N * p;
-            const double frac = h - std::floor(h);
-            size_t idx = dbl2int(std::floor(h));
+            const T h = NT * p;
+            const T frac = h - std::floor(h);
+            size_t idx = toInt(std::floor(h));
 
             /*
              * The index is h, rounded to the nearest integer.
@@ -246,7 +277,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
              * assuming one-based indexing.
              */
 
-            if ( true == math::NumericUtil<double>::isZero(frac-0.5) )
+            if ( true == math::NumericUtil<T>::isZero(frac-HALF) )
             {
                 // in this case round to the nearest even (divisible by 2) integer idx
                 if ( 0 != idx%2 )
@@ -254,7 +285,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
                     ++idx;
                 }
             }
-            else if ( frac > 0.5 )
+            else if ( frac > HALF )
             {
                 ++idx;
             }
@@ -271,17 +302,17 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     case math::EQntlType::SCIPY_0_1 :
     {
         // Linear interpolation of the empirical distribution function
-        if ( p < 1.0/N )
+        if ( p < ONE/NT )
         {
             retVal = x.at(0);
         }
-        else if ( true == math::NumericUtil<double>::isZero(1.0-p) )
+        else if ( true == math::NumericUtil<T>::isZero(ONE-p) )
         {
             retVal = x.at(N-1);
         }
         else
         {
-            retVal = this->linIntrp(N * p);
+            retVal = this->linIntrp(NT * p);
         }
 
         break;
@@ -292,17 +323,17 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     {
         // Piecewise linear function where the knots are the values midway
         // through the steps of the empirical distribution function
-        if ( p < 0.5/N )
+        if ( p < HALF/NT )
         {
             retVal = x.at(0);
         }
-        else if ( p >= (N-0.5)/N )
+        else if ( p >= (NT-HALF)/NT )
         {
             retVal = x.at(N-1);
         }
         else
         {
-            retVal = this->linIntrp(N * p + 0.5);
+            retVal = this->linIntrp(NT * p + HALF);
         }
 
         break;
@@ -314,17 +345,17 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     {
         // Linear interpolation of the expectations for the order statistics
         // for the uniform distribution on [0,1]
-        if ( p < 1.0/(N+1.0) )
+        if ( p < ONE/(NT+ONE) )
         {
             retVal = x.at(0);
         }
-        else if ( p >= N/(N+1.0) )
+        else if ( p >= NT/(NT+ONE) )
         {
             retVal = x.at(N-1);
         }
         else
         {
-            retVal = this->linIntrp((N + 1.0) * p);
+            retVal = this->linIntrp((NT + ONE) * p);
         }
 
         break;
@@ -336,13 +367,13 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     {
         // Linear interpolation of the modes for the order statistics for
         // the uniform distribution on [0,1]
-        if ( true == math::NumericUtil<T>::isZero(1.0-p) )
+        if ( true == math::NumericUtil<T>::isZero(ONE-p) )
         {
             retVal = x.at(N-1);
         }
         else
         {
-            retVal = this->linIntrp((N - 1.0) * p + 1.0);
+            retVal = this->linIntrp((NT - ONE) * p + ONE);
         }
 
         break;
@@ -351,18 +382,20 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     case math::EQntlType::R8 :
     case math::EQntlType::SCIPY_13_13 :
     {
+        const T third = ONE / THREE;
+
         // Linear interpolation of the approximate medians for order statistics
-        if ( p < (2.0/3.0)/(N+1.0/3.0) )
+        if ( p < (TWO*third) / (NT+third) )
         {
             retVal = x.at(0);
         }
-        else if ( p >= (N-1.0/3.0)/(N+1.0/3.0) )
+        else if ( p >= (NT-third) / (NT+third) )
         {
             retVal = x.at(N-1);
         }
         else
         {
-            retVal = this->linIntrp((N + 1.0/3.0) * p + 1.0/3.0);
+            retVal = this->linIntrp((NT + third) * p + third);
         }
 
         break;
@@ -371,19 +404,22 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     case math::EQntlType::R9 :
     case math::EQntlType::SCIPY_38_38 :
     {
+        const T F_3_8 = THREE / EIGHT;
+        const T F_5_8 = FIVE / EIGHT;
+
         // The resulting quantile estimates are approximately unbiased for the
         // expected order statistics if x is normally distributed
-        if ( p < 0.625/(N+0.25) )
+        if ( p < F_5_8/(NT+QUARTER) )
         {
             retVal = x.at(0);
         }
-        else if ( p >= (N-0.375)/(N+0.25) )
+        else if ( p >= (NT-F_3_8)/(NT+QUARTER) )
         {
             retVal = x.at(N-1);
         }
         else
         {
-            retVal = this->linIntrp((N + 0.25) * p + 0.375);
+            retVal = this->linIntrp((NT + QUARTER) * p + F_3_8);
         }
 
         break;
@@ -393,17 +429,17 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
     {
         // If h were rounded, this would give the order statistic with the least
         // expected square deviation relative to p
-        if ( p < 1.5/(N+2.0) )
+        if ( p < (THREE/TWO) / (NT+TWO) )
         {
             retVal = x.at(0);
         }
-        else if ( p >= (N+0.5)/(N+2.0) )
+        else if ( p >= (NT+HALF)/(NT+TWO) )
         {
             retVal = x.at(N-1);
         }
         else
         {
-            retVal = this->linIntrp((N + 2.0) * p - 0.25);
+            retVal = this->linIntrp((NT + TWO) * p - HALF);
         }
 
         break;
@@ -423,7 +459,7 @@ T math::SampleQuantileGeneric<T>::qntl(double p, math::EQntlType::type method) t
  * If the sample's number of elements is odd, the middle element
  * is returned:
  *
- *   median = sorted_vecor[(N-1)/2]
+ *   median = sorted_vector[(N-1)/2]
  *
  * If the sample's number of elements is even, the mean of the middle
  * two elements is returned:
@@ -446,7 +482,7 @@ T math::SampleQuantileGeneric<T>::median()
     {
         // even number of elements
     	size_t h = N / 2;
-        retVal = (x.at(h-1) + x.at(h)) / static_cast<T>(2);
+        retVal = (x.at(h-1) + x.at(h)) * HALF;
     }
     else
     {
@@ -464,7 +500,8 @@ T math::SampleQuantileGeneric<T>::median()
 template <class T>
 T math::SampleQuantileGeneric<T>::iqr(math::EQntlType::type method)
 {
-    return this->qntl(0.75, method) - this->qntl(0.25, method);
+    return this->qntl(THREE * QUARTER, method) - 
+           this->qntl(QUARTER, method);
 }
 
 
