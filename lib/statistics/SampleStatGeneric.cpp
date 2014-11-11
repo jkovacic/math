@@ -30,12 +30,47 @@ limitations under the License.
 #include <cstddef>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 
 #include "exception/StatisticsException.hpp"
 #include "util/NumericUtil.hpp"
+
+
+/*
+ * Finds an appropriate shift value (necessary to obtain variance or covariance)
+ * among the first elements of 'x'.
+ * 
+ * @param x - vector of samples 
+ * @param Nmax - the highest number of elements to check (default: 5)
+ * 
+ * @return element with the highest absolute value among the first 'Nmax' elements of 'x'
+ */
+template <class T>
+T math::SampleStatGeneric<T>::getShift(const std::vector<T>& x, size_t Nmax)
+{
+    T retVal = x.at(0);
+    T absRetVal = ( retVal<math::NumericUtil<T>::ZERO ? -retVal : retVal );
+    const size_t N = std::min<size_t>(x.size(), Nmax);
+
+    size_t cntr = 1;
+    for ( typename std::vector<T>::const_iterator it = x.begin()+cntr;
+          cntr<N; ++it, ++cntr)
+    {
+        const T el = *it;
+        const T absx = ( el<math::NumericUtil<T>::ZERO ? -el : el );
+
+        if ( absx > absRetVal )
+        {
+            retVal = el;
+            absRetVal = absx;
+        }
+    }
+
+    return retVal;
+}
 
 
 /**
@@ -204,7 +239,7 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
     }
 
     // Let K be equal to the first element:
-    const T K = x.at(0);
+    const T K = getShift(x);
 
     T sum  = math::NumericUtil<T>::ZERO;
     T sum2 = math::NumericUtil<T>::ZERO;
@@ -438,8 +473,8 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
     }
 
     // K's are equal to the first elements of both samples
-    const T K1 = x1.at(0);
-    const T K2 = x2.at(0);
+    const T K1 = getShift(x1);
+    const T K2 = getShift(x2);
 
     T sum  = math::NumericUtil<T>::ZERO;
     T sum1 = math::NumericUtil<T>::ZERO;
@@ -549,8 +584,8 @@ T math::SampleStatGeneric<T>::cor(const std::vector<T>& x1, const std::vector<T>
      * it cancels out, hence the correlation is independent on 'df_sub'.
      */
 
-	// Apply the population covariance and standard deviations to
-	// allow smaller samples (at least one element each):
+    // Apply the population covariance and standard deviations to
+    // allow smaller samples (at least one element each):
     return cov(x1, x2, false) / ( stdev(x1, false) * stdev(x2, false) );
 }
 
@@ -584,8 +619,8 @@ T math::SampleStatGeneric<T>::r2(const std::vector<T>& x1, const std::vector<T>&
      */
 
     // The second formula above supports more types T.
-	// Additionally apply population covariance and variances
-	// to allow smaller samples (at least one element each).
+    // Additionally apply population covariance and variances
+    // to allow smaller samples (at least one element each).
 
     const T cv = cov(x1, x2, false);
 

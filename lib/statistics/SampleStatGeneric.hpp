@@ -61,6 +61,9 @@ public:
     static T cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
     static T r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
 
+private:
+    static T getShift(const std::vector<T>& x, size_t Nmax=5);
+
 };  // class SampleStatGeneric
 
 
