@@ -1172,14 +1172,15 @@ void statisticsTest()
            # Equivalent of the following command in R:
            data(mtcars)
          */
+        const size_t LEN = 32;  // Nr. of elements in mtcars
         vector<double> vmpgs;
         vector<double> vwts;
 
-        vmpgs.reserve(32);
-        vmpgs.assign(ampgs, ampgs+32);
+        vmpgs.reserve(LEN);
+        vmpgs.assign(ampgs, ampgs+LEN);
 
-        vwts.reserve(32);
-        vwts.assign(awts, awts+32);
+        vwts.reserve(LEN);
+        vwts.assign(awts, awts+LEN);
 
         /*
            sum(mtcars$mpg)
