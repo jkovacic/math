@@ -60,10 +60,11 @@ public:
 
 };
 
-// Regression classes with elements of types float and double make most sense
-// so the following two types are predefined:
-typedef PolynomialRegressionGeneric<float>   FPolynomialRegression;
-typedef PolynomialRegressionGeneric<double>  PolynomialRegression;
+// Regression classes with elements of types float, double and long double make
+// most sense so the following three types are predefined:
+typedef PolynomialRegressionGeneric<float>       FPolynomialRegression;
+typedef PolynomialRegressionGeneric<double>      PolynomialRegression;
+typedef PolynomialRegressionGeneric<long double> LDPolynomialRegression;
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.

@@ -206,10 +206,11 @@ public:
 
 };  // class PolynomialGeneric
 
-// Polynomials with elements of types float and double make most sense
-// so the following two types are predefined:
-typedef PolynomialGeneric<float> FPolynomial;
-typedef PolynomialGeneric<double> Polynomial;
+// Polynomials with elements of types float, double and long double
+// make most sense so the following three types are predefined:
+typedef PolynomialGeneric<float>       FPolynomial;
+typedef PolynomialGeneric<double>      Polynomial;
+typedef PolynomialGeneric<long double> LDPolynomial;
 
 }  // namespace math
 

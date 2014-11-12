@@ -55,10 +55,11 @@ public:
     void generateCurve(size_t degree = 0) throw (CurveFittingException);
 };
 
-// Interpolation classes with elements of types float and double make most sense
-// so the following two types are predefined:
-typedef PolynomialInterpolationGeneric<float>   FPolynomialInterpolation;
-typedef PolynomialInterpolationGeneric<double>  PolynomialInterpolation;
+// Interpolation classes with elements of types float, double and long double make
+// most sense so the following three types are predefined:
+typedef PolynomialInterpolationGeneric<float>       FPolynomialInterpolation;
+typedef PolynomialInterpolationGeneric<double>      PolynomialInterpolation;
+typedef PolynomialInterpolationGeneric<long double> LDPolynomialInterpolation;
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.

@@ -188,10 +188,11 @@ template<> QuaternionGeneric<float> QuaternionGeneric<float>::unit() const throw
 template<> QuaternionGeneric<double> QuaternionGeneric<double>::unit() const throw (QuaternionException);
 template<> QuaternionGeneric<long double> QuaternionGeneric<long double>::unit() const throw (QuaternionException);
 
-// Quaternions with elements of types float and double make most sense
-// so the following two types are predefined:
-typedef QuaternionGeneric<float> FQuaternion;
-typedef QuaternionGeneric<double> Quaternion;
+// Quaternions with elements of types float, double and long double
+// make most sense so the following three types are predefined:
+typedef QuaternionGeneric<float>       FQuaternion;
+typedef QuaternionGeneric<double>      Quaternion;
+typedef QuaternionGeneric<long double> LDQuaternion;
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.

@@ -71,13 +71,15 @@ public:
 
 };
 
-// Equations with elements of types float, double and complex make most sense,
-// therefore the following types are predefined
-typedef LinearEquationSolverGeneric<float>   FLinearEquationSolver;
-typedef LinearEquationSolverGeneric<double>  LinearEquationSolver;
+// Equations with elements of types float, double, long double and complex
+// make most sense, therefore the following types are predefined
+typedef LinearEquationSolverGeneric<float>       FLinearEquationSolver;
+typedef LinearEquationSolverGeneric<double>      LinearEquationSolver;
+typedef LinearEquationSolverGeneric<long double> LDLinearEquationSolver;
 
-typedef LinearEquationSolverGeneric<std::complex<float> >  FCLinearEquationsolver;
-typedef LinearEquationSolverGeneric<std::complex<double> > CLinearEquationsolver;
+typedef LinearEquationSolverGeneric<std::complex<float> >       FCLinearEquationsolver;
+typedef LinearEquationSolverGeneric<std::complex<double> >      CLinearEquationsolver;
+typedef LinearEquationSolverGeneric<std::complex<long double> > LDCLinearEquationSolver;
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.

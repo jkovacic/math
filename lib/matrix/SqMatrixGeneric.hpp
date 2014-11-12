@@ -83,10 +83,11 @@ public:
     MatrixGeneric<T>& insertColumn(size_t colNr, const T& el=NumericUtil<T>::ZERO) throw (MatrixException);
 };
 
-// Matrices with elements of types float and double make most sense
-// so these two types are predefined
-typedef SqMatrixGeneric<float> FSqMatrix;
-typedef SqMatrixGeneric<double> SqMatrix;
+// Matrices with elements of types float, double and long double
+// make most sense so these three types are predefined
+typedef SqMatrixGeneric<float>       FSqMatrix;
+typedef SqMatrixGeneric<double>      SqMatrix;
+typedef SqMatrixGeneric<long double> LDSqMatrix;
 
 // Definition could be included into the namespace declaraion, but it
 // would cause conflicts with some extra included stdlib header files.

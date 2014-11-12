@@ -155,10 +155,11 @@ public:
     friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 };
 
-// Matrices with elements of types float and double make most sense
-// so these two types are predefined
-typedef MatrixGeneric<float> FMatrix;
-typedef MatrixGeneric<double> Matrix;
+// Matrices with elements of types float, double and long double
+// make most sense so these three types are predefined
+typedef MatrixGeneric<float>       FMatrix;
+typedef MatrixGeneric<double>      Matrix;
+typedef MatrixGeneric<long double> LDMatrix;
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.
