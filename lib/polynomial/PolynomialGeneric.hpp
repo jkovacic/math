@@ -132,7 +132,7 @@ private:
 
 public:
     // Constructors
-    PolynomialGeneric(std::vector<T> cvect) throw (PolynomialException);
+    PolynomialGeneric(const std::vector<T>& cvect) throw (PolynomialException);
     PolynomialGeneric(const T& c0=math::NumericUtil<T>::ZERO) throw (PolynomialException);
     PolynomialGeneric(const T* carray, size_t n) throw (PolynomialException);
     PolynomialGeneric(bool ignored, size_t n = 1) throw (PolynomialException);

@@ -44,7 +44,7 @@ limitations under the License.
  * @throw PolynomialException if 'cvect' is an empty vector or if allocation of memory fails
  */
 template<class T>
-math::PolynomialGeneric<T>::PolynomialGeneric(std::vector<T> cvect) throw (math::PolynomialException)
+math::PolynomialGeneric<T>::PolynomialGeneric(const std::vector<T>& cvect) throw (math::PolynomialException)
 {
     // sanity check
     if ( cvect.size() <= 0 )
