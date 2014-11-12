@@ -133,18 +133,18 @@ public:
 
 private:
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
-    void reduce();
+    void __reduce();
     // Auxiliary function that calculates unreduced numerator of difference of two fraction
     // Only its sign actually matters, so it returns -1, 0 or 1
-    static short int sign(const Rational& f1, const Rational& f2);
+    static short int __sign(const Rational& f1, const Rational& f2);
     // Absolute value of an integer (just an auxiliary function for others)
-    static unsigned long int absolute(long int a);
-    static long int auxSum(long int num1, long int denom2, long int num2, long int denom1) throw(RationalException);
-    static long int auxProd(long int factor1, long int factor2) throw(RationalException);
+    static unsigned long int __absolute(long int a);
+    static long int __auxSum(long int num1, long int denom2, long int num2, long int denom1) throw(RationalException);
+    static long int __auxProd(long int factor1, long int factor2) throw(RationalException);
     // 10^n
     static unsigned long long int pow10(unsigned int n) throw (RationalException);
     // parses a string into a long long value
-    static long long int str2ll(const std::string& str) throw (RationalException);
+    static long long int __str2ll(const std::string& str) throw (RationalException);
 
     // Friend functions that implement operators:
     friend Rational operator+(const Rational& f1, const Rational& f2) throw(RationalException);

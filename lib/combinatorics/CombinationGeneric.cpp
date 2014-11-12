@@ -54,7 +54,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw 
         // copy the vector 'el' into 'elems'
         this->elems = el;
         
-        init();
+        __init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -89,7 +89,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el) throw (m
             elems.push_back(*it);
         }
         
-        init();
+        __init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -123,7 +123,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el) throw (ma
             elems.push_back(*it);
         }
         
-        init();
+        __init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -157,7 +157,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (
             elems.push_back(*it);
         }
         
-        init();
+        __init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -199,7 +199,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, size_t len) th
             elems.push_back(elarray[i]);
         }
         
-        init();
+        __init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -211,7 +211,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, size_t len) th
  * Initialization of class's internal data to initial values
  */
 template<class T>
-void math::CombinationGeneric<T>::init()
+void math::CombinationGeneric<T>::__init()
 {
     N_size = elems.size();
     addr.clear();
@@ -252,7 +252,7 @@ void math::CombinationGeneric<T>::setK(size_t k) throw (math::CombinatoricsExcep
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
         }
         
-        init();
+        __init();
         
         /*
          * Prepare 'addr' for the first k-combination:

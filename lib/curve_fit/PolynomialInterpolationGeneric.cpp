@@ -45,7 +45,7 @@ limitations under the License.
 template<class T>
 math::PolynomialInterpolationGeneric<T>::PolynomialInterpolationGeneric()
 {
-    math::CurveFittingGenericAb<T>::init();
+    math::CurveFittingGenericAb<T>::_init();
 }
 
 /**
@@ -61,7 +61,7 @@ template<class T>
 void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
-    this->curveGenerationCheck();
+    this->_curveGenerationCheck();
     // TODO check value of degree?
 
     /*

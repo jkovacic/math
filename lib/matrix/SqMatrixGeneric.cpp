@@ -101,7 +101,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator= (const math::Matri
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    this->copyElems(m);
+    this->_copyElems(m);
 
     return *this;
 }
@@ -131,7 +131,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         {
             for ( size_t c=0; c<N; ++c )
             {
-                this->elems.at(this->pos(r, c)) = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
+                this->elems.at(this->_pos(r, c)) = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
             }  // for c
         }  // for r
 
@@ -209,7 +209,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // another one (r; r>i) satisfying temp(r,i)!=0
             // Each swap multiplies the determinant by -1
 
-            if ( true == math::NumericUtil<T>::isZero(temp.at(this->pos(i, i))) )
+            if ( true == math::NumericUtil<T>::isZero(temp.at(this->_pos(i, i))) )
             {
                 size_t r;
 
@@ -219,7 +219,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
                 for ( r=i+1; r<N; ++r )
                 {
-                    if ( false == NumericUtil<T>::isZero(temp.at(this->pos(r, i))) )
+                    if ( false == NumericUtil<T>::isZero(temp.at(this->_pos(r, i))) )
                     {
                         // Found, no need to search further,
                         // so end the for (r) loop
@@ -240,11 +240,11 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
                 // However the swapping part might conditionally be suitable for parallelization
                 #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, r, i)
-                for ( size_t c=this->pos(i,i); c<this->pos(i+1,0); ++c )
+                for ( size_t c=this->_pos(i,i); c<this->_pos(i+1,0); ++c )
                 {
                     const T tempElem = temp.at(c);
-                    temp.at(c) = temp.at(this->pos(r, c));
-                    temp.at(this->pos(r, c)) = tempElem;
+                    temp.at(c) = temp.at(this->_pos(r, c));
+                    temp.at(this->_pos(r, c)) = tempElem;
                 }
 
                 // finally, if two lines are swapped, det = -det
@@ -270,12 +270,12 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // temp(r,i) will be calculated to 0 immediately.
                 // However, its initial value is necessary to properly
                 // calculate all other elements of the r.th row
-                const T ri = temp.at(this->pos(r, i));
+                const T ri = temp.at(this->_pos(r, i));
 
                 for ( size_t c=i; c<N; ++c)
                 {
                     // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                    temp.at(this->pos(r, c)) -= temp.at(this->pos(i, c)) * ri / temp.at(this->pos(i, i));
+                    temp.at(this->_pos(r, c)) -= temp.at(this->_pos(i, c)) * ri / temp.at(this->_pos(i, i));
                 }  // for c
             }  // for r
         }  // for i
@@ -292,7 +292,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
          */
         for ( size_t i=0; i<N; ++i )
         {
-            retVal *= temp.at(this->pos(i, i));
+            retVal *= temp.at(this->_pos(i, i));
         }
 
         // temp not needed anymore, clean it
@@ -393,9 +393,9 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     {
         for ( size_t c=r+1; c<N; ++c )
         {
-            const T temp = this->elems.at(this->pos(r, c));
-            this->elems.at(this->pos(r, c)) = this->elems.at(this->pos(c, r));
-            this->elems.at(this->pos(c, r)) = temp;
+            const T temp = this->elems.at(this->_pos(r, c));
+            this->elems.at(this->_pos(r, c)) = this->elems.at(this->_pos(c, r));
+            this->elems.at(this->_pos(c, r)) = temp;
         }  // for c
     }  // for r
 

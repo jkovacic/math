@@ -98,7 +98,7 @@ private:
      *
      * @return sum of all components' squares
      */
-    inline T sqsum() const
+    inline T __sqsum() const
     {
         return (
                 this->quat_o * this->quat_o +

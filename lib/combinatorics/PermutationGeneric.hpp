@@ -72,7 +72,7 @@ private:
     bool started;
     
     // Initializes internal data
-    void init() throw (CombinatoricsException);
+    void __init() throw (CombinatoricsException);
     
 public:
     // Constructors

@@ -54,7 +54,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::vector<T>& el) throw 
         // copy the vector 'el' into 'elems'
         this->elems = el;
         
-        init();
+        __init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -89,7 +89,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::list<T>& el) throw (m
             this->elems.push_back(*it);
         }
         
-        this->init();
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -123,7 +123,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::set<T>& el) throw (ma
             this->elems.push_back(*it);
         }
         
-        this->init();
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -157,7 +157,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (
             this->elems.push_back(*it);
         }
         
-        this->init();
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -199,7 +199,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) th
             this->elems.push_back(elarray[i]);
         }
         
-        this->init();
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -213,7 +213,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) th
  * @throw CombinatoricsException if allocation of memory fails
  */
 template<class T>
-void math::PermutationGeneric<T>::init() throw (math::CombinatoricsException)
+void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
 {
     try
     {

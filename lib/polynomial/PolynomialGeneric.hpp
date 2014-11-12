@@ -113,18 +113,18 @@ private:
     std::vector<T> coef;
 
     // A utility function that copies vector's coefficients
-    void copyCoefs(const std::vector<T>& cvect) throw (PolynomialException);
+    void __copyCoefs(const std::vector<T>& cvect) throw (PolynomialException);
 
     // A utility function that reduces zero-coefficients from the highest terms
-    void reduce();
+    void __reduce();
 
     // A utility function for polynomial division
-    static void polyDivision(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2, PolynomialGeneric<T>* q, PolynomialGeneric<T>* rem) throw (PolynomialException);
+    static void __polyDivision(const PolynomialGeneric<T>& p1, const PolynomialGeneric<T>& p2, PolynomialGeneric<T>* q, PolynomialGeneric<T>* rem) throw (PolynomialException);
 
     /*
      * @return whether the polynomial is of zero degree and its only coefficient equals 0
      */
-    inline bool isZero() const
+    inline bool __isZero() const
     {
         return ( 1==this->coef.size() && true==math::NumericUtil<T>::isZero(this->coef.at(0)) );
     }

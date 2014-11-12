@@ -73,7 +73,7 @@ private:
     bool moreCombinations;
     
     // Initializes internal data
-    void init();
+    void __init();
     
 public:
     // Constructors:

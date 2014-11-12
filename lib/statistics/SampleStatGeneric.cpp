@@ -49,7 +49,7 @@ limitations under the License.
  * @return element with the highest absolute value among the first 'Nmax' elements of 'x'
  */
 template <class T>
-T math::SampleStatGeneric<T>::getShift(const std::vector<T>& x, size_t Nmax)
+T math::SampleStatGeneric<T>::__getShift(const std::vector<T>& x, size_t Nmax)
 {
     T retVal = x.at(0);
     T absRetVal = ( retVal<math::NumericUtil<T>::ZERO ? -retVal : retVal );
@@ -239,7 +239,7 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
     }
 
     // Let K be equal to the first element:
-    const T K = getShift(x);
+    const T K = __getShift(x);
 
     T sum  = math::NumericUtil<T>::ZERO;
     T sum2 = math::NumericUtil<T>::ZERO;
@@ -473,8 +473,8 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
     }
 
     // K's are equal to the first elements of both samples
-    const T K1 = getShift(x1);
-    const T K2 = getShift(x2);
+    const T K1 = __getShift(x1);
+    const T K2 = __getShift(x2);
 
     T sum  = math::NumericUtil<T>::ZERO;
     T sum1 = math::NumericUtil<T>::ZERO;

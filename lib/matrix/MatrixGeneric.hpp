@@ -86,7 +86,7 @@ protected:
     // Copy elements from one matrix into another. Used at copy constructors,
     // assignment operators etc. It s also suitable for use in derived  classes,
     // so it should be 'protected' instead of 'private'
-    void copyElems(const MatrixGeneric& orig) throw (MatrixException);
+    void _copyElems(const MatrixGeneric& orig) throw (MatrixException);
 
     /*
      * A utility function that returns the position of element's "coordinates"
@@ -101,7 +101,7 @@ protected:
      * function are usually passed directly to std::vector.at() which throws
      * an exception if 'pos' is out of the vector's range.
      */
-    inline size_t pos(size_t row, size_t column) const
+    inline size_t _pos(size_t row, size_t column) const
     {
         return ( row * this->cols + column );
     }

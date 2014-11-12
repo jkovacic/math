@@ -529,7 +529,7 @@ T math::QuaternionGeneric<T>::norm() const throw (math::QuaternionException)
 template<> \
 FD math::QuaternionGeneric<FD>::norm() const throw (math::QuaternionException) \
 { \
-    return std::sqrt(sqsum()); \
+    return std::sqrt(__sqsum()); \
 }
 // end of #define
 
@@ -649,7 +649,7 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::reciprocal() const throw 
                                      a^2 + b^2 + c^2 + d^2
     */
 
-    const T nsq = sqsum();
+    const T nsq = __sqsum();
 
     // avoid possible division by zero
     if ( true == math::NumericUtil<T>::isZero(nsq) )

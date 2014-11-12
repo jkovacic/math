@@ -172,7 +172,7 @@ math::Rational& math::Rational::set(long int numerator, long int denominator) th
     }
 
     // and finally reduce the fraction
-    reduce();
+    __reduce();
 
     return *this;
 } // Rational::set
@@ -290,7 +290,7 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
                 buf.erase(decPoint, 1);
             }
 
-            num1 = math::Rational::str2ll(buf);
+            num1 = math::Rational::__str2ll(buf);
             den1 = ( LEN==decPoint ? 1 : math::Rational::pow10(LEN-decPoint-1) );
         }
         else
@@ -318,9 +318,9 @@ math::Rational& math::Rational::set(const std::string& str, unsigned int repSeqL
              *                   9990
              */
             buf.erase(decPoint, 1);
-            num1 = math::Rational::str2ll(buf);
+            num1 = math::Rational::__str2ll(buf);
             buf.erase(LEN-1-repSeqLen, repSeqLen);
-            num2 = math::Rational::str2ll(buf);
+            num2 = math::Rational::__str2ll(buf);
 
             den1 = math::Rational::pow10(LEN-1-decPoint);
             den2 = math::Rational::pow10(LEN-1-decPoint-repSeqLen);
@@ -539,8 +539,8 @@ math::Rational& math::Rational::operator+=(const math::Rational& frac) throw(mat
 
     try
     {
-        numerator = auxSum(this->num, frac.denom, frac.num, this->denom);
-        denominator = auxProd(this->denom, frac.denom);
+        numerator = __auxSum(this->num, frac.denom, frac.num, this->denom);
+        denominator = __auxProd(this->denom, frac.denom);
     }
     catch ( math::RationalException& ex )
     {
@@ -573,8 +573,8 @@ math::Rational& math::Rational::operator-=(const math::Rational& frac) throw(mat
 
     try
     {
-        numerator = auxSum(this->num, frac.denom, -frac.num, this->denom);
-        denominator = auxProd(this->denom, frac.denom);
+        numerator = __auxSum(this->num, frac.denom, -frac.num, this->denom);
+        denominator = __auxProd(this->denom, frac.denom);
     }
     catch ( math::RationalException& ex )
     {
@@ -607,8 +607,8 @@ math::Rational& math::Rational::operator*=(const math::Rational& frac) throw(mat
 
     try
     {
-        numerator = auxProd(this->num, frac.num);
-        denominator = auxProd(this->denom, frac.denom);
+        numerator = __auxProd(this->num, frac.num);
+        denominator = __auxProd(this->denom, frac.denom);
     }
     catch ( math::RationalException& ex )
     {
@@ -648,8 +648,8 @@ math::Rational& math::Rational::operator/=(const math::Rational& frac) throw(mat
 
     try
     {
-        numerator = auxProd(this->num, frac.denom);
-        denominator = auxProd(this->denom, frac.num);
+        numerator = __auxProd(this->num, frac.denom);
+        denominator = __auxProd(this->denom, frac.num);
     }
     catch ( math::RationalException& ex )
     {
@@ -680,7 +680,7 @@ math::Rational math::Rational::operator-() const
  * An auxiliary function that reduces the fraction:
  * divides the numerator and denominator by their greatest common divisor
  */
-void math::Rational::reduce()
+void math::Rational::__reduce()
 {
     // the GCD is not defined when numerator is equal to 0.
     // In that case just assign denominator to 1
@@ -693,7 +693,7 @@ void math::Rational::reduce()
 
     // The GCD algorithm requires both integers to be positive.
     // The numerator is allowed to be negative, so get its absolute value.
-    const unsigned long int absNum = absolute(num);  // absolute value of num
+    const unsigned long int absNum = __absolute(num);  // absolute value of num
 
     // finally obtain the greatest common divisor...
     // Note: since neither 'absNum' nor 'denom' cannot be zero (handled before),
@@ -714,7 +714,7 @@ void math::Rational::reduce()
  * @param a
  * @return absolute value of a
  */
-unsigned long int math::Rational::absolute(long int a)
+unsigned long int math::Rational::__absolute(long int a)
 {
     return ( a>=0 ? a : -a );
 }
@@ -729,7 +729,7 @@ unsigned long int math::Rational::absolute(long int a)
  *
  * @return -1 if f2>f1, 0 if f1==f2, 1 if f1>f2
  */
-short int math::Rational::sign(const math::Rational& f1, const math::Rational& f2)
+short int math::Rational::__sign(const math::Rational& f1, const math::Rational& f2)
 {
     // One approach to compare two objects is to calculate their difference
     // and check its sign. As denominators are always positive, it is
@@ -774,7 +774,7 @@ short int math::Rational::sign(const math::Rational& f1, const math::Rational& f
  *
  * @throw RationalException in case of an integer overflow
  */
-long int math::Rational::auxSum(long int num1, long int denom2, long int num2, long int denom1) throw(math::RationalException)
+long int math::Rational::__auxSum(long int num1, long int denom2, long int num2, long int denom1) throw(math::RationalException)
 {
     const long long int sum = num1 * denom2 + num2 * denom1;
 
@@ -798,7 +798,7 @@ long int math::Rational::auxSum(long int num1, long int denom2, long int num2, l
  *
  * @throw RationalException in case of an integer overflow
  */
-long int math::Rational::auxProd(long int first, long int second) throw(math::RationalException)
+long int math::Rational::__auxProd(long int first, long int second) throw(math::RationalException)
 {
     const long long int prod = first * second;
 
@@ -854,7 +854,7 @@ unsigned long long int math::Rational::pow10(unsigned int n) throw (math::Ration
  *
  * @throw RationalException if absolute value of 'str' exceeds long long's range
  */
-long long int math::Rational::str2ll(const std::string& str) throw (math::RationalException)
+long long int math::Rational::__str2ll(const std::string& str) throw (math::RationalException)
 {
     // sanity check already performed by the caller function
 
@@ -935,8 +935,8 @@ math::Rational math::operator+(const math::Rational& f1, const math::Rational& f
 
     try
     {
-        numerator = math::Rational::auxSum(f1.num, f2.denom, f2.num, f1.denom);
-        denominator = math::Rational::auxProd(f1.denom, f2.denom);
+        numerator = math::Rational::__auxSum(f1.num, f2.denom, f2.num, f1.denom);
+        denominator = math::Rational::__auxProd(f1.denom, f2.denom);
     }
     catch ( math::RationalException& ex )
     {
@@ -973,8 +973,8 @@ math::Rational math::operator-(const math::Rational& f1, const math::Rational& f
 
     try
     {
-        numerator = math::Rational::auxSum(f1.num, f2.denom, -f2.num, f1.denom);
-        denominator = math::Rational::auxProd(f1.denom, f2.denom);
+        numerator = math::Rational::__auxSum(f1.num, f2.denom, -f2.num, f1.denom);
+        denominator = math::Rational::__auxProd(f1.denom, f2.denom);
     }
     catch ( math::RationalException& ex )
     {
@@ -1015,8 +1015,8 @@ math::Rational math::operator*(const math::Rational& f1, const math::Rational& f
 
     try
     {
-        numerator = math::Rational::auxProd(f1.num, f2.num);
-        denominator = math::Rational::auxProd(f1.denom, f2.denom);
+        numerator = math::Rational::__auxProd(f1.num, f2.num);
+        denominator = math::Rational::__auxProd(f1.denom, f2.denom);
     }
     catch ( math::RationalException& ex )
     {
@@ -1059,8 +1059,8 @@ math::Rational math::operator/(const math::Rational& f1, const math::Rational& f
 
     try
     {
-        numerator = math::Rational::auxProd(f1.num, f2.denom);
-        denominator = math::Rational::auxProd(f2.num, f1.denom);
+        numerator = math::Rational::__auxProd(f1.num, f2.denom);
+        denominator = math::Rational::__auxProd(f2.num, f1.denom);
     }
     catch ( math::RationalException& ex )
     {
@@ -1082,7 +1082,7 @@ math::Rational math::operator/(const math::Rational& f1, const math::Rational& f
  */
 bool math::operator==(const math::Rational& f1, const math::Rational& f2)
 {
-    return ( 0 == math::Rational::sign(f1, f2) );
+    return ( 0 == math::Rational::__sign(f1, f2) );
 }  // operator==
 
 
@@ -1096,7 +1096,7 @@ bool math::operator==(const math::Rational& f1, const math::Rational& f2)
  */
 bool math::operator!=(const math::Rational& f1, const math::Rational& f2)
 {
-    return ( 0 != math::Rational::sign(f1, f2) );
+    return ( 0 != math::Rational::__sign(f1, f2) );
 }  // operator!=
 
 
@@ -1110,7 +1110,7 @@ bool math::operator!=(const math::Rational& f1, const math::Rational& f2)
  */
 bool math::operator>(const math::Rational& f1, const math::Rational& f2)
 {
-    return ( 0 < math::Rational::sign(f1, f2) );
+    return ( 0 < math::Rational::__sign(f1, f2) );
 }  // operator>
 
 
@@ -1124,7 +1124,7 @@ bool math::operator>(const math::Rational& f1, const math::Rational& f2)
  */
 bool math::operator>=(const math::Rational& f1, const math::Rational& f2)
 {
-    return ( 0 <= math::Rational::sign(f1, f2) );
+    return ( 0 <= math::Rational::__sign(f1, f2) );
 }  // operator>=
 
 
@@ -1138,7 +1138,7 @@ bool math::operator>=(const math::Rational& f1, const math::Rational& f2)
  */
 bool math::operator<(const math::Rational& f1, const math::Rational& f2)
 {
-    return ( 0 > math::Rational::sign(f1, f2) );
+    return ( 0 > math::Rational::__sign(f1, f2) );
 }  // operator<
 
 
@@ -1152,5 +1152,5 @@ bool math::operator<(const math::Rational& f1, const math::Rational& f2)
  */
 bool math::operator<=(const math::Rational& f1, const math::Rational& f2)
 {
-    return ( 0 >= math::Rational::sign(f1, f2) );
+    return ( 0 >= math::Rational::__sign(f1, f2) );
 }  // operator<=

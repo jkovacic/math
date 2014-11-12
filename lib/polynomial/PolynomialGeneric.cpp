@@ -55,9 +55,9 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const std::vector<T>& cvect) throw
     
     try
     {
-        this->copyCoefs(cvect);
+        this->__copyCoefs(cvect);
         // reduce zero-coefficients from the highest order terms
-        this->reduce();
+        this->__reduce();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -104,7 +104,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const math::PolynomialGeneric<T>& 
     try
     {
         // Just copy the poly's coefficients
-        this->copyCoefs(poly.coef);
+        this->__copyCoefs(poly.coef);
         // 'poly' is supposed to be already reduced, so no need to call reduce()
     }
     catch ( const std::bad_alloc &ba )
@@ -154,7 +154,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T* carray, size_t n) throw (
             this->coef.at(i) = carray[i];
         }
 
-        reduce();
+        __reduce();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -224,7 +224,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(bool ignored, size_t n) throw (mat
  * @throw PolynomialException if allocation of memory fails
  */
 template<class T>
-void math::PolynomialGeneric<T>::copyCoefs(const std::vector<T>& cvect) throw (math::PolynomialException)
+void math::PolynomialGeneric<T>::__copyCoefs(const std::vector<T>& cvect) throw (math::PolynomialException)
 {
     try
     {
@@ -250,7 +250,7 @@ void math::PolynomialGeneric<T>::copyCoefs(const std::vector<T>& cvect) throw (m
  *               1 + x + 3x^2, i.e. coef(4) and coef(3) are removed.
  */
 template<class T>
-void math::PolynomialGeneric<T>::reduce()
+void math::PolynomialGeneric<T>::__reduce()
 {
     const size_t N = this->coef.size() - 1;
     size_t f = 0;
@@ -289,7 +289,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator=(const math::Po
     }
 
     // otherwise copy coefficients from 'poly';
-    this->copyCoefs(poly.coef);
+    this->__copyCoefs(poly.coef);
 
     // 'poly' is supposed to be already reduced, so no need to call reduce()
 
@@ -404,11 +404,11 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(const std::vector<T>
     }
 
     // If 'cvect' is OK, just copy its values to coef:
-    this->copyCoefs(cvect);
+    this->__copyCoefs(cvect);
 
     // 'cvect' is an arbitrary vector that does not
     // necessarily represent a reduced polynomial....
-    this->reduce();
+    this->__reduce();
 
     return *this;
 }
@@ -446,7 +446,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vecto
             this->coef.at(i) = cvect.at(N-1-i);
         }
 
-        this->reduce();
+        this->__reduce();
         return *this;
 
     }
@@ -500,7 +500,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(size_t pos, const T&
         this->coef.at(pos) = c;
 
         // it is possible that coef(N) is set to zero....
-        this->reduce();
+        this->__reduce();
     }
 
     return *this;
@@ -598,7 +598,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::remove(size_t pos)
      It is possible that the highest order coefficient is removed and an
      unreduced polynomial remains:
     */
-    this->reduce();
+    this->__reduce();
 
     return *this;
 }
@@ -741,7 +741,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
  * @throw PolynomilExcpetion if attempting to divide by a zero polynomial
  */
 template<class T>
-void math::PolynomialGeneric<T>::polyDivision(
+void math::PolynomialGeneric<T>::__polyDivision(
         const math::PolynomialGeneric<T>& p1,
         const math::PolynomialGeneric<T>& p2,
         math::PolynomialGeneric<T>* q,
@@ -749,7 +749,7 @@ void math::PolynomialGeneric<T>::polyDivision(
     throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == p2.isZero() )
+    if ( true == p2.__isZero() )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
@@ -847,7 +847,7 @@ void math::PolynomialGeneric<T>::polyDivision(
     if ( NULL != rem )
     {
         rem->coef = p;
-        rem->reduce();
+        rem->__reduce();
     }
 }
 
@@ -891,7 +891,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
 
-    this->reduce();
+    this->__reduce();
     return *this;
 }
 
@@ -907,7 +907,7 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const T& sc)
 {
     this->coef.at(0) += sc;
-    this->reduce();
+    this->__reduce();
     return *this;
 }
 
@@ -951,7 +951,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
 
-    this->reduce();
+    this->__reduce();
     return *this;
 }
 
@@ -967,7 +967,7 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const T& sc)
 {
     this->coef.at(0) -= sc;
-    this->reduce();
+    this->__reduce();
     return *this;
 }
 
@@ -1034,7 +1034,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const math::P
 
     // perform a regular polynomial multiplication and copy the product's coefficients to itself
     math::PolynomialGeneric<T> temp = *this * poly;
-    this->copyCoefs(temp.coef);
+    this->__copyCoefs(temp.coef);
 
     // Note that copyCoefs would throw an exception in case of unsuccessful allocation of memory
 
@@ -1064,7 +1064,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
     }
 
     // applicable when the scalar is 0...
-    this->reduce();
+    this->__reduce();
     return *this;
 }
 
@@ -1083,14 +1083,14 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == poly.isZero() )
+    if ( true == poly.__isZero() )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
 
     math::PolynomialGeneric<T> quot;
 
-    math::PolynomialGeneric<T>::polyDivision(*this, poly, &quot, NULL);
+    math::PolynomialGeneric<T>::__polyDivision(*this, poly, &quot, NULL);
     *this = quot;
 
     return *this;
@@ -1111,14 +1111,14 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator%=(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == poly.isZero() )
+    if ( true == poly.__isZero() )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
 
     math::PolynomialGeneric<T> rem;
 
-    math::PolynomialGeneric<T>::polyDivision(*this, poly, NULL, &rem);
+    math::PolynomialGeneric<T>::__polyDivision(*this, poly, NULL, &rem);
     *this= rem;
 
     return *this;
@@ -1316,7 +1316,7 @@ math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& p1,
             }
         }
 
-        retVal.reduce();
+        retVal.__reduce();
         return retVal;
     }
     catch ( const std::bad_alloc& ba )
@@ -1385,7 +1385,7 @@ math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& p1,
             }
         }
 
-        retVal.reduce();
+        retVal.__reduce();
         return retVal;
     }
     catch ( const std::bad_alloc& ba )
@@ -1478,7 +1478,7 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& p1,
             retVal.coef.at(i) = temp;
         }
 
-        retVal.reduce();
+        retVal.__reduce();
         return retVal;
     }
     catch ( const std::bad_alloc& ba )
@@ -1502,14 +1502,14 @@ template<class T>
 math::PolynomialGeneric<T> math::operator/(const math::PolynomialGeneric<T>& p1, const math::PolynomialGeneric<T>& p2) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == p2.isZero() )
+    if ( true == p2.__isZero() )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
 
     math::PolynomialGeneric<T> retVal;
 
-    math::PolynomialGeneric<T>::polyDivision(p1, p2, &retVal, NULL);
+    math::PolynomialGeneric<T>::__polyDivision(p1, p2, &retVal, NULL);
     return retVal;
 }
 
@@ -1528,14 +1528,14 @@ template<class T>
 math::PolynomialGeneric<T> math::operator%(const math::PolynomialGeneric<T>& p1, const math::PolynomialGeneric<T>& p2) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == p2.isZero() )
+    if ( true == p2.__isZero() )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
 
     math::PolynomialGeneric<T> retVal;
 
-    math::PolynomialGeneric<T>::polyDivision(p1, p2, NULL, &retVal);
+    math::PolynomialGeneric<T>::__polyDivision(p1, p2, NULL, &retVal);
     return retVal;
 }
 
@@ -1556,7 +1556,7 @@ math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& pol
     math::PolynomialGeneric<T> retVal(poly);
 
     retVal.coef.at(0) += sc;
-    retVal.reduce();
+    retVal.__reduce();
     return retVal;
 }
 
@@ -1577,7 +1577,7 @@ math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& pol
     math::PolynomialGeneric<T> retVal(poly);
 
     retVal.coef.at(0) -= sc;
-    retVal.reduce();
+    retVal.__reduce();
     return retVal;
 }
 
@@ -1618,7 +1618,7 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& pol
     }
 
     // applicable when sc==o
-    retVal.reduce();
+    retVal.__reduce();
     return retVal;
 }
 
@@ -1747,7 +1747,7 @@ math::PolynomialGeneric<T> math::operator/(const T& sc, const math::PolynomialGe
     math::PolynomialGeneric<T> retVal;
 
     // Division by a zero polynomial is not permitted
-    if ( true == poly.isZero() )
+    if ( true == poly.__isZero() )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
@@ -1789,7 +1789,7 @@ math::PolynomialGeneric<T> math::operator%(const T& sc, const math::PolynomialGe
     math::PolynomialGeneric<T> retVal;
 
     // Division by a zero polynomial is not permitted
-    if ( true == poly.isZero() )
+    if ( true == poly.__isZero() )
     {
         throw math::PolynomialException( math::PolynomialException::DIVIDE_BY_ZERO );
     }

@@ -73,15 +73,15 @@ protected:
     bool curveGenerated;
 
     // have any "duplicate" points been entered?
-    bool duplicatePoints() const;
+    bool _duplicatePoints() const;
     // some necessary checks prior to generation of the curve. It also sorts points
-    void curveGenerationCheck() throw (CurveFittingException);
+    void _curveGenerationCheck() throw (CurveFittingException);
 
     // sorts entered points
-    void sortPoints();
+    void _sortPoints();
 
     // some constructor-like functionality
-    void init();
+    void _init();
 
 public:
     // assignment operator (only applicable for variables of the same type)

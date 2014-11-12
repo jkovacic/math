@@ -53,7 +53,7 @@ bool math::CurveFittingGenericAb<T>::CPoint::operator<(const math::CurveFittingG
  * some initialization tasks, common to all derived classes.
  */
 template<class T>
-void math::CurveFittingGenericAb<T>::init()
+void math::CurveFittingGenericAb<T>::_init()
 {
     // As an instance has just been created, a curve cannot be generated yet.
     curveGenerated = false;
@@ -82,7 +82,7 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::operator=(const 
     try
     {
         // initialize
-        init();
+        _init();
         // and copy all points
         points = orig.points;
     }
@@ -265,7 +265,7 @@ T math::CurveFittingGenericAb<T>::upperBound() const throw (math::CurveFittingEx
  * @return true/false
  */
 template<class T>
-bool math::CurveFittingGenericAb<T>::duplicatePoints() const
+bool math::CurveFittingGenericAb<T>::_duplicatePoints() const
 {
     // No duplicate points are possible if the list is empty
     if ( true==points.empty() )
@@ -311,7 +311,7 @@ bool math::CurveFittingGenericAb<T>::duplicatePoints() const
  * CPoint's 'operaator<' method is used as the comparison criteria.
  */
 template<class T>
-void math::CurveFittingGenericAb<T>::sortPoints()
+void math::CurveFittingGenericAb<T>::_sortPoints()
 {
     // Nothing to do if no points have been entered yet
     if ( false==this->points.empty() )
@@ -330,7 +330,7 @@ void math::CurveFittingGenericAb<T>::sortPoints()
  * @throw appropriate CurveFittingException if any check is not passed
  */
 template<class T>
-void math::CurveFittingGenericAb<T>::curveGenerationCheck() throw (math::CurveFittingException)
+void math::CurveFittingGenericAb<T>::_curveGenerationCheck() throw (math::CurveFittingException)
 {
     // Curve must not be generated yet
     if ( true==this->curveGenerated )
@@ -345,10 +345,10 @@ void math::CurveFittingGenericAb<T>::curveGenerationCheck() throw (math::CurveFi
     }
 
     // sort the points by abscissae's values in ascending order
-    sortPoints();
+    _sortPoints();
 
     // and detect any "duplicate" points
-    if ( true==duplicatePoints() )
+    if ( true==_duplicatePoints() )
     {
         throw math::CurveFittingException(math::CurveFittingException::DUPLICATE_POINTS);
     }

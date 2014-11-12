@@ -46,7 +46,7 @@ template<class T>
 math::PolynomialRegressionGeneric<T>::PolynomialRegressionGeneric()
 {
     // all necessary functionality is implemented by the base class's init()
-    math::CurveFittingGenericAb<T>::init();
+    math::CurveFittingGenericAb<T>::_init();
 }
 
 /**
@@ -60,7 +60,7 @@ template<class T>
 void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
-    this->curveGenerationCheck();
+    this->_curveGenerationCheck();
     // TODO check value of degree?
 
     /*
