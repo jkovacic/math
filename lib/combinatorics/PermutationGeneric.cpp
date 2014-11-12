@@ -224,7 +224,8 @@ void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
 }
 
 /**
- * Retrieves the next 'n' (or less) permutations.
+ * Retrieves the next 'n' (or less) permutations and pushes them into the
+ * specified list 'ret'.
  * 
  * The class is stateful, i.e. only those permutations are returned that have not
  * been returned by previous calls of next() on the same instance of the class.
@@ -235,14 +236,13 @@ void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
  *     a(1)a(2)a(3) -> a(1)a(3)a(2) -> a(2)a(1)a(3) ->
  *  -> a(2)a(3)a(1) -> a(3)a(1)a(2) -> a(3)a(2)a(1)
  * 
+ * @param ret - a list to be filled with max. n lists of permutations
  * @param n - maximum number of permutations to be retrieved (default: 1)
- * 
- * @return a list with max. n lists of permutations
  * 
  * @throw CombinatoricsException if 'n' is invalid or if allocation of memory fails
  */
 template<class T>
-std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math::CombinatoricsException)
+void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, size_t n) throw (math::CombinatoricsException)
 {
     /*
      * The algorithm is based on code, available at
@@ -254,14 +254,15 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
         // N_len is used frequently inside this function. As it is intended to
         // remain constant, a const ref. is used to prevent unintentional modifications.
         const size_t& N = this->N_len;
-        std::list<std::list<T> > retVal;
-        retVal.clear();
-        
+
         // sanity check
-        if ( n>=retVal.max_size() )
+        if ( n>=ret.max_size() )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
+
+        // clear the return list:
+        ret.clear();
         
         // At maximum 'n' permutations will be returned
         for ( size_t cnt=0; true==this->morePermutations && cnt<n; ++cnt )
@@ -273,17 +274,19 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
              */
             if ( false==this->started )
             {
-                std::list<T> temp;
-                temp.clear();
+                // append an empty list to 'ret':
+                ret.push_back(std::list<T>());
+                // and obtain a reference to this appended list
+                std::list<T>& l = ret.back();
+                // clear it (just in case)
+                l.clear();
                 
-                // just copy elements of 'elems' into temp:
+                // just copy elements of 'elems' into 'l':
                 for ( typename std::vector<T>::const_iterator it=this->elems.begin(); it!=this->elems.end(); ++it )
                 {
-                    temp.push_back(*it);
+                    l.push_back(*it);
                 }
-                // and append it to retVal:
-                retVal.push_back(temp);
-                
+
                 // set the flag indicating that the initial permutation
                 // has already been returned
                 this->started = true;
@@ -326,17 +329,19 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
                         this->addr.at(end) = swap;
                     }
                     
-                    // and generate the next permutation based on 'addr'
-                    std::list<T> temp;
-                    temp.clear();
+                    // and generate the next permutation based on 'addr':
+
+                    // append an empty list into 'ret':
+                    ret.push_back(std::list<T>());
+                    // obtain a reference to this appended list:
+                    std::list<T>& l = ret.back();
+                    // clear it (just in case):
+                    l.clear();
                     
                     for ( size_t j=0; j<N; ++j )
                     {
-                        temp.push_back(this->elems.at(this->addr.at(j)));
+                        l.push_back(this->elems.at(this->addr.at(j)));
                     }
-                    
-                    // append it to retVal
-                    retVal.push_back(temp);
                     
                     // set a flag indicating that a permutation has been found
                     pfound = true;
@@ -356,8 +361,7 @@ std::list<std::list<T> > math::PermutationGeneric<T>::next(size_t n) throw (math
                 //break; // out of for cnt
             }
         }  // for cnt
-        
-        return retVal;
+
     }
     catch ( const std::bad_alloc& ba )
     {

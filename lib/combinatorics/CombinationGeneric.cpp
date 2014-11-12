@@ -276,14 +276,13 @@ void math::CombinationGeneric<T>::setK(size_t k) throw (math::CombinatoricsExcep
  *      a[1]a[2]a[3] -> a[1]a[2]a[4] -> a[1]a[2]a[5] -> a[1]a[3]a[4] -> a[1]a[3]a[5] ->
  *   -> a[1]a[4]a[5] -> a[2]a[3]a[4] -> a[2]a[3]a[5] -> a[2]a[4]a[5] -> a[3]a[4]a[5]
  * 
+ * @param ret - a list to be filled with max. n sets of k-combinations
  * @param n - maximum number of combinations to be retrieved (default: 1)
- * 
- * @return a list with max 'n' sets of k-combinations 
  * 
  * @throw CombinatoriscException if n is too large or if allocation of memory fails
  */
 template<class T>
-std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math::CombinatoricsException)
+void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, size_t n) throw (math::CombinatoricsException)
 {
     try
     {
@@ -291,8 +290,6 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
         // remain constant, protect it from unintentional modifications. 
         const size_t& Klen = this->K;
         const size_t& N = this->N_size;
-        std::list<std::set<T> > retVal;
-        retVal.clear();
 
         // sanity check
         if ( Klen<=0 || Klen>N )
@@ -300,11 +297,14 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
         }
         
-        if ( n>=retVal.max_size() )
+        if ( n>=ret.max_size() )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
-        
+
+        // Clear the return list
+        ret.clear();
+
         /* 
          * Description of the algorithm:
          * 
@@ -323,18 +323,21 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
         
         for ( size_t cnt=0; true==this->moreCombinations && cnt<n; ++cnt )
         {
+            // append an empty set to 'ret'
+            ret.push_back(std::set<T>());
+            // obtain a reference to this appended set
+            std::set<T>& s = ret.back();
+            // and clear it (just in case)
+            s.clear();
+            
             // 'addr' has been set by the previous iteration for the current one.
-            // Just create a set wuth elements at addr's indexes and append it to retVal:
-            std::set<T> temp;
-            temp.clear();
-        
+            // Just append elements at addr's indexes to ret's set:
+            
             for ( std::vector<size_t>::const_iterator it=addr.begin(); it!=addr.end(); ++it )
             {
-                temp.insert(this->elems.at(*it));
+                s.insert(this->elems.at(*it));
             }
-            
-            retVal.push_back(temp);
-            
+
             // And update 'addr' for the next iteration as described above:
             for ( size_t i = Klen-1; /* i>=0 */ ; --i )
             {
@@ -367,8 +370,7 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
                 }
             } // for i
         }  // for cnt
-        
-        return retVal;
+
     }
     catch ( const std::bad_alloc& ba )
     {

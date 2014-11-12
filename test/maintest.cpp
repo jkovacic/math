@@ -1096,10 +1096,11 @@ void combinatoricsTest()
         }
         
         PermutationGeneric<char> perm(chvect);
+        list<list<char> > lp;
         size_t cnt = 1;
         while ( true==perm.hasNext() )
         {
-            list<list<char> > lp = perm.next(25);
+            perm.next(lp, 25);
             for ( list<list<char> >::const_iterator lit=lp.begin(); lit!=lp.end(); ++lit )
             {
                 cout << cnt++ << ": ";
@@ -1113,6 +1114,7 @@ void combinatoricsTest()
         
         cout << endl << "Combinations:" << endl;
         CombinationGeneric<char> comb(chvect);
+        list<set<char> > lc;
         for ( size_t k=1; k<=chvect.size(); ++k )
         {
             cout << endl << "K = " << k << " : " << endl << endl;
@@ -1120,7 +1122,7 @@ void combinatoricsTest()
             cnt = 1;
             while ( true==comb.hasNext() )
             {
-                list<set<char> > lc = comb.next(5);
+                comb.next(lc, 5);
                 for ( list<set<char> >::const_iterator lit=lc.begin(); lit!=lc.end(); ++lit )
                 {
                     cout << cnt++ << ": ";

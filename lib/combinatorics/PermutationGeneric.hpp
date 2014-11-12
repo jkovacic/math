@@ -83,7 +83,7 @@ public:
     PermutationGeneric(const T* elarray, size_t len) throw (CombinatoricsException);       
     
     // Retrieves next n permutations
-    std::list<std::list<T> > next(size_t n=1) throw (CombinatoricsException);
+    void next(std::list<std::list<T> >& ret, size_t n=1) throw (CombinatoricsException);
     
     // More permutations available to be retrieved?
     bool hasNext() const;

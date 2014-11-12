@@ -88,7 +88,7 @@ public:
     void setK(size_t k) throw (CombinatoricsException);
     
     // Retrieves next n combinations
-    std::list<std::set<T> > next(size_t n=1) throw (CombinatoricsException);
+    void next(std::list<std::set<T> >& ret, size_t n=1) throw (CombinatoricsException);
     
     // More combinations available to be retrieved?
     bool hasNext() const;
