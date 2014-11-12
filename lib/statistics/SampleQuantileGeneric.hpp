@@ -104,6 +104,7 @@ public:
     T quantile(size_t num, size_t den, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
     T qntl(const T& p, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
     T median();
+    T quartile(size_t q, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
     T iqr(EQntlType::type method=EQntlType::R7);
 
     // Destructor

@@ -120,7 +120,7 @@ size_t math::SampleQuantileGeneric<T>::sampleSize()
  *
  * @param num - probability's numerator
  * @param den - probabilty's denominator
- * @param method - one of supported methods to estimate the quantile
+ * @param method - one of the supported methods to estimate the quantile (default: R7)
  *
  * @return quantile for the probabilty 'num'/'den'
  *
@@ -182,7 +182,7 @@ T math::SampleQuantileGeneric<T>::linIntrp(const T& h)
  *   0 <= p <= 1
  *
  * @param p - probabilty
- * @param method - one of the supported methods to estimate the quantile
+ * @param method - one of the supported methods to estimate the quantile (default: R7)
  *
  * @return quantile for the probabilty 'p'
  *
@@ -495,13 +495,50 @@ T math::SampleQuantileGeneric<T>::median()
 
 
 /**
+ * Estimation of a quartile of the sample.
+ *
+ * @param q - desired quartile (between 0 and 4 )
+ * @param method - one of the supported methods to estimate the quartile (default: R7)
+ *
+ * @return estimation of the desired quartile
+ *
+ * @throw StatisticsException  if any input argument is invalid
+ */
+template <class T>
+T math::SampleQuantileGeneric<T>::quartile(size_t q, math::EQntlType::type method) throw(math::StatisticsException)
+{
+	T retVal;
+
+    if ( 0 == q )
+    {
+        retVal = this->m_v.at(0);
+    }
+    else if ( 4 == q )
+    {
+        retVal = this->m_v.at(this->m_N - 1);
+    }
+    else if ( q>=1 && q<=3 )
+    {
+        retVal = this->quantile(q, 4, method);
+    }
+    else
+    {
+        throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
+    }
+
+    return retVal;
+}
+
+
+/**
+ * @param method - one of the supported methods to estimate both quartiles (default: R7)
+ *
  * @return sample's interquartile range (difference between the 3rd and the 1st quartile)
  */
 template <class T>
 T math::SampleQuantileGeneric<T>::iqr(math::EQntlType::type method)
 {
-    return this->qntl(THREE * QUARTER, method) - 
-           this->qntl(QUARTER, method);
+    return ( this->quartile(3, method) - this->quartile(1, method) );
 }
 
 
