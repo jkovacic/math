@@ -54,7 +54,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::vector<T>& el) throw 
         // copy the vector 'el' into 'elems'
         this->elems = el;
         
-        __init();
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -84,11 +84,8 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::list<T>& el) throw (m
         // copy elements of 'el' into 'elems'
         this->elems.clear();
         this->elems.reserve(N);
-        for ( typename std::list<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
-        {
-            this->elems.push_back(*it);
-        }
-        
+        this->elems.assign(el.begin(), el.end());
+
         this->__init();
     }
     catch ( const std::bad_alloc& ba )
@@ -118,11 +115,8 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::set<T>& el) throw (ma
         // copy elements of 'el' into 'elems'
         this->elems.clear();
         this->elems.reserve(N);
-        for ( typename std::set<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
-        {
-            this->elems.push_back(*it);
-        }
-        
+        this->elems.assign(el.begin(), el.end());
+
         this->__init();
     }
     catch ( const std::bad_alloc& ba )
@@ -152,11 +146,8 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (
         // copy elements of 'el' into 'elems'
         this->elems.clear();
         this->elems.reserve(N);
-        for ( typename std::deque<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
-        {
-            this->elems.push_back(*it);
-        }
-        
+        this->elems.assign(el.begin(), el.end());
+
         this->__init();
     }
     catch ( const std::bad_alloc& ba )
@@ -194,11 +185,8 @@ math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) th
         
         this->elems.clear();
         this->elems.reserve(len);
-        for ( size_t i=0; i<len; ++i )
-        {
-            this->elems.push_back(elarray[i]);
-        }
-        
+        this->elems.assign(elarray, elarray+len);
+
         this->__init();
     }
     catch ( const std::bad_alloc& ba )

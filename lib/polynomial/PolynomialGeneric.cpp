@@ -146,13 +146,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T* carray, size_t n) throw (
         // allocate coef:
         this->coef.clear();
         this->coef.resize(n);
-
-        // And copy all elements from the array.
-        #pragma omp parallel for if(n>OMP_CHUNKS_PER_THREAD) default(none) shared(carray, n)
-        for ( size_t i=0; i<n; ++i )
-        {
-            this->coef.at(i) = carray[i];
-        }
+        this->coef.assign(carray, carray+n);
 
         __reduce();
     }

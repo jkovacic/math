@@ -54,7 +54,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw 
         // copy the vector 'el' into 'elems'
         this->elems = el;
         
-        __init();
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -82,14 +82,11 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el) throw (m
         }
         
         // copy elements of 'el' into 'elems'
-        elems.clear();
-        elems.reserve(N);
-        for ( typename std::list<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
-        {
-            elems.push_back(*it);
-        }
-        
-        __init();
+        this->elems.clear();
+        this->elems.reserve(N);
+        this->elems.assign(el.begin(), el.end());
+
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -116,14 +113,11 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el) throw (ma
         }
         
         // copy elements of 'el' into 'elems'
-        elems.clear();
-        elems.reserve(N);
-        for ( typename std::set<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
-        {
-            elems.push_back(*it);
-        }
-        
-        __init();
+        this->elems.clear();
+        this->elems.reserve(N);
+        this->elems.assign(el.begin(), el.end());
+
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -150,14 +144,11 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (
         }
         
         // copy elements of 'el' into 'elems'
-        elems.clear();
-        elems.reserve(N);
-        for ( typename std::deque<T>::const_iterator it=el.begin(); it!=el.end(); ++it )
-        {
-            elems.push_back(*it);
-        }
-        
-        __init();
+        this->elems.clear();
+        this->elems.reserve(N);
+        this->elems.assign(el.begin(), el.end());
+
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -192,14 +183,11 @@ math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, size_t len) th
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
         
-        elems.clear();
-        elems.reserve(len);
-        for ( size_t i=0; i<len; ++i )
-        {
-            elems.push_back(elarray[i]);
-        }
-        
-        __init();
+        this->elems.clear();
+        this->elems.reserve(len);
+        this->elems.assign(elarray, elarray+len);
+
+        this->__init();
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -213,10 +201,10 @@ math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, size_t len) th
 template<class T>
 void math::CombinationGeneric<T>::__init()
 {
-    N_size = elems.size();
-    addr.clear();
-    K = 0;
-    moreCombinations = false;
+    this->N_size = this->elems.size();
+    this->addr.clear();
+    this->K = 0;
+    this->moreCombinations = false;
 }
 
 /**
@@ -244,7 +232,7 @@ void math::CombinationGeneric<T>::setK(size_t k) throw (math::CombinatoricsExcep
 {
     try
     {
-        const size_t& N = N_size;
+        const size_t& N = this->N_size;
         
         // "sanity check"
         if ( k<=0 || k>N )
@@ -252,7 +240,7 @@ void math::CombinationGeneric<T>::setK(size_t k) throw (math::CombinatoricsExcep
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
         }
         
-        __init();
+        this->__init();
         
         /*
          * Prepare 'addr' for the first k-combination:
@@ -261,14 +249,14 @@ void math::CombinationGeneric<T>::setK(size_t k) throw (math::CombinatoricsExcep
          * For more details of the algorithm, see its detailed description
          * at comments in next().
          */
-        addr.reserve(k);
+        this->addr.reserve(k);
         for ( size_t i=0; i<k; ++i )
         {
-            addr.push_back(i);
+            this->addr.push_back(i);
         }
         
-        K = k;
-        moreCombinations = true;
+        this->K = k;
+        this->moreCombinations = true;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -302,7 +290,7 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
         // K is often used within this function. As it is supposed to
         // remain constant, protect it from unintentional modifications. 
         const size_t& Klen = this->K;
-        const size_t& N = N_size;
+        const size_t& N = this->N_size;
         std::list<std::set<T> > retVal;
         retVal.clear();
 
@@ -333,7 +321,7 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
          * its left neighbour, etc.
          */
         
-        for ( size_t cnt=0; true==moreCombinations && cnt<n; ++cnt )
+        for ( size_t cnt=0; true==this->moreCombinations && cnt<n; ++cnt )
         {
             // 'addr' has been set by the previous iteration for the current one.
             // Just create a set wuth elements at addr's indexes and append it to retVal:
@@ -342,7 +330,7 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
         
             for ( std::vector<size_t>::const_iterator it=addr.begin(); it!=addr.end(); ++it )
             {
-                temp.insert(elems.at(*it));
+                temp.insert(this->elems.at(*it));
             }
             
             retVal.push_back(temp);
@@ -350,16 +338,16 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
             // And update 'addr' for the next iteration as described above:
             for ( size_t i = Klen-1; /* i>=0 */ ; --i )
             {
-                if ( addr.at(i) < (N-Klen+i) )
+                if ( this->addr.at(i) < (N-Klen+i) )
                 {
                     // limit for the ith element not reached yet:
-                    ++addr.at(i);
+                    ++this->addr.at(i);
                     
                     // update the next elements to preserve uniqueness and ascending order: 
-                    const size_t upv = addr.at(i); 
+                    const size_t upv = this->addr.at(i); 
                     for ( size_t j = i+1; j<Klen; ++j )
                     {
-                        addr.at(j) = upv + j-i;
+                        this->addr.at(j) = upv + j-i;
                     }
                     
                     /* 
@@ -374,7 +362,7 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
                 // have been retrieved. This condition is flagged:
                 if ( 0==i )
                 {
-                    moreCombinations = false;
+                    this->moreCombinations = false;
                     break;  // out of for i
                 }
             } // for i
@@ -394,7 +382,7 @@ std::list<std::set<T> > math::CombinationGeneric<T>::next(size_t n) throw (math:
 template<class T>
 bool math::CombinationGeneric<T>::hasNext() const
 {
-    return moreCombinations;
+    return this->moreCombinations;
 }
 
 /**
@@ -404,6 +392,6 @@ template<class T>
 math::CombinationGeneric<T>::~CombinationGeneric()
 {
     // probably vector's destructors would clean this automatically...
-    elems.clear();
-    addr.clear();
+    this->elems.clear();
+    this->addr.clear();
 }
