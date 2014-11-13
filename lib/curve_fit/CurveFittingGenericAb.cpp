@@ -45,7 +45,7 @@ template<class T>
 bool math::CurveFittingGenericAb<T>::CPoint::operator<(const math::CurveFittingGenericAb<T>::CPoint& p) const
 {
     // just compare both points' abscissas
-    return ( p_x < p.p_x );
+    return ( this->p_x < p.p_x );
 }
 
 /*
@@ -56,9 +56,9 @@ template<class T>
 void math::CurveFittingGenericAb<T>::_init()
 {
     // As an instance has just been created, a curve cannot be generated yet.
-    curveGenerated = false;
+    this->curveGenerated = false;
     // Init the linked list (delete all points from the list if any exists)
-    points.clear();
+    this->points.clear();
 }
 
 /**
@@ -84,7 +84,7 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::operator=(const 
         // initialize
         _init();
         // and copy all points
-        points = orig.points;
+        this->points = orig.points;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -113,14 +113,14 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::copy(const math:
     }
 
     // ... and it must point to an object that is derived from CurveFittingGenericAb
-    const math::CurveFittingGenericAb<T>* dyncporig = dynamic_cast<const math::CurveFittingGenericAb<T>* >(porig);
+    const math::CurveFittingGenericAb<T>* const dyncporig = dynamic_cast<const math::CurveFittingGenericAb<T>* >(porig);
     if ( NULL==dyncporig )
     {
         throw math::CurveFittingException(math::CurveFittingException::INVALID_ARGUMENT);
     }
 
     // if all checks have passed, just reuse functionality of operator=
-    return operator=(*dyncporig);
+    return this->operator=(*dyncporig);
 }
 
 /**
@@ -143,13 +143,13 @@ template<class T>
 math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::enterPoint(const T& x, const T& y) throw (math::CurveFittingException)
 {
     // No additional points are allowed once the curve has been generated
-    if ( true==curveGenerated )
+    if ( true == this->curveGenerated )
     {
         throw math::CurveFittingException(math::CurveFittingException::ADD_POINT_NOT_ALLOWED);
     }
 
     // Check that the nr. of points would not exceed the max. allowed list's size
-    if ( points.size()==points.max_size() )
+    if ( this->points.size() == this->points.max_size() )
     {
         throw math::CurveFittingException(math::CurveFittingException::ADD_POINT_NOT_ALLOWED);
     }
@@ -159,7 +159,7 @@ math::CurveFittingGenericAb<T>& math::CurveFittingGenericAb<T>::enterPoint(const
         CPoint p;
         p.p_x = x;
         p.p_y = y;
-        points.push_back(p);
+        this->points.push_back(p);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -184,7 +184,7 @@ size_t math::CurveFittingGenericAb<T>::nrPoints() const
 template<class T>
 bool math::CurveFittingGenericAb<T>::curveReady() const
 {
-    return curveGenerated;
+    return this->curveGenerated;
 }
 
 /**
@@ -196,7 +196,7 @@ template<class T>
 T math::CurveFittingGenericAb<T>::lowerBound() const throw (math::CurveFittingException)
 {
     // only applicable when at least one point was entered
-    if ( true==points.empty() )
+    if ( true == this->points.empty() )
     {
         throw math::CurveFittingException(math::CurveFittingException::NO_POINTS);
     }
@@ -205,13 +205,13 @@ T math::CurveFittingGenericAb<T>::lowerBound() const throw (math::CurveFittingEx
     // just return the abscissa of the first point in the list.
     if ( true==curveGenerated )
     {
-        return points.front().p_x;
+        return this->points.front().p_x;
     }
 
     // traverse the list and find the smallest abscissa
     typename std::list< typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator currMin = points.begin();
     for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin();
-               it!=points.end(); ++it )
+               it!=this->points.end(); ++it )
     {
         if ( currMin->p_x > it->p_x )
         {
@@ -231,7 +231,7 @@ template<class T>
 T math::CurveFittingGenericAb<T>::upperBound() const throw (math::CurveFittingException)
 {
     // only applicable when at least one point was entered
-    if ( true==points.empty() )
+    if ( true == this->points.empty() )
     {
         throw math::CurveFittingException(math::CurveFittingException::NO_POINTS);
     }
@@ -240,7 +240,7 @@ T math::CurveFittingGenericAb<T>::upperBound() const throw (math::CurveFittingEx
     // just return the abscissa of the last point in the list.
     if ( true==curveGenerated )
     {
-        return points.back().p_x;
+        return this->points.back().p_x;
     }
 
     // traverse the list and find the highest abscissa
@@ -268,7 +268,7 @@ template<class T>
 bool math::CurveFittingGenericAb<T>::_duplicatePoints() const
 {
     // No duplicate points are possible if the list is empty
-    if ( true==points.empty() )
+    if ( true == this->points.empty() )
     {
         return false;
     }
@@ -278,7 +278,9 @@ bool math::CurveFittingGenericAb<T>::_duplicatePoints() const
         to the next point's abscissa. This is why the list must be sorted.
      */
     bool retVal = false;
-    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); it!=points.end(); ++it )
+    for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=points.begin(); 
+          it != this->points.end(); 
+          ++it )
     {
         /*
             The function also requires a pointer to the next element. As operator+ is not defined
@@ -289,7 +291,7 @@ bool math::CurveFittingGenericAb<T>::_duplicatePoints() const
         ++next;
 
         // the last point, nothing else to compare its abscissa to
-        if ( points.end()==next )
+        if ( this->points.end()==next )
         {
             break;  // out of for
         }
@@ -348,7 +350,7 @@ void math::CurveFittingGenericAb<T>::_curveGenerationCheck() throw (math::CurveF
     _sortPoints();
 
     // and detect any "duplicate" points
-    if ( true==_duplicatePoints() )
+    if ( true == this->_duplicatePoints() )
     {
         throw math::CurveFittingException(math::CurveFittingException::DUPLICATE_POINTS);
     }
@@ -362,7 +364,7 @@ void math::CurveFittingGenericAb<T>::_curveGenerationCheck() throw (math::CurveF
  {
     // List's destructors would probably clean up this automatically.
     // Anyway, let us clear the list, just to be aware of allocated resources.
-     points.clear();
+     this->points.clear();
 
     // Other dynamically allocated memory (via malloc or new) should be freed here.
     // There are no other resources to release.

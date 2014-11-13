@@ -18,6 +18,9 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
+ * An internal header file, it should not be included directly.
+ * @headername{mtcopy.h}
+ * 
  * Declaration of functions that copy data from vectors or arrays to
  * vectors.
  *
