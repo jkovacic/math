@@ -28,7 +28,9 @@ limitations under the License.
 // deliberately there is no #include "PermutationGeneric.hpp" !
 #include <new>
 #include <cstddef>
+#include <algorithm>
 
+#include "util/mtcopy.hpp"
 #include "exception/CombinatoricsException.hpp"
 
 
@@ -52,8 +54,8 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::vector<T>& el) throw 
         }
         
         // copy the vector 'el' into 'elems'
-        this->elems = el;
-        
+        math::mtcopy(el, this->elems);
+
         this->__init();
     }
     catch ( const std::bad_alloc& ba )
@@ -182,10 +184,8 @@ math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) th
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
-        
-        this->elems.clear();
-        this->elems.reserve(len);
-        this->elems.assign(elarray, elarray+len);
+
+        math::mtcopy(elarray, len, this->elems);
 
         this->__init();
     }
@@ -324,9 +324,7 @@ void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, size_t n) 
                     size_t end;
                     for ( start=i, end=N-1; start<end; ++start, --end )
                     {
-                        size_t swap = this->addr.at(start);
-                        this->addr.at(start) = this->addr.at(end);
-                        this->addr.at(end) = swap;
+                        std::swap(this->addr.at(start), this->addr.at(end));
                     }
                     
                     // and generate the next permutation based on 'addr':

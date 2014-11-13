@@ -29,6 +29,7 @@ limitations under the License.
 #include <new>
 #include <cstddef>
 
+#include "util/mtcopy.hpp"
 #include "exception/CombinatoricsException.hpp"
 
 
@@ -52,8 +53,8 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw 
         }
         
         // copy the vector 'el' into 'elems'
-        this->elems = el;
-        
+        math::mtcopy(el, this->elems);
+
         this->__init();
     }
     catch ( const std::bad_alloc& ba )
@@ -182,10 +183,8 @@ math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, size_t len) th
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
-        
-        this->elems.clear();
-        this->elems.reserve(len);
-        this->elems.assign(elarray, elarray+len);
+
+        math::mtcopy(elarray, len, this->elems);
 
         this->__init();
     }
