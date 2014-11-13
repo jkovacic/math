@@ -1,3 +1,21 @@
+M T C O P Y   T E S T
+
+Copy the entire array: 
+Copy:     23  56  12  56  23  -23  92  -1  45  -21  
+Expected: 23  56  12  56  23  -23  92  -1  45  -21
+Copy a part of an array: 
+Copy:     56  12  56  23  -23  92  -1  
+Expected: 56  12  56  23  -23  92  -1
+Copy the entire vector: 
+Copy:     -23  -21  -1  12  23  23  45  56  56  92  
+Expected: -23  -21  -1  12  23  23  45  56  56  92
+Copy of a part of a vector: 
+Copy:     -21  -1  12  23  23  
+Expected: -21  -1  12  23  23 
+Test vector's range: 
+Copy:     56  56  92  
+Expected: 56  56  92 
+
 Q U A T E R N I O N   T E S T
 
 zero: (0+0i+0j+0k)

@@ -24,6 +24,7 @@ limitations under the License.
 
 //TODO rearrange tests, possibly into several files
 
+#include "mtcopy.h"
 #include "NumericUtil.h"
 #include "Rational.h"
 #include "MatrixGeneric.h"
@@ -55,6 +56,78 @@ template class MatrixGeneric<float>;
 template class MatrixGeneric<Rational>;
 template class QuaternionGeneric<float>;
 template class PolynomialGeneric<float>;
+
+
+/*
+ * A handy function to print contents of a std::vector
+ */
+template <class T>
+void printVector(const vector<T>& vec)
+{
+    for ( typename vector<T>::const_iterator it=vec.begin(); it!=vec.end(); ++it )
+    {
+        cout << *it << "  ";
+    }
+    cout << endl;
+}
+
+/*
+ * Unit test of mtcopy functions
+ */
+void mtcopyTest()
+{
+    try
+    {
+    	const size_t N = 10;
+        const int arr[] = { 23, 56, 12, 56, 23, -23, 92, -1, 45, -21 };
+        vector<int> v;
+        vector<int> v2;
+
+        cout << "Copy the entire array: " << endl;
+        mtcopy(arr, arr+N, v);
+        cout << "Copy:     ";
+        printVector(v);
+        cout << "Expected: 23  56  12  56  23  -23  92  -1  45  -21" << endl;
+
+        cout << "Copy a part of an array: " << endl;
+        mtcopy(arr+1, 7, v2);
+        cout << "Copy:     ";
+        printVector(v2);
+        cout << "Expected: 56  12  56  23  -23  92  -1" << endl;
+
+        cout << "Copy the entire vector: " << endl;
+        sort(v. begin(), v.end());
+        mtcopy(v, v2);
+        cout << "Copy:     ";
+        printVector(v2);
+        cout << "Expected: -23  -21  -1  12  23  23  45  56  56  92" << endl;
+
+        cout << "Copy of a part of a vector: " << endl;
+        mtcopy(v, 1, 5, v2);
+        cout << "Copy:     ";
+        printVector(v2);
+        cout << "Expected: -21  -1  12  23  23 " << endl;
+
+        cout << "Test vector's range: " << endl;
+        mtcopy(v, 7, 5, v2);
+        cout << "Copy:     ";
+        printVector(v2);
+        cout << "Expected: 56  56  92 " << endl;
+    }
+    catch ( const bad_alloc& ba )
+    {
+        cerr << "Bad allocation exception called" << endl;
+    }
+    catch ( const out_of_range& oor )
+    {
+        cerr << "Out of range exception caught" << endl;
+    }
+    catch (...)
+    {
+        cerr << "Some other exception caught" << endl;
+    }
+}
+
 
 /*
  * Test of the class Rational
@@ -1311,7 +1384,10 @@ void statisticsTest()
 int main(int argc, const char* argv[])
 {
 
-    cout << "Q U A T E R N I O N   T E S T" << endl << endl;
+    cout << "M T C O P Y   T E S T" << endl << endl;
+    mtcopyTest();
+
+    cout << endl << "Q U A T E R N I O N   T E S T" << endl << endl;
     quaternionTest();
 
     cout << endl << "R A T I O N A L   T E S T" << endl << endl;
