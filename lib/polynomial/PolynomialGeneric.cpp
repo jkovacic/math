@@ -26,6 +26,7 @@ limitations under the License.
 
 
 // deliberately there is no #include "PolynomialGeneric.h" !
+#include "util/mtcopy.hpp"
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
 
@@ -53,17 +54,9 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const std::vector<T>& cvect) throw
         throw math::PolynomialException(math::PolynomialException::INVALID_ARGUMENT);
     }
     
-    try
-    {
-        this->__copyCoefs(cvect);
-        // reduce zero-coefficients from the highest order terms
-        this->__reduce();
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        // Memory allocation failed
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
-    }
+    this->__copyCoefs(cvect);
+    // reduce zero-coefficients from the highest order terms
+    this->__reduce();
 }
 
 
@@ -101,17 +94,9 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T& c0) throw (math::Polynomi
 template<class T>
 math::PolynomialGeneric<T>::PolynomialGeneric(const math::PolynomialGeneric<T>& poly) throw (math::PolynomialException)
 {
-    try
-    {
-        // Just copy the poly's coefficients
-        this->__copyCoefs(poly.coef);
-        // 'poly' is supposed to be already reduced, so no need to call reduce()
-    }
-    catch ( const std::bad_alloc &ba )
-    {
-        // Memory allocation failed
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
-    }
+    // Just copy the poly's coefficients
+    this->__copyCoefs(poly.coef); 
+    // 'poly' is supposed to be already reduced, so no need to call __reduce()
 }
 
 
@@ -143,10 +128,7 @@ math::PolynomialGeneric<T>::PolynomialGeneric(const T* carray, size_t n) throw (
 
     try
     {
-        // allocate coef:
-        this->coef.clear();
-        this->coef.resize(n);
-        this->coef.assign(carray, carray+n);
+        math::mtcopy(carray, n, this->coef);
 
         __reduce();
     }
@@ -222,9 +204,7 @@ void math::PolynomialGeneric<T>::__copyCoefs(const std::vector<T>& cvect) throw 
 {
     try
     {
-        this->coef.clear();
-        // std::vector's assignment operator (=) actually copies all elements from one vector into the other one
-        this->coef = cvect;
+        math::mtcopy(cvect, this->coef);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -292,17 +272,17 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator=(const math::Po
 
 
 /**
- * @return vector of coefficients in ascending order ([c0, c1, c2, ..., cn])
+ * @param vec - a reference to a vector to fill with coefficients in ascending order ([c0, c1, c2, ..., cn])
  *
  * @throw PolynomialException if allocation of memory for the output vector fails
  */
 template<class T>
-std::vector<T> math::PolynomialGeneric<T>::get() const throw (math::PolynomialException)
+void math::PolynomialGeneric<T>::get(std::vector<T>& vec) const throw (math::PolynomialException)
 {
     try
     {
         // This will copy contents of coef into the return value:
-        return this->coef;
+        math::mtcopy(this->coef, vec);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -313,27 +293,27 @@ std::vector<T> math::PolynomialGeneric<T>::get() const throw (math::PolynomialEx
 
 
 /**
- * @return vector of coefficients in descending order ([cn, ... , c2, c1, c0])
+ * @param vec - a reference to a vector to fill with coefficients in descending order ([cn, ... , c2, c1, c0])
  *
  * @throw PolynomialException if allocation of memory for the output vector fails
  */
 template<class T>
-std::vector<T> math::PolynomialGeneric<T>::getDesc() const throw (math::PolynomialException)
+void math::PolynomialGeneric<T>::getDesc(std::vector<T>& vec) const throw (math::PolynomialException)
 {
     try
     {
         const size_t N = this->coef.size();
         // Allocate the return vector:
-        std::vector<T> retVal(N);
+        vec.resize(N);
 
         // copy elements from coef to retVal in reverse order:
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal)
+        #pragma omp parallel for \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(vec)
         for ( size_t i=0; i<N; ++i )
         {
-            retVal.at(i) = this->coef.at(N-1-i);
+            vec.at(i) = this->coef.at(N-1-i);
         }
-
-        return retVal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -430,11 +410,11 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vecto
 
     try
     {
-
-        this->coef.clear();
         this->coef.resize(N);
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(cvect)
+        #pragma omp parallel for \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(cvect)
         for ( size_t i=0; i<N; ++i )
         {
             this->coef.at(i) = cvect.at(N-1-i);
@@ -830,7 +810,9 @@ void math::PolynomialGeneric<T>::__polyDivision(
          * Unlike the outer for loop, the inner loop
          * be parallelized.
          */
-        #pragma omp paralel for if(Np2>OMP_CHUNKS_PER_THREAD) default(none) shared(p, p2, i, c)
+        #pragma omp parallel for \
+                    if(Np2>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(p, p2, i, c)
         for ( size_t j=0; j<Np2; ++j )
         {
             p.at(Nq-i+j) -= c * p2.coef.at(j);
@@ -874,7 +856,9 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
-        #pragma omp parallel for if(npoly>OMP_CHUNKS_PER_THREAD) default(none) shared(poly)
+        #pragma omp parallel for \
+                    if(npoly>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(poly)
         for ( size_t i=0; i<npoly; ++i )
         {
             this->coef.at(i) += poly.coef.at(i);
@@ -934,7 +918,9 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
-        #pragma omp parallel for if(npoly>OMP_CHUNKS_PER_THREAD) default(none) shared(poly)
+        #pragma omp parallel for \
+                    if(npoly>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(poly)
         for ( size_t i=0; i<npoly; ++i )
         {
             this->coef.at(i) -= poly.coef.at(i);
@@ -993,7 +979,9 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-() const throw (
         const size_t N = this->coef.size();
 
         // Just negate each coefficient:
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal)
+        #pragma omp parallel for \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(retVal)
         for ( size_t i=0; i<N; ++i )
         {
             retVal.coef.at(i) = -this->coef.at(i);
@@ -1296,7 +1284,9 @@ math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& p1,
             Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its i^th coefficient as 0 (already set above)
         */
-        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, p1, p2)
+        #pragma omp parallel for \
+                    if(nmax>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(retVal, p1, p2)
         for ( size_t i=0; i<nmax; ++i )
         {
             if ( i<Np1 )
@@ -1365,7 +1355,9 @@ math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& p1,
             Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its ith coefficient as 0 (already set above)
         */
-        #pragma omp parallel for if(nmax>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, p1, p2)
+        #pragma omp parallel for \
+                    if(nmax>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(retVal, p1, p2)
         for ( size_t i=0; i<nmax; ++i )
         {
             if ( i<Np1 )

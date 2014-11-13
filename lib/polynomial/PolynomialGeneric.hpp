@@ -139,8 +139,8 @@ public:
     PolynomialGeneric(const PolynomialGeneric<T>& poly) throw (PolynomialException);
 
     // Getters
-    std::vector<T> get() const throw (PolynomialException);
-    std::vector<T> getDesc() const throw (PolynomialException);
+    void get(std::vector<T>& vec) const throw (PolynomialException);
+    void getDesc(std::vector<T>& vec) const throw (PolynomialException);
     T get(size_t pos) const;
 
     // Setters
