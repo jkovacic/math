@@ -117,7 +117,10 @@ bool math::IntFactorization::isPrime(unsigned long int n)
  * 
  * @throw IntFactorizationException if any of input arguments is zero
  */
-unsigned long int math::IntFactorization::greatestCommonDivisor(unsigned long int first, unsigned long int second) throw(math::IntFactorizationException)
+unsigned long int math::IntFactorization::greatestCommonDivisor(
+                    unsigned long int first, 
+                    unsigned long int second ) 
+            throw(math::IntFactorizationException)
 {
     /*
      * The well known Euclidean algorithm is utilized to find the greatest common divisor.
@@ -158,7 +161,10 @@ unsigned long int math::IntFactorization::greatestCommonDivisor(unsigned long in
  * 
  * @throw IntFactorizationException if any of input arguments is zero or if the LCM exceeds the integer range
  */
-unsigned long int math::IntFactorization::leastCommonMultiple(unsigned long int first, unsigned long int second) throw(math::IntFactorizationException)
+unsigned long int math::IntFactorization::leastCommonMultiple(
+                    unsigned long int first, 
+                    unsigned long int second) 
+            throw(math::IntFactorizationException)
 {
     /*
      * 'first' and 'second' can be expressed as:
@@ -213,7 +219,8 @@ unsigned long int math::IntFactorization::leastCommonMultiple(unsigned long int 
  * 
  * @throw IntFactorizationException if the next prime is out of integer range
  */
-unsigned long int math::IntFactorization::nextPrime(unsigned long int n) throw(math::IntFactorizationException)
+unsigned long int math::IntFactorization::nextPrime(unsigned long int n) 
+            throw(math::IntFactorizationException)
 {
     unsigned long int retVal = n;
     
@@ -328,25 +335,27 @@ unsigned long int math::IntFactorization::intSqrt(unsigned long int n)
  * Prime factorization.
  * 
  * @param n - an integer value to factorize
- * 
- * @return a map of all prime factors with their powers
+ * @param fac - a reference to a map to fill with prime factors and their powers 
  * 
  * @throw IntFactorizationException if allocation of memory fails
  */
-std::map<unsigned long int, unsigned int> math::IntFactorization::factor(unsigned long int n) throw(math::IntFactorizationException)
+void math::IntFactorization::factor(
+                    unsigned long int n, 
+                    std::map<unsigned long int, unsigned int>& fac ) 
+            throw(math::IntFactorizationException)
 {
     try
     {
-        std::map<unsigned long int, unsigned int> retVal;
-        retVal.clear();
         unsigned long int comp = n;
         unsigned long int pf = 2;
+
+        fac.clear();
 
         // "Specialized" handling of 0 and 1
         if ( 0==n || 1==n )
         {
-            retVal.insert(std::pair<unsigned long int, unsigned int>(n, 1) );
-            return retVal;
+            fac.insert(std::pair<unsigned long int, unsigned int>(n, 1) );
+            return;
         }
     
         /*
@@ -365,20 +374,19 @@ std::map<unsigned long int, unsigned int> math::IntFactorization::factor(unsigne
             }
 
             // If it is divisible, create a new map key first: 
-            retVal.insert( std::pair<unsigned long int, unsigned int>(pf, 0) );
+            fac.insert( std::pair<unsigned long int, unsigned int>(pf, 0) );
             
             // Divide by pf as many times as possible:
             while ( pf<=comp && 0==comp%pf )
             {
                 // For each successful division, update the key's (pf) value:
-                ++retVal[pf];
+                ++fac[pf];
                 // and divide comp by pf:
                 comp /= pf;
             }
 
         }
-        
-        return retVal;
+
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -389,29 +397,31 @@ std::map<unsigned long int, unsigned int> math::IntFactorization::factor(unsigne
 
 /**
  * List of all integer numbers that divide 'n', including 1 and 'n' itself.
- *  
- * @param n - an integer whose divisors will be determined
+ * Divisors will be sorted in ascending order.
  * 
- * @return a set of all integer divisors in ascending order
+ * @param n - an integer whose divisors will be determined
+ * @param div - a reference to a seto to fill with integer divisors.
  * 
  * @throw IntFactorizationException if allocation of memory fails
  */
-std::set<unsigned long int> math::IntFactorization::divisors(unsigned long int n) throw(math::IntFactorizationException)
+void math::IntFactorization::divisors(
+                    unsigned long int n,
+                    std::set<unsigned long>& div ) 
+            throw(math::IntFactorizationException)
 {
     try
     {
-        std::set<unsigned long int> retVal;
-        retVal.clear();
+        div.clear();
 
         // "Specialized" handling of 0 and 1
         if ( 0==n || 1==n )
         {
-            retVal.insert(n);
-            return retVal;
+            div.insert(n);
+            return;
         }
     
         /*
-         * 'i' iterates from 1 to sqrt(n). for each 'i', try dividing
+         * 'i' iterates from 1 to sqrt(n). For each 'i', try dividing
          * 'n' by it. If 'n' is divisible by 'i', insert 'i' and 'n/i'
          * into the set.
          */
@@ -421,19 +431,18 @@ std::set<unsigned long int> math::IntFactorization::divisors(unsigned long int n
             if ( 0==n%i )
             {
                 // If successful, insert 'i' into the set:
-                retVal.insert(i);
+                div.insert(i);
                 // If 'i' is a perfect sqrt of 'n', do not insert it once again:
                 const unsigned long int ni = n/i;
                 if ( i!=ni )
                 {
                     // If it is not a perfect square root, also insert 'n/i':
-                    retVal.insert(ni);
+                    div.insert(ni);
                 }
             }
         } // for i
         
         // Note that the set automatically sorts elements in ascending order
-        return retVal;
     }
     catch ( std::bad_alloc& ba )
     {

@@ -49,21 +49,34 @@ public:
     static bool isPrime(unsigned long int n);
     
     // greatest common divisor
-    static unsigned long int greatestCommonDivisor(unsigned long int first, unsigned long int second) throw(IntFactorizationException);
+    static unsigned long int greatestCommonDivisor(
+                    unsigned long int first, 
+                    unsigned long int second ) 
+                throw(IntFactorizationException);
     
     // least common multiple
-    static unsigned long int leastCommonMultiple(unsigned long int first, unsigned long int second) throw(IntFactorizationException);
+    static unsigned long int leastCommonMultiple(
+                    unsigned long int first, 
+                    unsigned long int second ) 
+                throw(IntFactorizationException);
     
-    static unsigned long int nextPrime(unsigned long int n) throw(IntFactorizationException);
+    static unsigned long int nextPrime(unsigned long int n) 
+                throw(IntFactorizationException);
     
     // the largest integer not exceeding sqrt(n)
     static unsigned long int intSqrt(unsigned long int n);
     
     // prime factorization
-    static std::map<unsigned long int, unsigned int> factor(unsigned long int n) throw(IntFactorizationException);
+    static void factor(
+                    unsigned long int n, 
+                    std::map<unsigned long int, unsigned int>& fac ) 
+                throw(IntFactorizationException);
     
     // list of all divisors of 'n'
-    static std::set<unsigned long int> divisors(unsigned long int n) throw(IntFactorizationException);
+    static void divisors(
+                    unsigned long int n,
+                    std::set<unsigned long int>& div )
+                throw(IntFactorizationException);
 };
 
 }  // namespace math
