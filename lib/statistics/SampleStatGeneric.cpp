@@ -100,7 +100,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
                          ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
 
     /*
-     * In the first step, each thread calculates the sum of its block
+     * Each thread calculates the sum of its block
      */
     T sum = math::NumericUtil<T>::ZERO;
     #pragma omp parallel num_threads(ideal) \
