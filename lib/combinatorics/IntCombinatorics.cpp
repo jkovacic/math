@@ -29,6 +29,7 @@ limitations under the License.
 #include "exception/CombinatoricsException.hpp"
 
 #include <climits>
+#include <algorithm>
 
 
 /**                                  -
@@ -326,7 +327,7 @@ unsigned long long int math::IntCombinatorics::binom(unsigned long long int N, u
      * Since binomial(n,k) == binomial(n,(n-k)), it is sensible to
      * to choose min(k, n-k) and thus reduce the number of multiplications.
      */
-    const unsigned long long int k = ( K<=N/2 ? K : N-K );
+    const unsigned long long int k = std::min(K, N-K); 
     
     // Since k is min (K, N-K), it can never be equal to ULLONG_MAX,
     // so the integer overflow of 'i' is not possible.
