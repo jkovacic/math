@@ -1253,11 +1253,8 @@ void statisticsTest()
         vector<double> vmpgs;
         vector<double> vwts;
 
-        vmpgs.reserve(LEN);
-        vmpgs.assign(ampgs, ampgs+LEN);
-
-        vwts.reserve(LEN);
-        vwts.assign(awts, awts+LEN);
+        math::mtcopy(ampgs, LEN, vmpgs);
+        math::mtcopy(awts, LEN, vwts);
 
         /*
            sum(mtcars$mpg)

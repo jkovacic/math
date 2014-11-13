@@ -34,6 +34,7 @@ limitations under the License.
 #include <cmath>
 #include <stdexcept>
 
+#include "util/mtcopy.hpp"
 #include "exception/StatisticsException.hpp"
 #include "util/NumericUtil.hpp"
 #include "SampleQuantileGeneric.hpp"
@@ -86,7 +87,7 @@ math::SampleQuantileGeneric<T>::SampleQuantileGeneric(const std::vector<T>& samp
         }
 
         // copy the 'sample' into an internal vector:
-        this->m_v = sample;
+        math::mtcopy(sample, this->m_v);
         this->m_N = this->m_v.size();
 
         // and sort it in ascending order
