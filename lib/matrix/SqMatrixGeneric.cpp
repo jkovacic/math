@@ -341,7 +341,8 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
 
         // inverse matrix is a solution (if it exists) of the equation:
         // this * inv = id
-        SqMatrixGeneric<T> retVal = leq.solve();
+        SqMatrixGeneric<T> retVal;
+        leq.solve(retVal);
 
         return retVal;
     }

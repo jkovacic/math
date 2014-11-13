@@ -67,7 +67,7 @@ public:
     LinearEquationSolverGeneric<T>& setTerm(const MatrixGeneric<T>& term) throw (LinearEquationSolverException);
 
     // Solves a system of linear equations
-    MatrixGeneric<T> solve() const throw (LinearEquationSolverException);
+    void solve(MatrixGeneric<T>& sol) const throw (LinearEquationSolverException);
 
 };
 

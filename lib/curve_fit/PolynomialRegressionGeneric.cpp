@@ -147,7 +147,8 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
 
         // Matrices are filled, solve the system of linear equations
         math::LinearEquationSolverGeneric<T> leq(a, b);
-        math::MatrixGeneric<T> x = leq.solve();
+        math::MatrixGeneric<T> x;
+        leq.solve(x);
 
         // And finally fill the regression polynomial
         for ( size_t i=0; i<N; ++i )

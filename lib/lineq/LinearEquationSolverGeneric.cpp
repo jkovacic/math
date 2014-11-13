@@ -158,12 +158,12 @@ math::LinearEquationSolverGeneric<T>& math::LinearEquationSolverGeneric<T>::setT
  * The method does not modify internal matrices (coefficients and constant terms)
  * so the same instance of the class can be reused as many times as desired.
  * 
- * @return A vector or a matrix 'x' that satisfies the condition: COEF * x = TERM
+ * @param sol - a reference to a matrix to be assigned the solution of equations
  * 
  * @throw LinearEquationSolverException if a unique solution cannot be found for any reason
  */
 template<class T>
-math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw (math::LinearEquationSolverException)
+void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) const throw (math::LinearEquationSolverException)
 {
     /*
      * The Gaussian elimination algorithm is implemented:
@@ -185,7 +185,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
     try
     {
         SqMatrixGeneric<T> temp(this->m_coef);
-        MatrixGeneric<T> retVal(this->m_term);
+        sol = this->m_term;
 
         // Try to convert the 'temp' into an identity matrix
         // by appropriately adding multiples of other lines to each line
@@ -231,7 +231,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
                 }
 
                 // add the r.th line to the i.th one and thus prevent temp(i,i) from being 0:
-                #pragma omp parallel default(none) shared(temp, retVal, i, r)
+                #pragma omp parallel default(none) shared(temp, sol, i, r)
                 for ( size_t c=0; c<Nmax; ++c )
                 {
                     if ( c<N )
@@ -241,7 +241,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
                     if ( c<NT )
                     {
-                        retVal.at(i, c) += retVal.at(r, c);
+                        sol.at(i, c) += sol.at(r, c);
                     }
                 }
 
@@ -249,7 +249,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
             // Set the i.th column of all other rows (r>i) to 0 by
             // adding the appropriate multiple of the i.th row
-            #pragma omp parallel for default(none) shared(temp, retVal, i)
+            #pragma omp parallel for default(none) shared(temp, sol, i)
             for ( size_t r=i+1; r<N; r++ )
             {
                 // Nothing to do if temp(r,i) is already 0.
@@ -267,7 +267,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
                     // term(r,:) = term(r,:)-el*term(i,:)
                     for ( size_t c=0; c<NT; ++c )
                     {
-                        retVal.at(r, c) -= el*retVal.at(i, c);
+                        sol.at(r, c) -= el * sol.at(i, c);
                     }
                 }  // if (temp(r,i) != 0
             }  // for r
@@ -278,7 +278,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
         // Normalizing of each row is independent from other rows so it is
         // perfectly safe to parallelize the task by rows.
-        #pragma omp parallel for default(none) shared(temp, retVal)
+        #pragma omp parallel for default(none) shared(temp, sol)
         for ( size_t r=0; r<N; ++r )
         {
             const T el = temp.get(r, r);
@@ -290,7 +290,7 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
 
             for ( size_t c=0; c<NT; ++c )
             {
-                retVal.at(r, c) /= el;
+                sol.at(r, c) /= el;
             }
         }
 
@@ -308,7 +308,10 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
             // It is possible to parallelize this for loop because a row 'c' (not included
             // into the for loop) will be added independently to each "parallelized" row
             // 'r' (between 0 and c-1 incl.), thus no race condition is possible.
-            #pragma omp parallel for default(none) shared(temp, retVal, c) schedule(dynamic)
+            #pragma omp parallel for \
+                        default(none) \
+                        shared(temp, sol, c) \
+                        schedule(dynamic)
             for ( size_t r=0; r<c; ++r )
             {
                 // Nothing to do if temp(r,c) already equals 0
@@ -323,19 +326,17 @@ math::MatrixGeneric<T> math::LinearEquationSolverGeneric<T>::solve() const throw
                     // temp(r,:) = temp(r,:) - el*temp(c,:)
                     for ( size_t i=c; i<N; ++i )
                     {
-                        temp.at(r, i) -= el*temp.at(c, i);
+                        temp.at(r, i) -= el * temp.at(c, i);
                     }
 
                     // term(r,:) = term(r,:) - el*term(c,:)
                     for ( size_t i=0; i<NT; ++i )
                     {
-                        retVal.at(r, i) -= el*retVal.at(c, i);
+                        sol.at(r, i) -= el * sol.at(c, i);
                     }
                 }  // if temp(r,c) != 0
             }  // for r
         }  // for c
-
-        return retVal;
 
     }  // try
     catch ( const math::MatrixException& mex )
