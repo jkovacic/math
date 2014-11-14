@@ -33,10 +33,12 @@ limitations under the License.
 #include "lineq/LinearEquationSolverGeneric.hpp"
 #include "exception/LinearEquationSolverException.hpp"
 #include "../settings/omp_settings.h"
+#include "omp/omp_header.h"
 
 #include <cstddef>
 #include <stdexcept>
 #include <vector>
+#include <algorithm>
 
 
 /**
@@ -127,17 +129,35 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
         const size_t N = this->rows;
         const size_t N2 = N * N;
 
-        #pragma omp parallel for collapse(2) if(N2>OMP_CHUNKS_PER_THREAD) default(none) shared(scalar)
-        for ( size_t r=0; r<N; ++r )
+        // Coarse grained parallelism:
+        const size_t ideal = N2 / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N2 % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        std::vector<T>& els = this->elems;
+
+        #pragma omp parallel num_threads(ideal) \
+                    if(N2>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(els, scalar)
         {
-            for ( size_t c=0; c<N; ++c )
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N2 + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator it = els.begin() + istart;
+            for ( size_t idx = istart;
+                  it != els.end() && idx < N2;
+                  ++it, ++idx )
             {
-                this->elems.at(this->_pos(r, c)) = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
-            }  // for c
-        }  // for r
+                const size_t r = idx / N;
+                const size_t c = idx % N;
+
+                *it = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
+            }
+        }  // omp parallel
+
 
         // just to suppress a warning when OpenMP is not enabled
-        (void) N2;
+        (void) ideal;
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -241,12 +261,12 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 // swap i.th and r.th line by replacing elements one by one
 
                 // However the swapping part might conditionally be suitable for parallelization
-                #pragma omp parallel for if((N-i)>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, r, i)
+                #pragma omp parallel for \
+                            if((N-i)>OMP_CHUNKS_PER_THREAD) \
+                            default(none) shared(temp, r, i)
                 for ( size_t c=this->_pos(i,i); c<this->_pos(i+1,0); ++c )
                 {
-                    const T tempElem = temp.at(c);
-                    temp.at(c) = temp.at(this->_pos(r, c));
-                    temp.at(this->_pos(r, c)) = tempElem;
+                    std::swap(temp.at(c), temp.at(this->_pos(r, c)));
                 }
 
                 // finally, if two lines are swapped, det = -det
@@ -286,19 +306,40 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         /*
          * Now 'temp' is an upper triangular matrix so all its diagonal
          * elements can be multiplied.
-         *
-         * Note: it would be possible to parallelize this part and apply
-         * reduction to multiplication, however, as there are no additional
-         * operations per thread, the only "benefit" of this would be additional
-         * overhead due to thread manipulation.
          */
-        for ( size_t i=0; i<N; ++i )
+
+        // Coarse grained parallelism
+        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        T prod = math::NumericUtil<T>::ONE;
+
+        #pragma omp parallel num_threads(ideal) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(temp, prod)
         {
-            retVal *= temp.at(this->_pos(i, i));
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+            const size_t iend = std::min(istart+elems_per_thread, N);
+
+            T tempProd = math::NumericUtil<T>::ONE;
+            for ( size_t i = istart; i<iend; ++i )
+            {
+                tempProd *= temp.at(this->_pos(i, i));
+            }
+
+            // Multiply in a thread safe manner:
+            #pragma omp critical(sqmatrix_determinant)
+            prod *= tempProd;
+        }  // omp parallel
+
+        retVal *= prod;
 
         // temp not needed anymore, clean it
         temp.clear();
+
+        (void) ideal;
     } // try
     catch ( const std::out_of_range& oor )
     {
