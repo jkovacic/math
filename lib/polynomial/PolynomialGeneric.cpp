@@ -807,12 +807,12 @@ void math::PolynomialGeneric<T>::__polyDivision(
          * of 'p2' by the q's i.th term, subtracting the product
          * from 'p' and assigning the difference to 'p'.
          *
-         * Unlike the outer for loop, the inner loop
+         * Unlike the outer for loop, the inner loop can be
          * be parallelized.
          */
         #pragma omp parallel for \
                     if(Np2>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(p, p2, i, c)
+                    default(none) shared(p, p2, i)
         for ( size_t j=0; j<Np2; ++j )
         {
             p.at(Nq-i+j) -= c * p2.coef.at(j);
