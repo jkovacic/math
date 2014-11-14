@@ -100,12 +100,14 @@ public:
     SampleQuantileGeneric(const std::vector<T>& sample) throw(StatisticsException);
 
     // Methods to obtain quantiles of the sample:
-    size_t sampleSize();
-    T quantile(size_t num, size_t den, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
-    T qntl(const T& p, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
-    T median();
-    T quartile(size_t q, EQntlType::type method=EQntlType::R7) throw(StatisticsException);
-    T iqr(EQntlType::type method=EQntlType::R7);
+    size_t sampleSize() const;
+    T quantile(size_t num, size_t den, EQntlType::type method=EQntlType::R7) const throw(StatisticsException);
+    T qntl(const T& p, EQntlType::type method=EQntlType::R7) const throw(StatisticsException);
+    T median() const;
+    T quartile(size_t q, EQntlType::type method=EQntlType::R7) const throw(StatisticsException);
+    T iqr(EQntlType::type method=EQntlType::R7) const;
+    T min() const;
+    T max() const;
 
     // Destructor
     virtual ~SampleQuantileGeneric();
@@ -124,7 +126,7 @@ private:
         return static_cast<size_t>(n + static_cast<T>(1)/static_cast<T>(2) );
     }
 
-    T linIntrp(const T& h);
+    T linIntrp(const T& h) const;
 
 };  // class SampleQuantileGeneric
 

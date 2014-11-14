@@ -103,7 +103,7 @@ math::SampleQuantileGeneric<T>::SampleQuantileGeneric(const std::vector<T>& samp
  * @return size of the sample
  */
 template <class T>
-size_t math::SampleQuantileGeneric<T>::sampleSize()
+size_t math::SampleQuantileGeneric<T>::sampleSize() const
 {
     return this->m_N;
 }
@@ -127,7 +127,7 @@ size_t math::SampleQuantileGeneric<T>::sampleSize()
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlType::type method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlType::type method) const throw(math::StatisticsException)
 {
     if ( 0==num || den<2 || num>=den )
     {
@@ -148,7 +148,7 @@ T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlTy
  * @return estimated quantile as a function of 'h'
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::linIntrp(const T& h)
+T math::SampleQuantileGeneric<T>::linIntrp(const T& h) const
 {
 	// "rename" the vector as it is referred in statistical publications:
     const std::vector<T>& x = this->m_v;
@@ -189,7 +189,7 @@ T math::SampleQuantileGeneric<T>::linIntrp(const T& h)
  * @throw StatisticsException if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method) const throw(math::StatisticsException)
 {
     T retVal;
 
@@ -472,7 +472,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
  * @return median of the sample
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::median()
+T math::SampleQuantileGeneric<T>::median() const
 {
     T retVal;
     const size_t& N = this->m_N;
@@ -505,7 +505,7 @@ T math::SampleQuantileGeneric<T>::median()
  * @throw StatisticsException  if any input argument is invalid
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::quartile(size_t q, math::EQntlType::type method) throw(math::StatisticsException)
+T math::SampleQuantileGeneric<T>::quartile(size_t q, math::EQntlType::type method) const throw(math::StatisticsException)
 {
 	T retVal;
 
@@ -536,9 +536,31 @@ T math::SampleQuantileGeneric<T>::quartile(size_t q, math::EQntlType::type metho
  * @return sample's interquartile range (difference between the 3rd and the 1st quartile)
  */
 template <class T>
-T math::SampleQuantileGeneric<T>::iqr(math::EQntlType::type method)
+T math::SampleQuantileGeneric<T>::iqr(math::EQntlType::type method) const
 {
     return ( this->quartile(3, method) - this->quartile(1, method) );
+}
+
+
+/**
+ * @return minimum value of the sample
+ */
+template <class T>
+T math::SampleQuantileGeneric<T>::min() const
+{
+    // Note that this->m_v is already sorted in ascending order
+    return this->m_v.at(0);
+}
+
+
+/**
+ * @return maximum value of the sample
+ */
+template <class T>
+T math::SampleQuantileGeneric<T>::max() const
+{
+    // Note that this->m_v is already sorted in ascending order
+    return this->m_v.at(this->m_N-1);
 }
 
 
