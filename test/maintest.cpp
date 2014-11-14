@@ -1360,6 +1360,25 @@ void statisticsTest()
             cout << endl;
             cout << "Exp.:\t" << exp[type] << endl;
         }
+        cout << endl;
+
+        cout << "Min mpg: " << q.min() << " (expected 10.4)" << endl;
+        cout << "Max mpg: " << q.max() << " (expected 33.9)" << endl;
+        typename vector<double>::const_iterator mpgit;
+        for ( mpgit=vmpgs.begin(); mpgit!=vmpgs.end(); ++ mpgit )
+        {
+            cout << *mpgit << " in range [8.05, 30.175]: ";
+            cout << q.isOutlier(*mpgit, 1.0) << endl;
+        }
+        cout << "Outliers for iqr=0.5: [";
+        set<double> oul;
+        q.outliers(oul, 0.5);
+        typename set<double>::const_iterator oit;
+        for ( oit=oul.begin(); oit!=oul.end(); ++oit )
+        {
+            cout << *oit << " ";
+        }
+        cout << "] expected [10.4 27.3 30.4 32.4 33.9]" << endl;
     }
     catch ( const StatisticsException& ex )
     {

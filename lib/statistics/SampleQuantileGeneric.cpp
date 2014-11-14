@@ -33,10 +33,12 @@ limitations under the License.
 #include <cstddef>
 #include <cmath>
 #include <stdexcept>
+#include <set>
 
 #include "util/mtcopy.hpp"
 #include "exception/StatisticsException.hpp"
 #include "util/NumericUtil.hpp"
+#include "SampleQuantileGeneric.hpp"
 
 
 /*
@@ -564,6 +566,101 @@ T math::SampleQuantileGeneric<T>::max() const
 }
 
 
+/**
+ * Test if a value is outlier regarding the sample.
+ * 
+ * An element is an outlier if it lies either below the first quartile - iqrs * IQR
+ * or above the third quartile + iqrs * IQR.
+ * 
+ * The exact value of 'iqrs' can be passed as an argument and is typically
+ * equal to 1.5.
+ *
+ * Note that quartiles are estimated from the original sample that was passed to
+ * the constructor. In other words, if 'val' is not a member of the sample,
+ * quartiles will not be reestimated to include this sample.
+ * 
+ * @param val - value to be checked
+ * @param iqrs - number of interquartile ranges below/above Q1 and Q2 (default 1.5)
+ * @param method - method to estimate quartiles (default R7)
+ * 
+ * @return a logical value indicating whether 'val' is an outlier or not 
+ */
+template <class T>
+bool math::SampleQuantileGeneric<T>::isOutlier(
+                const T& val,
+                const T& iqrs, 
+                math::EQntlType::type method) const
+{
+    const T q1 = this->quartile(1, method);
+    const T q3 = this->quartile(3, method);
+    const T diff = q3 - q1;   // IQR
+
+    return ( ( val < (q1-iqrs * diff) ) ||
+             ( val > (q3+iqrs * diff) ) );
+}
+
+
+/**
+ * Fills all sample's outliers into the set 'outl'.
+ * 
+ * An element is an outlier if it lies either below the first quartile - iqrs * IQR
+ * or above the third quartile + iqrs * IQR.
+ * 
+ * The exact value of 'iqrs' can be passed as an argument and is typically
+ * equal to 1.5.
+ * 
+ * @param outl - a reference to a set to be filled with outliers
+ * @param iqrs - number of interquartile ranges below/above Q1 and Q2 (default 1.5)
+ * @param method - method to estimate quartiles (default R7)
+ * 
+ * @throw StatisticsException if allocation of memory fails
+ */
+template <class T>
+void math::SampleQuantileGeneric<T>::outliers(
+                std::set<T>& outl, 
+                const T& iqrs, 
+                math::EQntlType::type method) const
+            throw (math::StatisticsException)
+{
+    try
+    {
+        const T q1 = this->quartile(1, method);
+        const T q3 = this->quartile(3, method);
+        const T diff = q3 - q1;   // IQR
+        const T lowerBound = q1 - iqrs * diff;
+        const T upperBound = q3 + iqrs * diff;
+
+        /*
+         * Vector this->m_v is already sorted in ascending order. That said,
+         * it is sufficient to start iterating from the vector's start as long
+         * as the elements are below the lower bound. Then another iteration is
+         * performed from the vector's end as long as the elements are above
+         * the upper bound. 
+         */
+
+        typename std::vector<T>::const_iterator it;
+        for ( it=this->m_v.begin(); 
+              it!=this->m_v.end() && *it<lowerBound;
+              ++it )
+        {
+            outl.insert(*it);
+        }
+
+        typename std::vector<T>::const_reverse_iterator rit;
+        for ( rit = this->m_v.rbegin();
+              rit!=this->m_v.rend() && *rit>upperBound;
+              ++rit )
+        {
+            outl.insert(*rit);
+        }
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::StatisticsException(math::StatisticsException::OUT_OF_MEMORY);
+    }
+}
+    
+    
 /**
  * Destructor
  */

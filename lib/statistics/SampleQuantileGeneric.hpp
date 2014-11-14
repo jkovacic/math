@@ -30,6 +30,7 @@ limitations under the License.
 
 #include <cstddef>
 #include <vector>
+#include <set>
 
 #include "exception/StatisticsException.hpp"
 
@@ -108,6 +109,8 @@ public:
     T iqr(EQntlType::type method=EQntlType::R7) const;
     T min() const;
     T max() const;
+    bool isOutlier(const T& val, const T& iqrs=THREE*HALF, EQntlType::type=EQntlType::R7) const;
+    void outliers(std::set<T>& outl, const T& iqrs=THREE*HALF, EQntlType::type=EQntlType::R7) const throw(StatisticsException);
 
     // Destructor
     virtual ~SampleQuantileGeneric();
