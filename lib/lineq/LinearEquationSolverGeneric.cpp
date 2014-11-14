@@ -27,6 +27,7 @@ limitations under the License.
 
 // deliberately there is no #include "LinearEquationSolverGeneric.hpp" !
 #include <cstddef>
+#include <algorithm>
 
 #include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
@@ -174,7 +175,7 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
      */
     const size_t N = this->m_coef.nrColumns();  // Nr. of unknowns
     const size_t NT = this->m_term.nrColumns(); // Nr. of terms' columns
-    const size_t Nmax = (N>=NT ? N : NT); // max. of both values
+    const size_t Nmax = std::max(N, NT);        // max. of both values
 
     // Check of dimensions
     if ( N != this->m_term.nrRows() )
@@ -197,8 +198,8 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
          * subtract multiples of the i.th row from all subsequent rows (r>i)
          * so their i.th column will be equal to 0. This requires plenty of
          * additions/subtractions of individual rows so parallelization of
-         * this for loop is not possible due to race conditions. IT will be
-         * possible to parallelize certain parts of this lop, though.
+         * this for loop is not possible due to race conditions. It will be
+         * possible to parallelize certain parts of this loop, though.
          */
         for ( size_t i=0; i<N; ++i )
         {
@@ -231,7 +232,8 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
                 }
 
                 // add the r.th line to the i.th one and thus prevent temp(i,i) from being 0:
-                #pragma omp parallel default(none) shared(temp, sol, i, r)
+
+                #pragma omp parallel for default(none) shared(temp, sol, i, r)
                 for ( size_t c=0; c<Nmax; ++c )
                 {
                     if ( c<N )
