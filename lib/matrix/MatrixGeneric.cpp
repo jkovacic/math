@@ -34,6 +34,7 @@ limitations under the License.
 
 // Deliberately there is no #include "MatrixGeneric.hpp" !
 #include "exception/MatrixException.hpp"
+#include "util/mtcopy.hpp"
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
 
@@ -108,17 +109,11 @@ void math::MatrixGeneric<T>::_copyElems(const math::MatrixGeneric<T>& orig) thro
         throw math::MatrixException(MatrixException::INVALID_DIMENSION);
     }
 
-    // release elements
-    this->elems.clear();
-
     try
     {
         this->rows = orig.rows;
         this->cols = orig.cols;
-        // STL vector's assignment operator (=) will allocate the appropriate
-        // size to elems and copy all its elements (instantiate them with copy
-        // constructors, if applicable)
-        this->elems = orig.elems;
+        math::mtcopy(orig.elems, this->elems);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -336,7 +331,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGen
         return *this;
     }
 
-    _copyElems(orig);
+    this->_copyElems(orig);
 
     return *this;
 }
@@ -479,10 +474,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGe
 
     try
     {
-        this->rows = temp.rows;   // not really necessary to do this...
-        this->cols = temp.cols;
-        this->elems.clear();
-        this->elems = temp.elems;
+        this->_copyElems(temp);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -602,7 +594,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     }  // for r
 
     // update the vector of elements:
-    this->elems = tempElems;
+    math::mtcopy(tempElems, this->elems);
 
     // and swap matrix's dimensions:
     size_t sw = this->cols;

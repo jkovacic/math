@@ -26,6 +26,7 @@ limitations under the License.
  */
 
 // Deliberately there is no #include "SqMatrixGeneric.hpp" !
+#include "util/mtcopy.hpp"
 #include "util/NumericUtil.hpp"
 #include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
@@ -195,7 +196,8 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // We do not want to modify the matrix, therefore its vector of
         // elements will be copied into a temporary one where any modifications
         // are permitted
-        std::vector<T> temp = this->elems;
+        std::vector<T> temp;
+        math::mtcopy(this->elems, temp);
         const size_t N = this->rows;  // number of rows (and columns)
 
         /*
