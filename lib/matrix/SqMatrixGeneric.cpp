@@ -124,45 +124,39 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
 {
     // A double for loop will traverse the matrix, its diagonal elements
     // (row == column) will be set to the scalar, others to 0
-    try
+
+    const size_t N = this->rows;
+    const size_t N2 = N * N;
+
+    // Coarse grained parallelism:
+    const size_t ideal = N2 / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == N2 % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+    std::vector<T>& els = this->elems;
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N2>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(els, scalar)
     {
-        const size_t N = this->rows;
-        const size_t N2 = N * N;
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N2 + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
 
-        // Coarse grained parallelism:
-        const size_t ideal = N2 / OMP_CHUNKS_PER_THREAD +
-                     ( 0 == N2 % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-        std::vector<T>& els = this->elems;
-
-        #pragma omp parallel num_threads(ideal) \
-                    if(N2>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(els, scalar)
+        typename std::vector<T>::iterator it = els.begin() + istart;
+        for ( size_t idx = istart;
+              it != els.end() && idx < N2;
+              ++it, ++idx )
         {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = (N2 + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr;
+            const size_t r = idx / N;
+            const size_t c = idx % N;
 
-            typename std::vector<T>::iterator it = els.begin() + istart;
-            for ( size_t idx = istart;
-                  it != els.end() && idx < N2;
-                  ++it, ++idx )
-            {
-                const size_t r = idx / N;
-                const size_t c = idx % N;
-
-                *it = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
-            }
-        }  // omp parallel
+            *it = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
+        }
+    }  // omp parallel
 
 
-        // just to suppress a warning when OpenMP is not enabled
-        (void) ideal;
-    }  // try
-    catch ( const std::out_of_range& oor )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
-    }
+    // just to suppress a warning when OpenMP is not enabled
+    (void) ideal;
 
     return *this;
 }
@@ -211,140 +205,133 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
     // At the end of the algorithm it will be multiplied by all diagonal elements
     T retVal = math::NumericUtil<T>::ONE;
 
-    try
+    // We do not want to modify the matrix, therefore its vector of
+    // elements will be copied into a temporary one where any modifications
+    // are permitted
+    std::vector<T> temp;
+    math::mtcopy(this->elems, temp);
+    const size_t N = this->rows;  // number of rows (and columns)
+
+    /*
+     * First part of the algorithm just finds the first occurrence of a
+     * row where A(i,i) does not equal 0. As such, this part is not
+     * suitable for parallelization.
+     */
+    for ( size_t i=0; i<N-1; ++i )
     {
-        // We do not want to modify the matrix, therefore its vector of
-        // elements will be copied into a temporary one where any modifications
-        // are permitted
-        std::vector<T> temp;
-        math::mtcopy(this->elems, temp);
-        const size_t N = this->rows;  // number of rows (and columns)
+        // if temp(i,i) equals zero, swap the i^th line with
+        // another one (r; r>i) satisfying temp(r,i)!=0
+        // Each swap multiplies the determinant by -1
 
-        /*
-         * First part of the algorithm just finds the first occurrence of a
-         * row where A(i,i) does not equal 0. As such, this part is not
-         * suitable for parallelization.
-         */
-        for ( size_t i=0; i<N-1; ++i )
+        if ( true == math::NumericUtil<T>::isZero(temp.at(this->_pos(i, i))) )
         {
-            // if temp(i,i) equals zero, swap the i^th line with
-            // another one (r; r>i) satisfying temp(r,i)!=0
-            // Each swap multiplies the determinant by -1
+            size_t r;
 
-            if ( true == math::NumericUtil<T>::isZero(temp.at(this->_pos(i, i))) )
+            // Line swap will be necessary.
+            // Find the r^th line meeting the criteria above
+            // If not found, the determinant will be 0.
+
+            for ( r=i+1; r<N; ++r )
             {
-                size_t r;
-
-                // Line swap will be necessary.
-                // Find the r^th line meeting the criteria above
-                // If not found, the determinant will be 0.
-
-                for ( r=i+1; r<N; ++r )
+                if ( false == NumericUtil<T>::isZero(temp.at(this->_pos(r, i))) )
                 {
-                    if ( false == NumericUtil<T>::isZero(temp.at(this->_pos(r, i))) )
-                    {
-                        // Found, no need to search further,
-                        // so end the for (r) loop
-                        break;  // out of for (r)
-                    }
-                }  // for r
-
-                // if no appropriate row r was found, the determinant will be 0
-                // and the method is finished
-                if ( N == r )
-                {
-                    return math::NumericUtil<T>::ZERO;
+                    // Found, no need to search further,
+                    // so end the for (r) loop
+                    break;  // out of for (r)
                 }
-
-                // otherwise swap the lines one element by one
-
-                // swap i.th and r.th line by replacing elements one by one
-
-                // However the swapping part might conditionally be suitable for parallelization
-                #pragma omp parallel for \
-                            if((N-i)>OMP_CHUNKS_PER_THREAD) \
-                            default(none) shared(temp, r, i)
-                for ( size_t c=this->_pos(i,i); c<this->_pos(i+1,0); ++c )
-                {
-                    std::swap(temp.at(c), temp.at(this->_pos(r, c)));
-                }
-
-                // finally, if two lines are swapped, det = -det
-                retVal = -retVal;
-            } // if temp(i,i) equals 0
-
-            // Now temp(i,i) definitely does not equal 0
-            // all temp(r,i) will be "set" to 0 where r>i.
-
-            // Note that determinant is not changed if
-            // a multiplier of one line (i in this algorithm)
-            // is added to another line (r; r>i)
-
-            /*
-             * Main part of the algorithm. An appropriate multiplier of the i.th row will be
-             * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
-             *
-             * Note: only the outer for loop (for r) will be parallelized.
-             */
-            #pragma omp parallel for default(none) shared(temp, i)
-            for ( size_t r=i+1; r<N; ++r )
-            {
-                // temp(r,i) will be calculated to 0 immediately.
-                // However, its initial value is necessary to properly
-                // calculate all other elements of the r.th row
-                const T ri = temp.at(this->_pos(r, i));
-
-                for ( size_t c=i; c<N; ++c)
-                {
-                    // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                    temp.at(this->_pos(r, c)) -= temp.at(this->_pos(i, c)) * ri / temp.at(this->_pos(i, i));
-                }  // for c
             }  // for r
-        }  // for i
 
-
-        /*
-         * Now 'temp' is an upper triangular matrix so all its diagonal
-         * elements can be multiplied.
-         */
-
-        // Coarse grained parallelism
-        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-        T prod = math::NumericUtil<T>::ONE;
-
-        #pragma omp parallel num_threads(ideal) \
-                    if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(temp, prod)
-        {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr;
-            const size_t iend = std::min(istart+elems_per_thread, N);
-
-            T tempProd = math::NumericUtil<T>::ONE;
-            for ( size_t i = istart; i<iend; ++i )
+            // if no appropriate row r was found, the determinant will be 0
+            // and the method is finished
+            if ( N == r )
             {
-                tempProd *= temp.at(this->_pos(i, i));
+                return math::NumericUtil<T>::ZERO;
             }
 
-            // Multiply in a thread safe manner:
-            #pragma omp critical(sqmatrix_determinant)
-            prod *= tempProd;
-        }  // omp parallel
+            // otherwise swap the lines one element by one
 
-        retVal *= prod;
+            // swap i.th and r.th line by replacing elements one by one
 
-        // temp not needed anymore, clean it
-        temp.clear();
+            // However the swapping part might conditionally be suitable for parallelization
+            #pragma omp parallel for \
+                        if((N-i)>OMP_CHUNKS_PER_THREAD) \
+                        default(none) shared(temp, r, i)
+            for ( size_t c=this->_pos(i,i); c<this->_pos(i+1,0); ++c )
+            {
+                std::swap(temp.at(c), temp.at(this->_pos(r, c)));
+            }
 
-        (void) ideal;
-    } // try
-    catch ( const std::out_of_range& oor )
+            // finally, if two lines are swapped, det = -det
+            retVal = -retVal;
+        } // if temp(i,i) equals 0
+
+        // Now temp(i,i) definitely does not equal 0
+        // all temp(r,i) will be "set" to 0 where r>i.
+
+        // Note that determinant is not changed if
+        // a multiplier of one line (i in this algorithm)
+        // is added to another line (r; r>i)
+
+        /*
+         * Main part of the algorithm. An appropriate multiplier of the i.th row will be
+         * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
+         *
+         * Note: only the outer for loop (for r) will be parallelized.
+         */
+        #pragma omp parallel for default(none) shared(temp, i)
+        for ( size_t r=i+1; r<N; ++r )
+        {
+            // temp(r,i) will be calculated to 0 immediately.
+            // However, its initial value is necessary to properly
+            // calculate all other elements of the r.th row
+            const T ri = temp.at(this->_pos(r, i));
+
+            for ( size_t c=i; c<N; ++c)
+            {
+                // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
+                temp.at(this->_pos(r, c)) -= temp.at(this->_pos(i, c)) * ri / temp.at(this->_pos(i, i));
+            }  // for c
+        }  // for r
+    }  // for i
+
+
+    /*
+     * Now 'temp' is an upper triangular matrix so all its diagonal
+     * elements can be multiplied.
+     */
+
+    // Coarse grained parallelism
+    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+    T prod = math::NumericUtil<T>::ONE;
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(temp, prod)
     {
-        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
-    }
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+        const size_t iend = std::min(istart+elems_per_thread, N);
+
+        T tempProd = math::NumericUtil<T>::ONE;
+        for ( size_t i = istart; i<iend; ++i )
+        {
+            tempProd *= temp.at(this->_pos(i, i));
+        }
+
+        // Multiply in a thread safe manner:
+        #pragma omp critical(sqmatrix_determinant)
+        prod *= tempProd;
+    }  // omp parallel
+
+    retVal *= prod;
+
+    // temp not needed anymore, clean it
+    temp.clear();
+
+    (void) ideal;
 
     return retVal;
 }
