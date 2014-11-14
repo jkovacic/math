@@ -36,6 +36,7 @@ limitations under the License.
 #include "exception/MatrixException.hpp"
 #include "util/mtcopy.hpp"
 #include "util/NumericUtil.hpp"
+#include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 
 
@@ -361,11 +362,31 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     {
         const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(m)
-        for ( size_t i=0; i<N; ++i )
+        // Coarse grained parallelism:
+        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        std::vector<T>& els = this->elems;
+
+        #pragma omp parallel num_threads(ideal) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(els, m)
         {
-            this->elems.at(i) += m.elems.at(i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::const_iterator mit = m.elems.begin() + istart;
+            typename std::vector<T>::iterator it = els.begin()+ istart;
+            for ( size_t cntr = istart;
+                  it != els.end() && mit != m.elems.end() && cntr < N;
+                  ++it, ++mit, ++cntr )
+            {
+                *it += *mit;
+            }
+        }  // omp parallel
+
+        (void) ideal;
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -401,11 +422,31 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
     {
     	const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(matrix)
-        for ( size_t i=0; i<N; ++i )
+        // Coarse grained parallelism:
+    	const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+    	             ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        std::vector<T>& els = this->elems;
+
+        #pragma omp parallel num_threads(ideal) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(els, matrix)
         {
-            this->elems.at(i) -= matrix.elems.at(i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::const_iterator mit = matrix.elems.begin() + istart;
+            typename std::vector<T>::iterator it = els.begin()+ istart;
+            for ( size_t cntr = istart;
+                  it != els.end() && mit != matrix.elems.end() && cntr < N;
+                  ++it, ++mit, ++cntr )
+            {
+                *it -= *mit;
+            }
+        }  // omp parallel
+
+       (void) ideal;
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -436,11 +477,31 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
     {
     	const size_t N = this->rows * this->cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp)
-        for ( size_t i=0; i<N; ++i )
+        // Coarse grained parallelism:
+        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        const std::vector<T>& els = this->elems;
+
+        #pragma omp parallel num_threads(ideal) \
+    	            if(N>OMP_CHUNKS_PER_THREAD) \
+    	            default(none) shared(els, temp)
         {
-            temp.elems.at(i) = -(this->elems.at(i));
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::const_iterator it = els.begin() + istart;
+            typename std::vector<T>::iterator mit = temp.elems.begin()+ istart;
+            for ( size_t cntr = istart;
+                  it != els.end() && mit != temp.elems.end() && cntr < N;
+                  ++it, ++mit, ++cntr )
+            {
+                *mit = -(*it);
+            }
+        }  // omp parallel
+
+        (void) ideal;
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -499,11 +560,31 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
     const size_t N = this->rows * this->cols;
 
     // Multiply each element by the 'scalar'
-    #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(scalar)
-    for ( size_t i=0; i<N; ++i )
-    {
-        this->elems.at(i) *= scalar;
-    }
+
+    // Coarse grained parallelism:
+   	const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+   	std::vector<T>& els = this->elems;
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(els, scalar)
+   	{
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+   	    const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+
+        typename std::vector<T>::iterator it = els.begin() + istart;
+        for ( size_t cntr = istart;
+              it != els.end() && cntr < N;
+              ++it, ++cntr )
+        {
+            *it *= scalar;
+        }
+   	}  // omp parallel
+
+    (void) ideal;
 
     return *this;
 }
@@ -833,11 +914,31 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
         // Matrices have the same number of elements, just traverse
         // them linearly and perform addition of elements at the same position
 
-    	#pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, m1, m2)
-        for ( size_t i=0; i<N; ++i )
+        // Coarse grained parallelism:
+        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+    	#pragma omp parallel num_threads(ideal) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(temp, m1, m2)
         {
-            temp.elems.at(i) = m1.elems.at(i) + m2.elems.at(i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator it = temp.elems.begin() + istart;
+            typename std::vector<T>::const_iterator m1it = m1.elems.begin() + istart;
+            typename std::vector<T>::const_iterator m2it = m2.elems.begin() + istart;
+            for ( size_t cntr = istart;
+                  it != temp.elems.end() && m1it != m1.elems.end() && m2it != m2.elems.end() && cntr < N;
+                  ++it, ++m1it, ++m2it, ++cntr )
+            {
+                *it = *m1it + *m2it;
+            }
+        }  // omp parallel
+
+        (void) ideal;
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -875,12 +976,32 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const m
 
     try
     {
+        // Coarse grained parallelism:
+        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(temp, m1, m2)
-        for ( size_t i=0; i<N; ++i )
+        #pragma omp parallel num_threads(ideal) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(temp, m1, m2)
         {
-            temp.elems.at(i) = m1.elems.at(i) - m2.elems.at(i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator it = temp.elems.begin() + istart;
+            typename std::vector<T>::const_iterator m1it = m1.elems.begin() + istart;
+            typename std::vector<T>::const_iterator m2it = m2.elems.begin() + istart;
+            for ( size_t cntr = istart;
+                  it != temp.elems.end() && m1it != m1.elems.end() && m2it != m2.elems.end() && cntr < N;
+                  ++it, ++m1it, ++m2it, ++cntr )
+            {
+                *it = *m1it - *m2it;
+            }
+        }  // omp parallel
+
+        (void) ideal;
+
     }  // try
     catch ( const std::out_of_range& oor )
     {
@@ -929,7 +1050,8 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
 
     try
     {
-        #pragma omp parallel for collapse(2) default(none) shared(m1, m2, temp)
+        #pragma omp parallel for collapse(2) \
+                    default(none) shared(m1, m2, temp)
         for ( size_t r=0; r<m1.rows; ++r )
         {
             for ( size_t c=0; c<m2.cols; ++c)
@@ -962,7 +1084,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
  *
  * @return m * sc
  *
- * @throw MatrixException if matrix does not contain enough elements
+ * @throw MatrixException if allocation of memory fails
  */
 template<class T>
 math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T& sc) throw (math::MatrixException)
@@ -978,11 +1100,31 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
     {
         const size_t N = m.rows * m.cols;
 
-        #pragma omp parallel for if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal, m, sc)
-        for ( size_t i=0; i<N; ++i )
+        // Coarse grained parallelism:
+        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+        #pragma omp parallel num_threads(ideal) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(retVal, m, sc)
         {
-            retVal.elems.at(i) = m.elems.at(i) * sc;
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator it = retVal.elems.begin() + istart;
+            typename std::vector<T>::const_iterator mit = m.elems.begin() + istart;
+            for ( size_t cntr = istart;
+                  it != retVal.elems.end() && mit != m.elems.end() && cntr < N;
+                  ++it, ++mit, ++cntr )
+            {
+                *it = *mit * sc;
+            }
+        }  // omp parallel
+
+        (void) ideal;
+
     }  //try
     catch ( const std::out_of_range& oor )
     {
@@ -1002,7 +1144,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
  *
  * @return scalar * matrix
  *
- * @throw MatrixException if matrix does not contain enough elements
+ * @throw MatrixException if allocation of memory fails
  */
 template<class T>
 math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>& m) throw (math::MatrixException)
