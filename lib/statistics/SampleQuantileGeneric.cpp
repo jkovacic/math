@@ -38,7 +38,6 @@ limitations under the License.
 #include "util/mtcopy.hpp"
 #include "exception/StatisticsException.hpp"
 #include "util/NumericUtil.hpp"
-#include "SampleQuantileGeneric.hpp"
 
 
 /*
