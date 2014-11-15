@@ -1257,6 +1257,16 @@ void statisticsTest()
         math::mtcopy(awts, LEN, vwts);
 
         /*
+           min(mtcars$wt)
+           [1] 1.513
+           max(mtcars$wt)
+           [1] 5.424
+         */
+        cout << "min(wt): " << SampleStat::min(vwts) << " (expected: 1.513)" << endl;
+        cout << "max(wt): " << SampleStat::max(vwts) << " (expected: 5.424)" << endl;
+        cout << endl;
+
+        /*
            sum(mtcars$mpg)
            [1] 642.9
            mean(mtcars$mpg)
@@ -1362,6 +1372,19 @@ void statisticsTest()
         }
         cout << endl;
 
+        /*
+         * R code to find outliers:
+         *
+             q <- quantile(mtcars$mpg, c(0.25, 0.75), name=FALSE)
+             d <- IQR(mtcars$mpg)
+             mtcars$mpg < (q[1]-1.0*d) | mtcars$mpg > (q[2]+1.0*d)
+              [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+             [14] FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+             [27] FALSE  TRUE FALSE FALSE FALSE FALSE
+
+             sort(unique(mtcars$mpg[mtcars$mpg<(q[1]-0.5*d) | mtcars$mpg>(q[2]+0.5*d)]))
+             [1] 10.4 27.3 30.4 32.4 33.9
+         */
         cout << "Min mpg: " << q.min() << " (expected 10.4)" << endl;
         cout << "Max mpg: " << q.max() << " (expected 33.9)" << endl;
         typename vector<double>::const_iterator mpgit;

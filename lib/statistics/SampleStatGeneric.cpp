@@ -73,6 +73,94 @@ T math::SampleStatGeneric<T>::__getShift(const std::vector<T>& x, size_t Nmax)
 }
 
 
+/*
+ * Finds sample's either minimum or maximum value, depending
+ * on 'min'.
+ *
+ * @param x - vector of sample elements
+ * @param min - a logical value indicating whether minimum or maximum value should be returned
+ *
+ * @return
+ *
+ * @throw StatisticsException if 'x' is empty
+ */
+template <class T>
+T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(math::StatisticsException)
+{
+    const size_t N = x.size();
+
+    // sanity check
+    if ( 0 == N )
+    {
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
+    }
+
+    // the first element is the first candidate for the extreme value...
+    T retVal = x.at(0);
+
+    // Coarse grained parallelism:
+    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(x, retVal, min)
+    {
+    	const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+
+        typename std::vector<T>::const_iterator it = x.begin() + istart;
+        // the first value of the block is the first candidate for the local extreme
+        T temp = *it;
+
+        for ( size_t cntr=0; cntr<elems_per_thread && it!=x.end(); ++it, ++cntr)
+        {
+            // update 'temp' depending on 'min'
+            temp = ( true==min ? std::min(temp, *it) : std::max(temp, *it) );
+        }
+
+        // prevent possible race condition when updating retVal
+        #pragma omp critical(samplestatgeneric_minmax)
+        retVal = ( true==min ? std::min(retVal, temp) : std::max(retVal, temp) );
+    }  // omp parallel
+
+    return retVal;
+
+    // this variable is never used in serial mode
+    (void) ideal;
+}
+
+
+/**
+ * @param x - vector of sample elements
+ *
+ * @return minimum value of the sample
+ *
+ * @throw StatisticsException if 'x' is empty
+ */
+template <class T>
+T math::SampleStatGeneric<T>::min(const std::vector<T>& x) throw(math::StatisticsException)
+{
+    return __minmax(x, true);
+}
+
+
+/**
+ * @param x - vector of sample elements
+ *
+ * @return maximum value of the sample
+ *
+ * @throw StatisticsException if 'x' is empty
+ */
+template <class T>
+T math::SampleStatGeneric<T>::max(const std::vector<T>& x) throw(math::StatisticsException)
+{
+    return __minmax(x, false);
+}
+
+
 /**
  * @param x - vector of sample elements
  *

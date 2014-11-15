@@ -514,6 +514,9 @@ K = 5 :
 
 S T A T I S T I C S   T E S T
 
+min(wt): 1.513 (expected: 1.513)
+max(wt): 5.424 (expected: 5.424)
+
 Sum of all elements: 642.9 (expected: 642.9)
 Sample mean: 20.0906 (expected: 20.09062)
 Sample variance: 36.3241 (expected: 36.3241)

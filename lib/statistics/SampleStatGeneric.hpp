@@ -50,6 +50,8 @@ class SampleStatGeneric
 {
 
 public:
+    static T min(const std::vector<T>& x) throw(StatisticsException);
+    static T max(const std::vector<T>& x) throw(StatisticsException);
     static T sum(const std::vector<T>& x);
     static T mean(const std::vector<T>& x) throw(StatisticsException);
     static T var(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
@@ -63,6 +65,7 @@ public:
 
 private:
     static T __getShift(const std::vector<T>& x, size_t Nmax=5);
+    static T __minmax(const std::vector<T>&x, bool min) throw(StatisticsException);
 
 };  // class SampleStatGeneric
 
