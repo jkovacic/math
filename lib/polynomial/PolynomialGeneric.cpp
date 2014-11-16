@@ -692,7 +692,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
         typename std::vector<T>::const_iterator mit = els.begin() + istart + 1;
         typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
         for ( size_t i = 0;
-        		i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
+              i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
               ++mit, ++it, ++i )
         {
             *it = static_cast<T>(istart+i+1) * (*mit);
@@ -759,7 +759,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
         typename std::vector<T>::const_iterator mit = els.begin() + istart;
         typename std::vector<T>::iterator it = retVal.coef.begin() + istart + 1;
         for ( size_t i = 0;
-        		i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
+              i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
               ++mit, ++it, ++i )
         {
             *it = *mit / static_cast<T>(istart+i+1);
@@ -895,13 +895,13 @@ void math::PolynomialGeneric<T>::__polyDivision(
         {
             const size_t thnr = omp_get_thread_num();
             const size_t nthreads  = omp_get_num_threads();
-  	        const size_t elems_per_thread = (Np2 + nthreads - 1) / nthreads;
+            const size_t elems_per_thread = (Np2 + nthreads - 1) / nthreads;
             const size_t istart = elems_per_thread * thnr;
 
             typename std::vector<T>::iterator pit = p.begin() + istart + Nq - i;
             typename std::vector<T>::const_iterator p2it = p2.coef.begin() + istart;
             for ( size_t j = 0;
-            		j<elems_per_thread && pit!=p.end() && p2it!=p2.coef.end();
+                  j<elems_per_thread && pit!=p.end() && p2it!=p2.coef.end();
                   ++pit, ++p2it, ++j)
             {
                 *pit -= c * (*p2it);
@@ -966,7 +966,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
             typename std::vector<T>::iterator it = els.begin() + istart;
             typename std::vector<T>::const_iterator pit = poly.coef.begin()+ istart;
             for ( size_t i = 0;
-            		i<elems_per_thread && it!=els.end() && pit!=poly.coef.end();
+                  i<elems_per_thread && it!=els.end() && pit!=poly.coef.end();
                   ++it, ++pit, ++i )
             {
                 *it += *pit;
