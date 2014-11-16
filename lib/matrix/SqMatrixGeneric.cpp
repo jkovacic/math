@@ -323,7 +323,9 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
         // Multiply in a thread safe manner:
         #pragma omp critical(sqmatrix_determinant)
-        prod *= tempProd;
+        {
+            prod *= tempProd;
+        }
     }  // omp parallel
 
     retVal *= prod;

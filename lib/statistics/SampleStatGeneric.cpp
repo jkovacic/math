@@ -123,7 +123,9 @@ T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(
 
         // prevent possible race condition when updating retVal
         #pragma omp critical(samplestatgeneric_minmax)
-        retVal = ( true==min ? std::min(retVal, temp) : std::max(retVal, temp) );
+        {
+            retVal = ( true==min ? std::min(retVal, temp) : std::max(retVal, temp) );
+        }
     }  // omp parallel
 
     return retVal;
