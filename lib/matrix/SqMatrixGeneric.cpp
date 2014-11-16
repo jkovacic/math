@@ -144,7 +144,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
 
         typename std::vector<T>::iterator it = els.begin() + istart;
         for ( size_t idx = istart;
-              it != els.end() && idx < N2;
+              idx<(istart+elems_per_thread) && it!=els.end();
               ++it, ++idx )
         {
             const size_t r = idx / N;

@@ -354,8 +354,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
 
         typename std::vector<T>::const_iterator mit = m.elems.begin() + istart;
         typename std::vector<T>::iterator it = els.begin()+ istart;
-        for ( size_t cntr = istart;
-              it != els.end() && mit != m.elems.end() && cntr < N;
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=els.end() && mit!=m.elems.end();
               ++it, ++mit, ++cntr )
         {
             *it += *mit;
@@ -407,8 +407,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
 
         typename std::vector<T>::const_iterator mit = matrix.elems.begin() + istart;
         typename std::vector<T>::iterator it = els.begin()+ istart;
-        for ( size_t cntr = istart;
-              it != els.end() && mit != matrix.elems.end() && cntr < N;
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=els.end() && mit!=matrix.elems.end();
               ++it, ++mit, ++cntr )
         {
             *it -= *mit;
@@ -456,8 +456,8 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
 
         typename std::vector<T>::const_iterator it = els.begin() + istart;
         typename std::vector<T>::iterator mit = temp.elems.begin()+ istart;
-        for ( size_t cntr = istart;
-              it != els.end() && mit != temp.elems.end() && cntr < N;
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=els.end() && mit!=temp.elems.end();
               ++it, ++mit, ++cntr )
         {
             *mit = -(*it);
@@ -534,8 +534,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
         const size_t istart = elems_per_thread * thnr;
 
         typename std::vector<T>::iterator it = els.begin() + istart;
-        for ( size_t cntr = istart;
-              it != els.end() && cntr < N;
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=els.end();
               ++it, ++cntr )
         {
             *it *= scalar;
@@ -879,8 +879,8 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
         typename std::vector<T>::iterator it = temp.elems.begin() + istart;
         typename std::vector<T>::const_iterator m1it = m1.elems.begin() + istart;
         typename std::vector<T>::const_iterator m2it = m2.elems.begin() + istart;
-        for ( size_t cntr = istart;
-              it != temp.elems.end() && m1it != m1.elems.end() && m2it != m2.elems.end() && cntr < N;
+        for ( size_t cntr = 0;
+              cntr < elems_per_thread && it!=temp.elems.end() && m1it!=m1.elems.end() && m2it!=m2.elems.end();
               ++it, ++m1it, ++m2it, ++cntr )
         {
             *it = *m1it + *m2it;
@@ -934,8 +934,8 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const m
         typename std::vector<T>::iterator it = temp.elems.begin() + istart;
         typename std::vector<T>::const_iterator m1it = m1.elems.begin() + istart;
         typename std::vector<T>::const_iterator m2it = m2.elems.begin() + istart;
-        for ( size_t cntr = istart;
-              it != temp.elems.end() && m1it != m1.elems.end() && m2it != m2.elems.end() && cntr < N;
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=temp.elems.end() && m1it!=m1.elems.end() && m2it!=m2.elems.end();
               ++it, ++m1it, ++m2it, ++cntr )
         {
             *it = *m1it - *m2it;
@@ -1042,8 +1042,8 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
 
         typename std::vector<T>::iterator it = retVal.elems.begin() + istart;
         typename std::vector<T>::const_iterator mit = m.elems.begin() + istart;
-        for ( size_t cntr = istart;
-              it != retVal.elems.end() && mit != m.elems.end() && cntr < N;
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=retVal.elems.end() && mit!=m.elems.end();
               ++it, ++mit, ++cntr )
         {
             *it = *mit * sc;
