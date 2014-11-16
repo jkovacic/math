@@ -636,6 +636,20 @@ void polynomialTest()
         cout << "Insert 0.2 to the 3rd pos. of t(x): " << t.insert(2, 0.2f) << endl;
         cout << "Insert 5 to the 8th pos. of t(x): " << t.insert(7, 5.0f) << endl;
 
+        cout << "t's coefficients in reverse order: ";
+        vector<float> desc;
+        t.getDesc(desc);
+        for ( typename vector<float>::const_iterator it=desc.begin();
+              it!=desc.end(); ++it)
+        {
+            cout << *it << " ";
+        }
+        cout << endl;
+        t.get(desc);
+        FPolynomial trev;
+        trev.setDesc(desc);
+        cout << "t reversed: " << trev << endl;
+
         FPolynomial z(true, 4);
         z.set(3, 0.0f);
         cout << "Zero polynomial: " << z << endl;

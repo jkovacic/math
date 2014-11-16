@@ -35,6 +35,7 @@ limitations under the License.
 #include <new>
 #include <stdexcept>
 #include <limits>
+#include <algorithm>
 
 
 /**
@@ -307,13 +308,29 @@ void math::PolynomialGeneric<T>::getDesc(std::vector<T>& vec) const throw (math:
         vec.resize(N);
 
         // copy elements from coef to retVal in reverse order:
-        #pragma omp parallel for \
+
+        // Coarse grained parallelism:
+        const size_t ideal =  N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        const std::vector<T>& els = this->coef;
+
+        #pragma omp parallel num_threads(ideal) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(vec)
-        for ( size_t i=0; i<N; ++i )
+                    default(none) shared(vec, els)
         {
-            vec.at(i) = this->coef.at(N-1-i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+            const size_t iend = std::min(istart+elems_per_thread, N);
+
+            for ( size_t i=istart; i<iend; ++i )
+            {
+                vec.at(i) = els.at(N-1-i);
+            }
+        }  // omp parallel
+
+        (void) ideal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -410,19 +427,32 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::setDesc(const std::vecto
 
     try
     {
-        this->coef.resize(N);
+        std::vector<T>& me = this->coef;
+        me.resize(N);
 
-        #pragma omp parallel for \
+        // Coarse grained parallelism:
+        const size_t ideal =  N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        #pragma omp parallel num_threads(ideal) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(cvect)
-        for ( size_t i=0; i<N; ++i )
+                    default(none) shared(cvect, me)
         {
-            this->coef.at(i) = cvect.at(N-1-i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+            const size_t iend = std::min(istart+elems_per_thread, N);
+
+            for ( size_t i=istart; i<iend; ++i )
+            {
+                me.at(i) = cvect.at(N-1-i);
+            }
+        }  // omp parallel
 
         this->__reduce();
         return *this;
 
+        (void) ideal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -630,7 +660,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
     const size_t N = this->coef.size();
 
     // if 'this' is already a constant (degree==0), its derivative will also be a constant with value 0:
-    const size_t DEG = (1==N ? 1 : N-1);
+    const size_t DEG = std::max(N-1, static_cast<size_t>(1));
     math::PolynomialGeneric<T> retVal(true, DEG);
 
     if ( 1==N )
@@ -644,13 +674,34 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
     }
 
     // For polynomials of higher degree (>0) apply the formula above:
-    #pragma omp parallel for default(none) shared(retVal)
-    for ( size_t i=0; i<DEG; ++i )
+
+    // Coarse grained parallelism:
+    const size_t ideal = DEG / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == DEG % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+    const std::vector<T>& els = this->coef;
+
+    #pragma omp parallel num_threads(ideal) \
+                if(DEG>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(retVal, els)
     {
-        retVal.coef.at(i) = static_cast<T>(i+1) * this->coef.at(i+1);
-    }
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (DEG + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+
+        typename std::vector<T>::const_iterator mit = els.begin() + istart + 1;
+        typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
+        for ( size_t i = 0;
+        		i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
+              ++mit, ++it, ++i )
+        {
+            *it = static_cast<T>(istart+i+1) * (*mit);
+        }
+    }  // omp parallel
 
     return retVal;
+
+    (void) ideal;
 }
 
 
@@ -690,13 +741,34 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
     retVal.coef.at(0) = c;
 
     // for other coefficients, apply the formula above:
-    #pragma omp parallel for default(none) shared(retVal)
-    for ( size_t i=0; i<N; ++i )
+
+    // Coarse grained parallelism:
+    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+    const std::vector<T>& els = this->coef;
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(retVal, els)
     {
-        retVal.coef.at(i+1) = this->coef.at(i)/static_cast<T>(i+1);
-    }
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+
+        typename std::vector<T>::const_iterator mit = els.begin() + istart;
+        typename std::vector<T>::iterator it = retVal.coef.begin() + istart + 1;
+        for ( size_t i = 0;
+        		i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
+              ++mit, ++it, ++i )
+        {
+            *it = *mit / static_cast<T>(istart+i+1);
+        }
+    }  // omp parallel
 
     return retVal;
+
+    (void) ideal;
 }
 
 
@@ -733,6 +805,9 @@ void math::PolynomialGeneric<T>::__polyDivision(
     {
         return;
     }
+
+    // Ideal number of threads where applicable
+    size_t ideal;
 
     // Degrees of 'p1' and 'p2':
     const size_t Np1 = p1.coef.size() - 1;
@@ -810,21 +885,38 @@ void math::PolynomialGeneric<T>::__polyDivision(
          * Unlike the outer for loop, the inner loop can be
          * be parallelized.
          */
-        #pragma omp parallel for \
+
+        // Coarse grained parallelism:
+        ideal = Np2 / OMP_CHUNKS_PER_THREAD +
+               ( 0 == Np2 % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        #pragma omp parallel num_threads(ideal) \
                     if(Np2>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(p, p2, i)
-        for ( size_t j=0; j<Np2; ++j )
         {
-            p.at(Nq-i+j) -= c * p2.coef.at(j);
-        }
-    }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+  	        const size_t elems_per_thread = (Np2 + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator pit = p.begin() + istart + Nq - i;
+            typename std::vector<T>::const_iterator p2it = p2.coef.begin() + istart;
+            for ( size_t j = 0;
+            		j<elems_per_thread && pit!=p.end() && p2it!=p2.coef.end();
+                  ++pit, ++p2it, ++j)
+            {
+                *pit -= c * (*p2it);
+            }
+        }  // omp parallel
+    }  // for i
 
     // Finally assign the remainder of 'p' to 'rem'
     if ( NULL != rem )
     {
-        rem->coef = p;
+        math::mtcopy(p, rem->coef);
         rem->__reduce();
     }
+
+    (void) ideal;
 }
 
 
@@ -856,13 +948,32 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
-        #pragma omp parallel for \
+
+        // Coarse grained parallelism
+        const size_t ideal = npoly / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == npoly % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        std::vector<T>& els = this->coef;
+
+        #pragma omp parallel num_threads(ideal) \
                     if(npoly>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(poly)
-        for ( size_t i=0; i<npoly; ++i )
+                    default(none) shared(poly, els)
         {
-            this->coef.at(i) += poly.coef.at(i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (npoly + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator it = els.begin() + istart;
+            typename std::vector<T>::const_iterator pit = poly.coef.begin()+ istart;
+            for ( size_t i = 0;
+            		i<elems_per_thread && it!=els.end() && pit!=poly.coef.end();
+                  ++it, ++pit, ++i )
+            {
+                *it += *pit;
+            }
+        }  // omp parallel
+
+        (void) ideal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -918,13 +1029,32 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
         }
 
         // ... and perform addition of same degree terms' coefficients
-        #pragma omp parallel for \
+
+        // Coarse grained parallelism
+        const size_t ideal = npoly / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == npoly % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        std::vector<T>& els = this->coef;
+
+        #pragma omp parallel num_threads(ideal) \
                     if(npoly>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(poly)
-        for ( size_t i=0; i<npoly; ++i )
+                    default(none) shared(poly, els)
         {
-            this->coef.at(i) -= poly.coef.at(i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (npoly + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator it = els.begin() + istart;
+            typename std::vector<T>::const_iterator pit = poly.coef.begin() + istart;
+            for ( size_t i = 0;
+                  i<elems_per_thread && it!=els.end() && pit!=poly.coef.end();
+                  ++it, ++pit, ++i )
+            {
+                *it -= *pit;
+            }
+        }  // omp parallel
+
+        (void) ideal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -979,16 +1109,35 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-() const throw (
         const size_t N = this->coef.size();
 
         // Just negate each coefficient:
-        #pragma omp parallel for \
+
+        // Coarse grained parallelism
+        const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+        const std::vector<T>& els = this->coef;
+
+        #pragma omp parallel num_threads(ideal) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(retVal)
-        for ( size_t i=0; i<N; ++i )
+                default(none) shared(retVal, els)
         {
-            retVal.coef.at(i) = -this->coef.at(i);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+
+            typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
+            typename std::vector<T>::const_iterator mit = els.begin() + istart;
+            for ( size_t i = 0;
+                  i<elems_per_thread && it!=retVal.coef.end() && mit!=els.end();
+                  ++it, ++mit, ++i )
+            {
+                *it = -(*mit);
+            }
+        }  // omp parallel
 
         // no need to reduce
         return retVal;
+
+        (void) ideal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -1039,15 +1188,32 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
     // Multiply each coefficient by the scalar
     const size_t N = this->coef.size();
 
-    #pragma omp parallel for default(none) shared(sc)
-    for ( size_t i=0; i<N; ++i )
+    // Coarse grained parallelism
+    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+    std::vector<T>& els = this->coef;
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(sc, els)
     {
-        this->coef.at(i) *= sc;
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+
+        typename std::vector<T>::iterator it = els.begin() + istart;
+        for ( size_t i=0; it!=els.end() && i<elems_per_thread; ++it, ++i )
+        {
+            *it *= sc;
+        }
     }
 
     // applicable when the scalar is 0...
     this->__reduce();
     return *this;
+
+    (void) ideal;
 }
 
 
@@ -1273,7 +1439,7 @@ math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& p1,
 
             where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
         */
-        const size_t nmax = ( Np1>=Np2 ? Np1 : Np2 );
+        const size_t nmax = std::max(Np1, Np2);
 
         math::PolynomialGeneric<T> retVal(true, nmax);
 
@@ -1284,24 +1450,43 @@ math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& p1,
             Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its i^th coefficient as 0 (already set above)
         */
-        #pragma omp parallel for \
+
+        // Coarse grained parallelism:
+        const size_t ideal = nmax / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == nmax % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+        #pragma omp parallel num_threads(ideal) \
                     if(nmax>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(retVal, p1, p2)
-        for ( size_t i=0; i<nmax; ++i )
         {
-            if ( i<Np1 )
-            {
-                retVal.coef.at(i) = p1.coef.at(i);
-            }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (nmax + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
 
-            if ( i<Np2 )
+            typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
+            typename std::vector<T>::const_iterator p1it = p1.coef.begin() + istart;
+            typename std::vector<T>::const_iterator p2it = p2.coef.begin() + istart;
+            for ( size_t i = 0;
+                  i<elems_per_thread && it!=retVal.coef.end();
+                  ++it, ++i )
             {
-                retVal.coef.at(i) += p2.coef.at(i);
+                if ( p1it != p1.coef.end() )
+                {
+                    *it = *(p1it++);
+                }
+
+                if ( p2it != p2.coef.end() )
+                {
+                    *it += *(p2it++);
+                }
             }
-        }
+        }  // omp parallel
 
         retVal.__reduce();
         return retVal;
+
+        (void) ideal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -1344,7 +1529,7 @@ math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& p1,
             where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
         */
 
-        const size_t nmax = ( Np1>=Np2 ? Np1 : Np2 );
+        const size_t nmax = std::max(Np1, Np2);
 
         math::PolynomialGeneric<T> retVal(true, nmax);
 
@@ -1355,24 +1540,43 @@ math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& p1,
             Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its ith coefficient as 0 (already set above)
         */
-        #pragma omp parallel for \
+
+        // Coarse grained parallelism
+        const size_t ideal = nmax / OMP_CHUNKS_PER_THREAD +
+                     ( 0 == nmax % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+        #pragma omp parallel num_threads(ideal) \
                     if(nmax>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(retVal, p1, p2)
-        for ( size_t i=0; i<nmax; ++i )
         {
-            if ( i<Np1 )
-            {
-                retVal.coef.at(i) = p1.coef.at(i);
-            }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (nmax + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
 
-            if ( i<Np2 )
+            typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
+            typename std::vector<T>::const_iterator p1it = p1.coef.begin() + istart;
+            typename std::vector<T>::const_iterator p2it = p2.coef.begin() + istart;
+            for ( size_t i = 0;
+                  i<elems_per_thread && it!=retVal.coef.end();
+                  ++it, ++i )
             {
-                retVal.coef.at(i) -= p2.coef.at(i);
+                if ( p1it != p1.coef.end() )
+                {
+                    *it = *(p1it++);
+                }
+
+                if ( p2it != p2.coef.end() )
+                {
+                    *it -= *(p2it++);
+                }
             }
-        }
+        }  // omp parallel
 
         retVal.__reduce();
         return retVal;
+
+        (void) ideal;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -1597,15 +1801,31 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& pol
     const size_t N = poly.coef.size();
     math::PolynomialGeneric<T> retVal(poly);
 
-    #pragma omp parallel for default(none) shared(retVal, sc)
-    for ( size_t i=0; i<N; ++i )
+    // Coarse grained parallelism
+    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
+                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
+
+    #pragma omp parallel num_threads(ideal) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(retVal, sc)
     {
-        retVal.coef.at(i) *= sc;
-    }
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+
+        typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
+        for ( size_t i = 0; i<elems_per_thread && it!=retVal.coef.end(); ++it, ++i )
+        {
+            *it *= sc;
+        }
+    }  // omp parallel
 
     // applicable when sc==o
     retVal.__reduce();
     return retVal;
+
+    (void) ideal;
 }
 
 
