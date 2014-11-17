@@ -31,6 +31,7 @@ limitations under the License.
 #include <vector>
 #include <cstddef>
 #include <ostream>
+#include <algorithm>
 
 // Deliberately there is no #include "MatrixGeneric.hpp" !
 #include "exception/MatrixException.hpp"
@@ -548,23 +549,33 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     // Create an instance with swapped dimensions
     math::MatrixGeneric<T> retVal(this->cols, this->rows);
 
+    const size_t& tcols = this->cols;
+
     const size_t N = this->rows * this->cols;
 
-    // "collect" all elements of this
-    #pragma omp parallel for collapse(2) if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(retVal)
-    for ( size_t r=0; r<this->rows; ++r )
+    // Coarse grained parallelism
+    const std::vector<T>& els = this->elems;
+
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(retVal, els, tcols)
     {
-        for ( size_t c=0; c<this->cols; ++c )
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        for ( size_t idx=istart; idx<iend; ++idx )
         {
-            // and swap their "coordinates"
-            retVal.elems.at(retVal._pos(c, r)) = this->elems.at(this->_pos(r, c));
-        }  // for c
-    }  // for r
+            const size_t r = idx / tcols;
+            const size_t c = idx % tcols;
+
+            retVal.elems.at(retVal._pos(c, r)) = els.at(this->_pos(r, c));
+        }
+    }  // omp parallel
 
     return retVal;
-
-    // just to suppress a warning when OpenMP is not enabled
-    (void) N;
 }
 
 
@@ -587,38 +598,15 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     // If dimension of this is (n,m), dimension of its transposed matrix is (m,n)
     // T(r,c) = this(c,r)
 
-    std::vector<T> tempElems;
-    const size_t N = this->rows * this->cols;
-
-    // reserve enough space for the temporary vector:
-    try
-    {
-        tempElems.resize(N);
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
-    }
-
-    #pragma omp parallel for collapse(2) if(N>OMP_CHUNKS_PER_THREAD) default(none) shared(tempElems)
-    for ( size_t r=0; r<this->rows; ++r )
-    {
-        for ( size_t c=0; c<this->cols; ++c )
-        {
-            tempElems.at(c*this->rows + r) = this->elems.at(this->_pos(r, c));
-        }  // for c
-    }  // for r
+	// Until a better algorithm is implemented
+	// just use the generaltranspose method
+    math::MatrixGeneric<T> temp = this->transpose();
 
     // update the vector of elements:
-    math::mtcopy(tempElems, this->elems);
+    math::mtcopy(temp.elems, this->elems);
 
     // and swap matrix's dimensions:
-    size_t sw = this->cols;
-    this->cols = this->rows;
-    this->rows = sw;
-
-    // tempElems not needed anymore, clean it
-    tempElems.clear();
+    std::swap( this->rows, this->cols );
 
     return *this;
 }

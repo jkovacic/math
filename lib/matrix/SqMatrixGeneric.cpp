@@ -411,14 +411,16 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
      * in an elegant way. Hence only the outer loop is parallelized.
      * As the threads' load varies, dynamic scheduling is applied.
      */
-    #pragma omp parallel for if(Ntr>OMP_CHUNKS_PER_THREAD) default(none) schedule(dynamic)
+    std::vector<T>& els = this->elems;
+    #pragma omp parallel for \
+                if(Ntr>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(els) \
+                schedule(dynamic)
     for ( size_t r=0; r<N-1; ++r )
     {
         for ( size_t c=r+1; c<N; ++c )
         {
-            const T temp = this->elems.at(this->_pos(r, c));
-            this->elems.at(this->_pos(r, c)) = this->elems.at(this->_pos(c, r));
-            this->elems.at(this->_pos(c, r)) = temp;
+            std::swap(els.at(this->_pos(r, c)), els.at(this->_pos(c, r)));
         }  // for c
     }  // for r
 
