@@ -28,6 +28,7 @@ limitations under the License.
 
 #include "../settings/omp_settings.h"
 #include "omp/omp_header.h"
+#include "omp/omp_coarse.h"
 
 
 /**
@@ -48,13 +49,8 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
     // Preallocate the dest. vector
     dest.resize(N);
 
-    // Ideal number of threads
-    // (if each one copies approx. OMP_CHUNKS_PER_THREAD items):
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                         ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
     // Coarse grained parallelism, if OpenMP is enabled
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(dest, first)
     {
@@ -64,23 +60,18 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
         const size_t thrnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
 
-        const size_t samples_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = samples_per_thread * thrnr;
-        const size_t iend = std::min(istart + samples_per_thread, N);
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thrnr;
+        const size_t iend = std::min(istart + elems_per_thread, N);
 
-        // index of the current element of the array
-        size_t idx = istart;
-
-        for ( typename std::vector<T>::iterator it = dest.begin() + istart;
+        typename std::vector<T>::iterator it = dest.begin() + istart;
+        for ( size_t idx = istart;
               idx<iend && it!=dest.end();
               ++it, ++idx )
         {
             *it = *(first+idx);
         }
     }
-
-    // In serial mode this variable is never used.
-    (void) ideal;
 }
 
 
@@ -165,13 +156,8 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
     // Preallocate the dest. vector
     dest.resize(N);
 
-    // Ideal number of threads
-    // (if each one copies approx. OMP_CHUNKS_PER_THREAD items):
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                         ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
     // Coarse grained parallelism if OpenMP is enabled
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(dest, first)
     {
@@ -181,24 +167,22 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
         const size_t thrnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
 
-        const size_t samples_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = samples_per_thread * thrnr;
-        const size_t iend = std::min(istart + samples_per_thread, N);
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thrnr;
+        const size_t iend = std::min(istart + elems_per_thread, N);
 
         // Iterator to the final element of the source block
         const typename std::vector<T>::const_iterator final = first + iend;
 
-        // iterator to the current element of 'dest'
+        // iterator to the current element of 'src'
         typename std::vector<T>::const_iterator idx = first + istart;
 
-        for ( typename std::vector<T>::iterator it = dest.begin() + istart;
+        typename std::vector<T>::iterator it = dest.begin() + istart;
+        for ( ;
               idx != final && it != dest.end();
               ++it, ++idx )
         {
             *it = *idx;
         }
     }
-
-    // In serial mode this variable is never used.
-    (void) ideal;
 }

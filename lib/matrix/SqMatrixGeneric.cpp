@@ -129,11 +129,9 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
     const size_t N2 = N * N;
 
     // Coarse grained parallelism:
-    const size_t ideal = N2 / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N2 % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
     std::vector<T>& els = this->elems;
 
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N2)) \
                 if(N2>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(els, scalar)
     {
@@ -153,10 +151,6 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
             *it = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
         }
     }  // omp parallel
-
-
-    // just to suppress a warning when OpenMP is not enabled
-    (void) ideal;
 
     return *this;
 }
@@ -301,11 +295,9 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
      */
 
     // Coarse grained parallelism
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
     T prod = math::NumericUtil<T>::ONE;
 
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(temp, prod)
     {
@@ -332,8 +324,6 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
     // temp not needed anymore, clean it
     temp.clear();
-
-    (void) ideal;
 
     return retVal;
 }

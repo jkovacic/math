@@ -339,11 +339,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     const size_t N = this->rows * this->cols;
 
     // Coarse grained parallelism:
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
     std::vector<T>& els = this->elems;
 
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(els, m)
     {
@@ -361,8 +359,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
             *it += *mit;
         }
     }  // omp parallel
-
-    (void) ideal;
 
     return *this;
 }
@@ -392,11 +388,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
     const size_t N = this->rows * this->cols;
 
     // Coarse grained parallelism:
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
     std::vector<T>& els = this->elems;
 
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(els, matrix)
     {
@@ -414,8 +408,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
             *it -= *mit;
         }
     }  // omp parallel
-
-   (void) ideal;
 
     return *this;
 }
@@ -441,11 +433,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
     const size_t N = this->rows * this->cols;
 
     // Coarse grained parallelism:
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
     const std::vector<T>& els = this->elems;
 
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(els, temp)
     {
@@ -463,8 +453,6 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
             *mit = -(*it);
         }
     }  // omp parallel
-
-    (void) ideal;
 
     return temp;
 }
@@ -520,11 +508,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
     // Multiply each element by the 'scalar'
 
     // Coarse grained parallelism:
-   	const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
    	std::vector<T>& els = this->elems;
 
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(els, scalar)
    	{
@@ -541,8 +527,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
             *it *= scalar;
         }
    	}  // omp parallel
-
-    (void) ideal;
 
     return *this;
 }
@@ -864,10 +848,7 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
     // them linearly and perform addition of elements at the same position
 
     // Coarse grained parallelism:
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(temp, m1, m2)
     {
@@ -880,14 +861,12 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
         typename std::vector<T>::const_iterator m1it = m1.elems.begin() + istart;
         typename std::vector<T>::const_iterator m2it = m2.elems.begin() + istart;
         for ( size_t cntr = 0;
-              cntr < elems_per_thread && it!=temp.elems.end() && m1it!=m1.elems.end() && m2it!=m2.elems.end();
+              cntr<elems_per_thread && it!=temp.elems.end() && m1it!=m1.elems.end() && m2it!=m2.elems.end();
               ++it, ++m1it, ++m2it, ++cntr )
         {
             *it = *m1it + *m2it;
         }
     }  // omp parallel
-
-    (void) ideal;
 
     return temp;
 }
@@ -919,10 +898,7 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const m
     const size_t N = m1.rows * m2.cols;
 
     // Coarse grained parallelism:
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(temp, m1, m2)
     {
@@ -941,8 +917,6 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const m
             *it = *m1it - *m2it;
         }
     }  // omp parallel
-
-    (void) ideal;
 
     return temp;
 }
@@ -1028,10 +1002,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
     const size_t N = m.rows * m.cols;
 
     // Coarse grained parallelism:
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(retVal, m, sc)
     {
@@ -1049,8 +1020,6 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
             *it = *mit * sc;
         }
     }  // omp parallel
-
-    (void) ideal;
 
     return retVal;
 }

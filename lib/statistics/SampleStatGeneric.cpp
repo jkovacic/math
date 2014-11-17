@@ -34,6 +34,7 @@ limitations under the License.
 
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
+#include "omp/omp_coarse.h"
 
 #include "exception/StatisticsException.hpp"
 #include "util/NumericUtil.hpp"
@@ -99,10 +100,7 @@ T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(
     T retVal = x.at(0);
 
     // Coarse grained parallelism:
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                 ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(x, retVal, min)
     {
@@ -129,9 +127,6 @@ T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(
     }  // omp parallel
 
     return retVal;
-
-    // this variable is never used in serial mode
-    (void) ideal;
 }
 
 
@@ -184,16 +179,11 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
      * to be processed.
      */
 
-    // Ideal number of threads
-    // (if each one processes approx. OMP_CHUNKS_PER_THREAD items):
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                         ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
     /*
      * Each thread calculates the sum of its block
      */
     T sum = math::NumericUtil<T>::ZERO;
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(x) \
                     reduction(+ : sum)
@@ -209,8 +199,8 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
 
         // Calculate the sum of the assigned block...
         T partsum = math::NumericUtil<T>::ZERO;
-        size_t cntr = 0;
-        for ( typename std::vector<T>::const_iterator it = x.begin() + istart;
+        typename std::vector<T>::const_iterator it = x.begin() + istart;
+        for ( size_t cntr = 0;
               cntr<samples_per_thread && it!=x.end(); ++it, ++cntr )
         {
             partsum += *it;
@@ -218,12 +208,9 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
 
         // ... and add it to the total sum in a thread safe manner.
         sum += partsum;
-    }
+    }  // omp parallel
 
     return sum;
-
-    // In serial mode this variable is never used.
-    (void) ideal;
 }
 
 
@@ -340,12 +327,7 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
      * to be processed.
      */
 
-    // Ideal number of threads
-    // (if each one processes approx. OMP_CHUNKS_PER_THREAD items):
-    const size_t ideal = N / OMP_CHUNKS_PER_THREAD +
-                         ( 0 == N % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(x) \
                 reduction(+ : sum, sum2)
@@ -362,8 +344,8 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
         // Calculate both sums of the assigned block...
         T partsum  = math::NumericUtil<T>::ZERO;
         T partsum2 = math::NumericUtil<T>::ZERO;
-        size_t cntr = 0;
-        for ( typename std::vector<T>::const_iterator it = x.begin() + istart; 
+        typename std::vector<T>::const_iterator it = x.begin() + istart;
+        for (  size_t cntr = 0;
               cntr<samples_per_thread && it!=x.end(); ++it, ++cntr )
         {
             const T diff = *it - K;
@@ -377,9 +359,6 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
     }
 
     return (sum2 - (sum*sum)/static_cast<T>(N)) / static_cast<T>(N - df_sub);
-
-    // In serial mode this variable is never used.
-    (void) ideal;
 }
 
 
@@ -576,12 +555,7 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
      * to be processed.
      */
 
-    // Ideal number of threads
-    // (if each one processes approx. OMP_CHUNKS_PER_THREAD items):
-    const size_t ideal = N1 / OMP_CHUNKS_PER_THREAD +
-                         ( 0 == N1 % OMP_CHUNKS_PER_THREAD ? 0 : 1 );
-
-    #pragma omp parallel num_threads(ideal) \
+    #pragma omp parallel num_threads(ompIdeal(N1)) \
                 if(N1>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(x1, x2) \
                 reduction(+ : sum, sum1, sum2)
@@ -599,10 +573,9 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
         T partsum  = math::NumericUtil<T>::ZERO;
         T partsum1 = math::NumericUtil<T>::ZERO;
         T partsum2 = math::NumericUtil<T>::ZERO;
-        size_t cntr = 0;
-        typename std::vector<T>::const_iterator it1;
-        typename std::vector<T>::const_iterator it2;
-        for ( it1 = x1.begin() + istart, it2 = x2.begin() + istart;
+        typename std::vector<T>::const_iterator it1 = x1.begin() + istart;
+        typename std::vector<T>::const_iterator it2 = x2.begin() + istart;
+        for ( size_t cntr = 0;
               cntr<samples_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
         {
             const T d1 = *it1 - K1;
@@ -619,9 +592,6 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
     }
 
     return (sum - (sum1*sum2)/static_cast<T>(N1)) / static_cast<T>(N1 - df_sub);
-
-    // In serial mode this variable is never used.
-    (void) ideal;
 }
 
 

@@ -169,7 +169,7 @@ APPINCFLAG = $(INCLUDEFLAG)$(APPINCDIR)
 
 # Dependencies of OpenMP related files
 OMPSETTINGDEP = $(SETTINGDIR)omp_settings.h
-OMPLIBDEP = $(LIBOMPDIR)omp_header.h
+OMPLIBDEP = $(addprefix $(LIBOMPDIR), omp_header.h omp_coarse.h)
 
 # Optional compiler flags
 CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas $(LIBINCFLAG)
