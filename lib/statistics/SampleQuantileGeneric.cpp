@@ -151,7 +151,7 @@ T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlTy
 template <class T>
 T math::SampleQuantileGeneric<T>::linIntrp(const T& h) const
 {
-	// "rename" the vector as it is referred in statistical publications:
+    // "rename" the vector as it is referred in statistical publications:
     const std::vector<T>& x = this->m_v;
     const T hf = std::floor(h);
 

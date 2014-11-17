@@ -55,10 +55,10 @@ T math::SampleStatGeneric<T>::__getShift(const std::vector<T>& x, size_t Nmax)
     T retVal = x.at(0);
     T absRetVal = ( retVal<math::NumericUtil<T>::ZERO ? -retVal : retVal );
     const size_t N = std::min<size_t>(x.size(), Nmax);
-
     size_t cntr = 1;
-    for ( typename std::vector<T>::const_iterator it = x.begin()+cntr;
-          cntr<N; ++it, ++cntr)
+    typename std::vector<T>::const_iterator it = x.begin() + cntr;
+    
+    for ( ; cntr<N; ++it, ++cntr )
     {
         const T el = *it;
         const T absx = ( el<math::NumericUtil<T>::ZERO ? -el : el );
@@ -113,7 +113,9 @@ T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(
         // the first value of the block is the first candidate for the local extreme
         T temp = *it;
 
-        for ( size_t cntr=0; cntr<elems_per_thread && it!=x.end(); ++it, ++cntr)
+        for ( size_t cntr=0; 
+              cntr<elems_per_thread && it!=x.end(); 
+              ++it, ++cntr)
         {
             // update 'temp' depending on 'min'
             temp = ( true==min ? std::min(temp, *it) : std::max(temp, *it) );
@@ -201,7 +203,8 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
         T partsum = math::NumericUtil<T>::ZERO;
         typename std::vector<T>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
-              cntr<samples_per_thread && it!=x.end(); ++it, ++cntr )
+              cntr<samples_per_thread && it!=x.end(); 
+              ++it, ++cntr )
         {
             partsum += *it;
         }
@@ -345,8 +348,9 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
         T partsum  = math::NumericUtil<T>::ZERO;
         T partsum2 = math::NumericUtil<T>::ZERO;
         typename std::vector<T>::const_iterator it = x.begin() + istart;
-        for (  size_t cntr = 0;
-              cntr<samples_per_thread && it!=x.end(); ++it, ++cntr )
+        for ( size_t cntr = 0;
+              cntr<samples_per_thread && it!=x.end(); 
+              ++it, ++cntr )
         {
             const T diff = *it - K;
             partsum  += diff;
