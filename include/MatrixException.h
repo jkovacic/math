@@ -23,7 +23,7 @@ limitations under the License.
  * Declaration of the class MatrixException.
  */
 
-#ifndef _MATH_MATRIXSEXCEPTION_H_
+#ifndef _MATH_MATRIXEXCEPTION_H_
 #define _MATH_MATRIXEXCEPTION_H_
 
 #include "exception/MatrixException.hpp"
