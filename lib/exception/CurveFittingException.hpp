@@ -30,6 +30,8 @@ limitations under the License.
 
 #include <iostream>
 
+#include "IMathException.hpp"
+
 
 namespace math
 {
@@ -39,7 +41,7 @@ namespace math
  * fitting/interpolation classes, implemented by inherited classes of
  * CurveFittingGenericAb.
  */
-struct CurveFittingException
+struct CurveFittingException : public IMathException
 {
     /// Enum with possible error codes
     enum err_codes {
