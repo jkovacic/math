@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "IntFactorizationException.hpp"
+#include "exception/IntFactorizationException.hpp"
 
 
 /**

@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "RationalException.hpp"
+#include "exception/RationalException.hpp"
 
 
 /**

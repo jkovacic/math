@@ -26,7 +26,7 @@ limitations under the License.
  */
 
 
-#include "IMathException.hpp"
+#include "exception/IMathException.hpp"
 
 /**
  * Destructor

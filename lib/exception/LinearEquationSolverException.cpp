@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "LinearEquationSolverException.hpp"
+#include "exception/LinearEquationSolverException.hpp"
 
 
 /**

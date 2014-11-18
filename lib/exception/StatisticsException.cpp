@@ -24,7 +24,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "StatisticsException.hpp"
+#include "exception/StatisticsException.hpp"
 
 
 /**

@@ -24,7 +24,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "PolynomialException.hpp"
+#include "exception/PolynomialException.hpp"
 
 
 /**

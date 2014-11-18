@@ -30,7 +30,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "IMathException.hpp"
+#include "exception/IMathException.hpp"
 
 
 namespace math

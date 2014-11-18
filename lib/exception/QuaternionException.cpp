@@ -24,7 +24,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "QuaternionException.hpp"
+#include "exception/QuaternionException.hpp"
 
 
 /**

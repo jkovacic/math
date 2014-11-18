@@ -29,7 +29,7 @@ limitations under the License.
 #define _MATH_QUATERNIONEXCEPTION_HPP_
 
 #include <ostream>
-#include "IMathException.hpp"
+#include "exception/IMathException.hpp"
 
 namespace math
 {

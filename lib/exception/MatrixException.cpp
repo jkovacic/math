@@ -24,7 +24,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "MatrixException.hpp"
+#include "exception/MatrixException.hpp"
 
 
 /**

@@ -25,7 +25,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "CombinatoricsException.hpp"
+#include "exception/CombinatoricsException.hpp"
 
 
 /**

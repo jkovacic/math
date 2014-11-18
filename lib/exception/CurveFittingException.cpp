@@ -24,7 +24,7 @@ limitations under the License.
 
 #include <ostream>
 
-#include "CurveFittingException.hpp"
+#include "exception/CurveFittingException.hpp"
 
 /**
  * Constructor.
