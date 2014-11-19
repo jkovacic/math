@@ -31,58 +31,12 @@ limitations under the License.
 #include <cstddef>
 
 #include "exception/CalculusException.hpp"
+#include "exception/FunctionException.hpp"
+#include "util/IFunctionGeneric.hpp"
 
 
 namespace math
 {
-
-/**
- * A base class with the interface of the function to
- * be numerically integrated.
- *
- * You must derive a class from this one and implement the
- * pure virtual function
- *
- *   T func(const T& x) const throw(IntegException)
- *
- *  that returns function's value for the given input argument 'x'.
- *  The function is expected to twrow IntegException::UNDEFINED
- *  if the value is not defined for the given input argument 'x'.
- *
- *  The instance of the derived class is then passed to integration
- *  algorithms that call the function 'func' where applicable.
- *
- *  @note 'func' should not be stateful, its return value should only
- *  depend on 'x'.
- *
- *  It is possible to parameterize the class by introducing additional
- *  properties that can be set via setter methods.
- */
-template <class T>
-class IIntegFunctionGeneric
-{
-
-public:
-
-    /**
-     * An interface for the function to be numerically integrated.
-     * This is a pure virtual function and must be implemented
-     * in the derived class.
-     *
-     * The function should not be stateful, i.e. its output should
-     * only depend on 'x'.
-     *
-     * @param x - input argument
-     *
-     * @return func(x)
-     *
-     * @throw IntegExcpetion::UNDEFINED if the function is not defined at given 'x'
-     */
-    virtual T func(const T& x) const throw(CalculusException) = 0;
-
-    virtual ~IIntegFunctionGeneric();
-};  // class IIntegFunctionGeneric
-
 
 /**
  * @brief Supported algorithms for numerical calculation
@@ -113,7 +67,7 @@ class IntegGeneric
 public:
 
     static T integ(
-               const IIntegFunctionGeneric<T>& f,
+               const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n,
@@ -121,7 +75,7 @@ public:
              ) throw(CalculusException);
 
     static T integH(
-               const IIntegFunctionGeneric<T>& f,
+               const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                const T& h,
@@ -132,32 +86,32 @@ public:
 private:
 
     static T __rectangle(
-               const IIntegFunctionGeneric<T>& f,
+               const IFunctionGeneric<T>& f,
                const T&a,
                const T& b,
                size_t n
-             ) throw(CalculusException);
+             ) throw(FunctionException);
 
     static T __trapezoidal(
-               const IIntegFunctionGeneric<T>& f,
+               const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(CalculusException);
+             ) throw(FunctionException);
 
     static T __simpson(
-               const IIntegFunctionGeneric<T>& f,
+               const IFunctionGeneric<T>& f,
                const T&a,
                const T& b,
                size_t n
-             ) throw(CalculusException);
+             ) throw(FunctionException);
 
     static T __simpson38(
-               const IIntegFunctionGeneric<T>& f,
+               const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(CalculusException);
+             ) throw(FunctionException);
 
 };  // class IntegGeneric
 
@@ -166,10 +120,6 @@ private:
 typedef IntegGeneric<float>          FInteg;
 typedef IntegGeneric<double>         Integ;
 typedef IntegGeneric<long double>    LDInteg;
-
-typedef IIntegFunctionGeneric<float>         FIIntegFunction;
-typedef IIntegFunctionGeneric<double>        IIntegFunction;
-typedef IIntegFunctionGeneric<long double>   LDIIntegFunction;
 
 }
 

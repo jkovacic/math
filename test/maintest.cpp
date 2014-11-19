@@ -40,6 +40,7 @@ limitations under the License.
 #include "CombinationGeneric.h"
 #include "SampleStatGeneric.h"
 #include "SampleQuantileGeneric.h"
+#include "IFunctionGeneric.h"
 #include "IntegGeneric.h"
 
 #include <iostream>
@@ -1245,12 +1246,12 @@ void combinatoricsTest()
  */
 void numIntegTest()
 {
-    class CFunc : public IIntegFunction
+    class CFunc : public IFunction
     {
     public:
         double ke, kl, n;
 
-        double func(const double& x) const throw(CalculusException)
+        double func(const double& x) const throw(FunctionException)
         {
             return ke * std::exp(-(x-3)*(x-3)) + kl * x + n;
         }

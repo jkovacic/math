@@ -29,6 +29,7 @@ limitations under the License.
 #include <algorithm>
 
 #include "util/NumericUtil.hpp"
+#include "exception/FunctionException.hpp"
 
 #include "../settings/omp_settings.h"
 #include "omp/omp_header.h"
@@ -54,11 +55,11 @@ limitations under the License.
  *
  * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
  *
- * @see IIntegFunctionGeneric
+ * @see IFunctionGeneric
  */
 template <class T>
 T math::IntegGeneric<T>::integ(
-        const math::IIntegFunctionGeneric<T>& f,
+        const math::IFunctionGeneric<T>& f,
         const T& a,
         const T& b,
         size_t n,
@@ -77,51 +78,58 @@ T math::IntegGeneric<T>::integ(
         return math::NumericUtil<T>::ZERO;
     }
 
-    /*
-     * Individual integration algorithm functions expect 'b' to be
-     * greater than 'a'. If this is not the case, swap the boundaries
-     * and revert the result's sign.
-     */
-    T retVal = math::NumericUtil<T>::ONE;
-
-    const T from = std::min(a, b);
-    const T to   = std::max(a, b);
-    if ( a > b )
+    try
     {
-        retVal = -retVal;
+        /*
+         * Individual integration algorithm functions expect 'b' to be
+         * greater than 'a'. If this is not the case, swap the boundaries
+         * and revert the result's sign.
+         */
+        T retVal = math::NumericUtil<T>::ONE;
+
+        const T from = std::min(a, b);
+        const T to   = std::max(a, b);
+        if ( a > b )
+        {
+            retVal = -retVal;
+        }
+
+        switch(algorithm)
+        {
+            case math::EIntegAlg::RECTANGLE :
+            {
+                retVal *= __rectangle(f, from, to, n);
+                break;
+            }
+
+            case math::EIntegAlg::TRAPEZOIDAL :
+            {
+                retVal *= __trapezoidal(f, from, to, n);
+                break;
+            }
+
+            case math::EIntegAlg::SIMPSON :
+            {
+                retVal *= __simpson(f, from, to , n);
+                break;
+            }
+
+            case math::EIntegAlg::SIMPSON_3_8 :
+            {
+                retVal *= __simpson38(f, from, to, n);
+                break;
+            }
+
+            default :
+                throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
+        }  // switch
+
+        return retVal;
+    }  // try
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::FunctionException(math::FunctionException::UNDEFINED);
     }
-
-    switch(algorithm)
-    {
-        case math::EIntegAlg::RECTANGLE :
-        {
-            retVal *= __rectangle(f, from, to, n);
-            break;
-        }
-
-        case math::EIntegAlg::TRAPEZOIDAL :
-        {
-            retVal *= __trapezoidal(f, from, to, n);
-            break;
-        }
-
-        case math::EIntegAlg::SIMPSON :
-        {
-            retVal *= __simpson(f, from, to , n);
-            break;
-        }
-
-        case math::EIntegAlg::SIMPSON_3_8 :
-        {
-            retVal *= __simpson38(f, from, to, n);
-            break;
-        }
-
-        default :
-            throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
-    }  // switch
-
-    return retVal;
 }
 
 
@@ -145,11 +153,11 @@ T math::IntegGeneric<T>::integ(
  *
  * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
  *
- * @see IIntegFunctionGeneric
+ * @see IFunctionGeneric
  */
 template <class T>
 T math::IntegGeneric<T>::integH(
-        const math::IIntegFunctionGeneric<T>& f,
+        const math::IFunctionGeneric<T>& f,
         const T& a,
         const T& b,
         const T& h,
@@ -183,15 +191,15 @@ T math::IntegGeneric<T>::integH(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw CalculusException if function is not defined between 'a' and 'b'
+ * @throw FunctionException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__rectangle(
-        const math::IIntegFunctionGeneric<T>& f,
+        const math::IFunctionGeneric<T>& f,
         const T& a,
         const T& b,
         size_t n
-      ) throw(math::CalculusException)
+      ) throw(math::FunctionException)
 {
     /*
      *
@@ -256,15 +264,15 @@ T math::IntegGeneric<T>::__rectangle(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw CalculusException if function is not defined between 'a' and 'b'
+ * @throw FunctionException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__trapezoidal(
-        const math::IIntegFunctionGeneric<T>& f,
+        const math::IFunctionGeneric<T>& f,
         const T& a,
         const T& b,
         size_t n
-      ) throw(math::CalculusException)
+      ) throw(math::FunctionException)
 {
     /*
      *
@@ -356,15 +364,15 @@ T math::IntegGeneric<T>::__trapezoidal(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw CalculusException if function is not defined between 'a' and 'b'
+ * @throw FunctionException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__simpson(
-       const math::IIntegFunctionGeneric<T>& f,
+       const math::IFunctionGeneric<T>& f,
        const T& a,
        const T& b,
        size_t n
-     ) throw(math::CalculusException)
+     ) throw(math::FunctionException)
 {
     /*
      *   b
@@ -439,15 +447,15 @@ T math::IntegGeneric<T>::__simpson(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw CalculusException if function is not defined between 'a' and 'b'
+ * @throw FunctionException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__simpson38(
-      const math::IIntegFunctionGeneric<T>& f,
+      const math::IFunctionGeneric<T>& f,
       const T& a,
       const T& b,
       size_t n
-    ) throw(math::CalculusException)
+    ) throw(math::FunctionException)
 {
     /*
      *   b
@@ -506,15 +514,4 @@ T math::IntegGeneric<T>::__simpson38(
     sum +=f.func(a) + f.func(b);
 
     return sum * static_cast<T>(3) *  h / static_cast<T>(8);
-}
-
-
-
-/*
- * IIntegFunction's destructor, "implemented" as an empty function
- */
-template <class T>
-math::IIntegFunctionGeneric<T>::~IIntegFunctionGeneric()
-{
-    // empty destructor
 }

@@ -87,6 +87,7 @@ EXCEPTIONCLASS += $(LIBEXCPDIR)CurveFittingException
 EXCEPTIONCLASS += $(LIBEXCPDIR)CombinatoricsException
 EXCEPTIONCLASS += $(LIBEXCPDIR)IntFactorizationException
 EXCEPTIONCLASS += $(LIBEXCPDIR)StatisticsException
+EXCEPTIONCLASS += $(LIBEXCPDIR)FunctionException
 EXCEPTIONCLASS += $(LIBEXCPDIR)CalculusException
 
 
@@ -116,6 +117,7 @@ GENERICCLASS += $(LIBCOMBDIR)CombinationGeneric
 GENERICCLASS += $(LIBCOMBDIR)PermutationGeneric
 GENERICCLASS += $(LIBSTATDIR)SampleStatGeneric
 GENERICCLASS += $(LIBSTATDIR)SampleQuantileGeneric
+GENERICCLASS += $(LIBUTILDIR)IFunctionGeneric
 GENERICCLASS += $(LIBCALCULUSDIR)IntegGeneric
 
 
@@ -254,6 +256,9 @@ $(OBJDIR)IntFactorizationException$(OBJSUFFIX) : $(LIBEXCPDIR)IntFactorizationEx
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)StatisticsException$(OBJSUFFIX) : $(LIBEXCPDIR)StatisticsException.cpp
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+
+$(OBJDIR)FunctionException$(OBJSUFFIX) : $(LIBEXCPDIR)FunctionException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)CalculusException$(OBJSUFFIX) : $(LIBEXCPDIR)CalculusException.cpp
