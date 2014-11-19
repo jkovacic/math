@@ -1,0 +1,519 @@
+/*
+Copyright 2014, Jernej Kovacic
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+/**
+ * @file
+ * @author Jernej Kovacic
+ *
+ * Implementation of the class IntegGeneric and related classes that
+ * perform numerical integration of continuous functions.
+ */
+
+
+// No #include "IntegGeneric.hpp" !!!!
+#include <cstddef>
+#include <cmath>
+#include <algorithm>
+
+#include "util/NumericUtil.hpp"
+
+#include "../settings/omp_settings.h"
+#include "omp/omp_header.h"
+#include "omp/omp_coarse.h"
+
+
+/**
+ * Performs numerical integration using the selected algorithm.
+ *
+ * 'a' and 'b' can be interchanged, in this case the opposite value
+ * will be returned.
+ *
+ * @note The actual number of integrating intervals may be slightly increased
+ *       if required by the selected algorithm.
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating intervals
+ * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw IntegException if input arguments are invalid or the function is not defined between 'a' and 'b'
+ *
+ * @see IIntegFunctionGeneric
+ */
+template <class T>
+T math::IntegGeneric<T>::integ(
+        const math::IIntegFunctionGeneric<T>& f,
+        const T& a,
+        const T& b,
+        size_t n,
+        math::EIntegAlg::alg algorithm
+      ) throw(math::IntegException)
+{
+    // sanity check:
+    if ( n <= 0 )
+    {
+        throw math::IntegException(math::IntegException::NOT_ENOUGH_STEPS);
+    }
+
+    // If both boundaries are the same, the result is equal to 0
+    if ( true == math::NumericUtil<T>::isZero(a-b) )
+    {
+        return math::NumericUtil<T>::ZERO;
+    }
+
+    /*
+     * Individual integration algorithm functions expect 'b' to be
+     * greater than 'a'. If this is not the case, swap the boundaries
+     * and revert the result's sign.
+     */
+    T retVal = math::NumericUtil<T>::ONE;
+
+    const T from = std::min(a, b);
+    const T to   = std::max(a, b);
+    if ( a > b )
+    {
+        retVal = -retVal;
+    }
+
+    switch(algorithm)
+    {
+        case math::EIntegAlg::RECTANGLE :
+        {
+            retVal *= __rectangle(f, from, to, n);
+            break;
+        }
+
+        case math::EIntegAlg::TRAPEZOIDAL :
+        {
+            retVal *= __trapezoidal(f, from, to, n);
+            break;
+        }
+
+        case math::EIntegAlg::SIMPSON :
+        {
+            retVal *= __simpson(f, from, to , n);
+            break;
+        }
+
+        case math::EIntegAlg::SIMPSON_3_8 :
+        {
+            retVal *= __simpson38(f, from, to, n);
+            break;
+        }
+
+        default :
+            throw math::IntegException(math::IntegException::UNSUPPORTED_ALGORITHM);
+    }  // switch
+
+    return retVal;
+}
+
+
+
+/**
+ * Performs numerical integration using the selected algorithm.
+ *
+ * 'a' and 'b' can be interchanged, in this case the opposite value
+ * will be returned.
+ *
+ * @note The actual size of integrating step may be slightly decreased
+ *       if required by the selected algorithm.
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param h - desired size of an integrating step
+ * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw IntegException if input arguments are invalid or the function is not defined between 'a' and 'b'
+ *
+ * @see IIntegFunctionGeneric
+ */
+template <class T>
+T math::IntegGeneric<T>::integH(
+        const math::IIntegFunctionGeneric<T>& f,
+        const T& a,
+        const T& b,
+        const T& h,
+        math::EIntegAlg::alg algorithm
+      ) throw(math::IntegException)
+{
+    if ( h < math::NumericUtil<T>::EPS )
+    {
+        throw math::IntegException(math::IntegException::INVALID_STEP);
+    }
+
+    // Just obtain the (approximate) number of integrating intervals
+    // from the size
+    const size_t n = static_cast<size_t>(std::floor(std::abs(b-a) / h) +
+       math::NumericUtil<T>::ONE / static_cast<T>(2) ) + 1;
+
+    return integ( f, a, b, n, algorithm );
+}
+
+
+/*
+ * Numerical integration using the rectangle method.
+ *
+ * For more info about the method, see:
+ * https://en.wikipedia.org/wiki/Rectangle_method
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating steps
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw IntegException if function is not defined between 'a' and 'b'
+ */
+template <class T>
+T math::IntegGeneric<T>::__rectangle(
+        const math::IIntegFunctionGeneric<T>& f,
+        const T& a,
+        const T& b,
+        size_t n
+      ) throw(math::IntegException)
+{
+	/*
+	 *
+	 *     b                    N-1
+	 *     /                   -----
+	 *     |                   \
+	 *     | f(x) dx   ~   h *  >  f(a + i*h)
+	 *     |                   /
+	 *    /                    -----
+	 *    a                     i=0
+	 *
+	 * where h = (b - a) / N
+	 */
+
+    // The algorithm requires evaluation of the function in
+	// N points, the same number as integrating intervals
+
+    const size_t& N = n;
+    const T h = (b-a) / static_cast<T>(N);
+
+    T sum = math::NumericUtil<T>::ZERO;
+
+    // Coarse grained parallelism
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(f, a, N) \
+                reduction(+ : sum)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        T tempSum = math::NumericUtil<T>::ZERO;
+        T xi = a + static_cast<T>(istart) * h;
+        for (size_t i = istart;
+             i < iend;
+             ++i, xi += h )
+        {
+            tempSum += f.func( xi );
+        }
+
+        // update 'sum' in a thread safe manner
+        sum += tempSum;
+    }  // omp parallel
+
+    return sum * h;
+}
+
+
+/*
+ * Numerical integration using the trapezoidal rule.
+ *
+ * For more info about the method, see:
+ * https://en.wikipedia.org/wiki/Trapezoidal_rule
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating steps
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw IntegException if function is not defined between 'a' and 'b'
+ */
+template <class T>
+T math::IntegGeneric<T>::__trapezoidal(
+        const math::IIntegFunctionGeneric<T>& f,
+        const T& a,
+        const T& b,
+        size_t n
+      ) throw(math::IntegException)
+{
+    /*
+     *
+     *     b                     N-1
+     *     /                    -----
+     *     |              h     \   /                         \
+     *     | f(x) dx   ~ ---  *  >  | f(a+i*h) + f(a+(i+1)*h) |  =
+     *     |              2     /   \                         /
+     *    /                     -----
+     *    a                      i=0
+     *
+     *
+     *         /                   N-2          \
+     *         |                  -----         |
+     *     h   |                  \             |
+     *  = ---  | f(a) + f(b) + 2   >  f(a+i*h)  |  =
+     *     2   |                  /             |
+     *         |                  -----         |
+     *         \                   i=1          /
+     *
+     *
+     *        /                      N-2          \
+     *        |                     -----         |
+     *        |   f(a) + f(b)       \             |
+     *  =  h  |  -------------  +    >  f(a+i*h)  |
+     *        |        2            /             |
+     *        |                     -----         |
+     *        \                      i=1          /
+     *
+     *
+     * where h = (b - a) / N
+	 */
+
+    /*
+     * With N integrating intervals, the function must be evaluated
+     * in N+1 points. Two points ('a' and 'b') are handled separately,
+     * the remaining N-1 points are processed by a for loop.
+     */
+
+    const size_t& N = n;
+	const T h = (b-a) / static_cast<T>(N);
+
+    // Do not preinitialize sum to ( f(a)+f(b) )/2 now as it may
+    // be reset back to 0 by the reduction clause
+    T sum = math::NumericUtil<T>::ZERO;
+
+    // Coarse grained parallelism
+    #pragma omp parallel num_threads(ompIdeal(N-1)) \
+                if((N-1)>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(f, a, N) \
+                reduction(+ : sum)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr + 1;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        T tempSum = math::NumericUtil<T>::ZERO;
+        T xi = a + static_cast<T>(istart) * h;
+        for (size_t i = istart;
+             i < iend;
+             ++i, xi += h )
+        {
+            tempSum += f.func( xi );
+        }
+
+        // update 'sum' in a thread safe manner
+        sum += tempSum;
+    }  // omp parallel
+
+    // finally add the remaining two points (at 'a' and 'b'):
+    sum += (f.func(a) + f.func(b)) / static_cast<T>(2);
+
+    return sum * h;
+}
+
+
+/*
+ * Numerical integration using the Simpson's rule.
+ *
+ * For more info about the method, see:
+ * https://en.wikipedia.org/wiki/Simpson%27s_rule
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating steps
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw IntegException if function is not defined between 'a' and 'b'
+ */
+template <class T>
+T math::IntegGeneric<T>::__simpson(
+       const math::IIntegFunctionGeneric<T>& f,
+       const T& a,
+       const T& b,
+       size_t n
+     ) throw(math::IntegException)
+{
+    /*
+     *   b
+     *   /                 /                                                             \
+     *   |              h  |                                                             |
+     *   | f(x) dx  ~  --- | f(x0) + 4*f(x1) + 2*f(x2) + 4*f(x3) + 4*f(x4) + ... + f(xN) |
+     *   |              3  |                                                             |
+     *  /                  \                                                             /
+     *  a
+     *
+     *  where h = (b-1) / N,  xi = a + i *h,
+     *  and N must be an even number (divisible by 2)
+     */
+
+    /*
+     * With N integrating intervals, the function must be evaluated
+     * in N+1 points. Two points ('a' and 'b') are handled separately,
+     * the remaining N-1 points are processed by a for loop.
+     */
+
+    // N must be an even number (divisible by 2) !
+    const size_t N = n + ( 0 == (n%2) ? 0 : 1 );
+    const T h = (b - a) / static_cast<T>(N);
+
+    // Do not preinitialize sum to f(a)+f(b) now as it may
+    // be reset back to 0 by the reduction clause
+    T sum = math::NumericUtil<T>::ZERO;
+
+    // Coarse grained parallelism:
+    #pragma omp parallel num_threads(ompIdeal(N-1)) \
+                if((N-1)>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(f, a) \
+                reduction(+ : sum)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr + 1;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        T tempSum = math::NumericUtil<T>::ZERO;
+        T xi = a + static_cast<T>(istart) * h;
+        for ( size_t i=istart;
+              i<iend;
+              ++i, xi += h )
+        {
+            tempSum += static_cast<T>( ( 0==i%2 ? 2 : 4 ) ) *
+            		   f.func(xi);
+        }
+
+        // update sum in a thread safe manner
+        sum += tempSum;
+    }  // omp parallel
+
+    // finally add the remaining two points (at 'a' and 'b'):
+    sum += f.func(a) + f.func(b);
+
+    return sum * h / static_cast<T>(3);
+}
+
+
+/*
+ * Numerical integration using the Simpson's 3/8 rule.
+ *
+ * For more info about the method, see:
+ * https://en.wikipedia.org/wiki/Simpson%27s_rule#Simpson.27s_3.2F8_rule
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating steps
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw IntegException if function is not defined between 'a' and 'b'
+ */
+template <class T>
+T math::IntegGeneric<T>::__simpson38(
+      const math::IIntegFunctionGeneric<T>& f,
+      const T& a,
+      const T& b,
+      size_t n
+    ) throw(math::IntegException)
+{
+	/*
+     *   b
+     *   /                   /                                                                                 \
+     *   |              3*h  |                                                                                 |
+     *   | f(x) dx  ~  ----- | f(x0) + 3*f(x1) + 3*f(x2) + 2*f(x3) + 3*f(x4) + 3*f(x5) + 2*f(x6) + ... + f(xN) |
+     *   |               8   |                                                                                 |
+     *  /                    \                                                                                 /
+     *  a
+     *
+     *  where h = (b-1) / N,  xi = a + i *h,
+     *  and N must be divisible by 3
+     */
+
+    /*
+     * With N integrating intervals, the function must be evaluated
+     * in N+1 points. Two points ('a' and 'b') are handled separately,
+     * the remaining N-1 points are processed by a for loop.
+     */
+
+    // N must be divisible by 3 !
+    const size_t N = n + ( 0!=n%3 ? 3-n%3: 0 );
+    const T h = (b-a) / static_cast<T>(N);
+
+    // Do not preinitialize sum to f(a)+f(b) now as it may
+    // be reset back to 0 by the reduction clause
+    T sum = math::NumericUtil<T>::ZERO;
+
+    // Coarse grained parallelism
+    #pragma om parallel num_threads(ompIdeal(N-1)) \
+               if((N-1)>OMP_CHUNKS_PER_THREAD) \
+               default(none) shared(f, a) \
+               reduction(+ : sum)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr + 1;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        T tempSum = math::NumericUtil<T>::ZERO;
+        T xi = a + static_cast<T>(istart) * h;
+        for ( size_t i=istart;
+              i < iend;
+              ++i,  xi += h )
+        {
+            tempSum += static_cast<T>( ( 0==i%3 ? 2 : 3 ) ) *
+            		   f.func(xi);
+        }
+
+        // update sum in a thread safe manner
+        sum += tempSum;
+    }  // om parallel
+
+    // finally add the remaining two points (at 'a' and 'b'):
+    sum +=f.func(a) + f.func(b);
+    return sum * static_cast<T>(3) *  h / static_cast<T>(8);
+}
+
+
+
+/*
+ * IIntegFunction's destructor, "implemented" as an empty function
+ */
+template <class T>
+math::IIntegFunctionGeneric<T>::~IIntegFunctionGeneric()
+{
+    // empty destructor
+}

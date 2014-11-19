@@ -40,6 +40,7 @@ limitations under the License.
 #include "CombinationGeneric.h"
 #include "SampleStatGeneric.h"
 #include "SampleQuantileGeneric.h"
+#include "IntegGeneric.h"
 
 #include <iostream>
 #include <cmath>
@@ -1238,6 +1239,55 @@ void combinatoricsTest()
     }
 }
 
+
+/*
+ * Test of numerical integration algorithms
+ */
+void numIntegTest()
+{
+    class CFunc : public IIntegFunction
+    {
+    public:
+        double ke, kl, n;
+
+        double func(const double& x) const throw(IntegException)
+        {
+            return ke * std::exp(-(x-3)*(x-3)) + kl * x + n;
+        }
+    };
+
+    try
+    {
+        CFunc f;
+        f.ke = 0.7;   f.kl = 1.0;  f.n = 0.5;
+
+        /*
+         * Exact result obtained by Maxima:
+
+            (%i1) float(integrate(0.7*exp(-(x-3)^2) + 1*x + 0.5, x, 0, 5));
+            (%o1) 16.23780211731536
+         */
+        cout << "f(x) = " << f.ke << "*exp(-(x-3)^2) " << showpos << f.kl << "*x " << f.n << noshowpos << endl;
+        for ( int method=EIntegAlg::RECTANGLE; method<=EIntegAlg::SIMPSON_3_8; ++method )
+        {
+            cout << "Method " << method << ": Int(f(x), 0, 5) = " <<
+                     Integ::integ(f, 0., 5., 10000, static_cast<EIntegAlg::alg>(method)) << endl;
+        }
+        cout << "Expected result: 16.23780211731536" << endl;
+    }
+    catch ( const IntegException& iex )
+    {
+        cerr << "Integ exception caught: ";
+        iex.what();
+        cerr << endl;
+    }
+    catch (...)
+    {
+        cerr << "Other exception caught.";
+    }
+}
+
+
 /*
  * Test of classes that perform statistical operations
  */
@@ -1474,6 +1524,9 @@ int main(int argc, const char* argv[])
     
     cout << endl << "C O M B I N A T O R I C S   T E S T" << endl << endl;
     combinatoricsTest();
+
+    cout << endl << "N U M   I N T E G   T E S T" << endl << endl;
+    numIntegTest();
 
     cout << endl << "S T A T I S T I C S   T E S T" << endl << endl;
     statisticsTest();

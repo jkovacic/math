@@ -514,6 +514,15 @@ K = 5 :
 1: abcde
 
 
+N U M   I N T E G   T E S T
+
+f(x) = 0.7*exp(-(x-3)^2) +1*x +0.5
+Method 0: Int(f(x), 0, 5) = 16.2365
+Method 1: Int(f(x), 0, 5) = 16.2378
+Method 2: Int(f(x), 0, 5) = 16.2378
+Method 3: Int(f(x), 0, 5) = 16.2378
+Expected result: 16.23780211731536
+
 S T A T I S T I C S   T E S T
 
 min(wt): 1.513 (expected: 1.513)
