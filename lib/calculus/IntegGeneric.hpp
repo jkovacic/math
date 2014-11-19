@@ -30,7 +30,7 @@ limitations under the License.
 
 #include <cstddef>
 
-#include "exception/IntegException.hpp"
+#include "exception/CalculusException.hpp"
 
 
 namespace math
@@ -64,21 +64,21 @@ class IIntegFunctionGeneric
 
 public:
 
-	/**
-	 * An interface for the function to be numerically integrated.
-	 * This is a pure virtual function and must be implemented
-	 * in the derived class.
-	 *
-	 * The function should not be stateful, i.e. its output should
-	 * only depend on 'x'.
-	 *
-	 * @param x - input argument
-	 *
-	 * @return func(x)
-	 *
-	 * @throw IntegExcpetion::UNDEFINED if the function is not defined at given 'x'
-	 */
-    virtual T func(const T& x) const throw(IntegException) = 0;
+    /**
+     * An interface for the function to be numerically integrated.
+     * This is a pure virtual function and must be implemented
+     * in the derived class.
+     *
+     * The function should not be stateful, i.e. its output should
+     * only depend on 'x'.
+     *
+     * @param x - input argument
+     *
+     * @return func(x)
+     *
+     * @throw IntegExcpetion::UNDEFINED if the function is not defined at given 'x'
+     */
+    virtual T func(const T& x) const throw(CalculusException) = 0;
 
     virtual ~IIntegFunctionGeneric();
 };  // class IIntegFunctionGeneric
@@ -118,7 +118,7 @@ public:
                const T& b,
                size_t n,
                EIntegAlg::alg algorithm=EIntegAlg::SIMPSON
-             ) throw(IntegException);
+             ) throw(CalculusException);
 
     static T integH(
                const IIntegFunctionGeneric<T>& f,
@@ -126,7 +126,7 @@ public:
                const T& b,
                const T& h,
                EIntegAlg::alg algorithm=EIntegAlg::SIMPSON
-             ) throw(IntegException);
+             ) throw(CalculusException);
 
 
 private:
@@ -136,28 +136,28 @@ private:
                const T&a,
                const T& b,
                size_t n
-             ) throw(IntegException);
+             ) throw(CalculusException);
 
     static T __trapezoidal(
                const IIntegFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(IntegException);
+             ) throw(CalculusException);
 
     static T __simpson(
                const IIntegFunctionGeneric<T>& f,
                const T&a,
                const T& b,
                size_t n
-             ) throw(IntegException);
+             ) throw(CalculusException);
 
     static T __simpson38(
                const IIntegFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(IntegException);
+             ) throw(CalculusException);
 
 };  // class IntegGeneric
 
@@ -174,6 +174,6 @@ typedef IIntegFunctionGeneric<long double>   LDIIntegFunction;
 }
 
 // DEFINITION
-#include "integ/IntegGeneric.cpp"
+#include "calculus/IntegGeneric.cpp"
 
 #endif  // _MATH_INTEG_GENERIC_HPP_

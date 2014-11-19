@@ -18,13 +18,13 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class IntegException
+ * Implementation of the class CalculusException
  */
 
 
 #include <ostream>
 
-#include "exception/IntegException.hpp"
+#include "exception/CalculusException.hpp"
 
 
 /**
@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::IntegException::IntegException(err_codes err)
+math::CalculusException::CalculusException(err_codes err)
 {
     this->error = err;
 }
@@ -42,7 +42,7 @@ math::IntegException::IntegException(err_codes err)
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::IntegException::what(std::ostream& str) const
+void math::CalculusException::what(std::ostream& str) const
 {
     switch (error)
     {
@@ -56,7 +56,7 @@ void math::IntegException::what(std::ostream& str) const
             str << "Step size is negative or too small";
             break;
         case UNSUPPORTED_ALGORITHM :
-            str << "Unsupported integration algorithm";
+            str << "Unsupported algorithm";
             break;
         default:
             // Should not occur but handle it anyway.

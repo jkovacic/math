@@ -52,7 +52,7 @@ limitations under the License.
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw IntegException if input arguments are invalid or the function is not defined between 'a' and 'b'
+ * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
  *
  * @see IIntegFunctionGeneric
  */
@@ -63,12 +63,12 @@ T math::IntegGeneric<T>::integ(
         const T& b,
         size_t n,
         math::EIntegAlg::alg algorithm
-      ) throw(math::IntegException)
+      ) throw(math::CalculusException)
 {
     // sanity check:
     if ( n <= 0 )
     {
-        throw math::IntegException(math::IntegException::NOT_ENOUGH_STEPS);
+        throw math::CalculusException(math::CalculusException::NOT_ENOUGH_STEPS);
     }
 
     // If both boundaries are the same, the result is equal to 0
@@ -118,7 +118,7 @@ T math::IntegGeneric<T>::integ(
         }
 
         default :
-            throw math::IntegException(math::IntegException::UNSUPPORTED_ALGORITHM);
+            throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
     }  // switch
 
     return retVal;
@@ -143,7 +143,7 @@ T math::IntegGeneric<T>::integ(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw IntegException if input arguments are invalid or the function is not defined between 'a' and 'b'
+ * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
  *
  * @see IIntegFunctionGeneric
  */
@@ -154,11 +154,11 @@ T math::IntegGeneric<T>::integH(
         const T& b,
         const T& h,
         math::EIntegAlg::alg algorithm
-      ) throw(math::IntegException)
+      ) throw(math::CalculusException)
 {
     if ( h < math::NumericUtil<T>::EPS )
     {
-        throw math::IntegException(math::IntegException::INVALID_STEP);
+        throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }
 
     // Just obtain the (approximate) number of integrating intervals
@@ -183,7 +183,7 @@ T math::IntegGeneric<T>::integH(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw IntegException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__rectangle(
@@ -191,23 +191,23 @@ T math::IntegGeneric<T>::__rectangle(
         const T& a,
         const T& b,
         size_t n
-      ) throw(math::IntegException)
+      ) throw(math::CalculusException)
 {
-	/*
-	 *
-	 *     b                    N-1
-	 *     /                   -----
-	 *     |                   \
-	 *     | f(x) dx   ~   h *  >  f(a + i*h)
-	 *     |                   /
-	 *    /                    -----
-	 *    a                     i=0
-	 *
-	 * where h = (b - a) / N
-	 */
+    /*
+     *
+     *     b                    N-1
+     *     /                   -----
+     *     |                   \
+     *     | f(x) dx   ~   h *  >  f(a + i*h)
+     *     |                   /
+     *    /                    -----
+     *    a                     i=0
+     *
+     * where h = (b - a) / N
+     */
 
     // The algorithm requires evaluation of the function in
-	// N points, the same number as integrating intervals
+    // N points, the same number as integrating intervals
 
     const size_t& N = n;
     const T h = (b-a) / static_cast<T>(N);
@@ -256,7 +256,7 @@ T math::IntegGeneric<T>::__rectangle(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw IntegException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__trapezoidal(
@@ -264,7 +264,7 @@ T math::IntegGeneric<T>::__trapezoidal(
         const T& a,
         const T& b,
         size_t n
-      ) throw(math::IntegException)
+      ) throw(math::CalculusException)
 {
     /*
      *
@@ -305,7 +305,7 @@ T math::IntegGeneric<T>::__trapezoidal(
      */
 
     const size_t& N = n;
-	const T h = (b-a) / static_cast<T>(N);
+    const T h = (b-a) / static_cast<T>(N);
 
     // Do not preinitialize sum to ( f(a)+f(b) )/2 now as it may
     // be reset back to 0 by the reduction clause
@@ -356,7 +356,7 @@ T math::IntegGeneric<T>::__trapezoidal(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw IntegException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__simpson(
@@ -364,7 +364,7 @@ T math::IntegGeneric<T>::__simpson(
        const T& a,
        const T& b,
        size_t n
-     ) throw(math::IntegException)
+     ) throw(math::CalculusException)
 {
     /*
      *   b
@@ -412,7 +412,7 @@ T math::IntegGeneric<T>::__simpson(
               ++i, xi += h )
         {
             tempSum += static_cast<T>( ( 0==i%2 ? 2 : 4 ) ) *
-            		   f.func(xi);
+                       f.func(xi);
         }
 
         // update sum in a thread safe manner
@@ -439,7 +439,7 @@ T math::IntegGeneric<T>::__simpson(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw IntegException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__simpson38(
@@ -447,9 +447,9 @@ T math::IntegGeneric<T>::__simpson38(
       const T& a,
       const T& b,
       size_t n
-    ) throw(math::IntegException)
+    ) throw(math::CalculusException)
 {
-	/*
+    /*
      *   b
      *   /                   /                                                                                 \
      *   |              3*h  |                                                                                 |
@@ -495,7 +495,7 @@ T math::IntegGeneric<T>::__simpson38(
               ++i,  xi += h )
         {
             tempSum += static_cast<T>( ( 0==i%3 ? 2 : 3 ) ) *
-            		   f.func(xi);
+                       f.func(xi);
         }
 
         // update sum in a thread safe manner
@@ -504,6 +504,7 @@ T math::IntegGeneric<T>::__simpson38(
 
     // finally add the remaining two points (at 'a' and 'b'):
     sum +=f.func(a) + f.func(b);
+
     return sum * static_cast<T>(3) *  h / static_cast<T>(8);
 }
 

@@ -19,14 +19,14 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{IntegException.h}
+ * @headername{CalculusException.h}
  *
- * Declaration of the class IntegException.
+ * Declaration of the class CalculusException.
  */
 
 
-#ifndef _MATH_INTEG_EXCEPTION_HPP_
-#define _MATH_INTEG_EXCEPTION_HPP_
+#ifndef _MATH_CALCULUSEXCEPTION_HPP_
+#define _MATH_CALCULUSEXCEPTION_HPP_
 
 
 #include <ostream>
@@ -38,26 +38,26 @@ namespace math
 {
 
 /**
- * @brief An exception, typically  thrown by functions of IntegGeneric and
- * its related classes.
+ * @brief An exception, typically  thrown by functions of IntegGeneric,
+ * DerivGeneric and their related classes.
  */
-struct IntegException : public IMathException
+struct CalculusException : public IMathException
 {
     /// Enum with possible error codes
     enum err_codes {
         UNDEFINED,              /// function undefined at given 'x'
         NOT_ENOUGH_STEPS,       /// not enough integration steps
         INVALID_STEP,           /// step size negative or too small
-        UNSUPPORTED_ALGORITHM,  /// unsupported integration algorithm
+        UNSUPPORTED_ALGORITHM,  /// unsupported algorithm
     };
 
     err_codes error;     /// Type of an error
     // Constructor
-    IntegException(err_codes err);
+    CalculusException(err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };
 
 }
 
-#endif  // _MATH_INTEG_EXCEPTION_HPP_
+#endif  // _MATH_CALCULUSEXCEPTION_HPP_

@@ -20,13 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class IntegException.
+ * Declaration of the class CalculusException.
  */
 
 
-#ifndef _MATH_INTEGEXCEPTION_H_
-#define _MATH_INTEGEXCEPTION_H_
+#ifndef _MATH_CALCULUSEXCEPTION_H_
+#define _MATH_CALCULUSEXCEPTION_H_
 
-#include "exception/IntegException.hpp"
+#include "exception/CalculusException.hpp"
 
-#endif  /*  _MATH_INTEGEXCEPTION_H_  */
+#endif  /*  _MATH_CALCULUSEXCEPTION_H_  */

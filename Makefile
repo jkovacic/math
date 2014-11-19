@@ -52,7 +52,7 @@ LIBPOLYDIR = $(LIBDIR)polynomial/
 LIBCOMBDIR = $(LIBDIR)combinatorics/
 LIBSTATDIR = $(LIBDIR)statistics/
 LIBCURVEFITDIR = $(LIBDIR)curve_fit/
-LIBINTEGDIR = $(LIBDIR)integ/
+LIBCALCULUSDIR = $(LIBDIR)calculus/
 LIBQUATDIR = $(LIBDIR)quaternion/
 LIBRATIONALDIR = $(LIBDIR)rational/
 LIBINTUTILDIR = $(LIBDIR)int_util/
@@ -87,7 +87,7 @@ EXCEPTIONCLASS += $(LIBEXCPDIR)CurveFittingException
 EXCEPTIONCLASS += $(LIBEXCPDIR)CombinatoricsException
 EXCEPTIONCLASS += $(LIBEXCPDIR)IntFactorizationException
 EXCEPTIONCLASS += $(LIBEXCPDIR)StatisticsException
-EXCEPTIONCLASS += $(LIBEXCPDIR)IntegException
+EXCEPTIONCLASS += $(LIBEXCPDIR)CalculusException
 
 
 # Nontemplated classes, i.e. their source files will be compiled.
@@ -116,7 +116,7 @@ GENERICCLASS += $(LIBCOMBDIR)CombinationGeneric
 GENERICCLASS += $(LIBCOMBDIR)PermutationGeneric
 GENERICCLASS += $(LIBSTATDIR)SampleStatGeneric
 GENERICCLASS += $(LIBSTATDIR)SampleQuantileGeneric
-GENERICCLASS += $(LIBINTEGDIR)IntegGeneric
+GENERICCLASS += $(LIBCALCULUSDIR)IntegGeneric
 
 
 # Append file name extensions to exception classes
@@ -256,7 +256,7 @@ $(OBJDIR)IntFactorizationException$(OBJSUFFIX) : $(LIBEXCPDIR)IntFactorizationEx
 $(OBJDIR)StatisticsException$(OBJSUFFIX) : $(LIBEXCPDIR)StatisticsException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
-$(OBJDIR)IntegException$(OBJSUFFIX) : $(LIBEXCPDIR)IntegException.cpp
+$(OBJDIR)CalculusException$(OBJSUFFIX) : $(LIBEXCPDIR)CalculusException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 

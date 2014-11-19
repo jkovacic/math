@@ -1250,7 +1250,7 @@ void numIntegTest()
     public:
         double ke, kl, n;
 
-        double func(const double& x) const throw(IntegException)
+        double func(const double& x) const throw(CalculusException)
         {
             return ke * std::exp(-(x-3)*(x-3)) + kl * x + n;
         }
@@ -1275,9 +1275,9 @@ void numIntegTest()
         }
         cout << "Expected result: 16.23780211731536" << endl;
     }
-    catch ( const IntegException& iex )
+    catch ( const CalculusException& iex )
     {
-        cerr << "Integ exception caught: ";
+        cerr << "Calculus exception caught: ";
         iex.what();
         cerr << endl;
     }

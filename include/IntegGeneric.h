@@ -28,6 +28,6 @@ limitations under the License.
 #ifndef _MATH_INTEGGENERIC_H_
 #define _MATH_INTEGGENERIC_H_
 
-#include "integ/IntegGeneric.hpp"
+#include "calculus/IntegGeneric.hpp"
 
 #endif  /*  _MATH_INTEGGENERIC_H_  */
