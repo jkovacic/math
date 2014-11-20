@@ -42,6 +42,7 @@ limitations under the License.
 #include "SampleQuantileGeneric.h"
 #include "IFunctionGeneric.h"
 #include "IntegGeneric.h"
+#include "DiffGeneric.h"
 
 #include <iostream>
 #include <cmath>
@@ -1242,9 +1243,9 @@ void combinatoricsTest()
 
 
 /*
- * Test of numerical integration algorithms
+ * Test of numerical integration and derivation algorithms
  */
-void numIntegTest()
+void calculusTest()
 {
     class CFunc : public IFunction
     {
@@ -1264,17 +1265,33 @@ void numIntegTest()
 
         /*
          * Exact result obtained by Maxima:
-
-            (%i1) float(integrate(0.7*exp(-(x-3)^2) + 1*x + 0.5, x, 0, 5));
-            (%o1) 16.23780211731536
+            (%i1) f(x):=0.7*exp(-(x-3)^2)+1*x+0.5$
+            (%i2) float(integrate(f(x), x, 0, 5));
+            (%o2) 16.23780211731536
          */
-        cout << "f(x) = " << f.ke << "*exp(-(x-3)^2) " << showpos << f.kl << "*x " << f.n << noshowpos << endl;
+        cout << "f(x) = " << f.ke << "*exp(-(x-3)^2) " << showpos << f.kl << "*x " << f.n << noshowpos << endl << endl;
+
+        cout << "Numerical integration:" << endl;
         for ( int method=EIntegAlg::RECTANGLE; method<=EIntegAlg::SIMPSON_3_8; ++method )
         {
             cout << "Method " << method << ": Int(f(x), 0, 5) = " <<
                      Integ::integ(f, 0., 5., 10000, static_cast<EIntegAlg::alg>(method)) << endl;
         }
         cout << "Expected result: 16.23780211731536" << endl;
+
+        /*
+         * Exact slope obtained by Maxima:
+           (%i3) df(x) := ''(diff(f(x), x))$
+           (%i4) float(df(4));
+           (%o5) 0.48496878235998
+         */
+        cout << endl << "Numericaldifferentiation:" << endl;
+        for ( int method=EDiffMethod::FORWARD; method<=EDiffMethod::FIVE_POINT; ++method )
+        {
+            cout << "Method " << method << ": f'(4) = " <<
+                    Diff::diff(f, 4, 0.001, static_cast<EDiffMethod::method>(method)) << endl;
+        }
+        cout << "Expected result: 0.48496878235998" << endl;
     }
     catch ( const CalculusException& iex )
     {
@@ -1526,8 +1543,8 @@ int main(int argc, const char* argv[])
     cout << endl << "C O M B I N A T O R I C S   T E S T" << endl << endl;
     combinatoricsTest();
 
-    cout << endl << "N U M   I N T E G   T E S T" << endl << endl;
-    numIntegTest();
+    cout << endl << "C A L C U L U S   T E S T" << endl << endl;
+    calculusTest();
 
     cout << endl << "S T A T I S T I C S   T E S T" << endl << endl;
     statisticsTest();

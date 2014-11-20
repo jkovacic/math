@@ -514,14 +514,23 @@ K = 5 :
 1: abcde
 
 
-N U M   I N T E G   T E S T
+C A L C U L U S   T E S T
 
 f(x) = 0.7*exp(-(x-3)^2) +1*x +0.5
+
+Numerical integration:
 Method 0: Int(f(x), 0, 5) = 16.2365
 Method 1: Int(f(x), 0, 5) = 16.2378
 Method 2: Int(f(x), 0, 5) = 16.2378
 Method 3: Int(f(x), 0, 5) = 16.2378
 Expected result: 16.23780211731536
+
+Numericaldifferentiation:
+Method 0: f'(4) = 0.485226
+Method 1: f'(4) = 0.484711
+Method 2: f'(4) = 0.484969
+Method 3: f'(4) = 0.484969
+Expected result: 0.48496878235998
 
 S T A T I S T I C S   T E S T
 

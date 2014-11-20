@@ -119,6 +119,7 @@ GENERICCLASS += $(LIBSTATDIR)SampleStatGeneric
 GENERICCLASS += $(LIBSTATDIR)SampleQuantileGeneric
 GENERICCLASS += $(LIBUTILDIR)IFunctionGeneric
 GENERICCLASS += $(LIBCALCULUSDIR)IntegGeneric
+GENERICCLASS += $(LIBCALCULUSDIR)DiffGeneric
 
 
 # Append file name extensions to exception classes
