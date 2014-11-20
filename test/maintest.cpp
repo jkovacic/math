@@ -1285,7 +1285,7 @@ void calculusTest()
            (%i4) float(df(4));
            (%o5) 0.48496878235998
          */
-        cout << endl << "Numericaldifferentiation:" << endl;
+        cout << endl << "Numerical differentiation:" << endl;
         for ( int method=EDiffMethod::FORWARD; method<=EDiffMethod::FIVE_POINT; ++method )
         {
             cout << "Method " << method << ": f'(4) = " <<
