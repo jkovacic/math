@@ -59,6 +59,10 @@ struct EDiffMethod
  * numerical differentiation.
  *
  * The class is static, so no instantiation is necessary.
+ * 
+ * @note Numerical differentiation is typically not very accurate.
+ *       Make sure that the step 'h' is not too small to avoid
+ *       large floating point rounding errors.
  */
 template <class T>
 class DiffGeneric

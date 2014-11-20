@@ -147,7 +147,7 @@ T math::DiffGeneric<T>::__backwardDiff(
         const T& h
       ) throw(math::FunctionException)
 {
-	/*
+    /*
      *
      *   df(x)       f(x) - f(x-h)
      *  -------  ~  ---------------
