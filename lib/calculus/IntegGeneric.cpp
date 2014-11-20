@@ -164,7 +164,7 @@ T math::IntegGeneric<T>::integH(
         math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
-    if ( h < math::NumericUtil<T>::EPS )
+    if ( h < math::NumericUtil<T>::getEPS() )
     {
         throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }
