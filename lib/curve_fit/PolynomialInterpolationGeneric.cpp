@@ -89,12 +89,12 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
          - when this procedure is completed, the interpolation polynomial
            is expressed as:
      
-             p(x) = y(0) + a(1,1)*(x-y(0)) + a(2,2)*(x-y(0))*(x-y(1)) + ... +
+             p(x) = y(0) + a(1,1)*(x-x(0)) + a(2,2)*(x-x(0))*(x-x(1)) + ... +
        
                           n-1
                          +---+     
                          |   |
-              + a(n,n) * |   | (x-y(k))      
+              + a(n,n) * |   | (x-x(k))      
                          |   |
                           k=0
      */
