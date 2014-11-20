@@ -87,7 +87,7 @@ private:
 
     static T __rectangle(
                const IFunctionGeneric<T>& f,
-               const T&a,
+               const T& a,
                const T& b,
                size_t n
              ) throw(FunctionException);
@@ -101,7 +101,7 @@ private:
 
     static T __simpson(
                const IFunctionGeneric<T>& f,
-               const T&a,
+               const T& a,
                const T& b,
                size_t n
              ) throw(FunctionException);
