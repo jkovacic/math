@@ -523,6 +523,7 @@ Method 0: Int(f(x), 0, 5) = 16.2365
 Method 1: Int(f(x), 0, 5) = 16.2378
 Method 2: Int(f(x), 0, 5) = 16.2378
 Method 3: Int(f(x), 0, 5) = 16.2378
+Method 4: Int(f(x), 0, 5) = 16.2378
 Expected result: 16.23780211731536
 
 Numerical differentiation:

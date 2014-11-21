@@ -120,6 +120,12 @@ T math::IntegGeneric<T>::integ(
                 break;
             }
 
+            case math::EIntegAlg::BOOLE :
+            {
+                retVal *= __boole(f, from, to, n);
+                break;
+            }
+
             default :
                 throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
         }  // switch
@@ -511,7 +517,95 @@ T math::IntegGeneric<T>::__simpson38(
     }  // om parallel
 
     // finally add the remaining two points (at 'a' and 'b'):
-    sum +=f.func(a) + f.func(b);
+    sum += f.func(a) + f.func(b);
 
     return sum * static_cast<T>(3) *  h / static_cast<T>(8);
+}
+
+
+/*
+ * Numerical integration using the Boole's rule.
+ *
+ * For more info about the method, see:
+ * https://en.wikipedia.org/wiki/Boole%27s_rule
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating steps
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw FunctionException if function is not defined between 'a' and 'b'
+ */
+template <class T>
+T math::IntegGeneric<T>::__boole(
+      const math::IFunctionGeneric<T>& f,
+      const T& a,
+      const T& b,
+      size_t n
+    ) throw(math::FunctionException)
+{
+    /*
+     *   b
+     *   /                   /                                                                                                                 \
+     *   |              2*h  |                                                                                                                 |
+     *   | f(x) dx  ~  ----- | 7*f(x0) + 32*f(x1) + 12*f(x2) + 32*f(x3) + 14*f(x4) + 32*f(x5) + 12*f(x6) + 32*f(x7) + 14*f(x8) + ... + 7*f(xN) |
+     *   |              45   |                                                                                                                 |
+     *  /                    \                                                                                                                 /
+     *  a
+     *
+     *  where h = (b-1) / N,  xi = a + i *h,
+     *  and N must be divisible by 3
+     */
+
+    /*
+     * With N integrating intervals, the function must be evaluated
+     * in N+1 points. Two points ('a' and 'b') are handled separately,
+     * the remaining N-1 points are processed by a for loop.
+     */
+
+    // N must be divisible by 4 !
+    const size_t N = n + ( 0!=n%4 ? 4-n%4: 0 );
+    const T h = (b-a) / static_cast<T>(N);
+
+    // Array with Boole's coefficients:
+    const T coef[4] = { static_cast<T>(14),
+                        static_cast<T>(32),
+                        static_cast<T>(12),
+                        static_cast<T>(32)  };
+
+    // Do not preinitialize sum to 7*f(a) + 7*f(b) now as it may
+    // be reset back to 0 by the reduction clause
+    T sum = math::NumericUtil<T>::ZERO;
+
+    // Coarse grained parallelism
+    #pragma om parallel num_threads(ompIdeal(N-1)) \
+               if((N-1)>OMP_CHUNKS_PER_THREAD) \
+               default(none) shared(f, a, coef) \
+               reduction(+ : sum)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr + 1;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        T tempSum = math::NumericUtil<T>::ZERO;
+        T xi = a + static_cast<T>(istart) * h;
+        for ( size_t i=istart;
+              i < iend;
+              ++i,  xi += h )
+        {
+            tempSum += coef[i%4] * f.func(xi);
+        }
+
+        // update sum in a thread safe manner
+        sum += tempSum;
+    }  // om parallel
+
+    // finally add the remaining two points (at 'a' and 'b'):
+    sum += static_cast<T>(7) * ( f.func(a) + f.func(b) );
+
+    return sum * static_cast<T>(2) *  h / static_cast<T>(45);
 }

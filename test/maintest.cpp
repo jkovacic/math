@@ -1272,7 +1272,7 @@ void calculusTest()
         cout << "f(x) = " << f.ke << "*exp(-(x-3)^2) " << showpos << f.kl << "*x " << f.n << noshowpos << endl << endl;
 
         cout << "Numerical integration:" << endl;
-        for ( int method=EIntegAlg::RECTANGLE; method<=EIntegAlg::SIMPSON_3_8; ++method )
+        for ( int method=EIntegAlg::RECTANGLE; method<=EIntegAlg::BOOLE; ++method )
         {
             cout << "Method " << method << ": Int(f(x), 0, 5) = " <<
                      Integ::integ(f, 0., 5., 10000, static_cast<EIntegAlg::alg>(method)) << endl;

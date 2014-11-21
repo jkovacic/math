@@ -50,6 +50,7 @@ struct EIntegAlg
         TRAPEZOIDAL,            /// Trapezoidal rule
         SIMPSON,                /// Simpson's rule
         SIMPSON_3_8,            /// Simpson's 3/8 rule
+        BOOLE,                  /// Boole's rule
     };
 };  // struct EIntegAlg
 
@@ -107,6 +108,13 @@ private:
              ) throw(FunctionException);
 
     static T __simpson38(
+               const IFunctionGeneric<T>& f,
+               const T& a,
+               const T& b,
+               size_t n
+             ) throw(FunctionException);
+
+    static T __boole(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
