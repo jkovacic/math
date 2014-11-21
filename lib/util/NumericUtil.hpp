@@ -38,7 +38,7 @@ namespace math
 
 /**
  * @brief A class with some common functionality, e.g. determination whether
- *        a numeric value is close enough to zero, efficient exponention, etc.
+ *        a numeric value is close enough to zero, efficient exponentiation, etc.
  * 
  * Note that all functions are static so instantiation of this class is not necessary.
  */
@@ -59,11 +59,14 @@ public:
     // Does the value equal zero? Note that in numerical mathematics
     // (where mostly float or double values are in use), "equals" has a
     // different meaning than in discrete mathematics (int etc.)
-    static bool isZero(const T& value);
+    static bool isZero(const T& value, const T& eps=EPS);
 
     // Get or set the internal value of 'eps'
     static T getEPS();
     static void setEPS(const T& eps);
+    
+    // num's sign:
+    short int sign(const T& num);
     
     // Efficient calculation of base^n:
     static T power(const T& base, size_t n);
@@ -71,13 +74,13 @@ public:
 
 // Declaration of specialized methods inside the name space declaration
 // is essential if implemented elsewhere:
-template<> bool NumericUtil<float>::isZero(const float& value);
-template<> bool NumericUtil<double>::isZero(const double& value);
-template<> bool NumericUtil<long double>::isZero(const long double& value);
-template<> bool NumericUtil<Rational>::isZero(const Rational& value);
-template<> bool NumericUtil<std::complex<float> >::isZero(const std::complex<float>& value);
-template<> bool NumericUtil<std::complex<double> >::isZero(const std::complex<double>& value);
-template<> bool NumericUtil<std::complex<long double> >::isZero(const std::complex<long double>& value);
+template<> bool NumericUtil<float>::isZero(const float& value, const float& eps);
+template<> bool NumericUtil<double>::isZero(const double& value, const double& eps);
+template<> bool NumericUtil<long double>::isZero(const long double& value, const long double& eps);
+template<> bool NumericUtil<Rational>::isZero(const Rational& value, const Rational& eps);
+template<> bool NumericUtil<std::complex<float> >::isZero(const std::complex<float>& value, const std::complex<float>& eps);
+template<> bool NumericUtil<std::complex<double> >::isZero(const std::complex<double>& value, const std::complex<double>& eps);
+template<> bool NumericUtil<std::complex<long double> >::isZero(const std::complex<long double>& value, const std::complex<long double>& eps);
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.

@@ -79,14 +79,16 @@ const T math::NumericUtil<T>::ONE ( static_cast<T>(1) );
  * Does the given value equal (or is close enough to) zero?
  * Implementation depends on the type T.
  * For floating point types (float, double, long double), it checks
- * whether its absolute value is less than a hardcoded constant 'eps'.
+ * whether its absolute value is less than a small value 'eps'. It can be
+ * passed as an optional parameter or a system dependent constant EPS is used. 
  *
- * @param value
+ * @param value - value to be evaluated
+ * @param eps - a "threshold" to compare 'value' to, where applicable (default: NumericUtil<T>::EPS)
  *
  * @return true or false
  */
 template<class T>
-bool math::NumericUtil<T>::isZero(const T& value)
+bool math::NumericUtil<T>::isZero(const T& value, const T& eps)
 {
     /*
      * The implementation for integers et al. where the == operator
@@ -94,6 +96,8 @@ bool math::NumericUtil<T>::isZero(const T& value)
      */
 
     return ( ZERO==value ? true : false );
+
+    (void) eps;
 }
 
 
@@ -109,9 +113,9 @@ bool math::NumericUtil<T>::isZero(const T& value)
 
 #define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(FDL) \
 template<> \
-bool math::NumericUtil<FDL>::isZero(const FDL& value) \
+bool math::NumericUtil<FDL>::isZero(const FDL& value, const FDL& eps) \
 { \
-    return ( value>-EPS && value<EPS ? true : false ); \
+    return ( value>-eps && value<eps ? true : false ); \
 }
 // end of #define
 
@@ -130,17 +134,16 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(long double)
 
 /*
  * Specialization for complex.
- * As complex is a templated class, again it must be implemented for each supported subtemplated
- * type. To facilitate this, a parameterized macro is introduced.
- * Note: norm() calculates a sum of both parts' squares. It is a bit more efficient to compare
- * it with EPS^2 than calculating its square root (the actual definition of complex abs. value).
+ * As complex is a templated class, again it must be implemented for each supported
+ * subtemplated type. To facilitate this, a parameterized macro is introduced.
+ * Note: norm() calculates a sum of both parts' squares. It is compared to
+ * the norm of 'eps'.
  */
 #define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(FDL) \
 template<> \
-bool math::NumericUtil<std::complex<FDL> >::isZero(const std::complex<FDL>& value) \
+bool math::NumericUtil<std::complex<FDL> >::isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps) \
 { \
-    const FDL eps = math::NumericUtil<FDL>::getEPS(); \
-    return ( std::norm(value)<=eps*eps ? true : false ); \
+    return ( std::norm(value)<=std::norm(eps) ? true : false ); \
 }
 // end of #define
 
@@ -155,14 +158,17 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(long double)
 
 // #definition of _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX not needed anymore, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX
+
 /*
  * Implementation for Rational
  */
 template<>
-bool math::NumericUtil<math::Rational>::isZero(const math::Rational& value)
+bool math::NumericUtil<math::Rational>::isZero(const math::Rational& value, const math::Rational& eps)
 {
     // Rational already contains its own isZero()...
     return value.isZero();
+
+    (void) eps;
 }
 
 /**
@@ -188,6 +194,26 @@ void math::NumericUtil<T>::setEPS(const T& eps)
 {
     EPS = eps;
 }
+
+/**
+ * Sign of the number
+ * 
+ * @param num - number
+ * 
+ * @return -1 if 'num' is negative, 0 if (close to) 0, 1 if positive 
+ */
+template<class T>
+short int sign(const T& num)
+{
+    // handle 0 first:
+    if ( true==math::NumericUtil<T>::isZero() )
+    {
+        return 0;
+    }
+
+    return ( num < math::NumericUtil<T>::ZERO ? -1 : 1 );
+}
+
 
 /*
  * In C++, it is not possible to specialize a function of a templated class
