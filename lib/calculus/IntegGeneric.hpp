@@ -31,7 +31,6 @@ limitations under the License.
 #include <cstddef>
 
 #include "exception/CalculusException.hpp"
-#include "exception/FunctionException.hpp"
 #include "util/IFunctionGeneric.hpp"
 
 
@@ -86,40 +85,51 @@ public:
 
 private:
 
+    static T __closedNewtonCotes(
+               const IFunctionGeneric<T>& f,
+               const T& a,
+               const T& b,
+               size_t n,
+               size_t degree,
+               const T* coef,
+               const T& bCoef,
+               const T& hCoef
+             ) throw(CalculusException);
+
     static T __rectangle(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(FunctionException);
+             ) throw(CalculusException);
 
     static T __trapezoidal(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(FunctionException);
+             ) throw(CalculusException);
 
     static T __simpson(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(FunctionException);
+             ) throw(CalculusException);
 
     static T __simpson38(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(FunctionException);
+             ) throw(CalculusException);
 
     static T __boole(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
                size_t n
-             ) throw(FunctionException);
+             ) throw(CalculusException);
 
 };  // class IntegGeneric
 

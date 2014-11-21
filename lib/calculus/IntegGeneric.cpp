@@ -78,64 +78,57 @@ T math::IntegGeneric<T>::integ(
         return math::NumericUtil<T>::ZERO;
     }
 
-    try
-    {
-        /*
-         * Individual integration algorithm functions expect 'b' to be
-         * greater than 'a'. If this is not the case, swap the boundaries
-         * and revert the result's sign.
-         */
-        T retVal = math::NumericUtil<T>::ONE;
+    /*
+     * Individual integration algorithm functions expect 'b' to be
+     * greater than 'a'. If this is not the case, swap the boundaries
+     * and revert the result's sign.
+     */
+    T retVal = math::NumericUtil<T>::ONE;
 
-        const T from = std::min(a, b);
-        const T to   = std::max(a, b);
-        if ( a > b )
+    const T from = std::min(a, b);
+    const T to   = std::max(a, b);
+    if ( a > b )
+    {
+        retVal = -retVal;
+    }
+
+    switch(algorithm)
+    {
+        case math::EIntegAlg::RECTANGLE :
         {
-            retVal = -retVal;
+            retVal *= __rectangle(f, from, to, n);
+            break;
         }
 
-        switch(algorithm)
+        case math::EIntegAlg::TRAPEZOIDAL :
         {
-            case math::EIntegAlg::RECTANGLE :
-            {
-                retVal *= __rectangle(f, from, to, n);
-                break;
-            }
+            retVal *= __trapezoidal(f, from, to, n);
+            break;
+        }
 
-            case math::EIntegAlg::TRAPEZOIDAL :
-            {
-                retVal *= __trapezoidal(f, from, to, n);
-                break;
-            }
+        case math::EIntegAlg::SIMPSON :
+        {
+            retVal *= __simpson(f, from, to , n);
+            break;
+        }
 
-            case math::EIntegAlg::SIMPSON :
-            {
-                retVal *= __simpson(f, from, to , n);
-                break;
-            }
+        case math::EIntegAlg::SIMPSON_3_8 :
+        {
+            retVal *= __simpson38(f, from, to, n);
+            break;
+        }
 
-            case math::EIntegAlg::SIMPSON_3_8 :
-            {
-                retVal *= __simpson38(f, from, to, n);
-                break;
-            }
+        case math::EIntegAlg::BOOLE :
+        {
+            retVal *= __boole(f, from, to, n);
+            break;
+        }
 
-            case math::EIntegAlg::BOOLE :
-            {
-                retVal *= __boole(f, from, to, n);
-                break;
-            }
+        default :
+            throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
+    }  // switch
 
-            default :
-                throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
-        }  // switch
-
-        return retVal;
-    }  // try
-    catch ( const math::FunctionException& fex )
-    {
-        throw math::FunctionException(math::FunctionException::UNDEFINED);
-    }
+    return retVal;
 }
 
 
@@ -197,7 +190,7 @@ T math::IntegGeneric<T>::integH(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw FunctionException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__rectangle(
@@ -205,7 +198,7 @@ T math::IntegGeneric<T>::__rectangle(
         const T& a,
         const T& b,
         size_t n
-      ) throw(math::FunctionException)
+      ) throw(math::CalculusException)
 {
     /*
      *
@@ -220,40 +213,47 @@ T math::IntegGeneric<T>::__rectangle(
      * where h = (b - a) / N
      */
 
-    // The algorithm requires evaluation of the function in
-    // N points, the same number as integrating intervals
-
-    const size_t& N = n;
-    const T h = (b-a) / static_cast<T>(N);
-
-    T sum = math::NumericUtil<T>::ZERO;
-
-    // Coarse grained parallelism
-    #pragma omp parallel num_threads(ompIdeal(N)) \
-                if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(f, a, N) \
-                reduction(+ : sum)
+    try
     {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        // The algorithm requires evaluation of the function in
+        // N points, the same number as integrating intervals
 
-        T tempSum = math::NumericUtil<T>::ZERO;
-        T xi = a + static_cast<T>(istart) * h;
-        for (size_t i = istart;
-             i < iend;
-             ++i, xi += h )
+        const size_t& N = n;
+        const T h = (b-a) / static_cast<T>(N);
+
+        T sum = math::NumericUtil<T>::ZERO;
+
+        // Coarse grained parallelism
+        #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(f, a, N) \
+                    reduction(+ : sum)
         {
-            tempSum += f.func( xi );
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr;
+            const size_t iend = std::min(istart + elems_per_thread, N);
 
-        // update 'sum' in a thread safe manner
-        sum += tempSum;
-    }  // omp parallel
+            T tempSum = math::NumericUtil<T>::ZERO;
+            T xi = a + static_cast<T>(istart) * h;
+            for (size_t i = istart;
+                 i < iend;
+                 ++i, xi += h )
+            {
+                tempSum += f.func( xi );
+            }
 
-    return sum * h;
+            // update 'sum' in a thread safe manner
+            sum += tempSum;
+        }  // omp parallel
+
+        return sum * h;
+    } // try
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::CalculusException(math::CalculusException::UNDEFINED);
+    }
 }
 
 
@@ -270,7 +270,7 @@ T math::IntegGeneric<T>::__rectangle(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw FunctionException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__trapezoidal(
@@ -278,7 +278,7 @@ T math::IntegGeneric<T>::__trapezoidal(
         const T& a,
         const T& b,
         size_t n
-      ) throw(math::FunctionException)
+      ) throw(math::CalculusException)
 {
     /*
      *
@@ -310,50 +310,13 @@ T math::IntegGeneric<T>::__trapezoidal(
      *
      *
      * where h = (b - a) / N
-	 */
-
-    /*
-     * With N integrating intervals, the function must be evaluated
-     * in N+1 points. Two points ('a' and 'b') are handled separately,
-     * the remaining N-1 points are processed by a for loop.
      */
 
-    const size_t& N = n;
-    const T h = (b-a) / static_cast<T>(N);
+    const T c[1] = { static_cast<T>(1) };
 
-    // Do not preinitialize sum to ( f(a)+f(b) )/2 now as it may
-    // be reset back to 0 by the reduction clause
-    T sum = math::NumericUtil<T>::ZERO;
-
-    // Coarse grained parallelism
-    #pragma omp parallel num_threads(ompIdeal(N-1)) \
-                if((N-1)>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(f, a, N) \
-                reduction(+ : sum)
-    {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr + 1;
-        const size_t iend = std::min(istart + elems_per_thread, N);
-
-        T tempSum = math::NumericUtil<T>::ZERO;
-        T xi = a + static_cast<T>(istart) * h;
-        for (size_t i = istart;
-             i < iend;
-             ++i, xi += h )
-        {
-            tempSum += f.func( xi );
-        }
-
-        // update 'sum' in a thread safe manner
-        sum += tempSum;
-    }  // omp parallel
-
-    // finally add the remaining two points (at 'a' and 'b'):
-    sum += (f.func(a) + f.func(b)) / static_cast<T>(2);
-
-    return sum * h;
+    return __closedNewtonCotes(
+            f, a, b, n, 1, c, static_cast<T>(1)/static_cast<T>(2), static_cast<T>(1)
+        );
 }
 
 
@@ -370,7 +333,7 @@ T math::IntegGeneric<T>::__trapezoidal(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw FunctionException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__simpson(
@@ -378,7 +341,7 @@ T math::IntegGeneric<T>::__simpson(
        const T& a,
        const T& b,
        size_t n
-     ) throw(math::FunctionException)
+     ) throw(math::CalculusException)
 {
     /*
      *   b
@@ -393,50 +356,12 @@ T math::IntegGeneric<T>::__simpson(
      *  and N must be an even number (divisible by 2)
      */
 
-    /*
-     * With N integrating intervals, the function must be evaluated
-     * in N+1 points. Two points ('a' and 'b') are handled separately,
-     * the remaining N-1 points are processed by a for loop.
-     */
+    const T c[2] = { static_cast<T>(2),
+                     static_cast<T>(4) };
 
-    // N must be an even number (divisible by 2) !
-    const size_t N = n + ( 0 == (n%2) ? 0 : 1 );
-    const T h = (b - a) / static_cast<T>(N);
-
-    // Do not preinitialize sum to f(a)+f(b) now as it may
-    // be reset back to 0 by the reduction clause
-    T sum = math::NumericUtil<T>::ZERO;
-
-    // Coarse grained parallelism:
-    #pragma omp parallel num_threads(ompIdeal(N-1)) \
-                if((N-1)>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(f, a) \
-                reduction(+ : sum)
-    {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr + 1;
-        const size_t iend = std::min(istart + elems_per_thread, N);
-
-        T tempSum = math::NumericUtil<T>::ZERO;
-        T xi = a + static_cast<T>(istart) * h;
-        for ( size_t i=istart;
-              i<iend;
-              ++i, xi += h )
-        {
-            tempSum += static_cast<T>( ( 0==i%2 ? 2 : 4 ) ) *
-                       f.func(xi);
-        }
-
-        // update sum in a thread safe manner
-        sum += tempSum;
-    }  // omp parallel
-
-    // finally add the remaining two points (at 'a' and 'b'):
-    sum += f.func(a) + f.func(b);
-
-    return sum * h / static_cast<T>(3);
+    return __closedNewtonCotes(
+            f, a, b, n, 2, c, static_cast<T>(1), static_cast<T>(1)/static_cast<T>(3)
+        );
 }
 
 
@@ -453,7 +378,7 @@ T math::IntegGeneric<T>::__simpson(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw FunctionException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__simpson38(
@@ -461,7 +386,7 @@ T math::IntegGeneric<T>::__simpson38(
       const T& a,
       const T& b,
       size_t n
-    ) throw(math::FunctionException)
+    ) throw(math::CalculusException)
 {
     /*
      *   b
@@ -476,50 +401,13 @@ T math::IntegGeneric<T>::__simpson38(
      *  and N must be divisible by 3
      */
 
-    /*
-     * With N integrating intervals, the function must be evaluated
-     * in N+1 points. Two points ('a' and 'b') are handled separately,
-     * the remaining N-1 points are processed by a for loop.
-     */
+    const T c[3] = { static_cast<T>(2),
+                     static_cast<T>(3),
+                     static_cast<T>(3) };
 
-    // N must be divisible by 3 !
-    const size_t N = n + ( 0!=n%3 ? 3-n%3: 0 );
-    const T h = (b-a) / static_cast<T>(N);
-
-    // Do not preinitialize sum to f(a)+f(b) now as it may
-    // be reset back to 0 by the reduction clause
-    T sum = math::NumericUtil<T>::ZERO;
-
-    // Coarse grained parallelism
-    #pragma om parallel num_threads(ompIdeal(N-1)) \
-               if((N-1)>OMP_CHUNKS_PER_THREAD) \
-               default(none) shared(f, a) \
-               reduction(+ : sum)
-    {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr + 1;
-        const size_t iend = std::min(istart + elems_per_thread, N);
-
-        T tempSum = math::NumericUtil<T>::ZERO;
-        T xi = a + static_cast<T>(istart) * h;
-        for ( size_t i=istart;
-              i < iend;
-              ++i,  xi += h )
-        {
-            tempSum += static_cast<T>( ( 0==i%3 ? 2 : 3 ) ) *
-                       f.func(xi);
-        }
-
-        // update sum in a thread safe manner
-        sum += tempSum;
-    }  // om parallel
-
-    // finally add the remaining two points (at 'a' and 'b'):
-    sum += f.func(a) + f.func(b);
-
-    return sum * static_cast<T>(3) *  h / static_cast<T>(8);
+    return __closedNewtonCotes(
+            f, a, b, n, 3, c, static_cast<T>(1), static_cast<T>(3)/static_cast<T>(8)
+        );
 }
 
 
@@ -536,7 +424,7 @@ T math::IntegGeneric<T>::__simpson38(
  *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw FunctionException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
 T math::IntegGeneric<T>::__boole(
@@ -544,68 +432,116 @@ T math::IntegGeneric<T>::__boole(
       const T& a,
       const T& b,
       size_t n
-    ) throw(math::FunctionException)
+    ) throw(math::CalculusException)
 {
     /*
      *   b
-     *   /                   /                                                                                                                 \
-     *   |              2*h  |                                                                                                                 |
-     *   | f(x) dx  ~  ----- | 7*f(x0) + 32*f(x1) + 12*f(x2) + 32*f(x3) + 14*f(x4) + 32*f(x5) + 12*f(x6) + 32*f(x7) + 14*f(x8) + ... + 7*f(xN) |
-     *   |              45   |                                                                                                                 |
-     *  /                    \                                                                                                                 /
+     *   /                   /
+     *   |              2*h  |
+     *   | f(x) dx  ~  ----- | 7*f(x0) + 32*f(x1) + 12*f(x2) + 32*f(x3) + 14*f(x4) +
+     *   |              45   |
+     *  /                    \
      *  a
      *
+     *                                                                           \
+     *                                                                           |
+     *               + 32*f(x5) + 12*f(x6) + 32*f(x7) + 14*f(x8) + ... + 7*f(xN) |
+     *                                                                           |
+     *                                                                           /
+     * 
      *  where h = (b-1) / N,  xi = a + i *h,
      *  and N must be divisible by 3
      */
 
-    /*
-     * With N integrating intervals, the function must be evaluated
-     * in N+1 points. Two points ('a' and 'b') are handled separately,
-     * the remaining N-1 points are processed by a for loop.
-     */
+    const T c[4] = { static_cast<T>(14),
+                     static_cast<T>(32),
+                     static_cast<T>(12),
+                     static_cast<T>(32) };
 
-    // N must be divisible by 4 !
-    const size_t N = n + ( 0!=n%4 ? 4-n%4: 0 );
-    const T h = (b-a) / static_cast<T>(N);
+    return __closedNewtonCotes(
+            f, a, b, n, 4, c, static_cast<T>(7), static_cast<T>(2)/static_cast<T>(45)
+        );
+}
 
-    // Array with Boole's coefficients:
-    const T coef[4] = { static_cast<T>(14),
-                        static_cast<T>(32),
-                        static_cast<T>(12),
-                        static_cast<T>(32)  };
 
-    // Do not preinitialize sum to 7*f(a) + 7*f(b) now as it may
-    // be reset back to 0 by the reduction clause
-    T sum = math::NumericUtil<T>::ZERO;
-
-    // Coarse grained parallelism
-    #pragma om parallel num_threads(ompIdeal(N-1)) \
-               if((N-1)>OMP_CHUNKS_PER_THREAD) \
-               default(none) shared(f, a, coef) \
-               reduction(+ : sum)
+/*
+ * General function that implements closed Newton - Cotes formulae of all
+ * degrees (e.g. trapezoidal, Simpson's, Boole's rule, etc.) to obtain proper
+ * definite integrals.
+ * 
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating steps
+ * @param degree - degree of the method
+ * @param coef - array of coefficients to multiply non-boundary points (must be of size 'degree'!)
+ * @param bCoef - coefficient to multiply both boundary points
+ * @param hCoef - coefficient to multiply the step size to obtain the final result
+ * 
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw CalculusException if function is not defined between 'a' and 'b'
+ */
+template <class T>
+T math::IntegGeneric<T>::__closedNewtonCotes(
+               const math::IFunctionGeneric<T>& f,
+               const T& a,
+               const T& b,
+               size_t n,
+               size_t degree,
+               const T* coef,
+               const T& bCoef,
+               const T& hCoef
+             ) throw(math::CalculusException)
+{
+    try
     {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr + 1;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        /*
+         * With N integrating intervals, the function must be evaluated
+         * in N+1 points. Two points ('a' and 'b') are handled separately,
+         * the remaining N-1 points are processed by a for loop.
+         */
 
-        T tempSum = math::NumericUtil<T>::ZERO;
-        T xi = a + static_cast<T>(istart) * h;
-        for ( size_t i=istart;
-              i < iend;
-              ++i,  xi += h )
+        // N must be divisible by 'degree' !
+        const size_t N = n + ( 0!=n%degree ? degree-n%degree: 0 );
+        const T h = (b-a) / static_cast<T>(N);
+        
+        // Do not preinitialize sum to hCoef * (f(a) + f(b)) now as it may
+        // be reset back to 0 by the reduction clause
+        T sum = math::NumericUtil<T>::ZERO;
+
+        // Coarse grained parallelism
+        #pragma omp parallel num_threads(ompIdeal(N-1)) \
+                    if((N-1)>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(f, a, coef) \
+                    reduction(+ : sum)
         {
-            tempSum += coef[i%4] * f.func(xi);
-        }
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr + 1;
+            const size_t iend = std::min(istart + elems_per_thread, N);
 
-        // update sum in a thread safe manner
-        sum += tempSum;
-    }  // om parallel
+            T tempSum = math::NumericUtil<T>::ZERO;
+            T xi = a + static_cast<T>(istart) * h;
+            for ( size_t i=istart;
+                  i < iend;
+                  ++i,  xi += h )
+            {
+                tempSum += coef[i%degree] * f.func(xi);
+            }  
 
-    // finally add the remaining two points (at 'a' and 'b'):
-    sum += static_cast<T>(7) * ( f.func(a) + f.func(b) );
+            // update sum in a thread safe manner
+            sum += tempSum;
+        }  // omp parallel
 
-    return sum * static_cast<T>(2) *  h / static_cast<T>(45);
+        // finally add the remaining two points (at 'a' and 'b'):
+        sum += bCoef * ( f.func(a) + f.func(b) );
+
+        return sum * hCoef *  h;
+    }  // try
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::CalculusException(math::CalculusException::UNDEFINED);
+    }
 }
