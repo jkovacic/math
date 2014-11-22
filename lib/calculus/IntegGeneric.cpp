@@ -494,6 +494,12 @@ T math::IntegGeneric<T>::__closedNewtonCotes(
                const T& hCoef
              ) throw(math::CalculusException)
 {
+    /*
+     * More info about Newton - Cotes formulae:
+     * - https://en.wikipedia.org/wiki/Newton–Cotes_formulas
+     * - http://mathworld.wolfram.com/Newton-CotesFormulas.html
+     */
+
     try
     {
         /*
