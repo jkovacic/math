@@ -203,10 +203,10 @@ void math::NumericUtil<T>::setEPS(const T& eps)
  * @return -1 if 'num' is negative, 0 if (close to) 0, 1 if positive 
  */
 template<class T>
-short int sign(const T& num)
+short int math::NumericUtil<T>::sign(const T& num)
 {
     // handle 0 first:
-    if ( true==math::NumericUtil<T>::isZero() )
+    if ( true==math::NumericUtil<T>::isZero(num) )
     {
         return 0;
     }

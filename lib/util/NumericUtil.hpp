@@ -66,7 +66,7 @@ public:
     static void setEPS(const T& eps);
     
     // num's sign:
-    short int sign(const T& num);
+    static short int sign(const T& num);
     
     // Efficient calculation of base^n:
     static T power(const T& base, size_t n);
