@@ -381,7 +381,7 @@ T math::RootFindGeneric<T>::secant(
  *
  * @param f - instance of a class with the function to find its root
  * @param diff - instance of a class with the derivation of 'f.func'
- * @param x0 - starting point ofthe algorithm
+ * @param x0 - starting point of the algorithm
  * @param EPSY - tolerance (default: NumericUtil::EPS)
  * @param Nmax - maximum number of iterations (default: 10000)
  *
@@ -425,7 +425,7 @@ T math::RootFindGeneric<T>::newton(
  *       (not guaranteed) to one root only
  *
  * @param f - instance of a class with the function to find its root
- * @param x0 - starting point ofthe algorithm
+ * @param x0 - starting point of the algorithm
  * @param EPSY - tolerance (default: NumericUtil::EPS)
  * @param h - step size for numerical derivation (default: 0.001)
  * @param Nmax - maximum number of iterations (default: 10000)
