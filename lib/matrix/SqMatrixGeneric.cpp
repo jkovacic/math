@@ -34,6 +34,7 @@ limitations under the License.
 #include "exception/LinearEquationSolverException.hpp"
 #include "../settings/omp_settings.h"
 #include "omp/omp_header.h"
+#include "omp/omp_coarse.h"
 
 #include <cstddef>
 #include <stdexcept>

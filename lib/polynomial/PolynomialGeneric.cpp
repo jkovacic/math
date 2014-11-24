@@ -29,6 +29,8 @@ limitations under the License.
 #include "util/mtcopy.hpp"
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
+#include "omp/omp_header.h"
+#include "omp/omp_coarse.h"
 
 #include <vector>
 #include <cstddef>
@@ -927,28 +929,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
 
         // ... and perform addition of same degree terms' coefficients
 
-        // Coarse grained parallelism
-        std::vector<T>& els = this->coef;
-
-        #pragma omp parallel num_threads(ompIdeal(npoly)) \
-                    if(npoly>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(poly, els)
-        {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = (npoly + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr;
-
-            typename std::vector<T>::iterator it = els.begin() + istart;
-            typename std::vector<T>::const_iterator pit = poly.coef.begin()+ istart;
-            for ( size_t i = 0;
-                  i<elems_per_thread && it!=els.end() && pit!=poly.coef.end();
-                  ++it, ++pit, ++i )
-            {
-                *it += *pit;
-            }
-        }  // omp parallel
-
+        math::mtvectadd(this->coef, poly.coef, this->coef, true);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -1005,28 +986,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
 
         // ... and perform addition of same degree terms' coefficients
 
-        // Coarse grained parallelism
-        std::vector<T>& els = this->coef;
-
-        #pragma omp parallel num_threads(ompIdeal(npoly)) \
-                    if(npoly>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(poly, els)
-        {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = (npoly + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr;
-
-            typename std::vector<T>::iterator it = els.begin() + istart;
-            typename std::vector<T>::const_iterator pit = poly.coef.begin() + istart;
-            for ( size_t i = 0;
-                  i<elems_per_thread && it!=els.end() && pit!=poly.coef.end();
-                  ++it, ++pit, ++i )
-            {
-                *it -= *pit;
-            }
-        }  // omp parallel
-
+        math::mtvectadd(this->coef, poly.coef, this->coef, false);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -1078,31 +1038,10 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::operator-() const throw (
     try
     {
         math::PolynomialGeneric<T> retVal(*this);
-        const size_t N = this->coef.size();
 
         // Just negate each coefficient:
 
-        // Coarse grained parallelism
-        const std::vector<T>& els = this->coef;
-
-        #pragma omp parallel num_threads(ompIdeal(N)) \
-                if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(retVal, els)
-        {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr;
-
-            typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
-            typename std::vector<T>::const_iterator mit = els.begin() + istart;
-            for ( size_t i = 0;
-                  i<elems_per_thread && it!=retVal.coef.end() && mit!=els.end();
-                  ++it, ++mit, ++i )
-            {
-                *it = -(*mit);
-            }
-        }  // omp parallel
+        math::mtvectmult(this->coef, static_cast<T>(-1), retVal.coef);
 
         // no need to reduce
         return retVal;
@@ -1154,26 +1093,8 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator*=(const T& sc)
 {
     // Multiply each coefficient by the scalar
-    const size_t N = this->coef.size();
 
-    // Coarse grained parallelism
-    std::vector<T>& els = this->coef;
-
-    #pragma omp parallel num_threads(ompIdeal(N)) \
-                if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(sc, els)
-    {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
-
-        typename std::vector<T>::iterator it = els.begin() + istart;
-        for ( size_t i=0; i<elems_per_thread && it!=els.end(); ++it, ++i )
-        {
-            *it *= sc;
-        }
-    }  // omp parallel
+	math::mtvectmult(this->coef, sc, this->coef);
 
     // applicable when the scalar is 0...
     this->__reduce();
@@ -1414,6 +1335,7 @@ math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& p1,
             Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
             consider its i^th coefficient as 0 (already set above)
         */
+
 
         // Coarse grained parallelism:
         #pragma omp parallel num_threads(ompIdeal(nmax)) \
@@ -1752,25 +1674,9 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& pol
                           i=0
     */
 
-    const size_t N = poly.coef.size();
     math::PolynomialGeneric<T> retVal(poly);
 
-    // Coarse grained parallelism
-    #pragma omp parallel num_threads(ompIdeal(N)) \
-                if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(retVal, sc)
-    {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
-
-        typename std::vector<T>::iterator it = retVal.coef.begin() + istart;
-        for ( size_t i = 0; i<elems_per_thread && it!=retVal.coef.end(); ++it, ++i )
-        {
-            *it *= sc;
-        }
-    }  // omp parallel
+    math::mtvectmult(retVal.coef, sc, retVal.coef);
 
     // applicable when sc==o
     retVal.__reduce();

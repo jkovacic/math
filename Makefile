@@ -105,6 +105,7 @@ COMPILECLASS += $(LIBINTUTILDIR)IntFactorization
 # Note that appropriate file suffixes will be appended later.
 GENERICCLASS =
 GENERICCLASS += $(LIBUTILDIR)mtcopy
+GENERICCLASS += $(LIBUTILDIR)mtvectop
 GENERICCLASS += $(LIBUTILDIR)NumericUtil
 GENERICCLASS += $(LIBMATRIXDIR)MatrixGeneric
 GENERICCLASS += $(LIBMATRIXDIR)SqMatrixGeneric
