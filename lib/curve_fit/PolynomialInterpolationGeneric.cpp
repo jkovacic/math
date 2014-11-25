@@ -28,6 +28,7 @@ limitations under the License.
  */
 
 // Deliberately there is no #include "PolynomialInterpolationGeneric.hpp"
+#include "util/NumericUtil.hpp"
 #include "polynomial/PolynomialGeneric.hpp"
 #include "exception/CurveFittingException.hpp"
 #include "../settings/omp_settings.h"
