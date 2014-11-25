@@ -30,6 +30,7 @@ limitations under the License.
 #include <algorithm>
 
 #include "exception/MatrixException.hpp"
+#include "util/NumericUtil.hpp"
 #include "matrix/MatrixGeneric.hpp"
 #include "matrix/SqMatrixGeneric.hpp"
 #include "../settings/omp_settings.h"

@@ -27,6 +27,7 @@ limitations under the License.
 
 // deliberately there is no #include "PolynomialGeneric.h" !
 #include "util/mtcopy.hpp"
+#include "util/mtvectop.hpp"
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
 #include "omp/omp_header.h"
