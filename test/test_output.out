@@ -59,7 +59,7 @@ Successfully detected attempt of a zero denominator
 zero = 0/1
 zero is uninvertible
 Inversion of zero failed again. It's OK
-Attempt of divison by zero successfully detected.
+Attempt of division by zero successfully detected.
 
 M A T R I X   T E S T
 

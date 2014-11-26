@@ -75,85 +75,168 @@ BUILDDIR = build/
 # Target binary, without any prefixes and suffixes
 TARGETROOT = maintest
 
+# Test modules (source files in $(TESTDIR)) that will be linked 
+# to the final test application.
+# Unnecessary modules may be commented out
+TESTFILES =
+TESTFILES += calcTest
+TESTFILES += combTest
+TESTFILES += curvefitTest
+TESTFILES += intcombTest
+TESTFILES += intexpTest
+TESTFILES += intfactorTest
+TESTFILES += lineqTest
+TESTFILES += matrixTest
+TESTFILES += mtcopyTest
+TESTFILES += polyTest
+TESTFILES += quatTest
+TESTFILES += rationalTest
+TESTFILES += ratmatTest
+TESTFILES += rootfindTest
+TESTFILES += statTest
 
-# Exception class names. Any non-applicable classes may be commented out.
-# Note that appropriate file suffixes will be appended later.
-EXCEPTIONCLASS = $(LIBEXCPDIR)IMathException
-EXCEPTIONCLASS += $(LIBEXCPDIR)MatrixException
-EXCEPTIONCLASS += $(LIBEXCPDIR)PolynomialException
-EXCEPTIONCLASS += $(LIBEXCPDIR)RationalException
-EXCEPTIONCLASS += $(LIBEXCPDIR)QuaternionException
-EXCEPTIONCLASS += $(LIBEXCPDIR)LinearEquationSolverException
-EXCEPTIONCLASS += $(LIBEXCPDIR)CurveFittingException
-EXCEPTIONCLASS += $(LIBEXCPDIR)CombinatoricsException
-EXCEPTIONCLASS += $(LIBEXCPDIR)IntFactorizationException
-EXCEPTIONCLASS += $(LIBEXCPDIR)StatisticsException
-EXCEPTIONCLASS += $(LIBEXCPDIR)FunctionException
-EXCEPTIONCLASS += $(LIBEXCPDIR)CalculusException
-EXCEPTIONCLASS += $(LIBEXCPDIR)RootFindException
-
-
-# Nontemplated classes, i.e. their source files will be compiled.
-# Note that appropriate file suffixes will be appended later.
-COMPILECLASS =
-COMPILECLASS += $(LIBRATIONALDIR)Rational
-COMPILECLASS += $(LIBCOMBDIR)IntCombinatorics
-COMPILECLASS += $(LIBINTUTILDIR)IntFactorization
-
-# Templated classes. These classes are not compiled directly, instead 
-# their source code will be included into files that need it.
-# Note that appropriate file suffixes will be appended later.
-GENERICCLASS =
-GENERICCLASS += $(LIBUTILDIR)mtcopy
-GENERICCLASS += $(LIBUTILDIR)mtvectop
-GENERICCLASS += $(LIBUTILDIR)NumericUtil
-GENERICCLASS += $(LIBMATRIXDIR)MatrixGeneric
-GENERICCLASS += $(LIBMATRIXDIR)SqMatrixGeneric
-GENERICCLASS += $(LIBPOLYDIR)PolynomialGeneric
-GENERICCLASS += $(LIBQUATDIR)QuaternionGeneric
-GENERICCLASS += $(LIBCURVEFITDIR)CurveFittingGenericAb
-GENERICCLASS += $(LIBCURVEFITDIR)PolynomialFittingGenericAb
-GENERICCLASS += $(LIBCURVEFITDIR)PolynomialInterpolationGeneric
-GENERICCLASS += $(LIBCURVEFITDIR)PolynomialRegressionGeneric
-GENERICCLASS += $(LIBLINEQDIR)LinearEquationSolverGeneric
-GENERICCLASS += $(LIBCOMBDIR)CombinationGeneric
-GENERICCLASS += $(LIBCOMBDIR)PermutationGeneric
-GENERICCLASS += $(LIBSTATDIR)SampleStatGeneric
-GENERICCLASS += $(LIBSTATDIR)SampleQuantileGeneric
-GENERICCLASS += $(LIBUTILDIR)IFunctionGeneric
-GENERICCLASS += $(LIBCALCULUSDIR)IntegGeneric
-GENERICCLASS += $(LIBCALCULUSDIR)DiffGeneric
-GENERICCLASS += $(LIBROOTFINDDIR)RootFindGeneric
+# Prepend path and append suffixes to the selected test modules
+TESTOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(TESTFILES) ))
 
 
-# Append file name extensions to exception classes
-EXCEPTIONHEADER = $(addsuffix $(HEADERSUFFIX), $(EXCEPTIONCLASS) )
-EXCEPTIONSRC = $(addsuffix $(CPPSUFFIX), $(EXCEPTIONCLASS) )
-EXCEPTIONOBJ = $(addsuffix $(OBJSUFFIX), $(notdir $(EXCEPTIONCLASS)) )
+# Dependencies of OpenMP headers
 
-# Append file name extensions to nontemplated (compiled) classes
-COMPILEHEADER = $(addsuffix $(HEADERSUFFIX), $(COMPILECLASS) )
-COMPILESRC = $(addsuffix $(CPPSUFFIX), $(COMPILECLASS) )
-COMPILEOBJ = $(addsuffix $(OBJSUFFIX), $(notdir $(COMPILECLASS)) )
+DEP_OMPSETTINGS = $(SETTINGDIR)omp_settings.h
+DEP_OMPHEADER = $(LIBOMPDIR)omp_header.h
+DEP_OMPCOARSE = $(LIBOMPDIR)omp_coarse.h
 
-# Append file name extensions to templated classes.
-# Note that these classes are not compiled so no *.o filenames are created
-GENERICHEADER = $(addsuffix $(HEADERSUFFIX), $(GENERICCLASS) )
-GENERICSRC = $(addsuffix $(CPPSUFFIX), $(GENERICCLASS) )
+
+# Object dependencies of templated classes
+# Note #1: Some dependencies may repeat several times.
+#          This is not a problem as all duplicated dependencies 
+#          will be removed from the list later
+# Note #2: No Suffixes (.hpp and .cpp) must be appended to file names
+#          as it will be handled later.
+#          The only exception are OMP dependencies (*.h files) that are
+#          actually not objects
+DEP_NUMUTIL = $(LIBUTILDIR)NumericUtil
+DEP_MTCOPY = $(LIBUTILDIR)mtcopy $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+DEP_MTVECTOP = $(LIBUTILDIR)mtvectop $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+DEP_IFUNCTION = $(LIBUTILDIR)IFunctionGeneric
+
+DEP_QUATERNION = $(LIBQUATDIR)QuaternionGeneric $(DEP_NUMUTIL) $(DEP_OMPSETTINGS)
+
+DEP_POLYNOMIAL = $(LIBPOLYDIR)PolynomialGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(DEP_VECTOP) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+
+DEP_COMBINATION = $(LIBCOMDIR)CombinationGeneric $(DEP_MTCOPY)
+DEP_PERMUTATION =$(LIBCOMDIR)PermutationGeneric $(DEP_MTCOPY)
+
+DEP_MATRIX = $(LIBMATRIXDIR)MatrixGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(DEP_MTVECTOP) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+DEP_SQMATRIX = $(LIBMATRIXDIR)SqMatrixGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(LIBLINEQ)LinearEquationSolverGeneric $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+DEP_LINEQ = $(LIBLINEQDIR)LinearEquationSolverGeneric $(DEP_NUMUTIL) $(DEP_MATRIX) $(DEP_SQMATRIX) $(DEP_OMPSETTINGS)
+
+DEP_CURVEFITAB = $(LIBCURVEFITDIR)CurveFittingGenericAb $(DEP_NUMUTIL)
+DEP_CURVEFITPOLY = $(LIBCURVEFITDIR)PolynomialFittingGenericAb $(DEP_CURVEFITAB) $(DEP_POLYNOMIAL)
+DEP_POLYINT = $(LIBCURVEFITDIR)PolynomialInterpolationGeneric $(DEP_CURVEFITPOLY) $(DEP_POLYNOMIAL) $(DEP_NUMUTIL) $(DEP_OMPSETTINGS)
+DEP_POLYREG = $(LIBCURVEFITDIR)PolynomialRegressionGeneric $(DEP_CURVEFITPOLY) $(DEP_POLYNOMIAL) $(DEP_LINEQ) $(DEP_SQMATRIX) $(DEP_MATRIX) $(DEP_NUMUTIL)
+
+DEP_INTEG = $(LIBCALCULUSDIR)IntegGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE) 
+DEP_DIFF = $(LIBCALCULUSDIR)DiffGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION)
+
+DEP_ROOTFIND = $(LIBROOTFINDDIR)RootFindGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_DIFF)
+
+DEP_SAMPLESTAT = $(LIBSTATDIR)SampleStatGeneric $(DEP_NUMUTIL) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+DEP_SAMPLEQUANT = $(LIBSTATDIR)SampleQuantileGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY)
+
+
+
+# Object files (.o) that must be built and linked to
+# the final test application if it includes the selected
+# test module.
+# Note #1: No paths and file suffixes must be appended to file names
+#          as it will be handled later.
+# Note #2: no problem if the same object file repeats among several test module
+#          dependencies as it will be handled later
+TEST_MTCOPY_OBJDEP = IMathException
+TEST_QUAT_OBJDEP = QuaternionException
+TEST_RAT_OBJDEP = Rational RationalException
+TEST_MATRIX_OBJDEP = MatrixException
+TEST_RATMAT_OBJDEP = Rational MatrixException RationalException
+TEST_POLY_OBJDEP = PolynomialException
+TEST_LINEQ_OBJDEP = LinearEquationSolverException
+TEST_CURVEFIT_OBJDEP = CurveFittingException
+TEST_INTEXP_OBJDEP = Rational MatrixException QuaternionException RationalException PolynomialException
+TEST_INTFACTOR_OBJDEP = IntFactorization IntFactorizationException
+TEST_INTCOMB_OBJDEP = IntCombinatorics CombinatoricsException
+TEST_COMB_OBJDEP = CombinatoricsException
+TEST_CALC_OBJDEP = FunctionException CalculusException
+TEST_ROOTFIND_OBJDEP = FunctionException RootFindException
+TEST_STAT_OBJDEP = StatisticsException
+
+
+# Templated classes included into test modules.
+# The purpose of these variables is to check whether
+# any templated class file has changed before te test
+# module is built.
+# Note: only include DEP_* variables declared above,
+#       any duplicates will be removed later
+TEST_MTCOPY_GENDEP = $(DEP_MTCOPY)
+TEST_QUAT_GENDEP = $(DEP_QUATERNION)
+TEST_RAT_GENDEP = 
+TEST_MATRIX_GENDEP = $(DEP_MATRIX) $(DEP_SQMATRIX)
+TEST_RATMAT_GENDEP = $(DEP_MATRIX)
+TEST_POLY_GENDEP = $(DEP_POLYNOMIAL)
+TEST_LINEQ_GENDEP = $(DEP_MATRIX) $(DEP_SQMATRIX) $(DEP_LINEQ)
+TEST_CURVEFIT_GENDEP = $(DEP_POLYREG) $(DEP_POLYINT)
+TEST_INTEXP_GENDEP = $(DEP_NUMUTIL) $(DEP_SQMATRIX) $(DEP_QUATERNION) $(DEP_POLYNOMIAL)
+TEST_INTFACTOR_GENDEP = 
+TEST_INTCOMB_GENDEP = 
+TEST_COMB_GENDEP = $(DEP_PERMUTATION) $(DEP_COMBINATION)
+TEST_CALC_GENDEP = $(DEP_IFUNCTION) $(DEP_INTEG) $(DEP_DIFF)
+TEST_ROOTFIND_GENDEP = $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_ROOTFIND)
+TEST_STAT_GENDEP = $(DEP_MTCOPY) $(DEP_SAMPLESTAT) $(DEP_SAMPLEQUANT)
+
+
+# Join object file dependencies for selected test modules.
+# Lines for unnecessary test modules may be commented out.
+# All duplicates will be removed in the next step.
+TEST_LINKOBJ =
+TEST_LINKOBJ += $(TEST_MTCOPY_OBJDEP)
+TEST_LINKOBJ += $(TEST_QUAT_OBJDEP)
+TEST_LINKOBJ += $(TEST_RAT_OBJDEP)
+TEST_LINKOBJ += $(TEST_MATRIX_OBJDEP)
+TEST_LINKOBJ += $(TEST_RATMAT_OBJDEP)
+TEST_LINKOBJ += $(TEST_POLY_OBJDEP)
+TEST_LINKOBJ += $(TEST_LINEQ_OBJDEP)
+TEST_LINKOBJ += $(TEST_CURVEFIT_OBJDEP)
+TEST_LINKOBJ += $(TEST_INTEXP_OBJDEP)
+TEST_LINKOBJ += $(TEST_INTFACTOR_OBJDEP)
+TEST_LINKOBJ += $(TEST_INTCOMB_OBJDEP)
+TEST_LINKOBJ += $(TEST_COMB_OBJDEP)
+TEST_LINKOBJ += $(TEST_CALC_OBJDEP)
+TEST_LINKOBJ += $(TEST_ROOTFIND_OBJDEP)
+TEST_LINKOBJ += $(TEST_STAT_OBJDEP)
+
+# Prepend a path and append $(OBJSUFFIX) to dependencies for
+# selected test modules, remove dependencies using the Make's sort command
+TEST_LINKOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(sort $(TEST_LINKOBJ)) ) )
+
+
+# A convenience "function" that prepares list of all dependencies.
+# Its input (referred as $1) is a list of files that declare and implement
+# templated classes (a *_GENDEP variable), the functionwill first filter out
+# OMP dependencies (*h. files), the remaining names will be appended
+# *.hpp and *.cpp suffixes, finally the unmodified list of *.h files
+# will be joined to the list.
+#
+# Usage of the "function":
+#    $(call gen-dep,<list_of_files>)
+#
+# Note: any white spaces after the comma may be joined to the input list 
+gen_deps = $(sort $(addsuffix $(HEADERSUFFIX), $(filter-out %.h,$1))) \
+           $(sort $(addsuffix $(CPPSUFFIX), $(filter-out %h,$1))) \
+           $(sort filter %.h,$1)
+
 
 # Append file name extensions and a prefix to the final binary
 TARGETSRC = $(addsuffix $(CPPSUFFIX), $(TARGETROOT) )
-TARGETOBJ = $(addsuffix $(OBJSUFFIX), $(TARGETROOT) )
+TARGETOBJ = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(TARGETROOT) ))
 TARGET = $(addprefix $(BUILDDIR), $(TARGETROOT) )
-
-
-# Join all desired *.o files into a single variable... 
-OBJS = $(EXCEPTIONOBJ) $(COMPILEOBJ) $(TARGETOBJ)
-# and prepend OBJDIR to each one.
-OBJS := $(addprefix $(OBJDIR), $(OBJS) )
-
-# Join all compilable source files into a single variable.
-SRC = $(EXCEPTIONSRC) $(COMPILESRC) $(TARGETSRC)
 
 
 # Compiler flags to produce debugging symbols and
@@ -178,10 +261,6 @@ INCLIB = $(LIBDIR)
 LIBINCFLAG = $(INCLUDEFLAG)$(INCLIB)
 APPINCFLAG = $(INCLUDEFLAG)$(APPINCDIR)
 
-# Dependencies of OpenMP related files
-OMPSETTINGDEP = $(SETTINGDIR)omp_settings.h
-OMPLIBDEP = $(addprefix $(LIBOMPDIR), omp_header.h omp_coarse.h)
-
 # Optional compiler flags
 CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas $(LIBINCFLAG)
 
@@ -189,7 +268,7 @@ CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas $(LIBINCFLAG)
 MACROS =
 
 # Optional linker flags
-LDFLAGS =
+LDFLAGS = -Wl,--allow-multiple-definition
 
 #
 # Make rules:
@@ -284,15 +363,63 @@ $(OBJDIR)IntFactorization$(OBJSUFFIX) : $(LIBINTUTILDIR)IntFactorization.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 
-# Build rule for the application that uses the library
-$(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp $(GENERICHEADER) $(GENERICSRC) \
-                                $(OMPLIBDEP) $(OMPSETTINGDEP)
+
+# Build rules for test modules
+$(OBJDIR)mtcopyTest$(OBJSUFFIX) : $(TESTDIR)mtcopyTest.cpp $(call gen-deps,$(TEST_MTCOPY_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)quatTest$(OBJSUFFIX) : $(TESTDIR)quatTest.cpp $(call gen-deps,$(TEST_QUAT_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)rationalTest$(OBJSUFFIX) : $(TESTDIR)rationalTest.cpp $(call gen-deps,$(TEST_RAT_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)matrixTest$(OBJSUFFIX) : $(TESTDIR)matrixTest.cpp $(call gen-deps,$(TEST_MATRIX_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)ratmatTest$(OBJSUFFIX) : $(TESTDIR)ratmatTest.cpp $(call gen-deps,$(TEST_RATMAT_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)polyTest$(OBJSUFFIX) : $(TESTDIR)polyTest.cpp $(call gen-deps,$(TEST_POLY_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)lineqTest$(OBJSUFFIX) : $(TESTDIR)lineqTest.cpp $(call gen-deps,$(TEST_LINEQ_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)curvefitTest$(OBJSUFFIX) : $(TESTDIR)curvefitTest.cpp $(call gen-deps,$(TEST_CURVEFIT_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)intexpTest$(OBJSUFFIX) : $(TESTDIR)intexpTest.cpp $(call gen-deps,$(TEST_INTEXP_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)intfactorTest$(OBJSUFFIX) : $(TESTDIR)intfactorTest.cpp $(call gen-deps,$(TEST_INTFACTOR_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)intcombTest$(OBJSUFFIX) : $(TESTDIR)intcombTest.cpp $(call gen-deps,$(TEST_INTCOMB_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)combTest$(OBJSUFFIX) : $(TESTDIR)combTest.cpp $(call gen-deps,$(TEST_COMB_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)calcTest$(OBJSUFFIX) : $(TESTDIR)calcTest.cpp $(call gen-deps,$(TEST_CALC_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)rootfindTest$(OBJSUFFIX) : $(TESTDIR)rootfindTest.cpp $(call gen-deps,$(TEST_ROOTFIND_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)statTest$(OBJSUFFIX) : $(TESTDIR)statTest.cpp $(call gen-deps,$(TEST_STAT_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
 
-# Build rule for linking the final binary
-$(TARGET) : $(OBJDIR) $(BUILDDIR) $(OBJS) 
-	$(LINKER) $(LDFLAGS) $(OBJS) -o $@ 
+
+# Build rule for the main test module
+$(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+
+# Build (link) rule for the final test application
+$(TARGET) : $(OBJDIR) $(BUILDDIR) $(TARGETOBJ) $(TESTOBJS) $(TEST_LINKOBJS) 
+	$(LINKER) $(LDFLAGS) $(TARGETOBJ) $(TESTOBJS) $(TEST_LINKOBJS) -o $@ 
 
 
 # Cleanup directives:
