@@ -39,6 +39,11 @@ limitations under the License.
 namespace math
 {
 
+// Some compilers may require advanced declaration
+// of the templated base class:
+template<class T> class MatrixGeneric;
+
+
 /**
  * @brief A class representing square matrices (number of rows is equal to number of columns).
  * 
