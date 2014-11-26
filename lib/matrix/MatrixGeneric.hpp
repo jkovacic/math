@@ -76,6 +76,7 @@ class MatrixGeneric
 protected:
     size_t rows;      /// Number of rows
     size_t cols;      /// Number of columns
+
     // STL Vector has several advantages over arrays, allocated by new[],
     // e.g. elements can be accessed via at() which checks for range and throws
     // an exception when attempting to access sth. outside the allocated range
