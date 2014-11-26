@@ -59,7 +59,8 @@ public:
     // Does the value equal zero? Note that in numerical mathematics
     // (where mostly float or double values are in use), "equals" has a
     // different meaning than in discrete mathematics (int etc.)
-    static bool isZero(const T& value, const T& eps=EPS);
+    static bool isZero(const T& value);
+    static bool isZero(const T& value, const T& eps);
 
     // Get or set the internal value of 'eps'
     static T getEPS();

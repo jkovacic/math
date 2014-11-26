@@ -79,11 +79,28 @@ const T math::NumericUtil<T>::ONE ( static_cast<T>(1) );
  * Does the given value equal (or is close enough to) zero?
  * Implementation depends on the type T.
  * For floating point types (float, double, long double), it checks
+ * whether its absolute value is less than the global setting EPS.
+ *
+ * @param value - value to be evaluated
+ *
+ * @return true or false
+ */
+template <class T>
+bool math::NumericUtil<T>::isZero(const T& value)
+{
+    return math::NumericUtil<T>::isZero(value, EPS);
+}
+
+
+/**
+ * Does the given value equal (or is close enough to) zero?
+ * Implementation depends on the type T.
+ * For floating point types (float, double, long double), it checks
  * whether its absolute value is less than a small value 'eps'. It can be
  * passed as an optional parameter or a system dependent constant EPS is used. 
  *
  * @param value - value to be evaluated
- * @param eps - a "threshold" to compare 'value' to, where applicable (default: NumericUtil<T>::EPS)
+ * @param eps - a "threshold" to compare 'value' to, where applicable
  *
  * @return true or false
  */
