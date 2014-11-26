@@ -71,9 +71,13 @@ OBJDIR = obj/
 
 # Directory for the target binary
 BUILDDIR = build/
-
+ 
 # Target binary, without any prefixes and suffixes
 TARGETROOT = maintest
+
+# These objects should probably always be compiled and 
+# "implicitly" linked into any application:
+IMPL_OBJS = IMathException
 
 # Test modules (source files in $(TESTDIR)) that will be linked 
 # to the final test application.
@@ -152,7 +156,7 @@ DEP_SAMPLEQUANT = $(LIBSTATDIR)SampleQuantileGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY
 #          as it will be handled later.
 # Note #2: no problem if the same object file repeats among several test module
 #          dependencies as it will be handled later
-TEST_MTCOPY_OBJDEP = IMathException
+TEST_MTCOPY_OBJDEP =
 TEST_QUAT_OBJDEP = QuaternionException
 TEST_RAT_OBJDEP = Rational RationalException
 TEST_MATRIX_OBJDEP = MatrixException
@@ -195,7 +199,9 @@ TEST_STAT_GENDEP = $(DEP_MTCOPY) $(DEP_SAMPLESTAT) $(DEP_SAMPLEQUANT)
 # Join object file dependencies for selected test modules.
 # Lines for unnecessary test modules may be commented out.
 # All duplicates will be removed in the next step.
-TEST_LINKOBJ =
+# Note: the first line should include implicit object files
+# that should be linked into any application.
+TEST_LINKOBJ = $(IMPL_OBJS)
 TEST_LINKOBJ += $(TEST_MTCOPY_OBJDEP)
 TEST_LINKOBJ += $(TEST_QUAT_OBJDEP)
 TEST_LINKOBJ += $(TEST_RAT_OBJDEP)
