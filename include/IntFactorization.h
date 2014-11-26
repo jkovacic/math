@@ -14,6 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * @file
+ * @author Jernej Kovacic
+ *
+ * A public header, may be directly included into applications.
+ *
+ * Declaration of the namespace IntFactorization with
+ * functions for factorization of integers and some 
+ * prime number utilities.
+ */
+
+
 #ifndef _MATH_INTFACTORIZATION_H_
 #define _MATH_INTFACTORIZATION_H_
 

@@ -21,7 +21,7 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{IntFactorization.h}
  *
- * Declaration of the class IntFactorization with static
+ * Declaration of the namespace IntFactorization with
  * functions for factorization of integers and some 
  * prime number utilities.
  */
@@ -38,46 +38,46 @@ namespace math
 {
 
 /**
- * @brief A class with some integer factorization functions for prime factorization,
- *        calculation of the least common multiple, greatest common divisor, etc.
- *  
- * All functions are static, so instantiation of the class is not necessary.
+ * @brief A separate namespace with some integer factorization functions for prime
+ * factorization, calculation of the least common multiple, greatest common divisor, etc.
  */
-struct IntFactorization
-{
-public:
-    static bool isPrime(unsigned long int n);
+
+namespace IntFactorization
+{    
+
+    bool isPrime(unsigned long int n);
     
     // greatest common divisor
-    static unsigned long int greatestCommonDivisor(
-                    unsigned long int first, 
-                    unsigned long int second ) 
-                throw(IntFactorizationException);
+    unsigned long int greatestCommonDivisor(
+                        unsigned long int first, 
+                        unsigned long int second ) 
+                    throw(IntFactorizationException);
     
     // least common multiple
-    static unsigned long int leastCommonMultiple(
-                    unsigned long int first, 
-                    unsigned long int second ) 
-                throw(IntFactorizationException);
+    unsigned long int leastCommonMultiple(
+                        unsigned long int first, 
+                        unsigned long int second ) 
+                    throw(IntFactorizationException);
     
-    static unsigned long int nextPrime(unsigned long int n) 
-                throw(IntFactorizationException);
+    unsigned long int nextPrime(unsigned long int n) 
+                    throw(IntFactorizationException);
     
     // the largest integer not exceeding sqrt(n)
-    static unsigned long int intSqrt(unsigned long int n);
+    unsigned long int intSqrt(unsigned long int n);
     
     // prime factorization
-    static void factor(
-                    unsigned long int n, 
-                    std::map<unsigned long int, unsigned int>& fac ) 
-                throw(IntFactorizationException);
+    void factor(
+                unsigned long int n, 
+                std::map<unsigned long int, unsigned int>& fac ) 
+            throw(IntFactorizationException);
     
     // list of all divisors of 'n'
-    static void divisors(
-                    unsigned long int n,
-                    std::set<unsigned long int>& div )
-                throw(IntFactorizationException);
-};
+    void divisors(
+                unsigned long int n,
+                std::set<unsigned long int>& div )
+            throw(IntFactorizationException);
+
+}  // namespace IntFactorization
 
 }  // namespace math
 

@@ -18,12 +18,9 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  * 
- * Implementation of the class IntFactorization with static
- * functions for factorization of integers and some 
+ * Implementation of functionality in the namespace IntFactorization 
+ * with functions for factorization of integers and some 
  * prime number utilities.
- * 
- * As all functions are static, no instantiation of this 
- * class is necessary.
  */
 
 #include "IntFactorization.hpp"

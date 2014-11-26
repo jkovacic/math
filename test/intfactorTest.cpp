@@ -18,8 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * A test module to test int. factorization classes
- * (IntFactorization)
+ * A test module to test int. factorization functions
+ * in the namespace IntFactorization
  */
 
 #include <iostream>

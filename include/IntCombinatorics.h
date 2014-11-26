@@ -20,8 +20,8 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class IntCombinatorics with static
- * functions for calculation of factorials, binomial coefficients, etc.
+ * Declaration of the namespace IntCombinatorics with functions
+ * for calculation of factorials, binomial coefficients, etc.
  */
 
 #ifndef _MATH_INTCOMBINATORICS_H_

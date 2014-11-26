@@ -18,11 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  * 
- * Implementation of the class IntCombinatorics with static
+ * Implementation of functionality in the namespace IntCombinatorics with
  * functions for calculation of factorials, binomial coefficients, etc.
- *
- * As all functions are static, no instantiation of this 
- * class is necessary.
  */
 
 #include "IntCombinatorics.hpp"
@@ -46,7 +43,10 @@ limitations under the License.
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::fallingFactorial(unsigned long long int N, unsigned long long int K) throw(math::CombinatoricsException)
+unsigned long long int math::IntCombinatorics::fallingFactorial(
+                            unsigned long long int N, 
+                            unsigned long long int K ) 
+                        throw(math::CombinatoricsException)
 {
     /*
      *  k
@@ -100,7 +100,10 @@ unsigned long long int math::IntCombinatorics::fallingFactorial(unsigned long lo
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::risingFactorial(unsigned long long int N, unsigned long long int K) throw(math::CombinatoricsException)
+unsigned long long int math::IntCombinatorics::risingFactorial( 
+                            unsigned long long int N, 
+                            unsigned long long int K ) 
+                        throw(math::CombinatoricsException)
 {   
     if ( 0LL == N )
     {
@@ -146,7 +149,10 @@ unsigned long long int math::IntCombinatorics::risingFactorial(unsigned long lon
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::factorial(unsigned long long int N, unsigned long long int from) throw(math::CombinatoricsException)
+unsigned long long int math::IntCombinatorics::factorial(
+                            unsigned long long int N, 
+                            unsigned long long int from ) 
+                        throw(math::CombinatoricsException)
 {
     /*
      * Factorial of a positive integer 'n' is defined as:
@@ -207,7 +213,10 @@ unsigned long long int math::IntCombinatorics::factorial(unsigned long long int 
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::multiFactorial(unsigned long long int N, unsigned int K) throw(math::CombinatoricsException)
+unsigned long long int math::IntCombinatorics::multiFactorial(
+                            unsigned long long int N, 
+                            unsigned int K ) 
+                        throw(math::CombinatoricsException)
 {    
     if ( N<K )
     {
@@ -249,7 +258,9 @@ unsigned long long int math::IntCombinatorics::multiFactorial(unsigned long long
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::doubleFactorial(unsigned long long int N) throw(math::CombinatoricsException)
+unsigned long long int math::IntCombinatorics::doubleFactorial(
+                            unsigned long long int N) 
+                        throw(math::CombinatoricsException)
 {
     // double factorial is a multi factorial with K=2
     return math::IntCombinatorics::multiFactorial(N, 2);
@@ -271,7 +282,10 @@ unsigned long long int math::IntCombinatorics::doubleFactorial(unsigned long lon
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */ 
-unsigned long long int math::IntCombinatorics::binom(unsigned long long int N, unsigned long long int K) throw(math::CombinatoricsException)
+unsigned long long int math::IntCombinatorics::binom(
+                            unsigned long long int N, 
+                            unsigned long long int K ) 
+                        throw(math::CombinatoricsException)
 {    
     if ( 0LL == N )
     {

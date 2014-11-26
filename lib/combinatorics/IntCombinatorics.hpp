@@ -21,8 +21,8 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{IntCombinatorics.h}
  *
- * Declaration of the class IntCombinatorics with static
- * functions for calculation of factorials, binomial coefficients, etc.
+ * Declaration of the namespace IntCombinatorics with functions 
+ * for calculation of factorials, binomial coefficients, etc.
  */
 
 #ifndef _MATH_INTCOMBINATORICS_HPP_
@@ -34,33 +34,48 @@ namespace math
 {
 
 /**
- * @brief A class with some combinatorics related functions for calculation of
+ * @brief A namespace with some combinatorics related functions for calculation of
  *        various factorials, binomial coefficients, etc.
- *  
- * All functions are static, so instantiation of the class is not necessary.
  */
-struct IntCombinatorics
+namespace IntCombinatorics
 {
-public:
+
     // factorial: N! or from * (from+1) * ... * N:
-    static unsigned long long int factorial(unsigned long long int N, unsigned long long int from=1LL) throw(CombinatoricsException);
+    unsigned long long int factorial(
+                            unsigned long long int N, 
+                            unsigned long long int from=1LL ) 
+                        throw(CombinatoricsException);
     
     // falling factorial power: N * (N-1) * ... * (N-K+1):
-    static unsigned long long int fallingFactorial(unsigned long long int N, unsigned long long int K) throw(CombinatoricsException);
+    unsigned long long int fallingFactorial(
+                            unsigned long long int N, 
+                            unsigned long long int K ) 
+                        throw(CombinatoricsException);
     
     // rising factorial power: N * (N+1) * ... * (N+K-1):
-    static unsigned long long int risingFactorial(unsigned long long int N, unsigned long long int K) throw(CombinatoricsException);
+    unsigned long long int risingFactorial(
+                            unsigned long long int N, 
+                            unsigned long long int K ) 
+                        throw(CombinatoricsException);
     
     // multifactorial: N * (N-K) * (N-2*K) * ... :
-    static unsigned long long int multiFactorial(unsigned long long int N, unsigned int K) throw(CombinatoricsException);
+    unsigned long long int multiFactorial(
+                            unsigned long long int N, 
+                            unsigned int K ) 
+                        throw(CombinatoricsException);
     
     // double factorial: N * (N-2) * (N-4) * ... :
-    static unsigned long long int doubleFactorial(unsigned long long int N) throw(CombinatoricsException);
+    unsigned long long int doubleFactorial( unsigned long long int N ) 
+                        throw(CombinatoricsException);
     
     // binomial coefficient:
-    static unsigned long long int binom(unsigned long long int N, unsigned long long int K) throw(CombinatoricsException);
-};
-    
+    unsigned long long int binom(
+                            unsigned long long int N, 
+                            unsigned long long int K ) 
+                        throw(CombinatoricsException);
+
+}  // namespace IntCombinatorics
+
 }  // namespace math
 
 

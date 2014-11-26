@@ -18,8 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * A test module to test integer combinatorics classes
- * (IntCombinatorics)
+ * A test module to test integer combinatorics functions
+ * in the namespace IntCombinatorics
  */
 
 
