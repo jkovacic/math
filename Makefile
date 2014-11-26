@@ -175,7 +175,7 @@ TEST_STAT_OBJDEP = StatisticsException
 
 # Templated classes included into test modules.
 # The purpose of these variables is to check whether
-# any templated class file has changed before te test
+# any templated class file has changed before the test
 # module is built.
 # Note: only include DEP_* variables declared above,
 #       any duplicates will be removed later
@@ -225,13 +225,13 @@ TEST_LINKOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(sort $(TEST_L
 
 # A convenience "function" that prepares list of all dependencies.
 # Its input (referred as $1) is a list of files that declare and implement
-# templated classes (a *_GENDEP variable), the functionwill first filter out
+# templated classes (a *_GENDEP variable), the function will first filter out
 # OMP dependencies (*h. files), the remaining names will be appended
 # *.hpp and *.cpp suffixes, finally the unmodified list of *.h files
 # will be joined to the list.
 #
 # Usage of the "function":
-#    $(call gen-dep,<list_of_files>)
+#    $(call gen-deps,<list_of_files>)
 #
 # Note: any white spaces after the comma may be joined to the input list 
 gen_deps = $(sort $(addsuffix $(HEADERSUFFIX), $(filter-out %.h,$1))) \
