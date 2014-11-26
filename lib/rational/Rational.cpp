@@ -780,7 +780,7 @@ long int math::Rational::__auxSum(long int num1, long int denom2, long int num2,
 
     if ( sum > LONG_MAX || sum < LONG_MIN )
     {
-        throw math::RationalException(math::RationalException::OVERFLOW);
+        throw math::RationalException(math::RationalException::INT_OVERFLOW);
     }
 
     return static_cast<long int>(sum);
@@ -804,7 +804,7 @@ long int math::Rational::__auxProd(long int first, long int second) throw(math::
 
     if ( prod > LONG_MAX || prod < LONG_MIN )
     {
-        throw math::RationalException(math::RationalException::OVERFLOW);
+        throw math::RationalException(math::RationalException::INT_OVERFLOW);
     }
 
     return static_cast<long int>(prod);

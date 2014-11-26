@@ -45,7 +45,7 @@ struct RationalException : public IMathException
         ZERO_DENOMINATOR,   /// attempted to set a zero denominator
         UNINVERTIBLE,       /// the fraction cannot be inverted
         DIVIDE_BY_ZERO,     /// attempt of division by zero
-        OVERFLOW,           /// integer overflow
+        INT_OVERFLOW,       /// integer overflow
         INVALID_INPUT,      /// invalid input argument
         INPUT_OUT_OF_RANGE, /// string input out of integer's boundaries
         OUT_OF_MEMORY       /// (re)allocation of string's memory failed

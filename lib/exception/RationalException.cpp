@@ -56,7 +56,7 @@ void math::RationalException::what(std::ostream& str) const
         case DIVIDE_BY_ZERO:
             str << "Attempt of division by zero.";
             break;
-        case OVERFLOW:
+        case INT_OVERFLOW:
             str << "Operation caused an integer overflow.";
             break;
         case INVALID_INPUT:
