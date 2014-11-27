@@ -32,7 +32,6 @@ limitations under the License.
 
 #include "exception/RootFindException.hpp"
 #include "util/IFunctionGeneric.hpp"
-#include "util/NumericUtil.hpp"
 
 
 namespace math
@@ -53,8 +52,8 @@ public:
            const IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
-           const T& EPSX = NumericUtil<T>::getEPS(),
-           const T& EPSY = NumericUtil<T>::getEPS()
+           const T& epsx = static_cast<T>(0),
+           const T& epsy = static_cast<T>(0)
          ) throw(RootFindException);
 
 
@@ -62,8 +61,8 @@ public:
            const IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
-           const T& EPSX = NumericUtil<T>::getEPS(),
-           const T& EPSY = NumericUtil<T>::getEPS()
+           const T& epsx = static_cast<T>(0),
+           const T& epsy = static_cast<T>(0)
          ) throw(RootFindException);
 
 
@@ -71,7 +70,7 @@ public:
            const IFunctionGeneric<T>& f,
            const T& r0,
            const T& r1,
-           const T& EPSY = NumericUtil<T>::getEPS(),
+           const T& epsy = static_cast<T>(0),
            size_t Nmax = 10000
          ) throw(RootFindException);
 
@@ -80,7 +79,7 @@ public:
            const IFunctionGeneric<T>& f,
            const IFunctionGeneric<T>& diff,
            const T& x0,
-           const T& EPSY = NumericUtil<T>::getEPS(),
+           const T& epsy = static_cast<T>(0),
            size_t Nmax = 10000
          ) throw(RootFindException);
 
@@ -88,7 +87,7 @@ public:
     static T quasiNewton(
            const IFunctionGeneric<T>& f,
            const T& x0,
-           const T& EPSY = NumericUtil<T>::getEPS(),
+           const T& epsy = static_cast<T>(0),
            const T& h = static_cast<T>(1) / static_cast<T>(1000),
            size_t Nmax = 10000
          ) throw(RootFindException);
@@ -100,7 +99,7 @@ private:
            const IFunctionGeneric<T>& f,
            const IFunctionGeneric<T>& diff,
            const T& x0,
-           const T& EPSY,
+           const T& epsy,
            const T& h,
            size_t Nmax,
            bool diffFunc

@@ -48,11 +48,14 @@ limitations under the License.
  *
  * @note The method will swap 'from' and 'to' if 'from' is greater than 'to'.
  *
+ * @note 'epsx' and/or 'epsy' will be increased to the system epsilon for the type
+ *       if their values are too small.
+ *
  * @param f - instance of a class with the function to find its root
  * @param from - lower boundary of the search interval
  * @param to - upper boundary of the search interval
- * @param EPSX - the smallest width of the search interval (default: NumericUtil::EPS)
- * @param EPSY - tolerance (default: NumericUtil::EPS)
+ * @param epsx - the smallest width of the search interval (default: type dependent system epsilon)
+ * @param epsy - tolerance (default: type dependent system epsilon)
  *
  * @return root of the function 'f' if it exists
  *
@@ -63,8 +66,8 @@ T math::RootFindGeneric<T>::bisection(
            const math::IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
-           const T& EPSX,
-           const T& EPSY
+           const T& epsx,
+           const T& epsy
          ) throw(math::RootFindException)
 {
     /*
@@ -72,15 +75,18 @@ T math::RootFindGeneric<T>::bisection(
      * https://en.wikipedia.org/wiki/Bisection_method
      */
 
-    // sanity check
-    if ( EPSX < math::NumericUtil<T>::getEPS() ||
-         EPSY < math::NumericUtil<T>::getEPS() )
-    {
-        throw math::RootFindException(math::RootFindException::INVALID_ARGS);
-    }
-
     try
     {
+        const T EPSX = std::max(epsx, math::NumericUtil<T>::getEPS() );
+        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+
+        // sanity check of final epsilons:
+        if ( EPSX <= static_cast<T>(0) ||
+             EPSY <= static_cast<T>(0) )
+        {
+            throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+        }
+
         T a, fa;
         T b, fb;
         T c, fc;
@@ -169,11 +175,14 @@ T math::RootFindGeneric<T>::bisection(
  *
  * @note The method will swap 'from' and 'to' if 'from' is greater than 'to'.
  *
+ * @note 'epsx' and/or 'epsy' will be increased to the system epsilon for the type
+ *       if their values are too small.
+ *
  * @param f - instance of a class with the function to find its root
  * @param from - lower boundary of the search interval
  * @param to - upper boundary of the search interval
- * @param EPSX - the smallest width of the search interval (default: NumericUtil::EPS)
- * @param EPSY - tolerance (default: NumericUtil::EPS)
+ * @param epsx - the smallest width of the search interval (default: type dependent system epsilon)
+ * @param epsy - tolerance (default: type dependent system epsilon)
  *
  * @return root of the function 'f' if it exists
  *
@@ -184,8 +193,8 @@ T math::RootFindGeneric<T>::regulaFalsi(
            const math::IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
-           const T& EPSX,
-           const T& EPSY
+           const T& epsx,
+           const T& epsy
          ) throw(math::RootFindException)
 {
     /*
@@ -193,15 +202,18 @@ T math::RootFindGeneric<T>::regulaFalsi(
      * https://en.wikipedia.org/wiki/False_position_method
      */
 
-    // sanity check
-    if ( EPSX < math::NumericUtil<T>::getEPS() ||
-         EPSY < math::NumericUtil<T>::getEPS() )
-    {
-        throw math::RootFindException(math::RootFindException::INVALID_ARGS);
-    }
-
     try
     {
+        const T EPSX = std::max(epsx, math::NumericUtil<T>::getEPS() );
+        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+
+        // sanity check of final epsilons:
+        if ( EPSX <= static_cast<T>(0) ||
+             EPSY <= static_cast<T>(0) )
+        {
+            throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+        }
+
         T a, fa;
         T b, fb;
         T c, fc;
@@ -287,10 +299,13 @@ T math::RootFindGeneric<T>::regulaFalsi(
  * @note If 'f.func' has more than root, the method will converge
  *       (not guaranteed) to one root only.
  *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
  * @param f - instance of a class with the function to find its root
  * @param r0 - first initial value
  * @param r1 - second initial value
- * @param EPSY - tolerance (default: NumericUtil::EPS)
+ * @param epsy - tolerance (default: type dependent system epsilon)
  * @param Nmax - maximum number of iterations (default: 10000)
  *
  * @return root of the function 'f' if it exists
@@ -302,7 +317,7 @@ T math::RootFindGeneric<T>::secant(
            const math::IFunctionGeneric<T>& f,
            const T& r0,
            const T& r1,
-           const T& EPSY,
+           const T& epsy,
            size_t Nmax
          ) throw(math::RootFindException)
 {
@@ -312,14 +327,21 @@ T math::RootFindGeneric<T>::secant(
      */
 
     // sanity check
-    if ( EPSY < math::NumericUtil<T>::getEPS() ||
-         0 == Nmax )
+    if ( 0 == Nmax )
     {
         throw math::RootFindException(math::RootFindException::INVALID_ARGS);
     }
 
     try
     {
+        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+
+        // sanity check of the final epsilon:
+        if ( EPSY <= static_cast<T>(0) )
+        {
+            throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+        }
+
         T xo = r0;
         T xn = r1;
         T fo = f.func(xo);
@@ -379,10 +401,13 @@ T math::RootFindGeneric<T>::secant(
  * @note If 'f.func' has more than one root, the method will converge
  *       (not guaranteed) to one root only
  *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
  * @param f - instance of a class with the function to find its root
  * @param diff - instance of a class with the derivation of 'f.func'
  * @param x0 - starting point of the algorithm
- * @param EPSY - tolerance (default: NumericUtil::EPS)
+ * @param epsy - tolerance (default: type dependent system epsilon)
  * @param Nmax - maximum number of iterations (default: 10000)
  *
  * @return root of the function 'f' if it exists
@@ -396,7 +421,7 @@ T math::RootFindGeneric<T>::newton(
            const math::IFunctionGeneric<T>& f,
            const math::IFunctionGeneric<T>& diff,
            const T& x0,
-           const T& EPSY,
+           const T& epsy,
            size_t Nmax
          ) throw(math::RootFindException)
 {
@@ -406,7 +431,7 @@ T math::RootFindGeneric<T>::newton(
      */
 
     // The algorithm is implemented in __newtonCommon:
-    return __newtonCommon(f, diff, x0, EPSY, static_cast<T>(0), Nmax, true);
+    return __newtonCommon(f, diff, x0, epsy, static_cast<T>(0), Nmax, true);
 }
 
 
@@ -424,9 +449,12 @@ T math::RootFindGeneric<T>::newton(
  * @note If 'f.func' has more than one root, the method will converge
  *       (not guaranteed) to one root only
  *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
  * @param f - instance of a class with the function to find its root
  * @param x0 - starting point of the algorithm
- * @param EPSY - tolerance (default: NumericUtil::EPS)
+ * @param epsy - tolerance (default: type dependent system epsilon)
  * @param h - step size for numerical derivation (default: 0.001)
  * @param Nmax - maximum number of iterations (default: 10000)
  *
@@ -441,7 +469,7 @@ template <class T>
 T math::RootFindGeneric<T>::quasiNewton(
            const math::IFunctionGeneric<T>& f,
            const T& x0,
-           const T& EPSY,
+           const T& epsy,
            const T& h,
            size_t Nmax
          ) throw(math::RootFindException)
@@ -452,7 +480,7 @@ T math::RootFindGeneric<T>::quasiNewton(
      */
 
     // The algorithm is implemented in __newtonCommon:
-    return __newtonCommon(f, f, x0, EPSY, h, Nmax, false);
+    return __newtonCommon(f, f, x0, epsy, h, Nmax, false);
 }
 
 
@@ -463,10 +491,13 @@ T math::RootFindGeneric<T>::quasiNewton(
  * via the provided function 'diff' or numerically via the central
  * method. In the latter case 'diff' is ignored.
  *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
  * @param f - instance of a class with the function to find its root
  * @param diff - instance of a class with the derivation of 'f.func'
  * @param x0 - starting point of the algorithm
- * @param EPSY - tolerance
+ * @param epsy - tolerance
  * @param h - step size for numerical derivation (ignored if 'diffFunc'==true)
  * @param Nmax - maximum number of iterations
  * @param diffFunc - if true evaluate f's slope via 'diff', otherwise numerically
@@ -483,7 +514,7 @@ T math::RootFindGeneric<T>::__newtonCommon(
            const math::IFunctionGeneric<T>& f,
            const math::IFunctionGeneric<T>& diff,
            const T& x0,
-           const T& EPSY,
+           const T& epsy,
            const T& h,
            size_t Nmax,
            bool diffFunc
@@ -495,14 +526,21 @@ T math::RootFindGeneric<T>::__newtonCommon(
      */
 
     // sanity check
-    if ( EPSY < math::NumericUtil<T>::getEPS() ||
-         0 == Nmax )
+    if ( 0 == Nmax )
     {
         throw math::RootFindException(math::RootFindException::INVALID_ARGS);
     }
 
     try
     {
+        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+
+        // sanity check of the final epsilon:
+        if ( EPSY <= static_cast<T>(0) )
+        {
+            throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+        }
+
         T x = x0;
         T fx = f.func(x);
 
