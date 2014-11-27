@@ -30,20 +30,16 @@ limitations under the License.
 
 
 /*
- * In C++, it is not possible to specialize a function of a templated class
- * if the specialization is also a generic type (e.g. T -> math::SqMatrixGeneric<T>).
- * However it is possible if a single function is templated.
- * For more details, see the discussion at:
- * http://www.cplusplus.com/forum/general/68298/
- *
- * At the moment, getUnit() is only used by power(). Until it is changed,
- * getUnit() will be defined in this file as a templated standalone function.
- * Additionally, implementations of the function are "hidden" in the namespace
- * math::getunit which is not supposed to be known to other members of math::
+ * "Private" functions and their specializations are
+ * "hidden" into a separate anonymous namespace.
  */
 namespace math
 {
-    namespace getunit
+
+namespace IntExponentiator
+{
+
+    namespace
     {
         /*
          * @param t - an arbitrary instance of T, ignored by the generic implementation,
@@ -89,7 +85,8 @@ namespace math
             return math::PolynomialGeneric<T>(static_cast<T>(1));
         }
 
-    } // namespace units
+    } // anonymous namespace
+} // namespace IntExponentiator
 } // namespace math
 
 
@@ -133,7 +130,7 @@ T math::IntExponentiator::power(const T& base, size_t n)
     // on unsigned int values as they do not depend on endianess:
     // http://stackoverflow.com/questions/7184789/does-bit-shift-depends-on-endianness
 
-    T retVal = math::getunit::getUnit(base);
+    T retVal = math::IntExponentiator::getUnit(base);
     T factor = base;
 
     // Obtain coefficients ai from the exponent's binary form.
