@@ -33,7 +33,6 @@ limitations under the License.
 #include <cstddef>
 
 #include "exception/MatrixException.hpp"
-#include "util/NumericUtil.hpp"
 
 namespace math
 {
@@ -141,8 +140,8 @@ public:
     // Insert or remove rows/columns.
     virtual MatrixGeneric<T>& removeRow(size_t rowNr) throw (MatrixException);
     virtual MatrixGeneric<T>& removeColumn(size_t colNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertRow(size_t rowNr, const T& el=NumericUtil<T>::ZERO) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertColumn(size_t colNr, const T& el=NumericUtil<T>::ZERO) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertRow(size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertColumn(size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();

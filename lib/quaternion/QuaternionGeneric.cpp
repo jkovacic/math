@@ -513,7 +513,7 @@ T math::QuaternionGeneric<T>::norm() const throw (math::QuaternionException)
     throw math::QuaternionException(math::QuaternionException::UNSUPPORTED_TYPE);
 
     // will never execute, but some compilers may produce a warning if nothing is returned
-    return math::NumericUtil<T>::ZERO;
+    return static_cast<T>(0);
 }
 
 
@@ -599,7 +599,7 @@ math::QuaternionGeneric<FD> math::QuaternionGeneric<FD>::unit() const throw (mat
     { \
         throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO); \
     } \
-    return ( *this * (math::NumericUtil<FD>::ONE/norm) ); \
+    return ( *this * (static_cast<FD>(1)/norm) ); \
 }
 // end of #define
 

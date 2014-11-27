@@ -36,6 +36,11 @@ limitations under the License.
 namespace math
 {
 
+// Some compilers may require advanced declaration
+// of the templated base class:
+template<class T> class CurveFittingGenericAb;
+
+
 /**
  * @brief Common functionality for curve fitting/interpolation algorithms that
  *        find the best fitting polynomial.

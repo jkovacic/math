@@ -133,7 +133,7 @@ private:
 public:
     // Constructors
     PolynomialGeneric(const std::vector<T>& cvect) throw (PolynomialException);
-    PolynomialGeneric(const T& c0=math::NumericUtil<T>::ZERO) throw (PolynomialException);
+    PolynomialGeneric(const T& c0 = static_cast<T>(0)) throw (PolynomialException);
     PolynomialGeneric(const T* carray, size_t n) throw (PolynomialException);
     PolynomialGeneric(bool ignored, size_t n = 1) throw (PolynomialException);
     PolynomialGeneric(const PolynomialGeneric<T>& poly) throw (PolynomialException);
@@ -146,7 +146,7 @@ public:
     // Setters
     PolynomialGeneric<T>& set(const std::vector<T>& cvect) throw (PolynomialException);
     PolynomialGeneric<T>& setDesc(const std::vector<T>& cvect) throw (PolynomialException);
-    PolynomialGeneric<T>& set(size_t pos, const T& c = NumericUtil<T>::ZERO) throw (PolynomialException);
+    PolynomialGeneric<T>& set(size_t pos, const T& c = static_cast<T>(0)) throw (PolynomialException);
 
     // Insert and remove coefficients
     PolynomialGeneric<T>& insert(size_t pos, const T& c) throw (PolynomialException);
@@ -159,7 +159,7 @@ public:
     // Derivative of the polynomial
     PolynomialGeneric<T> deriv() const throw (PolynomialException);
     // Indefinite integral of the polynomial
-    PolynomialGeneric<T> integ(const T& c = NumericUtil<T>::ZERO) const throw (PolynomialException);
+    PolynomialGeneric<T> integ(const T& c = static_cast<T>(0)) const throw (PolynomialException);
 
     // Display the polynomial
     void display(char arg = 'x', std::ostream& str = std::cout) const;

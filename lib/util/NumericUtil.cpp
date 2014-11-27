@@ -63,19 +63,6 @@ T math::NumericUtil<T>::EPS = static_cast<T>(0);
 
 
 /**
- * A constant value with the T's representation of zero (0)
- */
-template<class T>
-const T math::NumericUtil<T>::ZERO ( static_cast<T>(0) );
-
-/**
- * A constant value with the T's representation of one (1)
- */
-template<class T>
-const T math::NumericUtil<T>::ONE ( static_cast<T>(1) );
-
-
-/**
  * Does the given value equal (or is close enough to) zero?
  * Implementation depends on the type T.
  * For floating point types (float, double, long double), it checks
@@ -112,7 +99,7 @@ bool math::NumericUtil<T>::isZero(const T& value, const T& eps)
      * does make sense and no comparison to EPS is necessary.
      */
 
-    return ( ZERO==value ? true : false );
+    return ( static_cast<T>(0)==value ? true : false );
 
     (void) eps;
 }
@@ -228,7 +215,7 @@ short int math::NumericUtil<T>::sign(const T& num)
         return 0;
     }
 
-    return ( num < math::NumericUtil<T>::ZERO ? -1 : 1 );
+    return ( num < static_cast<T>(0) ? -1 : 1 );
 }
 
 
@@ -258,7 +245,7 @@ namespace math
         T getUnit(const T& t)
         {
             (void) t;
-            return T(math::NumericUtil<T>::ONE);
+            return T(static_cast<T>(1));
         }
 
         /*
@@ -289,7 +276,7 @@ namespace math
         math::PolynomialGeneric<T> getUnit(const math::PolynomialGeneric<T>& t)
         {
             (void) t;
-            return math::PolynomialGeneric<T>(math::NumericUtil<T>::ONE);
+            return math::PolynomialGeneric<T>(static_cast<T>(1));
         }
         
     } // namespace units

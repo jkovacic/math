@@ -29,7 +29,6 @@ limitations under the License.
 #define _MATH_QUATERNIONGENERIC_HPP_
 
 
-#include "util/NumericUtil.hpp"
 #include "exception/QuaternionException.hpp"
 
 namespace math
@@ -110,10 +109,10 @@ private:
 
 public:
     // Constructor
-    QuaternionGeneric(const T& o=math::NumericUtil<T>::ZERO,
-                      const T& i=math::NumericUtil<T>::ZERO,
-                      const T& j=math::NumericUtil<T>::ZERO,
-                      const T& k=math::NumericUtil<T>::ZERO);
+    QuaternionGeneric(const T& o = static_cast<T>(0),
+                      const T& i = static_cast<T>(0),
+                      const T& j = static_cast<T>(0),
+                      const T& k = static_cast<T>(0) );
 
     // Copy constructor
     QuaternionGeneric(const QuaternionGeneric& q);
@@ -125,15 +124,15 @@ public:
     T getK() const;
 
     // Setters:
-    QuaternionGeneric<T>& set(const T& o=math::NumericUtil<T>::ZERO,
-             const T& i=math::NumericUtil<T>::ZERO,
-             const T& j=math::NumericUtil<T>::ZERO,
-             const T& k=math::NumericUtil<T>::ZERO );
+    QuaternionGeneric<T>& set(const T& o = static_cast<T>(0),
+             const T& i = static_cast<T>(0),
+             const T& j = static_cast<T>(0),
+             const T& k = static_cast<T>(0) );
 
-    QuaternionGeneric<T>& setOne(const T& o=math::NumericUtil<T>::ZERO);
-    QuaternionGeneric<T>& setI(const T& i=math::NumericUtil<T>::ZERO);
-    QuaternionGeneric<T>& setJ(const T& j=math::NumericUtil<T>::ZERO);
-    QuaternionGeneric<T>& setK(const T& k=math::NumericUtil<T>::ZERO);
+    QuaternionGeneric<T>& setOne(const T& o = static_cast<T>(0));
+    QuaternionGeneric<T>& setI(const T& i = static_cast<T>(0));
+    QuaternionGeneric<T>& setJ(const T& j = static_cast<T>(0));
+    QuaternionGeneric<T>& setK(const T& k = static_cast<T>(0) );
 
     // Display the quaternion:
     void display(std::ostream& str = std::cout) const;

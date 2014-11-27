@@ -37,7 +37,6 @@ limitations under the License.
 #include "exception/MatrixException.hpp"
 #include "util/mtcopy.hpp"
 #include "util/mtvectop.hpp"
-#include "util/NumericUtil.hpp"
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
@@ -76,7 +75,7 @@ math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::M
         // make sure, the vector will be empty
         this->elems.clear();
         // allocate memory for required number of elements, initialize each of them
-        this->elems.resize(rows*columns, math::NumericUtil<T>::ZERO);
+        this->elems.resize(rows*columns, static_cast<T>(0));
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -831,7 +830,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
     {
         for ( size_t c=0; c<m2.cols; ++c)
         {
-            T sum = math::NumericUtil<T>::ZERO;
+            T sum = static_cast<T>(0);
             for ( size_t i=0; i<m1.cols; ++i )
             {
                 sum += m1.elems.at(m1._pos(r, i)) * m2.elems.at(m2._pos(i, c));

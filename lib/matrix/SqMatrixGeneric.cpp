@@ -149,7 +149,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
             const size_t r = idx / N;
             const size_t c = idx % N;
 
-            *it = ( r==c ? scalar : math::NumericUtil<T>::ZERO );
+            *it = ( r==c ? scalar : static_cast<T>(0) );
         }
     }  // omp parallel
 
@@ -168,7 +168,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setUnit() throw(math::Matrix
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal
-    setDiag(math::NumericUtil<T>::ONE);
+    setDiag(static_cast<T>(1));
 
     return *this;
 }
@@ -198,7 +198,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
     // Initial value. It will be negated each time two lines need to be swapped.
     // At the end of the algorithm it will be multiplied by all diagonal elements
-    T retVal = math::NumericUtil<T>::ONE;
+    T retVal = static_cast<T>(1);
 
     // We do not want to modify the matrix, therefore its vector of
     // elements will be copied into a temporary one where any modifications
@@ -240,7 +240,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             // and the method is finished
             if ( N == r )
             {
-                return math::NumericUtil<T>::ZERO;
+                return static_cast<T>(0);
             }
 
             // otherwise swap the lines one element by one
@@ -296,7 +296,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
      */
 
     // Coarse grained parallelism
-    T prod = math::NumericUtil<T>::ONE;
+    T prod = static_cast<T>(1);
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
@@ -308,7 +308,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         const size_t istart = elems_per_thread * thnr;
         const size_t iend = std::min(istart+elems_per_thread, N);
 
-        T tempProd = math::NumericUtil<T>::ONE;
+        T tempProd = static_cast<T>(1);
         for ( size_t i = istart; i<iend; ++i )
         {
             tempProd *= temp.at(this->_pos(i, i));

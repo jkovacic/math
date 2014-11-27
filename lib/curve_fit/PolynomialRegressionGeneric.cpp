@@ -30,7 +30,6 @@ limitations under the License.
 #include "matrix/MatrixGeneric.hpp"
 #include "matrix/SqMatrixGeneric.hpp"
 #include "lineq/LinearEquationSolverGeneric.hpp"
-#include "util/NumericUtil.hpp"
 #include "exception/CurveFittingException.hpp"
 
 #include <cstddef>
@@ -111,7 +110,7 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
         for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin(); it!=this->points.end(); ++it )
         {
             // initial values of summands
-            T aterm = math::NumericUtil<T>::ONE;
+            T aterm = static_cast<T>(1);
             T bterm = it->p_y;
 
             // i actually determines a position inside both matrices: i = r+c             

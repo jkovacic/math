@@ -51,11 +51,6 @@ private:
     static T EPS;
 public:
 
-    // Some constants (their values must be assigned outside the class declaration)
-    // often used by other classes of math.
-    static const T ZERO; // = static_cast<T>(0);
-    static const T ONE;  // = static_cast<T>(1);
-
     // Does the value equal zero? Note that in numerical mathematics
     // (where mostly float or double values are in use), "equals" has a
     // different meaning than in discrete mathematics (int etc.)

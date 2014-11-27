@@ -39,6 +39,11 @@ limitations under the License.
 namespace math
 {
 
+// Some compilers may require advanced declaration
+// of the templated base class:
+template<class T> class PolynomialFittingGenericAb;
+
+
 /**
  * @brief A class implementing a polynomial regression algorithm, satisfying
  *        the least sum of squares criteria.

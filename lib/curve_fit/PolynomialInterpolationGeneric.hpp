@@ -38,6 +38,11 @@ limitations under the License.
 namespace math
 {
 
+// Some compilers may require advanced declaration
+// of the templated base class:
+template<class T> class PolynomialFittingGenericAb;
+
+
 /**
  * @brief A class that finds a polynomial that exactly fits an input series of points.
  * 

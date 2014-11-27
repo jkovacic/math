@@ -44,7 +44,7 @@ limitations under the License.
  * Definitions of the most commonly used numerical constants:
  */
 template <class T>
-const T math::SampleQuantileGeneric<T>::ONE ( math::NumericUtil<T>::ONE );
+const T math::SampleQuantileGeneric<T>::ONE ( static_cast<T>(1) );
 
 template <class T>
 const T math::SampleQuantileGeneric<T>::TWO ( static_cast<T>(2) );
@@ -202,7 +202,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     // N casted to , used often in nonint expressions
     const T NT = static_cast<T>(N);
 
-    if ( p<math::NumericUtil<T>::ZERO || p>ONE )
+    if ( p<static_cast<T>(0) || p>ONE )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }

@@ -75,7 +75,7 @@ T math::IntegGeneric<T>::integ(
     // If both boundaries are the same, the result is equal to 0
     if ( true == math::NumericUtil<T>::isZero(a-b) )
     {
-        return math::NumericUtil<T>::ZERO;
+        return static_cast<T>(0);
     }
 
     /*
@@ -83,7 +83,7 @@ T math::IntegGeneric<T>::integ(
      * greater than 'a'. If this is not the case, swap the boundaries
      * and revert the result's sign.
      */
-    T retVal = math::NumericUtil<T>::ONE;
+    T retVal = static_cast<T>(1);
 
     const T from = std::min(a, b);
     const T to   = std::max(a, b);
@@ -171,7 +171,7 @@ T math::IntegGeneric<T>::integH(
     // Just obtain the (approximate) number of integrating intervals
     // from the size
     const size_t n = static_cast<size_t>(std::floor(std::abs(b-a) / h) +
-       math::NumericUtil<T>::ONE / static_cast<T>(2) ) + 1;
+    		static_cast<T>(1) / static_cast<T>(2) ) + 1;
 
     return integ( f, a, b, n, algorithm );
 }
@@ -221,7 +221,7 @@ T math::IntegGeneric<T>::__rectangle(
         const size_t& N = n;
         const T h = (b-a) / static_cast<T>(N);
 
-        T sum = math::NumericUtil<T>::ZERO;
+        T sum = static_cast<T>(0);
 
         // Coarse grained parallelism
         #pragma omp parallel num_threads(ompIdeal(N)) \
@@ -235,7 +235,7 @@ T math::IntegGeneric<T>::__rectangle(
             const size_t istart = elems_per_thread * thnr;
             const size_t iend = std::min(istart + elems_per_thread, N);
 
-            T tempSum = math::NumericUtil<T>::ZERO;
+            T tempSum = static_cast<T>(0);
             T xi = a + static_cast<T>(istart) * h;
             for (size_t i = istart;
                  i < iend;
@@ -514,7 +514,7 @@ T math::IntegGeneric<T>::__closedNewtonCotes(
         
         // Do not preinitialize sum to hCoef * (f(a) + f(b)) now as it may
         // be reset back to 0 by the reduction clause
-        T sum = math::NumericUtil<T>::ZERO;
+        T sum = static_cast<T>(0);
 
         // Coarse grained parallelism
         #pragma omp parallel num_threads(ompIdeal(N-1)) \
@@ -528,7 +528,7 @@ T math::IntegGeneric<T>::__closedNewtonCotes(
             const size_t istart = elems_per_thread * thnr + 1;
             const size_t iend = std::min(istart + elems_per_thread, N);
 
-            T tempSum = math::NumericUtil<T>::ZERO;
+            T tempSum = static_cast<T>(0);
             T xi = a + static_cast<T>(istart) * h;
             for ( size_t i=istart;
                   i < iend;

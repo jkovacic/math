@@ -28,7 +28,6 @@ limitations under the License.
  */
 
 // Deliberately there is no #include "PolynomialInterpolationGeneric.hpp"
-#include "util/NumericUtil.hpp"
 #include "polynomial/PolynomialGeneric.hpp"
 #include "exception/CurveFittingException.hpp"
 #include "../settings/omp_settings.h"
@@ -149,10 +148,10 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
 
         // term will always be of form (x-xi), hence term(1)
         // is always equal to 1, while term(0) will be set depending on c
-        term.set(1, math::NumericUtil<T>::ONE);
+        term.set(1, static_cast<T>(1));
 
         // initial value of temp: 1 
-        temp.set(0, math::NumericUtil<T>::ONE);
+        temp.set(0, static_cast<T>(1));
         // initial value of sum: a(0,0)
         sum.set(0, a.at(0));
         

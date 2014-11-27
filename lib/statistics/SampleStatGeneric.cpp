@@ -37,7 +37,6 @@ limitations under the License.
 #include "omp/omp_coarse.h"
 
 #include "exception/StatisticsException.hpp"
-#include "util/NumericUtil.hpp"
 
 
 /*
@@ -53,7 +52,7 @@ template <class T>
 T math::SampleStatGeneric<T>::__getShift(const std::vector<T>& x, size_t Nmax)
 {
     T retVal = x.at(0);
-    T absRetVal = ( retVal<math::NumericUtil<T>::ZERO ? -retVal : retVal );
+    T absRetVal = ( retVal<static_cast<T>(0) ? -retVal : retVal );
     const size_t N = std::min<size_t>(x.size(), Nmax);
     size_t cntr = 1;
     typename std::vector<T>::const_iterator it = x.begin() + cntr;
@@ -61,7 +60,7 @@ T math::SampleStatGeneric<T>::__getShift(const std::vector<T>& x, size_t Nmax)
     for ( ; cntr<N; ++it, ++cntr )
     {
         const T el = *it;
-        const T absx = ( el<math::NumericUtil<T>::ZERO ? -el : el );
+        const T absx = ( el<static_cast<T>(0) ? -el : el );
 
         if ( absx > absRetVal )
         {
@@ -172,7 +171,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
 
     if ( 0 == N )
     {
-        return math::NumericUtil<T>::ZERO;
+        return static_cast<T>(0);
     }
 
     /*
@@ -184,7 +183,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
     /*
      * Each thread calculates the sum of its block
      */
-    T sum = math::NumericUtil<T>::ZERO;
+    T sum = static_cast<T>(0);
     #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(x) \
@@ -200,7 +199,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
         const size_t istart = samples_per_thread * thrnr;
 
         // Calculate the sum of the assigned block...
-        T partsum = math::NumericUtil<T>::ZERO;
+        T partsum = static_cast<T>(0);
         typename std::vector<T>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
               cntr<samples_per_thread && it!=x.end(); 
@@ -321,8 +320,8 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
     // Let K be equal to the first element:
     const T K = __getShift(x);
 
-    T sum  = math::NumericUtil<T>::ZERO;
-    T sum2 = math::NumericUtil<T>::ZERO;
+    T sum  = static_cast<T>(0);
+    T sum2 = static_cast<T>(0);
 
     /*
      * Coarse grained parallelism will be applied, i.e. each thread will be
@@ -345,8 +344,8 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
         const size_t istart = samples_per_thread * thrnr;
 
         // Calculate both sums of the assigned block...
-        T partsum  = math::NumericUtil<T>::ZERO;
-        T partsum2 = math::NumericUtil<T>::ZERO;
+        T partsum  = static_cast<T>(0);
+        T partsum2 = static_cast<T>(0);
         typename std::vector<T>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
               cntr<samples_per_thread && it!=x.end(); 
@@ -437,7 +436,7 @@ T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, size_t df_sub) thro
     throw math::StatisticsException(math::StatisticsException::UNSUPPORTED_TYPE);
 
     // will never execute, but some compilers may produce a warning if nothing is returned
-    return math::NumericUtil<T>::ZERO;
+    return static_cast<T>(0);
 }
 
 
@@ -549,9 +548,9 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
     const T K1 = __getShift(x1);
     const T K2 = __getShift(x2);
 
-    T sum  = math::NumericUtil<T>::ZERO;
-    T sum1 = math::NumericUtil<T>::ZERO;
-    T sum2 = math::NumericUtil<T>::ZERO;
+    T sum  = static_cast<T>(0);
+    T sum1 = static_cast<T>(0);
+    T sum2 = static_cast<T>(0);
 
     /*
      * Coarse grained parallelism will be applied, i.e. each thread will be
@@ -574,9 +573,9 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
         const size_t istart = samples_per_thread * thrnr;
 
         // Calculate both sums of the assigned block...
-        T partsum  = math::NumericUtil<T>::ZERO;
-        T partsum1 = math::NumericUtil<T>::ZERO;
-        T partsum2 = math::NumericUtil<T>::ZERO;
+        T partsum  = static_cast<T>(0);
+        T partsum1 = static_cast<T>(0);
+        T partsum2 = static_cast<T>(0);
         typename std::vector<T>::const_iterator it1 = x1.begin() + istart;
         typename std::vector<T>::const_iterator it2 = x2.begin() + istart;
         for ( size_t cntr = 0;

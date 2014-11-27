@@ -177,13 +177,13 @@ math::PolynomialGeneric<T>::PolynomialGeneric(bool ignored, size_t n) throw (mat
     {
         this->coef.clear();
         // Populate the whole vector with "zeros":
-        this->coef.resize(n, math::NumericUtil<T>::ZERO);
+        this->coef.resize(n, static_cast<T>(0));
 
         // Set the highest order coefficients is set to "1" to prevent reductions:
         if ( n>1 )
         {
             // However this is not necessary for 0 - degree polynomials
-            this->coef.at(n-1) = math::NumericUtil<T>::ONE;
+            this->coef.at(n-1) = static_cast<T>(1);
         }
     }
     catch ( const std::bad_alloc& ba )
@@ -353,7 +353,7 @@ T math::PolynomialGeneric<T>::get(size_t pos) const
     // if 'pos' exceeds the polynomial's degree, return zero
     if ( pos >= this->coef.size() )
     {
-        return math::NumericUtil<T>::ZERO;
+        return static_cast<T>(0);
     }
 
     // otherwise it is safe to access the desired coefficient:
@@ -548,7 +548,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::insert(size_t pos, const
             }
 
             // 'c' is not equal to zero, just append the necessary number of zero-coefficients
-            this->coef.insert(this->coef.begin()+N, pos-N+1, math::NumericUtil<T>::ZERO);
+            this->coef.insert(this->coef.begin()+N, pos-N+1, static_cast<T>(0));
             // and assign the highest order coefficient the value of 'c':
             this->coef.at(pos) = c;
         }
@@ -665,7 +665,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::deriv() const throw (math
             Handling of a zero degree polynomial ( p(x) = c )
             Its derivative is 0.
         */
-        retVal.coef.at(0) = NumericUtil<T>::ZERO;
+        retVal.coef.at(0) = static_cast<T>(0);
         return retVal;
     }
 
@@ -808,7 +808,7 @@ void math::PolynomialGeneric<T>::__polyDivision(
 
         if ( NULL != rem )
         {
-            rem->coef.resize(1, math::NumericUtil<T>::ZERO);
+            rem->coef.resize(1, static_cast<T>(0));
         }
 
         return;
@@ -819,7 +819,7 @@ void math::PolynomialGeneric<T>::__polyDivision(
     {
         if ( NULL != q )
         {
-            q->coef.resize(1, math::NumericUtil<T>::ZERO );
+            q->coef.resize(1, static_cast<T>(0) );
         }
 
         if ( NULL != rem )
@@ -843,7 +843,7 @@ void math::PolynomialGeneric<T>::__polyDivision(
     // Preallocate q's vector of coefficients
     if ( NULL != q )
     {
-        q->coef.resize(Nq+1, math::NumericUtil<T>::ZERO);
+        q->coef.resize(Nq+1, static_cast<T>(0));
     }
 
     // This for loop sequentially updates 'p' so it is
@@ -860,7 +860,7 @@ void math::PolynomialGeneric<T>::__polyDivision(
 
         // If the for loop below were extended by one iteration,
         // it would also calculate this p's coefficients to 0
-        p.at(Np1-i) = math::NumericUtil<T>::ZERO;
+        p.at(Np1-i) = static_cast<T>(0);
 
         /*
          * The for loop is actually equivalent to multiplication
@@ -925,7 +925,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator+=(const math::P
         // insert the appropriate number of coefficients and set them to 0:
         if ( nthis<npoly )
         {
-            this->coef.insert(this->coef.begin()+nthis, npoly-nthis, math::NumericUtil<T>::ZERO);
+            this->coef.insert(this->coef.begin()+nthis, npoly-nthis, static_cast<T>(0));
         }
 
         // ... and perform addition of same degree terms' coefficients
@@ -982,7 +982,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator-=(const math::P
         // If 'poly' is of higher degree, insert appropriate number of coefficients and set them to 0:
         if ( nthis<npoly )
         {
-            this->coef.insert(this->coef.begin()+nthis, npoly-nthis, math::NumericUtil<T>::ZERO);
+            this->coef.insert(this->coef.begin()+nthis, npoly-nthis, static_cast<T>(0));
         }
 
         // ... and perform addition of same degree terms' coefficients
@@ -1184,7 +1184,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const T& sc) 
      * This is equivalent to multiplication by a reciprocal value
      * of 'sc' which is already implemented by operator*.
      */
-    *this *= math::NumericUtil<T>::ONE / sc;
+    *this *= static_cast<T>(1) / sc;
 
     return *this;
 }
@@ -1217,7 +1217,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator%=(const T& sc) 
      * a zero polynomial.
      */
     this->coef.clear();
-    this->coef.resize(1, math::NumericUtil<T>::ZERO);
+    this->coef.resize(1, static_cast<T>(0));
 
     return *this;
 }
@@ -1330,7 +1330,7 @@ math::PolynomialGeneric<T> math::operator+(const math::PolynomialGeneric<T>& p1,
         math::PolynomialGeneric<T> retVal(true, nmax);
 
         // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
-        retVal.coef.at(nmax-1) = NumericUtil<T>::ZERO;
+        retVal.coef.at(nmax-1) = static_cast<T>(0);
 
         /*
             Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
@@ -1416,7 +1416,7 @@ math::PolynomialGeneric<T> math::operator-(const math::PolynomialGeneric<T>& p1,
         math::PolynomialGeneric<T> retVal(true, nmax);
 
         // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
-        retVal.coef.at(nmax-1) = math::NumericUtil<T>::ZERO;
+        retVal.coef.at(nmax-1) = static_cast<T>(0);
 
         /*
             Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
@@ -1529,7 +1529,7 @@ math::PolynomialGeneric<T> math::operator*(const math::PolynomialGeneric<T>& p1,
         for ( size_t i=0; i<N; ++i )
         {
             // ... is a sum of products as specified above
-            T temp = math::NumericUtil<T>::ZERO;
+            T temp = static_cast<T>(0);
             for ( size_t j=0; j<N; ++j )
             {
                 // if any index would point out of respective polynomial's range,
@@ -1709,7 +1709,7 @@ math::PolynomialGeneric<T> math::operator/(const math::PolynomialGeneric<T>& pol
      * This is equivalent to multiplication by a reciprocal value
      * of 'sc' which is already implemented by operator*.
      */
-    return poly * (math::NumericUtil<T>::ONE / sc);
+    return poly * (static_cast<T>(1) / sc);
 }
 
 
@@ -1734,7 +1734,7 @@ math::PolynomialGeneric<T> math::operator%(const math::PolynomialGeneric<T>& pol
 
     // There is no remainder when a polynomial is divided by a scalar,
     // return a zero polynomial.
-    return math::PolynomialGeneric<T>(math::NumericUtil<T>::ZERO);
+    return math::PolynomialGeneric<T>(static_cast<T>(0));
     (void) poly;
 }
 
@@ -1820,7 +1820,7 @@ math::PolynomialGeneric<T> math::operator/(const T& sc, const math::PolynomialGe
          * If poly's degree is 1 or higher,
          * return a zero polynomial.
          */
-        retVal = math::PolynomialGeneric<T>( math::NumericUtil<T>::ZERO );
+        retVal = math::PolynomialGeneric<T>( static_cast<T>(0) );
     }
     else
     {
@@ -1871,7 +1871,7 @@ math::PolynomialGeneric<T> math::operator%(const T& sc, const math::PolynomialGe
          * Since the result's degree must always be lower than
          * the divisor's, a zero polynomial is returned.
          */
-        retVal = math::PolynomialGeneric<T>( math::NumericUtil<T>::ZERO );
+        retVal = math::PolynomialGeneric<T>( static_cast<T>(0) );
     }
 
     return retVal;
