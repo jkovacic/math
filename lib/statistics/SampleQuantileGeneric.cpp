@@ -40,34 +40,6 @@ limitations under the License.
 #include "util/NumericUtil.hpp"
 
 
-/*
- * Definitions of the most commonly used numerical constants:
- */
-template <class T>
-const T math::SampleQuantileGeneric<T>::ONE ( static_cast<T>(1) );
-
-template <class T>
-const T math::SampleQuantileGeneric<T>::TWO ( static_cast<T>(2) );
-
-template <class T>
-const T math::SampleQuantileGeneric<T>::THREE ( static_cast<T>(3) );
-
-template <class T>
-const T math::SampleQuantileGeneric<T>::FOUR ( static_cast<T>(4) );
-
-template <class T>
-const T math::SampleQuantileGeneric<T>::FIVE ( static_cast<T>(5) );
-
-template <class T>
-const T math::SampleQuantileGeneric<T>::EIGHT ( static_cast<T>(8) );
-
-template <class T>
-const T math::SampleQuantileGeneric<T>::HALF ( ONE / static_cast<T>(2) );
-
-template <class T>
-const T math::SampleQuantileGeneric<T>::QUARTER ( ONE / static_cast<T>(4) );
-
-
 /**
  * Constructor.
  * Creates its own copy of the sample vector.
@@ -202,11 +174,16 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     // N casted to , used often in nonint expressions
     const T NT = static_cast<T>(N);
 
-    if ( p<static_cast<T>(0) || p>ONE )
+    if ( p<static_cast<T>(0) || p>static_cast<T>(1) )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
 
+    // Frequently used numerical constants:
+    const T ONE = static_cast<T>(1);
+    const T TWO = static_cast<T>(2);
+    const T HALF = ONE / TWO;
+    const T QUARTER = ONE / static_cast<T>(4);
 
     /*
      * Implementation of all methods described in:
@@ -303,7 +280,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::SCIPY_0_1 :
     {
         // Linear interpolation of the empirical distribution function
-        if ( p < ONE/NT )
+        if ( p < static_cast<T>(1)/NT )
         {
             retVal = x.at(0);
         }
@@ -383,10 +360,10 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::R8 :
     case math::EQntlType::SCIPY_13_13 :
     {
-        const T third = ONE / THREE;
+        const T third = ONE / static_cast<T>(3);
 
         // Linear interpolation of the approximate medians for order statistics
-        if ( p < (TWO*third) / (NT+third) )
+        if ( p < (TWO * third) / (NT+third) )
         {
             retVal = x.at(0);
         }
@@ -405,8 +382,8 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::R9 :
     case math::EQntlType::SCIPY_38_38 :
     {
-        const T F_3_8 = THREE / EIGHT;
-        const T F_5_8 = FIVE / EIGHT;
+        const T F_3_8 = static_cast<T>(3) / static_cast<T>(8);
+        const T F_5_8 = static_cast<T>(5) / static_cast<T>(8);
 
         // The resulting quantile estimates are approximately unbiased for the
         // expected order statistics if x is normally distributed
@@ -430,11 +407,11 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     {
         // If h were rounded, this would give the order statistic with the least
         // expected square deviation relative to p
-        if ( p < (THREE/TWO) / (NT+TWO) )
+        if ( p < (static_cast<T>(3) / TWO) / (NT + TWO) )
         {
             retVal = x.at(0);
         }
-        else if ( p >= (NT+HALF)/(NT+TWO) )
+        else if ( p >= (NT + HALF) / (NT + TWO) )
         {
             retVal = x.at(N-1);
         }
@@ -483,7 +460,7 @@ T math::SampleQuantileGeneric<T>::median() const
     {
         // even number of elements
     	size_t h = N / 2;
-        retVal = (x.at(h-1) + x.at(h)) * HALF;
+        retVal = (x.at(h-1) + x.at(h)) / static_cast<T>(2);
     }
     else
     {

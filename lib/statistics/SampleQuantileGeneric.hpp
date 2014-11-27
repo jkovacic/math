@@ -80,17 +80,6 @@ struct EQntlType
 template <class T>
 class SampleQuantileGeneric
 {
-private:
-    // Most common numerical constants, used internally within the class:
-    // The constants must be assigned outside the class declaration.
-    static const T ONE;
-    static const T TWO;
-    static const T THREE;
-    static const T FOUR;
-    static const T FIVE;
-    static const T EIGHT;
-    static const T HALF;
-    static const T QUARTER;
 
 private:
     std::vector<T> m_v;
@@ -102,15 +91,38 @@ public:
 
     // Methods to obtain quantiles of the sample:
     size_t sampleSize() const;
-    T quantile(size_t num, size_t den, EQntlType::type method=EQntlType::R7) const throw(StatisticsException);
-    T qntl(const T& p, EQntlType::type method=EQntlType::R7) const throw(StatisticsException);
+
+    T quantile(
+           size_t num,
+           size_t den, EQntlType::type method = EQntlType::R7 )
+         const throw(StatisticsException);
+
+    T qntl(
+           const T& p,
+           EQntlType::type method = EQntlType::R7 )
+         const throw(StatisticsException);
+
     T median() const;
-    T quartile(size_t q, EQntlType::type method=EQntlType::R7) const throw(StatisticsException);
-    T iqr(EQntlType::type method=EQntlType::R7) const;
+
+    T quartile(
+           size_t q,
+           EQntlType::type method = EQntlType::R7 )
+         const throw(StatisticsException);
+
+    T iqr(EQntlType::type method = EQntlType::R7) const;
+
     T min() const;
+
     T max() const;
-    bool isOutlier(const T& val, const T& iqrs=THREE*HALF, EQntlType::type=EQntlType::R7) const;
-    void outliers(std::set<T>& outl, const T& iqrs=THREE*HALF, EQntlType::type=EQntlType::R7) const throw(StatisticsException);
+
+    bool isOutlier(
+           const T& val,
+           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), EQntlType::type = EQntlType::R7)
+         const;
+
+    void outliers(
+           std::set<T>& outl,
+           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), EQntlType::type = EQntlType::R7) const throw(StatisticsException );
 
     // Destructor
     virtual ~SampleQuantileGeneric();
