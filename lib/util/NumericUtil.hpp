@@ -38,7 +38,7 @@ namespace math
 
 /**
  * @brief A class with some common functionality, e.g. determination whether
- *        a numeric value is close enough to zero, efficient exponentiation, etc.
+ *        a numeric value is close enough to zero, etc.
  * 
  * Note that all functions are static so instantiation of this class is not necessary.
  */
@@ -59,9 +59,7 @@ public:
     
     // num's sign:
     static short int sign(const T& num);
-    
-    // Efficient calculation of base^n:
-    static T power(const T& base, size_t n);
+
 };
 
 // Declaration of specialized methods inside the name space declaration

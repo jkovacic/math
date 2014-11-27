@@ -26,7 +26,6 @@ limitations under the License.
 #include <iostream>
 #include <vector>
 
-#include "NumericUtil.h"
 #include "PolynomialGeneric.h"
 #include "PolynomialException.h"
 
