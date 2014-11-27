@@ -45,10 +45,7 @@ namespace math
 template<class T>
 class NumericUtil
 {
-private:
-    // Equivalent to eps in MATLAB (and its clones)
-    // Its value depends on type T
-    static T EPS;
+
 public:
 
     // Does the value equal zero? Note that in numerical mathematics
@@ -57,9 +54,8 @@ public:
     static bool isZero(const T& value);
     static bool isZero(const T& value, const T& eps);
 
-    // Get or set the internal value of 'eps'
+    // Get the system specific epsilon for the specified type
     static T getEPS();
-    static void setEPS(const T& eps);
     
     // num's sign:
     static short int sign(const T& num);
@@ -70,6 +66,10 @@ public:
 
 // Declaration of specialized methods inside the name space declaration
 // is essential if implemented elsewhere:
+template<> float NumericUtil<float>::getEPS();
+template<> double NumericUtil<double>::getEPS();
+template<> long double NumericUtil<long double>::getEPS();
+
 template<> bool NumericUtil<float>::isZero(const float& value, const float& eps);
 template<> bool NumericUtil<double>::isZero(const double& value, const double& eps);
 template<> bool NumericUtil<long double>::isZero(const long double& value, const long double& eps);

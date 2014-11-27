@@ -34,39 +34,51 @@ limitations under the License.
 #include <limits>
 
 
-// Note that the optimal EPS depends on application's requirements
 
-// For float, double and long double, a suggested value for EPS can be
-// obtained by std::numeric_limits<type>::epsilon().
-#define _MATH_NUMERICUTIL_SPECIALIZED_EPS(FDL) \
-template<> \
-FDL math::NumericUtil<FDL>::EPS = std::numeric_limits<FDL>::epsilon();
-// end of #define
-
-// definition of EPS for float:
-_MATH_NUMERICUTIL_SPECIALIZED_EPS(float)
-
-// double is a more accurate type:
-_MATH_NUMERICUTIL_SPECIALIZED_EPS(double)
-
-// ... and long double is even more accurate:
-_MATH_NUMERICUTIL_SPECIALIZED_EPS(long double)
-
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_EPS not needed anymore, #undef it:
-#undef _MATH_NUMERICUTIL_SPECIALIZED_EPS
-
-/*
- * For int and other types, EPS doesn't make sense, so set it to 0
+/**
+ * @return value of 'eps' for the desired type
  */
 template<class T>
-T math::NumericUtil<T>::EPS = static_cast<T>(0);
+T math::NumericUtil<T>::getEPS()
+{
+    // for int and most other types, eps does not
+	// make any sense, in this case just return 0.
+
+    return static_cast<T>(0);
+}
+
+
+/*
+ * Specialization of getEPS() for float, double and long double.
+ * In this case just return the value obtained from
+ * std::numeric_limits<type>::epsilon().
+ *
+ * All specializations are very similar and only differ in types of the
+ * returned value. For easier maintainability, the specialization will be
+ * implemented only once using a parameterized #define
+ */
+#define _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(FDL) \
+template<> \
+FDL math::NumericUtil<FDL>::getEPS() \
+{ \
+    return std::numeric_limits<FDL>::epsilon(); \
+}
+// end of #define
+
+_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(float)
+_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(double)
+_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double)
+
+// #definition of _MATH_NUMERICUTIL_SPECIALIZED_GETEPS not needed anymore, #undef it:
+#undef _MATH_NUMERICUTIL_SPECIALIZED_GETEPS
 
 
 /**
  * Does the given value equal (or is close enough to) zero?
  * Implementation depends on the type T.
  * For floating point types (float, double, long double), it checks
- * whether its absolute value is less than the global setting EPS.
+ * whether its absolute value is less than the system epsilon
+ * for the type T.
  *
  * @param value - value to be evaluated
  *
@@ -75,7 +87,7 @@ T math::NumericUtil<T>::EPS = static_cast<T>(0);
 template <class T>
 bool math::NumericUtil<T>::isZero(const T& value)
 {
-    return math::NumericUtil<T>::isZero(value, EPS);
+    return math::NumericUtil<T>::isZero(value, getEPS() );
 }
 
 
@@ -83,8 +95,7 @@ bool math::NumericUtil<T>::isZero(const T& value)
  * Does the given value equal (or is close enough to) zero?
  * Implementation depends on the type T.
  * For floating point types (float, double, long double), it checks
- * whether its absolute value is less than a small value 'eps'. It can be
- * passed as an optional parameter or a system dependent constant EPS is used. 
+ * whether its absolute value is less than a small value 'eps'.
  *
  * @param value - value to be evaluated
  * @param eps - a "threshold" to compare 'value' to, where applicable
@@ -175,29 +186,6 @@ bool math::NumericUtil<math::Rational>::isZero(const math::Rational& value, cons
     (void) eps;
 }
 
-/**
- * @return value of 'eps' for the desired type
- */
-template<class T>
-T math::NumericUtil<T>::getEPS()
-{
-    return EPS;
-}
-
-/**
- * Sets the new value of 'eps' for the desired type if the default one does
- * not meet application's requirements.
- * 
- * @note There is no check of input so make sure a sensible value
- *       (typically a very small positive number) is entered.
- * 
- * @param eps - new value of EPS
- */
-template<class T>
-void math::NumericUtil<T>::setEPS(const T& eps)
-{
-    EPS = eps;
-}
 
 /**
  * Sign of the number
