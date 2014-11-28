@@ -161,9 +161,11 @@ Add 0.5 to inv(2, 0):
 0.166667	0.666667	-0.333333	
 
 3x3 unit matrix:
-1       0       0
-0       1       0
-0       0       1
+1	0	0	
+0	1	0	
+0	0	1	
+
+
 R A T I O N A L   M A T R I X   T E S T
 
 a:
