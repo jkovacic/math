@@ -60,6 +60,10 @@ namespace NumericUtil
     template <class T>
     short int sign(const T& num);
 
+    // a unit value for the type T, typically 1
+    template <class T>
+    T unit(const T& t);
+
 }
 
 

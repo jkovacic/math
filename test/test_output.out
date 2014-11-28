@@ -33,6 +33,7 @@ p-4: (-3+2i+3j+4k)	1-p: (0-2i-3j-4k)
 p+2: (3+2i+3j+4k)	p+2-2: (1+2i+3j+4k)
 -0.5f*(q+i*q*i+j*q*j+k*q*k)=(1+0.5i-1.2j+2.3k)  q conj: (1+0.5i-1.2j+2.3k)
 qrec: (0.125313+0.0626566i-0.150376j+0.288221k)	q*qrec=(1+0i+0j+0k)	qrec*q=(1+0i+0j+0k)
+Unit quaternion: (1+0i+0j+0k)
 
 R A T I O N A L   T E S T
 
@@ -55,6 +56,7 @@ c = 0/1 isZero: 1 isPositive: 0 isNegative: 0
 a = -5/2  b = 5/6  c = -5/2
 a == c   a != b
 a == c   a != b
+Unit fraction: 1/1
 Successfully detected attempt of a zero denominator
 zero = 0/1
 zero is uninvertible
@@ -158,7 +160,10 @@ Add 0.5 to inv(2, 0):
 1.22222	-1.44444	0.555556	
 0.166667	0.666667	-0.333333	
 
-
+3x3 unit matrix:
+1       0       0
+0       1       0
+0       0       1
 R A T I O N A L   M A T R I X   T E S T
 
 a:
@@ -241,6 +246,7 @@ p = -5 +3*x +0*x^2 -6*x^3 +4*x^4
 q = -1 +2*x
 p / q = 1 -1*x -2*x^2 +2*x^3
 p mod q = -4
+Unit polynomial: 1
 
 C U R V E   F I T T I N G   T E S T
 

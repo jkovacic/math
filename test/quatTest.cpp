@@ -77,6 +77,7 @@ void quaternionTest()
         cout << "-0.5f*(q+i*q*i+j*q*j+k*q*k)=" << qc << "  q conj: " << qc << endl;
         FQuaternion qrec = q.reciprocal();
         cout << "qrec: " << qrec << "\tq*qrec=" << q*qrec << "\tqrec*q=" << qrec*q << endl;
+        cout << "Unit quaternion: " << NumericUtil::unit(zeroq) << endl;
     } // try
     catch ( const QuaternionException& qex )
     {

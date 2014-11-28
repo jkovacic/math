@@ -1895,3 +1895,30 @@ std::ostream& math::operator<<(std::ostream& output, const math::PolynomialGener
     // ... and return a reference of the stream
     return output;
 }
+
+
+/*
+ * Specialization of other classes' templated functions for
+ * the class PolynomialGeneric.
+ *
+ * Note: the specialized functions must be implemented within
+ *       classes' corresponding namespaces.
+ */
+namespace math
+{
+
+namespace NumericUtil
+{
+    template <class T>
+    math::PolynomialGeneric<T> unit(const math::PolynomialGeneric<T>& t)
+    {
+        (void) t;
+        math::PolynomialGeneric<T> retVal(true, 1);
+        retVal.set(0, static_cast<T>(1));
+        return retVal;
+        //return math::PolynomialGeneric<T>(static_cast<T>(1));
+    }
+    
+}  // namespace NumericUtil
+
+} // namespace math

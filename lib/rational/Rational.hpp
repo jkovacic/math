@@ -172,6 +172,9 @@ namespace NumericUtil
 {
 
     template <>
+    Rational unit(const Rational& t);
+
+    template <>
     bool isZero(const Rational& value, const Rational& eps);
 
 }  // namespace NumericUtil

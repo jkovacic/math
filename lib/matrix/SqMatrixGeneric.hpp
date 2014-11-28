@@ -94,6 +94,19 @@ typedef SqMatrixGeneric<float>       FSqMatrix;
 typedef SqMatrixGeneric<double>      SqMatrix;
 typedef SqMatrixGeneric<long double> LDSqMatrix;
 
+
+/*
+ * Declaration of specialized functions of other classes for SqMatrixGeneric.
+ * The specialized functions are implemented in SqMatrixGeneric.cpp.
+ * Note: function from other classes must be declared in their corresponding namespaces.
+ */
+namespace NumericUtil
+{
+    template <class T>
+    SqMatrixGeneric<T> unit(const SqMatrixGeneric<T>& t);
+    
+}  // namespace NumericUtil
+
 // Definition could be included into the namespace declaraion, but it
 // would cause conflicts with some extra included stdlib header files.
 } // namespace math

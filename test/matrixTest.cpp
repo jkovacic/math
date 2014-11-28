@@ -174,6 +174,11 @@ void matrixTest()
         inv.at(2, 0) += 0.5f;
         inv.display();
         cout << endl;
+
+        cout << "3x3 unit matrix:" << endl;
+        a1 = NumericUtil::unit(a1);
+        a1.display();
+        cout << endl;
     }
     catch ( const MatrixException& ex )
     {

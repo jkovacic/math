@@ -212,6 +212,19 @@ typedef PolynomialGeneric<float>       FPolynomial;
 typedef PolynomialGeneric<double>      Polynomial;
 typedef PolynomialGeneric<long double> LDPolynomial;
 
+
+/*
+ * Declaration of specialized functions of other classes for PolynomialGeneric.
+ * The specialized functions are implemented in PolynomialGeneric.cpp.
+ * Note: function from other classes must be declared in their corresponding namespaces.
+ */
+namespace NumericUtil
+{
+    template <class T>
+    PolynomialGeneric<T> unit(const PolynomialGeneric<T>& t);
+    
+}  // namespace NumericUtil
+
 }  // namespace math
 
 

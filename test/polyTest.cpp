@@ -138,6 +138,7 @@ void polynomialTest()
         ptemp %= q;
         // Expected: "-4"
         cout << "p mod q = " << ptemp << endl;
+        cout << "Unit polynomial: " << NumericUtil::unit(p) << endl;
     }
     catch ( const PolynomialException& pex )
     {

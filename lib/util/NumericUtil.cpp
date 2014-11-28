@@ -33,7 +33,7 @@ limitations under the License.
 /**
  * @return value of 'eps' for the desired type
  */
-template<class T>
+template <class T>
 T math::NumericUtil::getEPS()
 {
     // for int and most other types, eps does not
@@ -106,7 +106,7 @@ bool math::NumericUtil::isZero(const T& value)
  *
  * @return true or false
  */
-template<class T>
+template <class T>
 bool math::NumericUtil::isZero(const T& value, const T& eps)
 {
     /*
@@ -165,7 +165,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(long double)
  * the norm of 'eps'.
  */
 #define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(FDL) \
-template<> \
+template <> \
 bool isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps) \
 { \
     return ( std::norm(value)<=std::norm(eps) ? true : false ); \
@@ -195,7 +195,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(long double)
  * 
  * @return -1 if 'num' is negative, 0 if (close to) 0, 1 if positive 
  */
-template<class T>
+template <class T>
 short int math::NumericUtil::sign(const T& num)
 {
     // handle 0 first:
@@ -205,4 +205,20 @@ short int math::NumericUtil::sign(const T& num)
     }
 
     return ( num < static_cast<T>(0) ? -1 : 1 );
+}
+
+
+/**
+ * Multiplication unit for the type T, typically 1 casted to T.
+ * 
+ * @param t - an arbitrary instance of T, ignored by the generic implementation,
+ *            at specializations it might be useful to determine unit's dimensions etc.
+ *
+ * @return an instance of T acting as a multiplication unit
+ */
+template <class T>
+T math::NumericUtil::unit(const T& t)
+{
+    (void) t;
+    return T(static_cast<T>(1));
 }
