@@ -68,9 +68,14 @@ M A T R I X   T E S T
 f:
 1	0.5	4.5	
 0	1	0.4	
+
 f multiplied by 3
 3	1.5	13.5	
 0	3	1.2	
+
+f conjugated:
+1	0.5	4.5	
+0	1	0.4	
 
 f multiplied by 0.5
 0.5	0.25	2.25	
@@ -164,6 +169,13 @@ Add 0.5 to inv(2, 0):
 1	0	0	
 0	1	0	
 0	0	1	
+
+c1:
+(1,1)	(1,-2)	
+(2,-3)	(2,4)	
+c1 conjugated:
+(1,-1)	(1,2)	
+(2,3)	(2,-4)	
 
 
 R A T I O N A L   M A T R I X   T E S T

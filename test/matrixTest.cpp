@@ -24,6 +24,7 @@ limitations under the License.
 
 
 #include <iostream>
+#include <complex>
 
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
@@ -49,11 +50,18 @@ void matrixTest()
         /*f(1,0)=0*/    f.set(1, 1, 1.0f).set(1, 2, 0.4f);
         cout << "f:" << endl;
         f.display();
+        cout << endl;
 
         // Multiplication by a scalar
         FMatrix res(1,1);
         res = 3.0f * f;
         cout << "f multiplied by 3" << endl;
+        res.display();
+        cout << endl;
+
+        // Conjugation of a real numbered matrix:
+        cout << "f conjugated:" << endl;
+        res = conj(f);
         res.display();
         cout << endl;
 
@@ -175,10 +183,22 @@ void matrixTest()
         inv.display();
         cout << endl;
 
+        // Test of specialization of unit()
         cout << "3x3 unit matrix:" << endl;
         a1 = NumericUtil::unit(a1);
         a1.display();
         cout << endl;
+
+       // Test of complex conjugation:
+       MatrixGeneric<complex<float> > c1(2, 2);
+       c1.set(0, 0, complex<float>(1.0f, 1.0f)).set(0, 1, complex<float>(1.0f, -2.0f));
+       c1.set(1, 0, complex<float>(2.0f, -3.0f)).set(1, 1, complex<float>(2.0f, 4.0f));
+       cout << "c1:" << endl;
+       c1.display();
+       MatrixGeneric<complex<float> > c2 = conj(c1);
+       cout << "c1 conjugated:" << endl;
+       c2.display();
+       cout << endl;
     }
     catch ( const MatrixException& ex )
     {

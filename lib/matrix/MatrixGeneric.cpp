@@ -31,6 +31,7 @@ limitations under the License.
 #include <vector>
 #include <cstddef>
 #include <ostream>
+#include <complex>
 #include <algorithm>
 
 // Deliberately there is no #include "MatrixGeneric.hpp" !
@@ -887,4 +888,66 @@ math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>
 {
     MatrixGeneric<T> retVal = m * sc;
     return retVal;
+}
+
+
+/**
+ * Conjugation of all matrix elements.
+ * If T is a complex type, elements' imaginary parts are reversed.
+ * For all other types, the matrix is just copied.
+ *
+ * @param m - matrix to conjugate
+ *
+ * @return m conjugated
+ *
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::conj(const math::MatrixGeneric<T>& m) throw(math::MatrixException)
+{
+    return MatrixGeneric<T>(m);
+}
+
+
+/*
+ * Specialization of conj for complex numbers.
+ * It actually conjugates each element.
+ *
+ * @param m - matrix to conjugate
+ *
+ * @return m conjugated
+ *
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<std::complex<T> > math::conj(const math::MatrixGeneric<std::complex<T> >& m) throw(math::MatrixException)
+{
+    /*
+     * Specialization into another templated class implemented
+     * as suggested here:
+     * http://www.cplusplus.com/forum/general/68298/
+     */
+    math::MatrixGeneric<std::complex<T> > retVal(m);
+    const size_t N = retVal.nrRows() * retVal.nrColumns();
+
+    //Coarse grained parallelization
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(retVal)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        typename std::vector<std::complex<T> >::iterator it = retVal.elems.begin() + istart;
+        for ( size_t i=istart;
+              i<iend && it!=retVal.elems.end(); ++it, ++i )
+        {
+            *it = std::conj(*it);
+        }
+    }  // omp parallel
+
+	return retVal;
 }

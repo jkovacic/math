@@ -31,6 +31,7 @@ limitations under the License.
 #include <vector>
 #include <ostream>
 #include <cstddef>
+#include <complex>
 
 #include "exception/MatrixException.hpp"
 
@@ -63,6 +64,13 @@ MatrixGeneric<T> operator*(const MatrixGeneric<T>& m, const T& sc) throw(MatrixE
 
 template<class T>
 MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
+
+template<class T>
+MatrixGeneric<T> conj(const MatrixGeneric<T>& m) throw (MatrixException);
+
+template<class T>
+MatrixGeneric<std::complex<T> > conj(const MatrixGeneric<std::complex<T> >& m) throw (MatrixException);
+
 
 /**
  * @brief A class representing general matrices and their basic operators.
@@ -153,6 +161,8 @@ public:
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
+    friend MatrixGeneric<T> (math::conj <>) (const MatrixGeneric<T>& m) throw(MatrixException);
+    friend MatrixGeneric<std::complex<T> > (math::conj <>) (const MatrixGeneric<std::complex<T> >& m) throw(MatrixException);
 };
 
 // Matrices with elements of types float, double and long double
