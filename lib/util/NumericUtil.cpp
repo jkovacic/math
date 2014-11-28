@@ -23,9 +23,7 @@ limitations under the License.
  * a collection of some useful numerical utilities.
  */
 
-// Deliberately there is no #include "NumericUtil.hpp"
-#include "rational/Rational.hpp"
-
+// no #include "NumericUtil.hpp" !!!
 #include <cstddef>
 #include <complex>
 #include <limits>
@@ -185,18 +183,6 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(long double)
 
 // #definition of _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX not needed anymore, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX
-
-/*
- * Implementation for Rational
- */
-template <>
-bool isZero(const math::Rational& value, const math::Rational& eps)
-{
-    // Rational already contains its own isZero()...
-    return value.isZero();
-
-    (void) eps;
-}
 
 }  // namepsace NumericUtil
 }  // namespace math

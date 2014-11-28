@@ -25,6 +25,7 @@ limitations under the License.
 
 #include "rational/Rational.hpp"
 #include "int_util/IntFactorization.hpp"
+#include "util/NumericUtil.hpp"
 #include "exception/RationalException.hpp"
 
 #include <climits>
@@ -1154,3 +1155,32 @@ bool math::operator<=(const math::Rational& f1, const math::Rational& f2)
 {
     return ( 0 >= math::Rational::__sign(f1, f2) );
 }  // operator<=
+
+
+
+/*
+ * Specialization of other classes' templated functions for
+ * the class Rational.
+ *
+ * Note: the specialized functions must be implemented within
+ *       classes' corresponding namespaces.
+ */
+
+namespace math
+{
+
+namespace NumericUtil
+{
+
+template <>
+bool isZero(const math::Rational& value, const math::Rational& eps)
+{
+    // Rational already contains its own isZero()...
+    return value.isZero();
+
+    (void) eps;
+}
+
+}  // namespace NumericUtil
+
+}  // namespace math
