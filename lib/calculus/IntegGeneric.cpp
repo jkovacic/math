@@ -73,7 +73,7 @@ T math::IntegGeneric<T>::integ(
     }
 
     // If both boundaries are the same, the result is equal to 0
-    if ( true == math::NumericUtil<T>::isZero(a-b) )
+    if ( true == math::NumericUtil::isZero<T>(a-b) )
     {
         return static_cast<T>(0);
     }
@@ -163,7 +163,7 @@ T math::IntegGeneric<T>::integH(
         math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
-    if ( h < math::NumericUtil<T>::getEPS() )
+    if ( h < math::NumericUtil::getEPS<T>() )
     {
         throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }

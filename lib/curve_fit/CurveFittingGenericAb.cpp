@@ -297,7 +297,7 @@ bool math::CurveFittingGenericAb<T>::_duplicatePoints() const
         }
 
         // abscissas are equal if their difference is zero (or a very small value)
-        if ( true==math::NumericUtil<T>::isZero( it->p_x - next->p_x ) )
+        if ( true==math::NumericUtil::isZero<T>( it->p_x - next->p_x ) )
         {
             // no need to search further when one duplicate abscissa is found
             retVal = true;

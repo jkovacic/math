@@ -205,7 +205,7 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
         for ( size_t i=0; i<N; ++i )
         {
             // first check if the diagonal element equals 0
-            if ( true == math::NumericUtil<T>::isZero(temp.at(i, i)) )
+            if ( true == math::NumericUtil::isZero<T>(temp.at(i, i)) )
             {
                 size_t r;
 
@@ -218,7 +218,7 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
                         continue;  // for r
                     }
 
-                    if ( false == math::NumericUtil<T>::isZero(temp.at(r, i)) )
+                    if ( false == math::NumericUtil::isZero<T>(temp.at(r, i)) )
                     {
                         // found, no need to search further
                         break;  // out of for r
@@ -256,7 +256,7 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
             for ( size_t r=i+1; r<N; r++ )
             {
                 // Nothing to do if temp(r,i) is already 0.
-                if ( false == math::NumericUtil<T>::isZero(temp.at(r, i)) )
+                if ( false == math::NumericUtil::isZero<T>(temp.at(r, i)) )
                 {
                     // Subtract a multiple of the i^th row.
                     const T el = temp.get(r, i) / temp.get(i, i);
@@ -318,7 +318,7 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
             for ( size_t r=0; r<c; ++r )
             {
                 // Nothing to do if temp(r,c) already equals 0
-                if ( false == math::NumericUtil<T>::isZero(temp.at(r, c)) )
+                if ( false == math::NumericUtil::isZero<T>(temp.at(r, c)) )
                 {
                 	// To set temp(r,c) to 0 it is a good idea to add the c.th row to it.
                     // temp(c,i); i<c are already 0 (i.e. will not affect anything left of temp(i,c)

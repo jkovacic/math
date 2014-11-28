@@ -239,7 +239,7 @@ void math::PolynomialGeneric<T>::__reduce()
      * excluding the first non-zero coefficient. The first coefficient (coef[0])
      * must never be deleted even if it also equals zero.
      */
-    for ( f=N; f>0 && true==math::NumericUtil<T>::isZero(coef.at(f)); --f );
+    for ( f=N; f>0 && true==math::NumericUtil::isZero<T>(coef.at(f)); --f );
     
     if ( f<N )
     {
@@ -480,7 +480,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::set(size_t pos, const T&
     */
     if ( pos >= this->coef.size() )
     {
-        if ( false==math::NumericUtil<T>::isZero(c) )
+        if ( false==math::NumericUtil::isZero<T>(c) )
         {
             // check that pos does not exceed max. allowed vector's size
             if ( pos > this->coef.max_size() )
@@ -541,7 +541,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::insert(size_t pos, const
                 However, if 'c' equals zero, reduce would revert the polynomial
                 into its original state.
             */
-            if ( true==math::NumericUtil<T>::isZero(c) )
+            if ( true==math::NumericUtil::isZero<T>(c) )
             {
                 // no need to insert a zero as the top coefficient as reduce() would remove it
                 return *this;
@@ -799,7 +799,7 @@ void math::PolynomialGeneric<T>::__polyDivision(
     const size_t Np2 = p2.coef.size() - 1;
 
     // Use specialized operators of 'p2' is a scalar
-    if ( Np2==0 && false==math::NumericUtil<T>::isZero(p2.coef.at(0)) )
+    if ( Np2==0 && false==math::NumericUtil::isZero<T>(p2.coef.at(0)) )
     {
         if ( NULL != q )
         {
@@ -1174,7 +1174,7 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const T& sc) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == math::NumericUtil<T>::isZero(sc) )
+    if ( true == math::NumericUtil::isZero<T>(sc) )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
@@ -1206,7 +1206,7 @@ template<class T>
 math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator%=(const T& sc) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == math::NumericUtil<T>::isZero(sc) )
+    if ( true == math::NumericUtil::isZero<T>(sc) )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
@@ -1699,7 +1699,7 @@ template<class T>
 math::PolynomialGeneric<T> math::operator/(const math::PolynomialGeneric<T>& poly, const T& sc) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == math::NumericUtil<T>::isZero(sc) )
+    if ( true == math::NumericUtil::isZero<T>(sc) )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
@@ -1727,7 +1727,7 @@ template<class T>
 math::PolynomialGeneric<T> math::operator%(const math::PolynomialGeneric<T>& poly, const T& sc) throw (math::PolynomialException)
 {
     // Division by zero is not permitted
-    if ( true == math::NumericUtil<T>::isZero(sc) )
+    if ( true == math::NumericUtil::isZero<T>(sc) )
     {
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }

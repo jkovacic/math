@@ -77,8 +77,8 @@ T math::RootFindGeneric<T>::bisection(
 
     try
     {
-        const T EPSX = std::max(epsx, math::NumericUtil<T>::getEPS() );
-        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+        const T EPSX = std::max(epsx, math::NumericUtil::getEPS<T>() );
+        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
 
         // sanity check of final epsilons:
         if ( EPSX <= static_cast<T>(0) ||
@@ -96,16 +96,16 @@ T math::RootFindGeneric<T>::bisection(
         b = std::max(from, to);
         fa = f.func(a);
         fb = f.func(b);
-        sa = math::NumericUtil<T>::sign(fa);
-        sb = math::NumericUtil<T>::sign(fb);
+        sa = math::NumericUtil::sign<T>(fa);
+        sb = math::NumericUtil::sign<T>(fb);
 
         // Maybe a boundary is already a root?
-        if ( true == math::NumericUtil<T>::isZero(fa, EPSY) )
+        if ( true == math::NumericUtil::isZero<T>(fa, EPSY) )
         {
             return a;
         }
 
-        if ( true == math::NumericUtil<T>::isZero(fb, EPSY) )
+        if ( true == math::NumericUtil::isZero<T>(fb, EPSY) )
         {
             return b;
         }
@@ -118,14 +118,14 @@ T math::RootFindGeneric<T>::bisection(
 
         // Start of the actual bisection method.
         // Proceed until the interval narrows down to EPSX.
-        while ( false == math::NumericUtil<T>::isZero(b-a, EPSX) )
+        while ( false == math::NumericUtil::isZero<T>(b-a, EPSX) )
         {
             c = (a+b) / static_cast<T>(2);
             fc = f.func(c);
-            sc = math::NumericUtil<T>::sign(fc);
+            sc = math::NumericUtil::sign<T>(fc);
 
             // Maybe c is a root?
-            if ( true == math::NumericUtil<T>::isZero(c, EPSY) )
+            if ( true == math::NumericUtil::isZero<T>(c, EPSY) )
             {
                 // if it is, just exit the loop
                 break;  // out of while (!isZero(b-a))
@@ -204,8 +204,8 @@ T math::RootFindGeneric<T>::regulaFalsi(
 
     try
     {
-        const T EPSX = std::max(epsx, math::NumericUtil<T>::getEPS() );
-        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+        const T EPSX = std::max(epsx, math::NumericUtil::getEPS<T>() );
+        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
 
         // sanity check of final epsilons:
         if ( EPSX <= static_cast<T>(0) ||
@@ -223,16 +223,16 @@ T math::RootFindGeneric<T>::regulaFalsi(
         b   = std::max(from, to);
         fa = f.func(a);
         fb = f.func(b);
-        sa = math::NumericUtil<T>::sign(fa);
-        sb = math::NumericUtil<T>::sign(fb);
+        sa = math::NumericUtil::sign<T>(fa);
+        sb = math::NumericUtil::sign<T>(fb);
 
         // Maybe a boundary is already a root?
-        if ( true == math::NumericUtil<T>::isZero(fa, EPSY) )
+        if ( true == math::NumericUtil::isZero<T>(fa, EPSY) )
         {
             return a;
         }
 
-        if ( true == math::NumericUtil<T>::isZero(fb, EPSY) )
+        if ( true == math::NumericUtil::isZero<T>(fb, EPSY) )
         {
              return b;
         }
@@ -245,14 +245,14 @@ T math::RootFindGeneric<T>::regulaFalsi(
 
         // Start of the actual regula falsi method.
         // Proceed until the interval narrows down to EPSX.
-        while ( false == math::NumericUtil<T>::isZero(b-a, EPSX) )
+        while ( false == math::NumericUtil::isZero<T>(b-a, EPSX) )
         {
             c = a - fa * (b-a) / (fb-fa);
             fc = f.func(c);
-            sc = math::NumericUtil<T>::sign(fc);
+            sc = math::NumericUtil::sign<T>(fc);
 
             // Maybe c is a root?
-            if ( true == math::NumericUtil<T>::isZero(c, EPSY) )
+            if ( true == math::NumericUtil::isZero<T>(c, EPSY) )
             {
                 // if it is, just exit the loop
                 break;  // out of while (!isZero(b-a))
@@ -334,7 +334,7 @@ T math::RootFindGeneric<T>::secant(
 
     try
     {
-        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
 
         // sanity check of the final epsilon:
         if ( EPSY <= static_cast<T>(0) )
@@ -348,18 +348,18 @@ T math::RootFindGeneric<T>::secant(
         T fn = f.func(xn);
 
         // Maybe xo is already a root?
-        if ( true == math::NumericUtil<T>::isZero(fo, EPSY) )
+        if ( true == math::NumericUtil::isZero<T>(fo, EPSY) )
         {
             return xo;
         }
 
         // Start of the actual secant method
         for ( size_t iter = Nmax;
-              false==math::NumericUtil<T>::isZero(fn, EPSY) && iter > 0;
+              false==math::NumericUtil::isZero<T>(fn, EPSY) && iter > 0;
               --iter )
         {
             const T df = fo - fn;
-        	if ( true == math::NumericUtil<T>::isZero(df) )
+        	if ( true == math::NumericUtil::isZero<T>(df) )
         	{
                 throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
         	}
@@ -373,7 +373,7 @@ T math::RootFindGeneric<T>::secant(
         }  // for iter
 
         // Finally check whether the algorithm has converged to any root
-        if ( false == math::NumericUtil<T>::isZero(fn, EPSY) )
+        if ( false == math::NumericUtil::isZero<T>(fn, EPSY) )
         {
             // apparently not
             throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
@@ -533,7 +533,7 @@ T math::RootFindGeneric<T>::__newtonCommon(
 
     try
     {
-        const T EPSY = std::max(epsy, math::NumericUtil<T>::getEPS() );
+        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
 
         // sanity check of the final epsilon:
         if ( EPSY <= static_cast<T>(0) )
@@ -546,14 +546,14 @@ T math::RootFindGeneric<T>::__newtonCommon(
 
         // start of the actual Newton - Raphson method
         for ( size_t iter = Nmax;
-              false == math::NumericUtil<T>::isZero(fx, EPSY) && iter > 0;
+              false == math::NumericUtil::isZero<T>(fx, EPSY) && iter > 0;
               --iter )
         {
             const T dx = ( true == diffFunc ?
                       diff.func(x) :
                       math::DiffGeneric<T>::diff(f, x,h, math::EDiffMethod::CENTRAL) );
 
-            if ( true == math::NumericUtil<T>::isZero(dx) )
+            if ( true == math::NumericUtil::isZero<T>(dx) )
             {
                 // cannot continue as division by zero would occur inthe next step
                 throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
@@ -565,7 +565,7 @@ T math::RootFindGeneric<T>::__newtonCommon(
         }  // for iter
 
         // Has the algorithm converged to any root?
-        if ( false == math::NumericUtil<T>::isZero(fx, EPSY) )
+        if ( false == math::NumericUtil::isZero<T>(fx, EPSY) )
         {
             // apparently not
             throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);

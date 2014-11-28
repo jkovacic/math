@@ -595,7 +595,7 @@ template<> \
 math::QuaternionGeneric<FD> math::QuaternionGeneric<FD>::unit() const throw (math::QuaternionException) \
 { \
     const FD norm = this->norm(); \
-    if ( true == math::NumericUtil<FD>::isZero(norm) ) \
+    if ( true == math::NumericUtil::isZero<FD>(norm) ) \
     { \
         throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO); \
     } \
@@ -652,7 +652,7 @@ math::QuaternionGeneric<T> math::QuaternionGeneric<T>::reciprocal() const throw 
     const T nsq = __sqsum();
 
     // avoid possible division by zero
-    if ( true == math::NumericUtil<T>::isZero(nsq) )
+    if ( true == math::NumericUtil::isZero<T>(nsq) )
     {
         throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
     }

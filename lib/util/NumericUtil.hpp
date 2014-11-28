@@ -21,60 +21,47 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{NumericUtil.h}
  *
- * Declaration of the class NumericUtil, a collection of some useful
- * numerical utilities.
+ * Declaration of the namespace NumericUtil with a collection of
+ * some useful numerical utilities.
  */
 
 #ifndef _MATH_NUMERICUTIL_HPP_
 #define _MATH_NUMERICUTIL_HPP_
 
-#include "rational/Rational.hpp"
 
 #include <cstddef>
-#include <complex>
+
 
 namespace math
 {
 
 /**
- * @brief A class with some common functionality, e.g. determination whether
- *        a numeric value is close enough to zero, etc.
- * 
- * Note that all functions are static so instantiation of this class is not necessary.
+ * @brief A namepace with some frequently used functionality, e.g.
+ *        determination whether a numeric value is close enough to
+ *        zero, etc.
  */
-template<class T>
-class NumericUtil
+namespace NumericUtil
 {
-
-public:
 
     // Does the value equal zero? Note that in numerical mathematics
     // (where mostly float or double values are in use), "equals" has a
     // different meaning than in discrete mathematics (int etc.)
-    static bool isZero(const T& value);
-    static bool isZero(const T& value, const T& eps);
+    template <class T>
+    bool isZero(const T& value);
+
+    template <class T>
+    bool isZero(const T& value, const T& eps);
 
     // Get the system specific epsilon for the specified type
-    static T getEPS();
+    template <class T>
+    T getEPS();
     
     // num's sign:
-    static short int sign(const T& num);
+    template <class T>
+    short int sign(const T& num);
 
-};
+}
 
-// Declaration of specialized methods inside the name space declaration
-// is essential if implemented elsewhere:
-template<> float NumericUtil<float>::getEPS();
-template<> double NumericUtil<double>::getEPS();
-template<> long double NumericUtil<long double>::getEPS();
-
-template<> bool NumericUtil<float>::isZero(const float& value, const float& eps);
-template<> bool NumericUtil<double>::isZero(const double& value, const double& eps);
-template<> bool NumericUtil<long double>::isZero(const long double& value, const long double& eps);
-template<> bool NumericUtil<Rational>::isZero(const Rational& value, const Rational& eps);
-template<> bool NumericUtil<std::complex<float> >::isZero(const std::complex<float>& value, const std::complex<float>& eps);
-template<> bool NumericUtil<std::complex<double> >::isZero(const std::complex<double>& value, const std::complex<double>& eps);
-template<> bool NumericUtil<std::complex<long double> >::isZero(const std::complex<long double>& value, const std::complex<long double>& eps);
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.

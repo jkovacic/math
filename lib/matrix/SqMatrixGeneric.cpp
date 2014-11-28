@@ -218,7 +218,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         // another one (r; r>i) satisfying temp(r,i)!=0
         // Each swap multiplies the determinant by -1
 
-        if ( true == math::NumericUtil<T>::isZero(temp.at(this->_pos(i, i))) )
+        if ( true == math::NumericUtil::isZero<T>(temp.at(this->_pos(i, i))) )
         {
             size_t r;
 
@@ -228,7 +228,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
             for ( r=i+1; r<N; ++r )
             {
-                if ( false == NumericUtil<T>::isZero(temp.at(this->_pos(r, i))) )
+                if ( false == NumericUtil::isZero<T>(temp.at(this->_pos(r, i))) )
                 {
                     // Found, no need to search further,
                     // so end the for (r) loop

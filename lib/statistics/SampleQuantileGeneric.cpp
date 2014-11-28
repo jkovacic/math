@@ -199,7 +199,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::SAS3 :
     {
         // Inverse of empirical distribution function
-        if ( true == math::NumericUtil<T>::isZero(p) )
+        if ( true == math::NumericUtil::isZero<T>(p) )
         {
             retVal = x.at(0);
         }
@@ -217,11 +217,11 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     {
         // Inverse of empirical distribution function
         // with averaging at discontinuities
-        if ( true == math::NumericUtil<T>::isZero(p) )
+        if ( true == math::NumericUtil::isZero<T>(p) )
         {
             retVal = x.at(0);
         }
-        else if ( true == math::NumericUtil<T>::isZero(ONE-p) )
+        else if ( true == math::NumericUtil::isZero<T>(ONE-p) )
         {
             retVal = x.at(N - 1);
         }
@@ -255,7 +255,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
              * assuming one-based indexing.
              */
 
-            if ( true == math::NumericUtil<T>::isZero(frac-HALF) )
+            if ( true == math::NumericUtil::isZero<T>(frac-HALF) )
             {
                 // in this case round to the nearest even (divisible by 2) integer idx
                 if ( 0 != idx%2 )
@@ -284,7 +284,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
         {
             retVal = x.at(0);
         }
-        else if ( true == math::NumericUtil<T>::isZero(ONE-p) )
+        else if ( true == math::NumericUtil::isZero<T>(ONE-p) )
         {
             retVal = x.at(N-1);
         }
@@ -345,7 +345,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     {
         // Linear interpolation of the modes for the order statistics for
         // the uniform distribution on [0,1]
-        if ( true == math::NumericUtil<T>::isZero(ONE-p) )
+        if ( true == math::NumericUtil::isZero<T>(ONE-p) )
         {
             retVal = x.at(N-1);
         }

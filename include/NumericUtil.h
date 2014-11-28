@@ -20,8 +20,8 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class NumericUtil, a collection of some useful
- * numerical utilities.
+ * Declaration of the namespace NumericUtil with a collection of
+ * some useful numerical utilities.
  */
 
 #ifndef _MATH_NUMERICUTIL_H_

@@ -126,7 +126,7 @@ private:
      */
     inline bool __isZero() const
     {
-        return ( 1==this->coef.size() && true==math::NumericUtil<T>::isZero(this->coef.at(0)) );
+        return ( 1==this->coef.size() && true==math::NumericUtil::isZero<T>(this->coef.at(0)) );
     }
 
 

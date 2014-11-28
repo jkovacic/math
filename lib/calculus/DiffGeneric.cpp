@@ -49,7 +49,7 @@ T math::DiffGeneric<T>::diff(
       ) throw(math::CalculusException)
 {
     // sanity check:
-    if ( h < math::NumericUtil<T>::getEPS() )
+    if ( h < math::NumericUtil::getEPS<T>() )
     {
         throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }

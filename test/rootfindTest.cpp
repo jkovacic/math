@@ -43,7 +43,7 @@ public:
     // function: sin(x)/x - 0.5
     double func(const double& x) const throw(FunctionException)
     {
-   	    if ( true == NumericUtil<double>::isZero(x) )
+   	    if ( true == NumericUtil::isZero<double>(x) )
         {
             /*
              * When x approaches 0, the division by zero can occur.
@@ -86,7 +86,7 @@ public:
            (%o3)  d(x):=cos(x)/x−sin(x)/x^2
          */
 
-        if ( true == NumericUtil<double>::isZero(x) )
+        if ( true == NumericUtil::isZero<double>(x) )
         {
             /*
              * Prevent division by 0 by applying the limit:

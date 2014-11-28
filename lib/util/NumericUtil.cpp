@@ -19,9 +19,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation  of the class NumericUtil, a collection of some useful
- * numerical utilities. This is a templated class and must not be compiled.
- * Instead it must be included after the class declaration in the .h file
+ * Implementation  of functions of the namespace NumericUtil,
+ * a collection of some useful numerical utilities.
  */
 
 // Deliberately there is no #include "NumericUtil.hpp"
@@ -37,7 +36,7 @@ limitations under the License.
  * @return value of 'eps' for the desired type
  */
 template<class T>
-T math::NumericUtil<T>::getEPS()
+T math::NumericUtil::getEPS()
 {
     // for int and most other types, eps does not
 	// make any sense, in this case just return 0.
@@ -55,9 +54,15 @@ T math::NumericUtil<T>::getEPS()
  * returned value. For easier maintainability, the specialization will be
  * implemented only once using a parameterized #define
  */
+
+namespace math
+{
+namespace NumericUtil
+{
+
 #define _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(FDL) \
-template<> \
-FDL math::NumericUtil<FDL>::getEPS() \
+template <> \
+FDL getEPS<FDL>() \
 { \
     return std::numeric_limits<FDL>::epsilon(); \
 }
@@ -69,6 +74,9 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double)
 
 // #definition of _MATH_NUMERICUTIL_SPECIALIZED_GETEPS not needed anymore, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_GETEPS
+
+}  // namespace NumericUtil
+}  // namespace math
 
 
 /**
@@ -83,9 +91,9 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double)
  * @return true or false
  */
 template <class T>
-bool math::NumericUtil<T>::isZero(const T& value)
+bool math::NumericUtil::isZero(const T& value)
 {
-    return math::NumericUtil<T>::isZero(value, getEPS() );
+    return math::NumericUtil::isZero(value, math::NumericUtil::getEPS<T>() );
 }
 
 
@@ -101,7 +109,7 @@ bool math::NumericUtil<T>::isZero(const T& value)
  * @return true or false
  */
 template<class T>
-bool math::NumericUtil<T>::isZero(const T& value, const T& eps)
+bool math::NumericUtil::isZero(const T& value, const T& eps)
 {
     /*
      * The implementation for integers et al. where the == operator
@@ -124,9 +132,15 @@ bool math::NumericUtil<T>::isZero(const T& value, const T& eps)
  * only once using a parameterized #define
  */
 
+namespace math
+{
+
+namespace NumericUtil
+{
+
 #define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(FDL) \
-template<> \
-bool math::NumericUtil<FDL>::isZero(const FDL& value, const FDL& eps) \
+template <> \
+bool isZero(const FDL& value, const FDL& eps) \
 { \
     return ( value>-eps && value<eps ? true : false ); \
 }
@@ -154,7 +168,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(long double)
  */
 #define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(FDL) \
 template<> \
-bool math::NumericUtil<std::complex<FDL> >::isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps) \
+bool isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps) \
 { \
     return ( std::norm(value)<=std::norm(eps) ? true : false ); \
 }
@@ -175,14 +189,17 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(long double)
 /*
  * Implementation for Rational
  */
-template<>
-bool math::NumericUtil<math::Rational>::isZero(const math::Rational& value, const math::Rational& eps)
+template <>
+bool isZero(const math::Rational& value, const math::Rational& eps)
 {
     // Rational already contains its own isZero()...
     return value.isZero();
 
     (void) eps;
 }
+
+}  // namepsace NumericUtil
+}  // namespace math
 
 
 /**
@@ -193,10 +210,10 @@ bool math::NumericUtil<math::Rational>::isZero(const math::Rational& value, cons
  * @return -1 if 'num' is negative, 0 if (close to) 0, 1 if positive 
  */
 template<class T>
-short int math::NumericUtil<T>::sign(const T& num)
+short int math::NumericUtil::sign(const T& num)
 {
     // handle 0 first:
-    if ( true==math::NumericUtil<T>::isZero(num) )
+    if ( true==math::NumericUtil::isZero(num) )
     {
         return 0;
     }
