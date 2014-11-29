@@ -127,13 +127,13 @@ DEP_QUATERNION = $(LIBQUATDIR)QuaternionGeneric $(DEP_NUMUTIL) $(DEP_OMPSETTINGS
 
 DEP_POLYNOMIAL = $(LIBPOLYDIR)PolynomialGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(DEP_VECTOP) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 
-DEP_COMBINATION = $(LIBCOMDIR)CombinationGeneric $(DEP_MTCOPY)
-DEP_PERMUTATION =$(LIBCOMDIR)PermutationGeneric $(DEP_MTCOPY)
+DEP_COMBINATION = $(LIBCOMBDIR)CombinationGeneric $(DEP_MTCOPY)
+DEP_PERMUTATION =$(LIBCOMBDIR)PermutationGeneric $(DEP_MTCOPY)
 
 DEP_INTEXP =
 
 DEP_MATRIX = $(LIBMATRIXDIR)MatrixGeneric $(DEP_MTCOPY) $(DEP_MTVECTOP) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
-DEP_SQMATRIX = $(LIBMATRIXDIR)SqMatrixGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(LIBLINEQ)LinearEquationSolverGeneric $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+DEP_SQMATRIX = $(LIBMATRIXDIR)SqMatrixGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(LIBLINEQDIR)LinearEquationSolverGeneric $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 DEP_LINEQ = $(LIBLINEQDIR)LinearEquationSolverGeneric $(DEP_NUMUTIL) $(DEP_MATRIX) $(DEP_SQMATRIX) $(DEP_OMPSETTINGS)
 
 DEP_CURVEFITAB = $(LIBCURVEFITDIR)CurveFittingGenericAb $(DEP_NUMUTIL)
@@ -233,12 +233,12 @@ TEST_LINKOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(sort $(TEST_L
 # will be joined to the list.
 #
 # Usage of the "function":
-#    $(call gen-deps,<list_of_files>)
+#    $(call gen_deps,<list_of_files>)
 #
 # Note: any white spaces after the comma may be joined to the input list 
-gen_deps = $(sort $(addsuffix $(HEADERSUFFIX), $(filter-out %.h,$1))) \
-           $(sort $(addsuffix $(CPPSUFFIX), $(filter-out %h,$1))) \
-           $(sort filter %.h,$1)
+gen_deps = $(sort $(addsuffix $(HEADERSUFFIX),$(filter-out %.h,$1))) \
+           $(sort $(addsuffix $(CPPSUFFIX),$(filter-out %.h,$1))) \
+           $(sort $(filter %.h,$1))
 
 
 # Append file name extensions and a prefix to the final binary
@@ -373,49 +373,49 @@ $(OBJDIR)IntFactorization$(OBJSUFFIX) : $(LIBINTUTILDIR)IntFactorization.cpp
 
 
 # Build rules for test modules
-$(OBJDIR)mtcopyTest$(OBJSUFFIX) : $(TESTDIR)mtcopyTest.cpp $(call gen-deps,$(TEST_MTCOPY_GENDEP))
+$(OBJDIR)mtcopyTest$(OBJSUFFIX) : $(TESTDIR)mtcopyTest.cpp $(call gen_deps,$(TEST_MTCOPY_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)quatTest$(OBJSUFFIX) : $(TESTDIR)quatTest.cpp $(call gen-deps,$(TEST_QUAT_GENDEP))
+$(OBJDIR)quatTest$(OBJSUFFIX) : $(TESTDIR)quatTest.cpp $(call gen_deps,$(TEST_QUAT_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)rationalTest$(OBJSUFFIX) : $(TESTDIR)rationalTest.cpp $(call gen-deps,$(TEST_RAT_GENDEP))
+$(OBJDIR)rationalTest$(OBJSUFFIX) : $(TESTDIR)rationalTest.cpp $(call gen_deps,$(TEST_RAT_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)matrixTest$(OBJSUFFIX) : $(TESTDIR)matrixTest.cpp $(call gen-deps,$(TEST_MATRIX_GENDEP))
+$(OBJDIR)matrixTest$(OBJSUFFIX) : $(TESTDIR)matrixTest.cpp $(call gen_deps,$(TEST_MATRIX_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)ratmatTest$(OBJSUFFIX) : $(TESTDIR)ratmatTest.cpp $(call gen-deps,$(TEST_RATMAT_GENDEP))
+$(OBJDIR)ratmatTest$(OBJSUFFIX) : $(TESTDIR)ratmatTest.cpp $(call gen_deps,$(TEST_RATMAT_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)polyTest$(OBJSUFFIX) : $(TESTDIR)polyTest.cpp $(call gen-deps,$(TEST_POLY_GENDEP))
+$(OBJDIR)polyTest$(OBJSUFFIX) : $(TESTDIR)polyTest.cpp $(call gen_deps,$(TEST_POLY_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)lineqTest$(OBJSUFFIX) : $(TESTDIR)lineqTest.cpp $(call gen-deps,$(TEST_LINEQ_GENDEP))
+$(OBJDIR)lineqTest$(OBJSUFFIX) : $(TESTDIR)lineqTest.cpp $(call gen_deps,$(TEST_LINEQ_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)curvefitTest$(OBJSUFFIX) : $(TESTDIR)curvefitTest.cpp $(call gen-deps,$(TEST_CURVEFIT_GENDEP))
+$(OBJDIR)curvefitTest$(OBJSUFFIX) : $(TESTDIR)curvefitTest.cpp $(call gen_deps,$(TEST_CURVEFIT_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)intexpTest$(OBJSUFFIX) : $(TESTDIR)intexpTest.cpp $(call gen-deps,$(TEST_INTEXP_GENDEP))
+$(OBJDIR)intexpTest$(OBJSUFFIX) : $(TESTDIR)intexpTest.cpp $(call gen_deps,$(TEST_INTEXP_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)intfactorTest$(OBJSUFFIX) : $(TESTDIR)intfactorTest.cpp $(call gen-deps,$(TEST_INTFACTOR_GENDEP))
+$(OBJDIR)intfactorTest$(OBJSUFFIX) : $(TESTDIR)intfactorTest.cpp $(call gen_deps,$(TEST_INTFACTOR_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)intcombTest$(OBJSUFFIX) : $(TESTDIR)intcombTest.cpp $(call gen-deps,$(TEST_INTCOMB_GENDEP))
+$(OBJDIR)intcombTest$(OBJSUFFIX) : $(TESTDIR)intcombTest.cpp $(call gen_deps,$(TEST_INTCOMB_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)combTest$(OBJSUFFIX) : $(TESTDIR)combTest.cpp $(call gen-deps,$(TEST_COMB_GENDEP))
+$(OBJDIR)combTest$(OBJSUFFIX) : $(TESTDIR)combTest.cpp $(call gen_deps,$(TEST_COMB_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)calcTest$(OBJSUFFIX) : $(TESTDIR)calcTest.cpp $(call gen-deps,$(TEST_CALC_GENDEP))
+$(OBJDIR)calcTest$(OBJSUFFIX) : $(TESTDIR)calcTest.cpp $(call gen_deps,$(TEST_CALC_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)rootfindTest$(OBJSUFFIX) : $(TESTDIR)rootfindTest.cpp $(call gen-deps,$(TEST_ROOTFIND_GENDEP))
+$(OBJDIR)rootfindTest$(OBJSUFFIX) : $(TESTDIR)rootfindTest.cpp $(call gen_deps,$(TEST_ROOTFIND_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
-$(OBJDIR)statTest$(OBJSUFFIX) : $(TESTDIR)statTest.cpp $(call gen-deps,$(TEST_STAT_GENDEP))
+$(OBJDIR)statTest$(OBJSUFFIX) : $(TESTDIR)statTest.cpp $(call gen_deps,$(TEST_STAT_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
 
