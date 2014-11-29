@@ -66,10 +66,11 @@ template<class T>
 MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 
 template<class T>
-MatrixGeneric<T> conj(const MatrixGeneric<T>& m) throw (MatrixException);
+void _matconj(const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw (MatrixException);
 
+// overloaded "specialization" complex<T>:
 template<class T>
-MatrixGeneric<std::complex<T> > conj(const MatrixGeneric<std::complex<T> >& m) throw (MatrixException);
+void _matconj(const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw (MatrixException);
 
 
 /**
@@ -144,6 +145,7 @@ public:
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
     virtual MatrixGeneric<T>& transposed() throw (MatrixException);
+    MatrixGeneric<T> conj() const throw (MatrixException);
 
     // Insert or remove rows/columns.
     virtual MatrixGeneric<T>& removeRow(size_t rowNr) throw (MatrixException);
@@ -161,8 +163,8 @@ public:
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
-    friend MatrixGeneric<T> (math::conj <>) (const MatrixGeneric<T>& m) throw(MatrixException);
-    friend MatrixGeneric<std::complex<T> > (math::conj <>) (const MatrixGeneric<std::complex<T> >& m) throw(MatrixException);
+    friend void (math::_matconj <>) (const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw(MatrixException);
+    friend void (math::_matconj <>) (const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw(MatrixException);
 };
 
 // Matrices with elements of types float, double and long double

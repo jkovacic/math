@@ -61,7 +61,7 @@ void matrixTest()
 
         // Conjugation of a real numbered matrix:
         cout << "f conjugated:" << endl;
-        res = conj(f);
+        res = f.conj();
         res.display();
         cout << endl;
 
@@ -195,7 +195,7 @@ void matrixTest()
        c1.set(1, 0, complex<float>(2.0f, -3.0f)).set(1, 1, complex<float>(2.0f, 4.0f));
        cout << "c1:" << endl;
        c1.display();
-       MatrixGeneric<complex<float> > c2 = conj(c1);
+       MatrixGeneric<complex<float> > c2 = c1.conj();
        cout << "c1 conjugated:" << endl;
        c2.display();
        cout << endl;

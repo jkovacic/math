@@ -41,6 +41,7 @@ limitations under the License.
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
+#include "MatrixGeneric.hpp"
 
 
 /**
@@ -525,6 +526,26 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
 
 
 /**
+ * Conjugation of  all matrix's elements.
+ * For complex types, elements' imaginary parts are reversed
+ * their signs. For all other types, a copy of *this
+ * is returned.
+ * 
+ * @return *this conjugated
+ * 
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal;
+    math::_matconj(*this, retVal);
+
+    return retVal;
+}
+
+
+/**
  * Removes the specified row number from the matrix.
  * It also decreases the number of rows.
  *
@@ -891,27 +912,30 @@ math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>
 }
 
 
-/**
+/*
  * Conjugation of all matrix elements.
- * If T is a complex type, elements' imaginary parts are reversed.
- * For all other types, the matrix is just copied.
+ * The general version (for non complex types)
+ * just copies the input matrix.
  *
  * @param m - matrix to conjugate
  *
- * @return m conjugated
+ * @return m "conjugated"
  *
  * @throw MatrixException if allocation of memory fails
  */
 template <class T>
-math::MatrixGeneric<T> math::conj(const math::MatrixGeneric<T>& m) throw(math::MatrixException)
+void math::_matconj(
+           const math::MatrixGeneric<T>& m,
+           math::MatrixGeneric<T>& dest
+        ) throw(math::MatrixException)
 {
-    return MatrixGeneric<T>(m);
+    dest = m;
 }
 
 
 /*
- * Specialization of conj for complex numbers.
- * It actually conjugates each element.
+ * Overloading (partial "specialization") of _matconj
+ * for complex numbers. It actually conjugates each element.
  *
  * @param m - matrix to conjugate
  *
@@ -920,20 +944,23 @@ math::MatrixGeneric<T> math::conj(const math::MatrixGeneric<T>& m) throw(math::M
  * @throw MatrixException if allocation of memory fails
  */
 template <class T>
-math::MatrixGeneric<std::complex<T> > math::conj(const math::MatrixGeneric<std::complex<T> >& m) throw(math::MatrixException)
+void math::_matconj(
+           const math::MatrixGeneric<std::complex<T> >& m,
+           math::MatrixGeneric<std::complex<T> >& dest
+        ) throw(math::MatrixException)
 {
     /*
      * Specialization into another templated class implemented
      * as suggested here:
      * http://www.cplusplus.com/forum/general/68298/
      */
-    math::MatrixGeneric<std::complex<T> > retVal(m);
-    const size_t N = retVal.nrRows() * retVal.nrColumns();
+    dest = m;
+    const size_t N = dest.nrRows() * dest.nrColumns();
 
     //Coarse grained parallelization
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(retVal)
+                default(none) shared(dest)
     {
         const size_t thnr = omp_get_thread_num();
         const size_t nthreads = omp_get_num_threads();
@@ -941,13 +968,12 @@ math::MatrixGeneric<std::complex<T> > math::conj(const math::MatrixGeneric<std::
         const size_t istart = elems_per_thread * thnr;
         const size_t iend = std::min(istart + elems_per_thread, N);
 
-        typename std::vector<std::complex<T> >::iterator it = retVal.elems.begin() + istart;
+        typename std::vector<std::complex<T> >::iterator it = dest.elems.begin() + istart;
         for ( size_t i=istart;
-              i<iend && it!=retVal.elems.end(); ++it, ++i )
+              i<iend && it!=dest.elems.end(); ++it, ++i )
         {
             *it = std::conj(*it);
         }
     }  // omp parallel
 
-	return retVal;
 }
