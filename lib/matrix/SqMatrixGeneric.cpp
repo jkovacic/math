@@ -495,29 +495,3 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr, con
     (void) colNr;
     (void) el;
 }
-
-
-/*
- * Specialization of other classes' templated functions for
- * the class SqMatrixGeneric.
- *
- * Note: the specialized functions must be implemented within
- *       classes' corresponding namespaces.
- */
-namespace math
-{
-
-namespace NumericUtil
-{
-    template <class T>
-    math::SqMatrixGeneric<T> unit(const math::SqMatrixGeneric<T>& t)
-    {
-        const size_t N = t.nrRows();
-        math::SqMatrixGeneric<T> retVal(N);
-        retVal.setUnit();
-        return retVal;
-    }
-    
-}  // namespace NumericUtil
-
-} // namespace math

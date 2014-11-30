@@ -161,25 +161,6 @@ private:
     friend bool operator>=(const Rational& f1, const Rational& f2);
 };
 
-
-/*
- * Declaration of specialized functions of other classes for Rational.
- * The specialized functions are implemented in Rational.cpp.
- * Note: function from other classes must be declared in their corresponding namespaces.
- */
-
-namespace NumericUtil
-{
-
-    template <>
-    Rational unit(const Rational& t);
-
-    template <>
-    bool isZero(const Rational& value, const Rational& eps);
-
-}  // namespace NumericUtil
-
-
 } // namespace math
 
 #endif	// _MATH_RATIONAL_HPP_

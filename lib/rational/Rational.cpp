@@ -1173,13 +1173,6 @@ namespace NumericUtil
 {
 
 template <>
-math::Rational unit(const math::Rational& t)
-{
-    (void) t;
-    return Rational(1);
-}
-
-template <>
 bool isZero(const math::Rational& value, const math::Rational& eps)
 {
     // Rational already contains its own isZero()...

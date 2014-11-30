@@ -925,27 +925,3 @@ std::ostream& math::operator<<(std::ostream& output, const math::QuaternionGener
     // ... and return reference of the stream
     return output;
 }
-
-
-/*
- * Specialization of other classes' templated functions for
- * the class QuaternionGeneric.
- *
- * Note: the specialized functions must be implemented within
- *       classes' corresponding namespaces.
- */
-namespace math
-{
-
-namespace NumericUtil
-{
-    template <class T>
-    math::QuaternionGeneric<T> unit(const math::QuaternionGeneric<T>& t)
-    {
-        (void) t;
-        return math::QuaternionGeneric<T>(static_cast<T>(1));
-    }
-    
-}  // namespace NumericUtil
-
-} // namespace math

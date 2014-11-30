@@ -194,17 +194,6 @@ typedef QuaternionGeneric<float>       FQuaternion;
 typedef QuaternionGeneric<double>      Quaternion;
 typedef QuaternionGeneric<long double> LDQuaternion;
 
-/*
- * Declaration of specialized functions of other classes for QuaternionGeneric.
- * The specialized functions are implemented in QuaternionGeneric.cpp.
- * Note: function from other classes must be declared in their corresponding namespaces.
- */
-namespace NumericUtil
-{
-    template <class T>
-    QuaternionGeneric<T> unit(const QuaternionGeneric<T>& t);
-    
-}  // namespace NumericUtil
 
 // Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.

@@ -183,12 +183,6 @@ void matrixTest()
         inv.display();
         cout << endl;
 
-        // Test of specialization of unit()
-        cout << "3x3 unit matrix:" << endl;
-        a1 = NumericUtil::unit(a1);
-        a1.display();
-        cout << endl;
-
        // Test of complex conjugation:
        MatrixGeneric<complex<float> > c1(2, 2);
        c1.set(0, 0, complex<float>(1.0f, 1.0f)).set(0, 1, complex<float>(1.0f, -2.0f));

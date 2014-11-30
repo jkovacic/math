@@ -206,19 +206,3 @@ short int math::NumericUtil::sign(const T& num)
 
     return ( num < static_cast<T>(0) ? -1 : 1 );
 }
-
-
-/**
- * Multiplication unit for the type T, typically 1 casted to T.
- * 
- * @param t - an arbitrary instance of T, ignored by the generic implementation,
- *            at specializations it might be useful to determine unit's dimensions etc.
- *
- * @return an instance of T acting as a multiplication unit
- */
-template <class T>
-T math::NumericUtil::unit(const T& t)
-{
-    (void) t;
-    return T(static_cast<T>(1));
-}

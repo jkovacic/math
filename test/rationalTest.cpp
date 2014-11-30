@@ -156,7 +156,6 @@ void rationalTest()
             cout << "a == b";
         }
         cout << endl;
-        cout << "Unit fraction: " << NumericUtil::unit(a) << endl;
     }  // try
     catch ( const RationalException& ex )
     {
