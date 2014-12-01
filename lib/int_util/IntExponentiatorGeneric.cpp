@@ -31,7 +31,7 @@ limitations under the License.
 
 /*
  * "Private" functions and their specializations are
- * "hidden" into a separate anonymous namespace.
+ * "hidden" into a separate namespace.
  */
 namespace math
 {
@@ -39,7 +39,7 @@ namespace math
 namespace IntExponentiator
 {
 
-    namespace
+    namespace __private
     {
         /*
          * @param t - an arbitrary instance of T, ignored by the generic implementation,
@@ -48,7 +48,7 @@ namespace IntExponentiator
          * @return an instance of T acting as a multiplication unit
          */
         template<class T>
-        T getUnit(const T& t)
+        T __getUnit(const T& t)
         {
             (void) t;
             return T(static_cast<T>(1));
@@ -63,7 +63,7 @@ namespace IntExponentiator
          * @return a unit n x n square matrix where n is a dimension of 't'
          */
         template<class T>
-        math::SqMatrixGeneric<T> getUnit(const math::SqMatrixGeneric<T>& t)
+        math::SqMatrixGeneric<T> __getUnit(const math::SqMatrixGeneric<T>& t)
         {
             const size_t N = t.nrRows();
             math::SqMatrixGeneric<T> retVal(N);
@@ -79,13 +79,13 @@ namespace IntExponentiator
          * @return a unit polynomial p(x) = (T)1
          */
         template<class T>
-        math::PolynomialGeneric<T> getUnit(const math::PolynomialGeneric<T>& t)
+        math::PolynomialGeneric<T> __getUnit(const math::PolynomialGeneric<T>& t)
         {
             (void) t;
             return math::PolynomialGeneric<T>(static_cast<T>(1));
         }
 
-    } // anonymous namespace
+    } // namespace __private
 } // namespace IntExponentiator
 } // namespace math
 
@@ -130,7 +130,7 @@ T math::IntExponentiator::power(const T& base, size_t n)
     // on unsigned int values as they do not depend on endianess:
     // http://stackoverflow.com/questions/7184789/does-bit-shift-depends-on-endianness
 
-    T retVal = math::IntExponentiator::getUnit(base);
+    T retVal = math::IntExponentiator::__private::__getUnit(base);
     T factor = base;
 
     // Obtain coefficients ai from the exponent's binary form.
