@@ -539,7 +539,7 @@ template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> retVal;
-    math::_matconj(*this, retVal);
+    math::__matrixprivate::__matconj(*this, retVal);
 
     return retVal;
 }
@@ -924,7 +924,7 @@ math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>
  * @throw MatrixException if allocation of memory fails
  */
 template <class T>
-void math::_matconj(
+void math::__matrixprivate::__matconj(
            const math::MatrixGeneric<T>& m,
            math::MatrixGeneric<T>& dest
         ) throw(math::MatrixException)
@@ -944,7 +944,7 @@ void math::_matconj(
  * @throw MatrixException if allocation of memory fails
  */
 template <class T>
-void math::_matconj(
+void math::__matrixprivate::__matconj(
            const math::MatrixGeneric<std::complex<T> >& m,
            math::MatrixGeneric<std::complex<T> >& dest
         ) throw(math::MatrixException)

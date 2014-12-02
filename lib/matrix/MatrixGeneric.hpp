@@ -65,13 +65,17 @@ MatrixGeneric<T> operator*(const MatrixGeneric<T>& m, const T& sc) throw(MatrixE
 template<class T>
 MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 
+namespace __matrixprivate
+{
+    
 template<class T>
-void _matconj(const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw (MatrixException);
+void __matconj(const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw (MatrixException);
 
 // overloaded "specialization" complex<T>:
 template<class T>
-void _matconj(const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw (MatrixException);
+void __matconj(const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw (MatrixException);
 
+}  // namespac __matrixprivate
 
 /**
  * @brief A class representing general matrices and their basic operators.
@@ -163,8 +167,8 @@ public:
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
-    friend void (math::_matconj <>) (const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw(MatrixException);
-    friend void (math::_matconj <>) (const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw(MatrixException);
+    friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw(MatrixException);
+    friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw(MatrixException);
 };
 
 // Matrices with elements of types float, double and long double
