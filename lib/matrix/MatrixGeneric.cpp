@@ -34,14 +34,13 @@ limitations under the License.
 #include <complex>
 #include <algorithm>
 
-// Deliberately there is no #include "MatrixGeneric.hpp" !
+// no #include "MatrixGeneric.hpp" !!!
 #include "exception/MatrixException.hpp"
 #include "util/mtcopy.hpp"
 #include "util/mtvectop.hpp"
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
-#include "MatrixGeneric.hpp"
 
 
 /**
@@ -89,7 +88,7 @@ math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::M
 
 /**
  * Copy constructor.
- * Creates an instance of a matrix with the same dimensions as orig
+ * Creates an instance of a matrix with the same dimensions as 'orig'
  * and copies its elements.
  *
  * @param orig - original matrix to be copied into this one
@@ -760,7 +759,7 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
     }
 
     // Each element of the sum matrix is a sum of elements at the same position
-    // S(r,c) = this(r,c) + matrix(r,c)
+    // S(r,c) = m1(r,c) + m2(r,c)
     math::MatrixGeneric<T> temp(m1.rows, m2.cols);
 
     math::mtvectadd(m1.elems, m2.elems, temp.elems, true);
@@ -790,7 +789,7 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const m
     }
 
     // Each element of the difference matrix is a difference of elements at the same position
-    // D(r,c) = this(r,c) - matrix(r,c)
+    // D(r,c) = m1(r,c) - m2(r,c)
     math::MatrixGeneric<T> temp(m1.rows, m2.cols);
 
     math::mtvectadd(m1.elems, m2.elems, temp.elems, false);
@@ -831,13 +830,13 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
     }
 
     /*
-     * If dimension of this is (m,n) and dimension of matrix is (n,o), the
+     * If dimension of 'm1' is (m,n) and dimension of 'm2' is (n,o), the
      * dimension of the product will be (m,o).
      *
      *           n-1
      *          -----
      *          \
-     * P(r,c) =  >  ( this(r,i) * matrix(i,c) )
+     * P(r,c) =  >  ( m1(r,i) * m2(i,c) )
      *          /
      *          -----
      *           i=0
@@ -884,7 +883,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
     // so no need to check input arguments
 
     // Just multiply each element by the scalar:
-    // P(r,c) = scalar * this(r,c)
+    // P(r,c) = scalar * m(r,c)
     math::MatrixGeneric<T> retVal(m.rows, m.cols);
 
     math::mtvectmult(m.elems, sc, retVal.elems);

@@ -75,7 +75,7 @@ void __matconj(const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw (MatrixE
 template<class T>
 void __matconj(const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw (MatrixException);
 
-}  // namespac __matrixprivate
+}  // namespace __matrixprivate
 
 /**
  * @brief A class representing general matrices and their basic operators.
