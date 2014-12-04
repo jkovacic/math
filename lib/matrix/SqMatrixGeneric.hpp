@@ -95,7 +95,7 @@ typedef SqMatrixGeneric<double>      SqMatrix;
 typedef SqMatrixGeneric<long double> LDSqMatrix;
 
 
-// Definition could be included into the namespace declaraion, but it
+// Definition could be included into the namespace declaration, but it
 // would cause conflicts with some extra included stdlib header files.
 } // namespace math
 

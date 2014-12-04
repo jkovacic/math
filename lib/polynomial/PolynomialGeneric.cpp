@@ -343,7 +343,7 @@ void math::PolynomialGeneric<T>::getDesc(std::vector<T>& vec) const throw (math:
 /**
  * @param pos - degree of the desired term
  *
- * @return coefficient of the 'pos'-degree term or zero if pos  is greater than degree of the polynomial
+ * @return coefficient of the 'pos'-degree term or zero if pos is greater than degree of the polynomial
  */
 template<class T>
 T math::PolynomialGeneric<T>::get(size_t pos) const
@@ -721,7 +721,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
 {
     const size_t N = this->coef.size();
     
-    // Note that integration increments degree od the polynomial...
+    // Note that integration increments degree of the polynomial...
     if ( N == this->coef.max_size() )
     {
         throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
@@ -761,7 +761,7 @@ math::PolynomialGeneric<T> math::PolynomialGeneric<T>::integ(const T& c) const t
 
 
 /*
- * A static utility function that divides twov polynomials and returns
+ * A static utility function that divides two polynomials and returns
  * their quotient an remainder.
  *
  * @note If 'q' or 'rem' is a NULL pointer, it will not be filled by
@@ -867,7 +867,7 @@ void math::PolynomialGeneric<T>::__polyDivision(
          * of 'p2' by the q's i.th term, subtracting the product
          * from 'p' and assigning the difference to 'p'.
          *
-         * Unlike the outer for loop, the inner loop can be
+         * Unlike the outer for loop, the inner loop can
          * be parallelized.
          */
 
@@ -1180,7 +1180,7 @@ math::PolynomialGeneric<T>& math::PolynomialGeneric<T>::operator/=(const T& sc) 
     }
 
     /*
-     * Just divide each polynoial's coefficient by 'sc'.
+     * Just divide each polynomial's coefficient by 'sc'.
      * This is equivalent to multiplication by a reciprocal value
      * of 'sc' which is already implemented by operator*.
      */
@@ -1705,7 +1705,7 @@ math::PolynomialGeneric<T> math::operator/(const math::PolynomialGeneric<T>& pol
     }
 
     /*
-     * Just divide each polynoial's coefficient by 'sc'.
+     * Just divide each polynomial's coefficient by 'sc'.
      * This is equivalent to multiplication by a reciprocal value
      * of 'sc' which is already implemented by operator*.
      */
