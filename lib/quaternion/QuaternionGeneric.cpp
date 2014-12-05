@@ -694,7 +694,7 @@ math::QuaternionGeneric<T> math::operator+(const math::QuaternionGeneric<T>& q1,
 /**
  * Subtraction operator (-) of two quaternions.
  *
- * @param q1 - minunend
+ * @param q1 - minuend
  * @param q2 - subtrahend
  *
  * @return q1 - q2
@@ -782,7 +782,7 @@ math::QuaternionGeneric<T> math::operator*(const math::QuaternionGeneric<T>& q1,
                             q1.quat_j * q2.quat_i +
                             q1.quat_k * q2.quat_o;
         }
-    }
+    }  // omp parallel sections
 
     return retVal;
 }
