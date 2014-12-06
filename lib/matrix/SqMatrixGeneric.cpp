@@ -357,15 +357,13 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
     try
     {
         // prepare an identity matrix NxN...
-        SqMatrixGeneric<T> id(this->rows);
+        math::SqMatrixGeneric<T> id(this->rows);
         id.setUnit();
-        // ... and instantiate LinearEquationSolverGeneric
-        LinearEquationSolverGeneric<T> leq(*this, id);
 
-        // inverse matrix is a solution (if it exists) of the equation:
+        // Inverse matrix is a solution (if it exists) of the equation:
         // this * inv = id
-        SqMatrixGeneric<T> retVal;
-        leq.solve(retVal);
+        math::SqMatrixGeneric<T> retVal;
+        math::LinearEquationSolver::solve<T>(*this, id, retVal);
 
         return retVal;
     }

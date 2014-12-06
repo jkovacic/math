@@ -20,8 +20,8 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class LinearEquationSolverGeneric that solves
- * systems of linear equations.
+ * Declaration of functions within namespace LinearEquationSolver for
+ * solving systems of linear equations.
  */
 
 #ifndef _MATH_LINEAREQUATIONSOLVERGENERIC_H_

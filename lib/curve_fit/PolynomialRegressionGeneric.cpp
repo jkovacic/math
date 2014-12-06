@@ -138,16 +138,15 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
                 }
 
                 // update the b's i^th element 
-                b.at(i,0) += bterm;
+                b.at(i, 0) += bterm;
                 // and update 'bterm' for the next iteration of i
                 bterm *= it->p_x;
             }  // for i
         }  // for it
 
         // Matrices are filled, solve the system of linear equations
-        math::LinearEquationSolverGeneric<T> leq(a, b);
         math::MatrixGeneric<T> x;
-        leq.solve(x);
+        math::LinearEquationSolver::solve<T>(a, b, x);
 
         // And finally fill the regression polynomial
         for ( size_t i=0; i<N; ++i )

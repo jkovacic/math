@@ -22,8 +22,8 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{LinearEquationSolverGeneric.h}
  *
- * Declaration of the class LinearEquationSolverGeneric that solves
- * systems of linear equations.
+ * Declaration of functions within namespace LinearEquationSolver for
+ * solving systems of linear equations.
  */
 
 #ifndef _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_
@@ -39,55 +39,25 @@ namespace math
 {
 
 /**
- * @brief A class with functionality for solving systems of linear equation.
+ * @brief A namespace with functions for solving systems of linear equations.
  */
-template<class T>
-class LinearEquationSolverGeneric
+namespace LinearEquationSolver
 {
-
-private:
-    /*
-     * After both members have been set, solve() will try to find x,
-     * satisfying the equation: m_coef * x = m_term
-     */
-    SqMatrixGeneric<T> m_coef;   /// matrix of coefficients of the system
-    MatrixGeneric<T>   m_term;   /// vector (or matrix) of constant terms
-
-public:
-    // Constructors
-    LinearEquationSolverGeneric();
-    LinearEquationSolverGeneric(const SqMatrixGeneric<T>& coef, const MatrixGeneric<T>& term) throw (LinearEquationSolverException);
-
-    // Getters
-    SqMatrixGeneric<T>& getCoef() const;
-    MatrixGeneric<T>& getTerm() const;
-
-    // Setters
-    LinearEquationSolverGeneric<T>& setCoef(const SqMatrixGeneric<T>& coef) throw (LinearEquationSolverException);
-    LinearEquationSolverGeneric<T>& setTerm(const MatrixGeneric<T>& term) throw (LinearEquationSolverException);
-
+    
     // Solves a system of linear equations
-    void solve(MatrixGeneric<T>& sol) const throw (LinearEquationSolverException);
+    template <class T>
+    void solve(
+              const SqMatrixGeneric<T>& coef,
+              const MatrixGeneric<T>& term,
+              MatrixGeneric<T>& sol
+            ) throw (LinearEquationSolverException);
 
-};
 
-// Equations with elements of types float, double, long double and complex
-// make most sense, therefore the following types are predefined
-typedef LinearEquationSolverGeneric<float>       FLinearEquationSolver;
-typedef LinearEquationSolverGeneric<double>      LinearEquationSolver;
-typedef LinearEquationSolverGeneric<long double> LDLinearEquationSolver;
+}  // namespace LinearEquationSolver
 
-typedef LinearEquationSolverGeneric<std::complex<float> >       FCLinearEquationsolver;
-typedef LinearEquationSolverGeneric<std::complex<double> >      CLinearEquationsolver;
-typedef LinearEquationSolverGeneric<std::complex<long double> > LDCLinearEquationSolver;
-
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
 }  // namespace math
 
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
+// DEFINITION
 #include "lineq/LinearEquationSolverGeneric.cpp"
 
 

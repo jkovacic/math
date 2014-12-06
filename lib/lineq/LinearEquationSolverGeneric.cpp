@@ -19,13 +19,11 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class LinearEquationSolverGeneric.
- *
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
+ * Implementation of functions within namespace LinearEquationSolver.
  */
 
-// deliberately there is no #include "LinearEquationSolverGeneric.hpp" !
+
+// no #include "LinearEquationSolverGeneric.hpp" !!!
 #include <cstddef>
 #include <algorithm>
 
@@ -35,137 +33,28 @@ limitations under the License.
 #include "matrix/SqMatrixGeneric.hpp"
 #include "../settings/omp_settings.h"
 
-/**
- * Constructor.
- * 
- * No coefficients or terms are set. They must be set using setCoef() and
- * SetTerm() before solve() can be called.
- */
-template<class T>
-math::LinearEquationSolverGeneric<T>::LinearEquationSolverGeneric()
-{
-    // Nothing to do
-}
 
-/**
- * Constructor that assigns values of system's coefficients and constant terms.
- * 
- * @note as it is possible to modify matrices of coefficients and/or terms later,
- *       their dimensions are not checked by this constructor.
- * 
- * @param coef - coefficients of the system of linear equations
- * @param term - constant terms of the system of linear equations
- * 
- * @throw LinearEquationSolverException if allocation of memory fails
- */
-template<class T>
-math::LinearEquationSolverGeneric<T>::LinearEquationSolverGeneric(const SqMatrixGeneric<T>& coef, const MatrixGeneric<T>& term) throw (math::LinearEquationSolverException)
-{
-    try
-    {
-        // just copy both matrices into internal members
-        this->m_coef = coef;
-        this->m_term = term;
-    }
-    catch (const math::MatrixException& mex )
-    {
-        // exception is only thrown when memory allocation fails
-        throw math::LinearEquationSolverException(math::LinearEquationSolverException::OUT_OF_MEMORY);
-    }
-}
-
-/**
- * @return reference to the internal matrix of coefficients
- */
-template<class T>
-math::SqMatrixGeneric<T>& math::LinearEquationSolverGeneric<T>::getCoef() const
-{
-    return this->m_coef;
-}
-
-/**
- * @return reference to the internal vector or matrix of constant terms
- */
-template<class T>
-math::MatrixGeneric<T>& math::LinearEquationSolverGeneric<T>::getTerm() const
-{
-    return this->m_term;
-}
-
-/**
- * Sets a square matrix with coefficients of the system of linear equations.
- * 
- * @note Dimensions of matrices are not checked by this method.
- * 
- * @param coef - square matrix with coefficients of the system of linear equations
- * 
- * @return reference to itself
- * 
- * @throw LinearEquationSolverException if allocation of memory fails
- */
-template<class T>
-math::LinearEquationSolverGeneric<T>& math::LinearEquationSolverGeneric<T>::setCoef(const math::SqMatrixGeneric<T>& coef) throw (math::LinearEquationSolverException)
-{
-    try
-    {
-        // just copy the matrix into the internal member
-        this->m_coef = coef;
-    }
-    catch ( const math::MatrixException& mex )
-    {
-        // exception is only thrown when memory allocation fails
-        throw math::LinearEquationSolverException(math::LinearEquationSolverException::OUT_OF_MEMORY);
-    }
-
-    return *this;
-}
-
-/**
- * Sets a vector or a matrix with constant terms of the system of linear equations.
- * 
- * @note Dimensions of matrices are not checked by this method.
- * 
- * @param term - vector or matrix with constant terms of the system of linear equations 
- * 
- * @return reference to itself
- * 
- * @throw LinearEquationSolverException if allocation of memory fails
- */
-template<class T>
-math::LinearEquationSolverGeneric<T>& math::LinearEquationSolverGeneric<T>::setTerm(const math::MatrixGeneric<T>& term) throw (math::LinearEquationSolverException)
-{
-    try
-    {
-        // just copy the matrix into the internal member
-        this->m_term = term;
-    }
-    catch ( const math::MatrixException& mex )
-    {
-        // exception is only thrown when memory allocation fails
-        throw math::LinearEquationSolverException(math::LinearEquationSolverException::OUT_OF_MEMORY);
-    }
-
-    return *this;
-}
 
 /**
  * Solves the system of linear equations and returns its unique solution if it exists.
- * Matrices of coefficients and terms must be set beforehand.
  * 
  * Number of coef's columns must be equal to the number of term's rows.
  * 
  * If unique solution does not exist (i.e. determinant of 'coef' is 0), an
  * exception will be thrown.
  * 
- * The method does not modify internal matrices (coefficients and constant terms)
- * so the same instance of the class can be reused as many times as desired.
- * 
+ * @param coef - a square matrix with coefficients of the system of linear equations
+ * @param term - a matrix with constant terms of the system of linear equations
  * @param sol - a reference to a matrix to be assigned the solution of equations
  * 
  * @throw LinearEquationSolverException if a unique solution cannot be found for any reason
  */
 template<class T>
-void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) const throw (math::LinearEquationSolverException)
+void math::LinearEquationSolver::solve(
+          const math::SqMatrixGeneric<T>& coef,
+          const math::MatrixGeneric<T>& term,
+          math::MatrixGeneric<T>& sol
+        ) throw (math::LinearEquationSolverException)
 {
     /*
      * The Gaussian elimination algorithm is implemented:
@@ -174,20 +63,20 @@ void math::LinearEquationSolverGeneric<T>::solve(math::MatrixGeneric<T>& sol) co
      * unique solution of a system of linear equations. More details about
      * the algorithm at: http://en.wikipedia.org/wiki/Gaussian_elimination
      */
-    const size_t N = this->m_coef.nrColumns();  // Nr. of unknowns
-    const size_t NT = this->m_term.nrColumns(); // Nr. of terms' columns
+    const size_t N = coef.nrColumns();          // Nr. of unknowns
+    const size_t NT = term.nrColumns();         // Nr. of terms' columns
     const size_t Nmax = std::max(N, NT);        // max. of both values
 
     // Check of dimensions
-    if ( N != this->m_term.nrRows() )
+    if ( N != term.nrRows() )
     {
         throw math::LinearEquationSolverException(math::LinearEquationSolverException::INVALID_DIMENSION);
     }
 
     try
     {
-        SqMatrixGeneric<T> temp(this->m_coef);
-        sol = this->m_term;
+        math::SqMatrixGeneric<T> temp(coef);
+        sol = term;
 
         // Try to convert the 'temp' into an identity matrix
         // by appropriately adding multiples of other lines to each line
