@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * A test module to test calculus classes
- * (InteGeneric, DiffGeneric)
+ * (IntegGeneric, DiffGeneric)
  */
 
 

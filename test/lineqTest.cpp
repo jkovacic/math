@@ -18,8 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * A test module to test classes for solving systems
- * of linear equations (LinearEquationSolverGeneric)
+ * A test module to test functions for solving systems
+ * of linear equations (LinearEquationSolver).
  */
 
 #include <iostream>
