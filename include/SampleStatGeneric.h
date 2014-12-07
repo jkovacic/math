@@ -20,7 +20,7 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class SampleStatGeneric that calculates sample's
+ * Declaration of functions in the namespace SampleStat that calculate sample's
  * sum, mean, variance, standard deviation, covariance, Pearson's r
  * (correlation), r squared, etc.
  */

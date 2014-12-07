@@ -21,7 +21,7 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{SampleStatGeneric.h}
  *
- * Declaration of the class SampleStatGeneric that calculates sample's
+ * Declaration of functions in the namespace SampleStat that calculate sample's
  * sum, mean, variance, standard deviation, covariance, Pearson's r
  * (correlation), r squared, etc.
  */
@@ -39,56 +39,55 @@ namespace math
 {
 
 /**
- * @brief A class that calculates sample's basic statistics, such as
- * sum, mean, variance, standard deviation, covariance, Pearson'r
+ * @brief A namespace containing functions that calculate sample's basic statistics, 
+ * such as sum, mean, variance, standard deviation, covariance, Pearson'r
  * (correlation), etc.
- *
- * The whole class is static, so no instantiation is necessary.
  */
-template <class T>
-class SampleStatGeneric
+namespace SampleStat
 {
 
-public:
-    static T min(const std::vector<T>& x) throw(StatisticsException);
-    static T max(const std::vector<T>& x) throw(StatisticsException);
-    static T sum(const std::vector<T>& x);
-    static T mean(const std::vector<T>& x) throw(StatisticsException);
-    static T var(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
-    static T var(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
-    static T stdev(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
-    static T stdev(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
-    static T cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(StatisticsException);
-    static T cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample=true) throw(StatisticsException);
-    static T cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
-    static T r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
+    template <class T>
+    T min(const std::vector<T>& x) throw(StatisticsException);
 
-private:
-    static T __getShift(const std::vector<T>& x, size_t Nmax=5);
-    static T __minmax(const std::vector<T>&x, bool min) throw(StatisticsException);
+    template <class T>
+    T max(const std::vector<T>& x) throw(StatisticsException);
 
-};  // class SampleStatGeneric
+    template <class T>
+    T sum(const std::vector<T>& x);
 
+    template <class T>
+    T mean(const std::vector<T>& x) throw(StatisticsException);
 
-// Declaration of specialized methods inside the name space declaration
-// is essential if implemented elsewhere:
-template<> float SampleStatGeneric<float>::stdev(const std::vector<float>& x, size_t df_sub) throw (StatisticsException);
-template<> double SampleStatGeneric<double>::stdev(const std::vector<double>& x, size_t df_sub) throw (StatisticsException);
-template<> long double SampleStatGeneric<long double>::stdev(const std::vector<long double>& x, size_t df_sub) throw (StatisticsException);
+    template <class T>
+    T var(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
 
+    template <class T>
+    T var(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
 
-// Samples with elements of types float, double and long double
-// make most sense, therefore the following types are predefined
-typedef SampleStatGeneric<float>        FSampleStat;
-typedef SampleStatGeneric<double>       SampleStat;
-typedef SampleStatGeneric<long double>  LDSampleStat;
+    template <class T>
+    T stdev(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
+
+    template <class T>
+    T stdev(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
+
+    template <class T>
+    T cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(StatisticsException);
+
+    template <class T>
+    T cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample=true) throw(StatisticsException);
+
+    template <class T>
+    T cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
+
+    template <class T>
+    T r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
+
+}  // namespace SampleStat
 
 }  // namespace math
 
 
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
+// DEFINITION
 #include "statistics/SampleStatGeneric.cpp"
 
 #endif  // _MATH_SAMPLESTATGENERIC_HPP_

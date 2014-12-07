@@ -18,8 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * A test module to test statistics classes
- * (SampleStatGeneric, SampleQuantileGeneric)
+ * A test module to test functionality in statistics related classes 
+ * and namespaces (SampleStat, SampleQuantileGeneric)
  */
 
 
@@ -41,7 +41,7 @@ using namespace math;
 // Nr. of entries in mtcars:
 #define LEN      ( 32 )
 
-// Nr. of tested quantile algorithms:
+// Nr. of probabilities in quantile test:
 #define N_PROBS  ( 9 )
 
 

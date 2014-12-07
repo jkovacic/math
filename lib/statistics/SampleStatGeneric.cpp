@@ -18,15 +18,13 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class SampleStatGeneric that calculates sample's
- * mean, variance, standard deviation, sum, etc.
- *
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
+ * Implementation of functions in the namespace SampleStat that calculate sample's
+ * sum, mean, variance, standard deviation, covariance, Pearson's r
+ * (correlation), r squared, etc.
  */
 
 
-// deliberately there is no #include "SampleStatGeneric.hpp" !
+// no #include "SampleStatGeneric.hpp" !!!
 #include <cstddef>
 #include <cmath>
 #include <vector>
@@ -39,6 +37,16 @@ limitations under the License.
 #include "exception/StatisticsException.hpp"
 
 
+// Implemntation of "private" functions
+namespace math
+{
+
+namespace SampleStat
+{
+
+namespace __private
+{
+
 /*
  * Finds an appropriate shift value (necessary to obtain variance or covariance)
  * among the first elements of 'x'.
@@ -49,7 +57,7 @@ limitations under the License.
  * @return element with the highest absolute value among the first 'Nmax' elements of 'x'
  */
 template <class T>
-T math::SampleStatGeneric<T>::__getShift(const std::vector<T>& x, size_t Nmax)
+T __getShift(const std::vector<T>& x, size_t Nmax = 5)
 {
     T retVal = x.at(0);
     T absRetVal = ( retVal<static_cast<T>(0) ? -retVal : retVal );
@@ -85,7 +93,7 @@ T math::SampleStatGeneric<T>::__getShift(const std::vector<T>& x, size_t Nmax)
  * @throw StatisticsException if 'x' is empty
  */
 template <class T>
-T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(math::StatisticsException)
+T __minmax(const std::vector<T>& x, bool min) throw(math::StatisticsException)
 {
     const size_t N = x.size();
 
@@ -130,6 +138,12 @@ T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(
     return retVal;
 }
 
+}  // namespace __private
+
+}  // namespace SampleStat
+
+}  // namespace math
+
 
 /**
  * @param x - vector of sample elements
@@ -139,9 +153,9 @@ T math::SampleStatGeneric<T>::__minmax(const std::vector<T>& x, bool min) throw(
  * @throw StatisticsException if 'x' is empty
  */
 template <class T>
-T math::SampleStatGeneric<T>::min(const std::vector<T>& x) throw(math::StatisticsException)
+T math::SampleStat::min(const std::vector<T>& x) throw(math::StatisticsException)
 {
-    return __minmax(x, true);
+    return math::SampleStat::__private::__minmax<T>(x, true);
 }
 
 
@@ -153,9 +167,9 @@ T math::SampleStatGeneric<T>::min(const std::vector<T>& x) throw(math::Statistic
  * @throw StatisticsException if 'x' is empty
  */
 template <class T>
-T math::SampleStatGeneric<T>::max(const std::vector<T>& x) throw(math::StatisticsException)
+T math::SampleStat::max(const std::vector<T>& x) throw(math::StatisticsException)
 {
-    return __minmax(x, false);
+    return math::SampleStat::__private::__minmax<T>(x, false);
 }
 
 
@@ -165,7 +179,7 @@ T math::SampleStatGeneric<T>::max(const std::vector<T>& x) throw(math::Statistic
  * @return sum of all sample values
  */
 template <class T>
-T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
+T math::SampleStat::sum(const std::vector<T>& x)
 {
     const size_t N = x.size();
 
@@ -226,7 +240,7 @@ T math::SampleStatGeneric<T>::sum(const std::vector<T>& x)
  * @throw StatisticsException if 'x' is empty
  */
 template <class T>
-T math::SampleStatGeneric<T>::mean(const std::vector<T>& x) throw(math::StatisticsException)
+T math::SampleStat::mean(const std::vector<T>& x) throw(math::StatisticsException)
 {
     /*
      * Arithmetical mean is calculated as:
@@ -248,7 +262,7 @@ T math::SampleStatGeneric<T>::mean(const std::vector<T>& x) throw(math::Statisti
         throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
-    return sum(x) / static_cast<T>(N);
+    return math::SampleStat::sum<T>(x) / static_cast<T>(N);
 }
 
 
@@ -266,7 +280,7 @@ T math::SampleStatGeneric<T>::mean(const std::vector<T>& x) throw(math::Statisti
  * @throw StatisticsException if 'x' is empty or if 'df_sub' exceeds sample's size
  */
 template <class T>
-T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
+T math::SampleStat::var(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * The best known algorithm to calculate a variance is:
@@ -318,7 +332,7 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
     }
 
     // Let K be equal to the first element:
-    const T K = __getShift(x);
+    const T K = math::SampleStat::__private::__getShift<T>(x);
 
     T sum  = static_cast<T>(0);
     T sum2 = static_cast<T>(0);
@@ -378,9 +392,9 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, size_t df_sub) throw(
  * @throw StatisticsException if the sample is empty or too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::var(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
+T math::SampleStat::var(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
 {
-    return var( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::var<T>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -397,9 +411,9 @@ T math::SampleStatGeneric<T>::var(const std::vector<T>& x, bool sample) throw(ma
  * @throw StatisticsException if the sample is empty or too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
+T math::SampleStat::stdev(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
 {
-    return stdev( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::stdev<T>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -417,7 +431,7 @@ T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, bool sample) throw(
  * @throw StatisticsException if 'x' is empty or 'df_sub' exceeds sample's size
  */
 template <class T>
-T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
+T math::SampleStat::stdev(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Standard deviation is calculated as square root
@@ -447,13 +461,21 @@ T math::SampleStatGeneric<T>::stdev(const std::vector<T>& x, size_t df_sub) thro
  * returned  value.
  * For easier maintainability, the specialization will be implemented
  * only once using a parameterized #define.
+ * 
+ * Note: specializations of templated functions must be implemented inside
+ *       their corresponding namespace(s).
  */
+namespace math
+{
+
+namespace SampleStat
+{
 
 #define _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(FD) \
 template<> \
-FD math::SampleStatGeneric<FD>::stdev(const std::vector<FD>& x, size_t df_sub) throw (math::StatisticsException) \
+FD stdev(const std::vector<FD>& x, size_t df_sub) throw (math::StatisticsException) \
 { \
-    return std::sqrt( var(x, df_sub) ); \
+    return std::sqrt( math::SampleStat::var<FD>(x, df_sub) ); \
 }
 // end of #define
 
@@ -469,7 +491,8 @@ _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(long double)
 // definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM not needed anymore, #undef it
 #undef _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV
 
-
+}  // namespace SampleStat
+}  // namespace math
 
 /**
  * Covariance of two equally sized samples.
@@ -487,7 +510,7 @@ _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(long double)
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or 'df_sub' exceeds single sample's size
  */
 template <class T>
-T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(math::StatisticsException)
+T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Covariance of two equally sized samples (X1 and X2) can be
@@ -545,8 +568,8 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
     }
 
     // K's are equal to the first elements of both samples
-    const T K1 = __getShift(x1);
-    const T K2 = __getShift(x2);
+    const T K1 = math::SampleStat::__private::__getShift<T>(x1);
+    const T K2 = math::SampleStat::__private::__getShift<T>(x2);
 
     T sum  = static_cast<T>(0);
     T sum1 = static_cast<T>(0);
@@ -614,9 +637,9 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample) throw(math::StatisticsException)
+T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample) throw(math::StatisticsException)
 {
-    return cov( x1, x2, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::cov<T>( x1, x2, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -634,7 +657,7 @@ T math::SampleStatGeneric<T>::cov(const std::vector<T>& x1, const std::vector<T>
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
+T math::SampleStat::cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
 {
     /*
      * Correlation can be calculated as:
@@ -649,7 +672,8 @@ T math::SampleStatGeneric<T>::cor(const std::vector<T>& x1, const std::vector<T>
 
     // Apply the population covariance and standard deviations to
     // allow smaller samples (at least one element each):
-    return cov(x1, x2, false) / ( stdev(x1, false) * stdev(x2, false) );
+    return math::SampleStat::cov<T>(x1, x2, false) / 
+           ( math::SampleStat::stdev<T>(x1, false) * math::SampleStat::stdev<T>(x2, false) );
 }
 
 
@@ -666,7 +690,7 @@ T math::SampleStatGeneric<T>::cor(const std::vector<T>& x1, const std::vector<T>
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
 template <class T>
-T math::SampleStatGeneric<T>::r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
+T math::SampleStat::r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
 {
     /*
      * R squared can be calculated by squaring the samples' correlation:
@@ -685,7 +709,8 @@ T math::SampleStatGeneric<T>::r2(const std::vector<T>& x1, const std::vector<T>&
     // Additionally apply population covariance and variances
     // to allow smaller samples (at least one element each).
 
-    const T cv = cov(x1, x2, false);
+    const T cv = math::SampleStat::cov<T>(x1, x2, false);
 
-    return (cv * cv) / ( var(x1, false) * var(x2, false) );
+    return (cv * cv) / 
+           ( math::SampleStat::var<T>(x1, false) * math::SampleStat::var<T>(x2, false) );
 }
