@@ -21,7 +21,7 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{RootFindGeneric.h}
  *
- * Declaration of the class RootFindGeneric with several
+ * Declaration of functions within the namespace RootFind with several
  * root finding algorithms.
  */
 
@@ -38,17 +38,14 @@ namespace math
 {
 
 /**
- * @brief A class with implementation of several root finding
+ * @brief A namespace with functions that implement several root finding
  *        algorithms.
- *
- * The whole class is static, so no instantiation is necessary.
  */
-template <class T>
-class RootFindGeneric
+namespace RootFind
 {
 
-public:
-    static T bisection(
+    template <class T>
+    T bisection(
            const IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
@@ -57,7 +54,8 @@ public:
          ) throw(RootFindException);
 
 
-    static T regulaFalsi(
+    template <class T>
+    T regulaFalsi(
            const IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
@@ -66,7 +64,8 @@ public:
          ) throw(RootFindException);
 
 
-    static T secant(
+    template <class T>
+    T secant(
            const IFunctionGeneric<T>& f,
            const T& r0,
            const T& r1,
@@ -75,7 +74,8 @@ public:
          ) throw(RootFindException);
 
 
-    static T newton(
+    template <class T>
+    T newton(
            const IFunctionGeneric<T>& f,
            const IFunctionGeneric<T>& diff,
            const T& x0,
@@ -84,7 +84,8 @@ public:
          ) throw(RootFindException);
 
 
-    static T quasiNewton(
+    template <class T>
+    T quasiNewton(
            const IFunctionGeneric<T>& f,
            const T& x0,
            const T& epsy = static_cast<T>(0),
@@ -92,32 +93,12 @@ public:
            size_t Nmax = 10000
          ) throw(RootFindException);
 
-
-private:
-
-    static T __newtonCommon(
-           const IFunctionGeneric<T>& f,
-           const IFunctionGeneric<T>& diff,
-           const T& x0,
-           const T& epsy,
-           const T& h,
-           size_t Nmax,
-           bool diffFunc
-         ) throw(RootFindException);
-};  // class RootFindGeneric
-
-// Functions of type float, double and long double
-// make most sense, therefore the following types are predefined
-typedef RootFindGeneric<float>        FRootFind;
-typedef RootFindGeneric<double>       RootFind;
-typedef RootFindGeneric<long double>  LDRootFind;
+}  // namepsace RootFind
 
 }  // namespace math
 
 
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
+// DEFINITION
 #include "root_find/RootFindGeneric.cpp"
 
 #endif  // _MATH_ROOT_FIND_GENERIC_HPP_

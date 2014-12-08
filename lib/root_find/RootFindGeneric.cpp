@@ -18,11 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class RootFindGeneric with several
+ * Implementation of functions within the namespace RootFind with several
  * root finding algorithms.
- *
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
 
@@ -35,6 +32,121 @@ limitations under the License.
 #include "util/IFunctionGeneric.hpp"
 #include "calculus/DiffGeneric.hpp"
 
+
+// Definition of "private" functions
+
+namespace math
+{
+
+namespace RootFind
+{
+
+namespace __private
+{
+
+/*
+ * Common implementation of the Newton - Raphson algorithm.
+ * This is a private method, called by both public methods.
+ * Depending on 'diffFunc', it will evaluate f's slope either
+ * via the provided function 'diff' or numerically via the central
+ * method. In the latter case 'diff' is ignored.
+ *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
+ * @param f - instance of a class with the function to find its root
+ * @param diff - instance of a class with the derivation of 'f.func'
+ * @param x0 - starting point of the algorithm
+ * @param epsy - tolerance
+ * @param h - step size for numerical derivation (ignored if 'diffFunc'==true)
+ * @param Nmax - maximum number of iterations
+ * @param diffFunc - if true evaluate f's slope via 'diff', otherwise numerically
+ *
+ * @return root of the function 'f' if it exists
+ *
+ * @throw RootFindException if the root could not be found
+ *
+ * @see newton
+ * @see quasiNewton
+ */
+template <class T>
+T __newtonCommon(
+           const math::IFunctionGeneric<T>& f,
+           const math::IFunctionGeneric<T>& diff,
+           const T& x0,
+           const T& epsy,
+           const T& h,
+           size_t Nmax,
+           bool diffFunc
+         ) throw(math::RootFindException)
+{
+    /*
+     * The Newton - Raphson method is described in detail at:
+     * https://en.wikipedia.org/wiki/Newton%27s_method
+     */
+
+    // sanity check
+    if ( 0 == Nmax )
+    {
+        throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+    }
+
+    try
+    {
+        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
+
+        // sanity check of the final epsilon:
+        if ( EPSY <= static_cast<T>(0) )
+        {
+            throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+        }
+
+        T x = x0;
+        T fx = f.func(x);
+
+        // start of the actual Newton - Raphson method
+        for ( size_t iter = Nmax;
+              false == math::NumericUtil::isZero<T>(fx, EPSY) && iter > 0;
+              --iter )
+        {
+            const T dx = ( true == diffFunc ?
+                      diff.func(x) :
+                      math::DiffGeneric<T>::diff(f, x,h, math::EDiffMethod::CENTRAL) );
+
+            if ( true == math::NumericUtil::isZero<T>(dx) )
+            {
+                // cannot continue as division by zero would occur inthe next step
+                throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
+            }
+
+            // Update 'x':
+            x -= fx / dx;
+            fx = f.func(x);
+        }  // for iter
+
+        // Has the algorithm converged to any root?
+        if ( false == math::NumericUtil::isZero<T>(fx, EPSY) )
+        {
+            // apparently not
+            throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
+        }
+
+        return x;
+    }
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::RootFindException(math::RootFindException::UNDEFINED);
+    }
+    catch ( const math::CalculusException& cex )
+    {
+        // cex is only thrown if derivation function is undefined near x
+        throw math::RootFindException(math::RootFindException::UNDEFINED);;
+    }
+}
+
+}  // namespace __private
+}  // namespace RootFind
+}  // namespace math
 
 
 /**
@@ -62,7 +174,7 @@ limitations under the License.
  * @throw RootFindException if the root could not be found
  */
 template <class T>
-T math::RootFindGeneric<T>::bisection(
+T math::RootFind::bisection(
            const math::IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
@@ -189,7 +301,7 @@ T math::RootFindGeneric<T>::bisection(
  * @throw RootFindException if the root could not be found
  */
 template <class T>
-T math::RootFindGeneric<T>::regulaFalsi(
+T math::RootFind::regulaFalsi(
            const math::IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
@@ -220,7 +332,7 @@ T math::RootFindGeneric<T>::regulaFalsi(
         short int sa, sb, sc;
 
         a = std::min(from, to);
-        b   = std::max(from, to);
+        b = std::max(from, to);
         fa = f.func(a);
         fb = f.func(b);
         sa = math::NumericUtil::sign<T>(fa);
@@ -313,7 +425,7 @@ T math::RootFindGeneric<T>::regulaFalsi(
  * @throw RootFindException if the root could not be found
  */
 template <class T>
-T math::RootFindGeneric<T>::secant(
+T math::RootFind::secant(
            const math::IFunctionGeneric<T>& f,
            const T& r0,
            const T& r1,
@@ -359,10 +471,10 @@ T math::RootFindGeneric<T>::secant(
               --iter )
         {
             const T df = fo - fn;
-        	if ( true == math::NumericUtil::isZero<T>(df) )
-        	{
+            if ( true == math::NumericUtil::isZero<T>(df) )
+            {
                 throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
-        	}
+            }
 
             // Obtain new 'xn' (and 'fn') and update 'xo' (and 'fo')
             const T c = xo - fo * (xo-xn) / df;
@@ -417,7 +529,7 @@ T math::RootFindGeneric<T>::secant(
  * @see quasiNewton
  */
 template <class T>
-T math::RootFindGeneric<T>::newton(
+T math::RootFind::newton(
            const math::IFunctionGeneric<T>& f,
            const math::IFunctionGeneric<T>& diff,
            const T& x0,
@@ -431,7 +543,8 @@ T math::RootFindGeneric<T>::newton(
      */
 
     // The algorithm is implemented in __newtonCommon:
-    return __newtonCommon(f, diff, x0, epsy, static_cast<T>(0), Nmax, true);
+    return math::RootFind::__private::__newtonCommon<T>(
+            f, diff, x0, epsy, static_cast<T>(0), Nmax, true );
 }
 
 
@@ -466,7 +579,7 @@ T math::RootFindGeneric<T>::newton(
  * @see EdiffMethod
  */
 template <class T>
-T math::RootFindGeneric<T>::quasiNewton(
+T math::RootFind::quasiNewton(
            const math::IFunctionGeneric<T>& f,
            const T& x0,
            const T& epsy,
@@ -480,106 +593,6 @@ T math::RootFindGeneric<T>::quasiNewton(
      */
 
     // The algorithm is implemented in __newtonCommon:
-    return __newtonCommon(f, f, x0, epsy, h, Nmax, false);
-}
-
-
-/*
- * Common implementation of the Newton - Raphson algorithm.
- * This is a private method, called by both public methods.
- * Depending on 'diffFunc', it will evaluate f's slope either
- * via the provided function 'diff' or numerically via the central
- * method. In the latter case 'diff' is ignored.
- *
- * @note 'epsy' will be increased to the system epsilon for the type
- *       if its value is too small.
- *
- * @param f - instance of a class with the function to find its root
- * @param diff - instance of a class with the derivation of 'f.func'
- * @param x0 - starting point of the algorithm
- * @param epsy - tolerance
- * @param h - step size for numerical derivation (ignored if 'diffFunc'==true)
- * @param Nmax - maximum number of iterations
- * @param diffFunc - if true evaluate f's slope via 'diff', otherwise numerically
- *
- * @return root of the function 'f' if it exists
- *
- * @throw RootFindException if the root could not be found
- *
- * @see newton
- * @see quasiNewton
- */
-template <class T>
-T math::RootFindGeneric<T>::__newtonCommon(
-           const math::IFunctionGeneric<T>& f,
-           const math::IFunctionGeneric<T>& diff,
-           const T& x0,
-           const T& epsy,
-           const T& h,
-           size_t Nmax,
-           bool diffFunc
-         ) throw(math::RootFindException)
-{
-    /*
-     * The Newton - Raphson method is described in detail at:
-     * https://en.wikipedia.org/wiki/Newton%27s_method
-     */
-
-    // sanity check
-    if ( 0 == Nmax )
-    {
-        throw math::RootFindException(math::RootFindException::INVALID_ARGS);
-    }
-
-    try
-    {
-        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
-
-        // sanity check of the final epsilon:
-        if ( EPSY <= static_cast<T>(0) )
-        {
-            throw math::RootFindException(math::RootFindException::INVALID_ARGS);
-        }
-
-        T x = x0;
-        T fx = f.func(x);
-
-        // start of the actual Newton - Raphson method
-        for ( size_t iter = Nmax;
-              false == math::NumericUtil::isZero<T>(fx, EPSY) && iter > 0;
-              --iter )
-        {
-            const T dx = ( true == diffFunc ?
-                      diff.func(x) :
-                      math::DiffGeneric<T>::diff(f, x,h, math::EDiffMethod::CENTRAL) );
-
-            if ( true == math::NumericUtil::isZero<T>(dx) )
-            {
-                // cannot continue as division by zero would occur inthe next step
-                throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
-            }
-
-            // Update 'x':
-            x -= fx / dx;
-            fx = f.func(x);
-        }  // for iter
-
-        // Has the algorithm converged to any root?
-        if ( false == math::NumericUtil::isZero<T>(fx, EPSY) )
-        {
-            // apparently not
-            throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
-        }
-
-        return x;
-    }
-    catch ( const math::FunctionException& fex )
-    {
-        throw math::RootFindException(math::RootFindException::UNDEFINED);
-    }
-    catch ( const math::CalculusException& cex )
-    {
-        // cex is only thrown if derivation function is undefined near x
-        throw math::RootFindException(math::RootFindException::UNDEFINED);;
-    }
+    return math::RootFind::__private::__newtonCommon<T>(
+            f, f, x0, epsy, h, Nmax, false );
 }

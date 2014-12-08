@@ -20,7 +20,7 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class RootFindGeneric with several
+ * Declaration of functions within the namespace RootFind with several
  * root finding algorithms.
  */
 

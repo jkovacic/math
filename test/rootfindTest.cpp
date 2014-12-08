@@ -18,8 +18,7 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * A test module to test root finding classes
- * (RootFindGeneric)
+ * A test module to test root finding functions (RootFind)
  */
 
 
