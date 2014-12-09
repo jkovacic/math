@@ -320,7 +320,7 @@ T math::NormalDist::probInt(
         const T to = std::max(a, b);
         const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
 
-        retVal = math::IntegGeneric<T>::integH(pdf, from, to, HSTEP, INT_ALG);
+        retVal = math::Integ::integH<T>(pdf, from, to, HSTEP, INT_ALG);
     }
     catch ( math::CalculusException& cex )
     {
@@ -386,7 +386,7 @@ T math::NormalDist::prob(
         const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
 
         retVal = static_cast<T>(1) / static_cast<T>(2) +
-                 math::IntegGeneric<T>::integH(pdf, from, to, HSTEP, INT_ALG);
+                 math::Integ::integH<T>(pdf, from, to, HSTEP, INT_ALG);
     }
     catch ( math::CalculusException& cex )
     {
@@ -481,7 +481,7 @@ T math::NormalDist::quant(
         while ( false == math::NumericUtil::isZero<T>(cdf-P, TOL) )
         {
             x = x0 - (cdf-P) / pdf.func(x0);
-            cdf = cdf0 + math::IntegGeneric<T>::integH(pdf, x0, x, HSTEP, INT_ALG);
+            cdf = cdf0 + math::Integ::integH<T>(pdf, x0, x, HSTEP, INT_ALG);
             x0 = x;
             cdf0 = cdf;
         }

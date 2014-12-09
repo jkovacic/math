@@ -18,7 +18,7 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class IntegGeneric and related classes that
+ * Implementation of the namespace Integ with functions that
  * perform numerical integration of continuous functions.
  */
 
@@ -36,146 +36,16 @@ limitations under the License.
 #include "omp/omp_coarse.h"
 
 
-/**
- * Performs numerical integration using the selected algorithm.
- *
- * 'a' and 'b' can be interchanged, in this case the opposite value
- * will be returned.
- *
- * @note The actual number of integrating intervals may be slightly increased
- *       if required by the selected algorithm.
- *
- * @param f - instance of a class with the function to integrate
- * @param a - lower bound of the integration interval
- * @param b - upper bound of the integration interval
- * @param n - desired number of integrating intervals
- * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
- *
- * @return definite integral of f.func() between 'a' and 'b'
- *
- * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
- *
- * @see IFunctionGeneric
- */
-template <class T>
-T math::IntegGeneric<T>::integ(
-        const math::IFunctionGeneric<T>& f,
-        const T& a,
-        const T& b,
-        size_t n,
-        math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+// Implementation of "private" functions
+
+namespace math
 {
-    // sanity check:
-    if ( n <= 0 )
-    {
-        throw math::CalculusException(math::CalculusException::NOT_ENOUGH_STEPS);
-    }
 
-    // If both boundaries are the same, the result is equal to 0
-    if ( true == math::NumericUtil::isZero<T>(a-b) )
-    {
-        return static_cast<T>(0);
-    }
-
-    /*
-     * Individual integration algorithm functions expect 'b' to be
-     * greater than 'a'. If this is not the case, swap the boundaries
-     * and revert the result's sign.
-     */
-    T retVal = static_cast<T>(1);
-
-    const T from = std::min(a, b);
-    const T to   = std::max(a, b);
-    if ( a > b )
-    {
-        retVal = -retVal;
-    }
-
-    switch(algorithm)
-    {
-        case math::EIntegAlg::RECTANGLE :
-        {
-            retVal *= __rectangle(f, from, to, n);
-            break;
-        }
-
-        case math::EIntegAlg::TRAPEZOIDAL :
-        {
-            retVal *= __trapezoidal(f, from, to, n);
-            break;
-        }
-
-        case math::EIntegAlg::SIMPSON :
-        {
-            retVal *= __simpson(f, from, to , n);
-            break;
-        }
-
-        case math::EIntegAlg::SIMPSON_3_8 :
-        {
-            retVal *= __simpson38(f, from, to, n);
-            break;
-        }
-
-        case math::EIntegAlg::BOOLE :
-        {
-            retVal *= __boole(f, from, to, n);
-            break;
-        }
-
-        default :
-            throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
-    }  // switch
-
-    return retVal;
-}
-
-
-
-/**
- * Performs numerical integration using the selected algorithm.
- *
- * 'a' and 'b' can be interchanged, in this case the opposite value
- * will be returned.
- *
- * @note The actual size of integrating step may be slightly decreased
- *       if required by the selected algorithm.
- *
- * @param f - instance of a class with the function to integrate
- * @param a - lower bound of the integration interval
- * @param b - upper bound of the integration interval
- * @param h - desired size of an integrating step
- * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
- *
- * @return definite integral of f.func() between 'a' and 'b'
- *
- * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
- *
- * @see IFunctionGeneric
- */
-template <class T>
-T math::IntegGeneric<T>::integH(
-        const math::IFunctionGeneric<T>& f,
-        const T& a,
-        const T& b,
-        const T& h,
-        math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+namespace Integ
 {
-    if ( h < math::NumericUtil::getEPS<T>() )
-    {
-        throw math::CalculusException(math::CalculusException::INVALID_STEP);
-    }
 
-    // Just obtain the (approximate) number of integrating intervals
-    // from the size
-    const size_t n = static_cast<size_t>(std::floor(std::abs(b-a) / h) +
-    		static_cast<T>(1) / static_cast<T>(2) ) + 1;
-
-    return integ( f, a, b, n, algorithm );
-}
-
+namespace __private
+{
 
 /*
  * Numerical integration using the rectangle method.
@@ -193,7 +63,7 @@ T math::IntegGeneric<T>::integH(
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
-T math::IntegGeneric<T>::__rectangle(
+T __rectangle(
         const math::IFunctionGeneric<T>& f,
         const T& a,
         const T& b,
@@ -258,6 +128,95 @@ T math::IntegGeneric<T>::__rectangle(
 
 
 /*
+ * General function that implements closed Newton - Cotes formulae of all
+ * degrees (e.g. trapezoidal, Simpson's, Boole's rule, etc.) to obtain proper
+ * definite integrals.
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - desired number of integrating steps
+ * @param degree - degree of the method
+ * @param coef - array of coefficients to multiply non-boundary points (must be of size 'degree'!)
+ * @param bCoef - coefficient to multiply both boundary points
+ * @param hCoef - coefficient to multiply the step size to obtain the final result
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw CalculusException if function is not defined between 'a' and 'b'
+ */
+template <class T>
+T __closedNewtonCotes(
+               const math::IFunctionGeneric<T>& f,
+               const T& a,
+               const T& b,
+               size_t n,
+               size_t degree,
+               const T* coef,
+               const T& bCoef,
+               const T& hCoef
+             ) throw(math::CalculusException)
+{
+    /*
+     * More info about Newton - Cotes formulae:
+     * - https://en.wikipedia.org/wiki/Newton–Cotes_formulas
+     * - http://mathworld.wolfram.com/Newton-CotesFormulas.html
+     */
+
+    try
+    {
+        /*
+         * With N integrating intervals, the function must be evaluated
+         * in N+1 points. Two points ('a' and 'b') are handled separately,
+         * the remaining N-1 points are processed by a for loop.
+         */
+
+        // N must be divisible by 'degree' !
+        const size_t N = n + ( 0!=n%degree ? degree-n%degree: 0 );
+        const T h = (b-a) / static_cast<T>(N);
+
+        // Do not preinitialize sum to hCoef * (f(a) + f(b)) now as it may
+        // be reset back to 0 by the reduction clause
+        T sum = static_cast<T>(0);
+
+        // Coarse grained parallelism
+        #pragma omp parallel num_threads(ompIdeal(N-1)) \
+                    if((N-1)>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(f, a, coef, degree) \
+                    reduction(+ : sum)
+        {
+            const size_t thnr = omp_get_thread_num();
+            const size_t nthreads  = omp_get_num_threads();
+            const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
+            const size_t istart = elems_per_thread * thnr + 1;
+            const size_t iend = std::min(istart + elems_per_thread, N);
+
+            T tempSum = static_cast<T>(0);
+            T xi = a + static_cast<T>(istart) * h;
+            for ( size_t i=istart;
+                  i < iend;
+                  ++i,  xi += h )
+            {
+                tempSum += coef[i%degree] * f.func(xi);
+            }
+
+            // update sum in a thread safe manner
+            sum += tempSum;
+        }  // omp parallel
+
+        // finally add the remaining two points (at 'a' and 'b'):
+        sum += bCoef * ( f.func(a) + f.func(b) );
+
+        return sum * hCoef *  h;
+    }  // try
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::CalculusException(math::CalculusException::UNDEFINED);
+    }
+}
+
+
+/*
  * Numerical integration using the trapezoidal rule.
  *
  * For more info about the method, see:
@@ -273,7 +232,7 @@ T math::IntegGeneric<T>::__rectangle(
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
-T math::IntegGeneric<T>::__trapezoidal(
+T __trapezoidal(
         const math::IFunctionGeneric<T>& f,
         const T& a,
         const T& b,
@@ -314,7 +273,7 @@ T math::IntegGeneric<T>::__trapezoidal(
 
     const T c[1] = { static_cast<T>(1) };
 
-    return __closedNewtonCotes(
+    return __closedNewtonCotes<T>(
             f, a, b, n, 1, c, static_cast<T>(1)/static_cast<T>(2), static_cast<T>(1)
         );
 }
@@ -336,7 +295,7 @@ T math::IntegGeneric<T>::__trapezoidal(
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
-T math::IntegGeneric<T>::__simpson(
+T __simpson(
        const math::IFunctionGeneric<T>& f,
        const T& a,
        const T& b,
@@ -359,7 +318,7 @@ T math::IntegGeneric<T>::__simpson(
     const T c[2] = { static_cast<T>(2),
                      static_cast<T>(4) };
 
-    return __closedNewtonCotes(
+    return math::Integ::__private::__closedNewtonCotes<T>(
             f, a, b, n, 2, c, static_cast<T>(1), static_cast<T>(1)/static_cast<T>(3)
         );
 }
@@ -381,7 +340,7 @@ T math::IntegGeneric<T>::__simpson(
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
-T math::IntegGeneric<T>::__simpson38(
+T __simpson38(
       const math::IFunctionGeneric<T>& f,
       const T& a,
       const T& b,
@@ -405,7 +364,7 @@ T math::IntegGeneric<T>::__simpson38(
                      static_cast<T>(3),
                      static_cast<T>(3) };
 
-    return __closedNewtonCotes(
+    return math::Integ::__private::__closedNewtonCotes<T>(
             f, a, b, n, 3, c, static_cast<T>(1), static_cast<T>(3)/static_cast<T>(8)
         );
 }
@@ -427,7 +386,7 @@ T math::IntegGeneric<T>::__simpson38(
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
 template <class T>
-T math::IntegGeneric<T>::__boole(
+T __boole(
       const math::IFunctionGeneric<T>& f,
       const T& a,
       const T& b,
@@ -458,96 +417,154 @@ T math::IntegGeneric<T>::__boole(
                      static_cast<T>(12),
                      static_cast<T>(32) };
 
-    return __closedNewtonCotes(
+    return math::Integ::__private::__closedNewtonCotes<T>(
             f, a, b, n, 4, c, static_cast<T>(7), static_cast<T>(2)/static_cast<T>(45)
         );
 }
 
 
-/*
- * General function that implements closed Newton - Cotes formulae of all
- * degrees (e.g. trapezoidal, Simpson's, Boole's rule, etc.) to obtain proper
- * definite integrals.
- * 
+}  // namespace __private
+}  // namepsace Integ
+}  // namespace math
+
+
+
+/**
+ * Performs numerical integration using the selected algorithm.
+ *
+ * 'a' and 'b' can be interchanged, in this case the opposite value
+ * will be returned.
+ *
+ * @note The actual number of integrating intervals may be slightly increased
+ *       if required by the selected algorithm.
+ *
  * @param f - instance of a class with the function to integrate
  * @param a - lower bound of the integration interval
  * @param b - upper bound of the integration interval
- * @param n - desired number of integrating steps
- * @param degree - degree of the method
- * @param coef - array of coefficients to multiply non-boundary points (must be of size 'degree'!)
- * @param bCoef - coefficient to multiply both boundary points
- * @param hCoef - coefficient to multiply the step size to obtain the final result
- * 
+ * @param n - desired number of integrating intervals
+ * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
+ *
  * @return definite integral of f.func() between 'a' and 'b'
  *
- * @throw CalculusException if function is not defined between 'a' and 'b'
+ * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
+ *
+ * @see IFunctionGeneric
  */
 template <class T>
-T math::IntegGeneric<T>::__closedNewtonCotes(
-               const math::IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               size_t n,
-               size_t degree,
-               const T* coef,
-               const T& bCoef,
-               const T& hCoef
-             ) throw(math::CalculusException)
+T math::Integ::integ(
+        const math::IFunctionGeneric<T>& f,
+        const T& a,
+        const T& b,
+        size_t n,
+        math::EIntegAlg::alg algorithm
+      ) throw(math::CalculusException)
 {
-    /*
-     * More info about Newton - Cotes formulae:
-     * - https://en.wikipedia.org/wiki/Newton–Cotes_formulas
-     * - http://mathworld.wolfram.com/Newton-CotesFormulas.html
-     */
-
-    try
+    // sanity check:
+    if ( n <= 0 )
     {
-        /*
-         * With N integrating intervals, the function must be evaluated
-         * in N+1 points. Two points ('a' and 'b') are handled separately,
-         * the remaining N-1 points are processed by a for loop.
-         */
-
-        // N must be divisible by 'degree' !
-        const size_t N = n + ( 0!=n%degree ? degree-n%degree: 0 );
-        const T h = (b-a) / static_cast<T>(N);
-        
-        // Do not preinitialize sum to hCoef * (f(a) + f(b)) now as it may
-        // be reset back to 0 by the reduction clause
-        T sum = static_cast<T>(0);
-
-        // Coarse grained parallelism
-        #pragma omp parallel num_threads(ompIdeal(N-1)) \
-                    if((N-1)>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(f, a, coef, degree) \
-                    reduction(+ : sum)
-        {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr + 1;
-            const size_t iend = std::min(istart + elems_per_thread, N);
-
-            T tempSum = static_cast<T>(0);
-            T xi = a + static_cast<T>(istart) * h;
-            for ( size_t i=istart;
-                  i < iend;
-                  ++i,  xi += h )
-            {
-                tempSum += coef[i%degree] * f.func(xi);
-            }  
-
-            // update sum in a thread safe manner
-            sum += tempSum;
-        }  // omp parallel
-
-        // finally add the remaining two points (at 'a' and 'b'):
-        sum += bCoef * ( f.func(a) + f.func(b) );
-
-        return sum * hCoef *  h;
-    }  // try
-    catch ( const math::FunctionException& fex )
-    {
-        throw math::CalculusException(math::CalculusException::UNDEFINED);
+        throw math::CalculusException(math::CalculusException::NOT_ENOUGH_STEPS);
     }
+
+    // If both boundaries are the same, the result is equal to 0
+    if ( true == math::NumericUtil::isZero<T>(a-b) )
+    {
+        return static_cast<T>(0);
+    }
+
+    /*
+     * Individual integration algorithm functions expect 'b' to be
+     * greater than 'a'. If this is not the case, swap the boundaries
+     * and revert the result's sign.
+     */
+    T retVal = static_cast<T>(1);
+
+    const T from = std::min(a, b);
+    const T to   = std::max(a, b);
+    if ( a > b )
+    {
+        retVal = -retVal;
+    }
+
+    switch(algorithm)
+    {
+        case math::EIntegAlg::RECTANGLE :
+        {
+            retVal *= math::Integ::__private::__rectangle<T>(f, from, to, n);
+            break;
+        }
+
+        case math::EIntegAlg::TRAPEZOIDAL :
+        {
+            retVal *= math::Integ::__private::__trapezoidal<T>(f, from, to, n);
+            break;
+        }
+
+        case math::EIntegAlg::SIMPSON :
+        {
+            retVal *= math::Integ::__private::__simpson<T>(f, from, to , n);
+            break;
+        }
+
+        case math::EIntegAlg::SIMPSON_3_8 :
+        {
+            retVal *= math::Integ::__private::__simpson38<T>(f, from, to, n);
+            break;
+        }
+
+        case math::EIntegAlg::BOOLE :
+        {
+            retVal *= math::Integ::__private::__boole<T>(f, from, to, n);
+            break;
+        }
+
+        default :
+            throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
+    }  // switch
+
+    return retVal;
+}
+
+
+
+/**
+ * Performs numerical integration using the selected algorithm.
+ *
+ * 'a' and 'b' can be interchanged, in this case the opposite value
+ * will be returned.
+ *
+ * @note The actual size of integrating step may be slightly decreased
+ *       if required by the selected algorithm.
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param h - desired size of an integrating step
+ * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
+ *
+ * @return definite integral of f.func() between 'a' and 'b'
+ *
+ * @throw CalculusException if input arguments are invalid or the function is not defined between 'a' and 'b'
+ *
+ * @see IFunctionGeneric
+ */
+template <class T>
+T math::Integ::integH(
+        const math::IFunctionGeneric<T>& f,
+        const T& a,
+        const T& b,
+        const T& h,
+        math::EIntegAlg::alg algorithm
+      ) throw(math::CalculusException)
+{
+    if ( h < math::NumericUtil::getEPS<T>() )
+    {
+        throw math::CalculusException(math::CalculusException::INVALID_STEP);
+    }
+
+    // Just obtain the (approximate) number of integrating intervals
+    // from the size
+    const size_t n = static_cast<size_t>(std::floor(std::abs(b-a) / h) +
+    		static_cast<T>(1) / static_cast<T>(2) ) + 1;
+
+    return math::Integ::integ<T>( f, a, b, n, algorithm );
 }

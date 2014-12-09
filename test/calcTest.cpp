@@ -18,8 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * A test module to test calculus classes
- * (IntegGeneric, DiffGeneric)
+ * A test module to test calculus functions
+ * (Integ, DiffGeneric)
  */
 
 

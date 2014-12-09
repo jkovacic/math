@@ -21,7 +21,7 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{IntegGeneric.h}
  *
- * Declaration of the class IntegGeneric and related classes that
+ * Declaration of the namespace Integ with functions that
  * perform numerical integration of continuous functions.
  */
 
@@ -55,18 +55,14 @@ struct EIntegAlg
 
 
 /**
- * A class with several implemented algorithms for
+ * A namespace with several implemented algorithms for
  * numerical integration.
- *
- * The class is static, so no instantiation is necessary.
  */
-template <class T>
-class IntegGeneric
+namespace Integ
 {
 
-public:
-
-    static T integ(
+    template <class T>
+    T integ(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
@@ -74,7 +70,9 @@ public:
                EIntegAlg::alg algorithm=EIntegAlg::SIMPSON
              ) throw(CalculusException);
 
-    static T integH(
+
+    template <class T>
+    T integH(
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
@@ -83,63 +81,10 @@ public:
              ) throw(CalculusException);
 
 
-private:
+}  // namespace Integ
 
-    static T __closedNewtonCotes(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               size_t n,
-               size_t degree,
-               const T* coef,
-               const T& bCoef,
-               const T& hCoef
-             ) throw(CalculusException);
 
-    static T __rectangle(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               size_t n
-             ) throw(CalculusException);
-
-    static T __trapezoidal(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               size_t n
-             ) throw(CalculusException);
-
-    static T __simpson(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               size_t n
-             ) throw(CalculusException);
-
-    static T __simpson38(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               size_t n
-             ) throw(CalculusException);
-
-    static T __boole(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               size_t n
-             ) throw(CalculusException);
-
-};  // class IntegGeneric
-
-// Float, double and long double integrators make most sense,
-// therefore the following types are predefined
-typedef IntegGeneric<float>          FInteg;
-typedef IntegGeneric<double>         Integ;
-typedef IntegGeneric<long double>    LDInteg;
-
-}
+}  // namespace math
 
 // DEFINITION
 #include "calculus/IntegGeneric.cpp"

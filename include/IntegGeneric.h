@@ -20,7 +20,7 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class IntegGeneric and related classes that
+ * Declaration of the namespace Integ with functions that
  * perform numerical integration of continuous functions.
  */
 
