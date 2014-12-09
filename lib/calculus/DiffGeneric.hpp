@@ -21,7 +21,7 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{DiffGeneric.h}
  *
- * Declaration of the class DiffGeneric and related classes that
+ * Declaration of functions within the namespace Diff with that
  * perform numerical differentiation of continuous functions.
  */
 
@@ -55,22 +55,18 @@ struct EDiffMethod
 
 
 /**
- * A class with several implemented algorithms for
+ * A namespace with several implemented algorithms for
  * numerical differentiation.
- *
- * The class is static, so no instantiation is necessary.
  * 
  * @note Numerical differentiation is typically not very accurate.
  *       Make sure that the step 'h' is not too small to avoid
  *       large floating point rounding errors.
  */
-template <class T>
-class DiffGeneric
+namespace Diff
 {
 
-public:
-
-    static T diff(
+    template <class T>
+    T diff(
                const IFunctionGeneric<T>& f,
                const T& x,
                const T& h,
@@ -78,41 +74,10 @@ public:
              ) throw(CalculusException);
 
 
-private:
 
-    static T __forwardDiff(
-               const IFunctionGeneric<T>& f,
-               const T& x,
-               const T& h
-             ) throw(FunctionException);
+}  // namespace Diff
 
-    static T __backwardDiff(
-               const IFunctionGeneric<T>& f,
-               const T& x,
-               const T& h
-             ) throw(FunctionException);
-
-    static T __centralDiff(
-               const IFunctionGeneric<T>& f,
-               const T& x,
-               const T& h
-             ) throw(FunctionException);
-
-    static T __5pointDiff(
-               const IFunctionGeneric<T>& f,
-               const T& x,
-               const T& h
-             ) throw(FunctionException);
-
-};  // class DiffGeneric
-
-// Float, double and long double differentiators make most sense,
-// therefore the following types are predefined
-typedef DiffGeneric<float>          FDiff;
-typedef DiffGeneric<double>         Diff;
-typedef DiffGeneric<long double>    LDDiff;
-
-}
+}  // namespace math
 
 // DEFINITION
 #include "calculus/DiffGeneric.cpp"

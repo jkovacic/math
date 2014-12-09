@@ -111,7 +111,7 @@ T __newtonCommon(
         {
             const T dx = ( true == diffFunc ?
                       diff.func(x) :
-                      math::DiffGeneric<T>::diff(f, x,h, math::EDiffMethod::CENTRAL) );
+                      math::Diff::diff<T>(f, x,h, math::EDiffMethod::CENTRAL) );
 
             if ( true == math::NumericUtil::isZero<T>(dx) )
             {

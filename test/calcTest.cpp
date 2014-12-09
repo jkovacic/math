@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * A test module to test calculus functions
- * (Integ, DiffGeneric)
+ * (Integ, Diff)
  */
 
 
@@ -87,7 +87,7 @@ void calculusTest()
         for ( int method=EDiffMethod::FORWARD; method<=EDiffMethod::FIVE_POINT; ++method )
         {
             cout << "Method " << method << ": f'(4) = " <<
-                    Diff::diff(f, 4, 0.001, static_cast<EDiffMethod::method>(method)) << endl;
+                    Diff::diff(f, 4.0, 0.001, static_cast<EDiffMethod::method>(method)) << endl;
         }
         cout << "Expected result: 0.48496878235998" << endl;
     }

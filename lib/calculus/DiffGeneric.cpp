@@ -18,7 +18,7 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class DiffGeneric and related classes that
+ * Implementation of functions within the namespace Diff that
  * perform numerical differentiation of continuous functions.
  */
 
@@ -27,75 +27,16 @@ limitations under the License.
 #include "util/NumericUtil.hpp"
 
 
-/**
- * Performs numerical differentiation of a function at the given
- * point 'x' using the selected algorithm.
- *
- * @param f - instance of a class with the function to differentiate
- * @param x - point to estimate the slope
- * @param h - step size
- * @param method - one of the supported methods (default: CENTRAL)
- *
- * @return estimation of function's slope at the point 'x'
- *
- * @throw CalculusException if input arguments are invalid or the function is not defined near 'x'
- */
-template <class T>
-T math::DiffGeneric<T>::diff(
-        const math::IFunctionGeneric<T>& f,
-        const T& x,
-        const T& h,
-        math::EDiffMethod::method method
-      ) throw(math::CalculusException)
+// Implementation of "private" functions
+
+namespace math
 {
-    // sanity check:
-    if ( h < math::NumericUtil::getEPS<T>() )
-    {
-        throw math::CalculusException(math::CalculusException::INVALID_STEP);
-    }
 
-    try
-    {
-        T retVal;
+namespace Diff
+{
 
-        switch (method)
-        {
-            case math::EDiffMethod::FORWARD :
-            {
-                retVal = __forwardDiff(f, x, h);
-                break;
-            }
-
-            case math::EDiffMethod::BACKWARD :
-            {
-                retVal = __backwardDiff(f, x, h);
-                break;
-            }
-
-            case math::EDiffMethod::CENTRAL :
-            {
-                retVal = __centralDiff(f, x, h);
-                break;
-            }
-
-            case math::EDiffMethod::FIVE_POINT :
-            {
-                retVal = __5pointDiff(f, x, h);
-                break;
-            }
-
-            default :
-                throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
-        }  //switch
-
-        return retVal;
-    }  // try
-    catch ( const math::FunctionException& fex )
-    {
-        throw math::CalculusException(math::CalculusException::UNDEFINED);
-    }
-}
-
+namespace __private
+{
 
 /*
  * Numerical differentiation of a function at the given
@@ -110,7 +51,7 @@ T math::DiffGeneric<T>::diff(
  * @throw FunctionException if the function is not defined near 'x'
  */
 template <class T>
-T math::DiffGeneric<T>::__forwardDiff(
+T __forwardDiff(
         const math::IFunctionGeneric<T>& f,
         const T& x,
         const T& h
@@ -141,7 +82,7 @@ T math::DiffGeneric<T>::__forwardDiff(
  * @throw FunctionException if the function is not defined near 'x'
  */
 template <class T>
-T math::DiffGeneric<T>::__backwardDiff(
+T __backwardDiff(
         const math::IFunctionGeneric<T>& f,
         const T& x,
         const T& h
@@ -172,7 +113,7 @@ T math::DiffGeneric<T>::__backwardDiff(
  * @throw FunctionException if the function is not defined near 'x'
  */
 template <class T>
-T math::DiffGeneric<T>::__centralDiff(
+T __centralDiff(
         const math::IFunctionGeneric<T>& f,
         const T& x,
         const T& h
@@ -203,7 +144,7 @@ T math::DiffGeneric<T>::__centralDiff(
  * @throw FunctionException if the function is not defined near 'x'
  */
 template <class T>
-T math::DiffGeneric<T>::__5pointDiff(
+T __5pointDiff(
         const math::IFunctionGeneric<T>& f,
         const T& x,
         const T& h
@@ -222,4 +163,80 @@ T math::DiffGeneric<T>::__5pointDiff(
               static_cast<T>(8) * f.func(x-h) +
               f.func(x - static_cast<T>(2) * h) ) /
            (static_cast<T>(12) * h);
+}
+
+
+}  // namespace __private
+}  // namespace Diff
+}  // namespace math
+
+
+
+/**
+ * Performs numerical differentiation of a function at the given
+ * point 'x' using the selected algorithm.
+ *
+ * @param f - instance of a class with the function to differentiate
+ * @param x - point to estimate the slope
+ * @param h - step size
+ * @param method - one of the supported methods (default: CENTRAL)
+ *
+ * @return estimation of function's slope at the point 'x'
+ *
+ * @throw CalculusException if input arguments are invalid or the function is not defined near 'x'
+ */
+template <class T>
+T math::Diff::diff(
+        const math::IFunctionGeneric<T>& f,
+        const T& x,
+        const T& h,
+        math::EDiffMethod::method method
+      ) throw(math::CalculusException)
+{
+    // sanity check:
+    if ( h < math::NumericUtil::getEPS<T>() )
+    {
+        throw math::CalculusException(math::CalculusException::INVALID_STEP);
+    }
+
+    try
+    {
+        T retVal;
+
+        switch (method)
+        {
+            case math::EDiffMethod::FORWARD :
+            {
+                retVal = math::Diff::__private::__forwardDiff<T>(f, x, h);
+                break;
+            }
+
+            case math::EDiffMethod::BACKWARD :
+            {
+                retVal = math::Diff::__private::__backwardDiff<T>(f, x, h);
+                break;
+            }
+
+            case math::EDiffMethod::CENTRAL :
+            {
+                retVal = math::Diff::__private::__centralDiff<T>(f, x, h);
+                break;
+            }
+
+            case math::EDiffMethod::FIVE_POINT :
+            {
+                retVal = math::Diff::__private::__5pointDiff<T>(f, x, h);
+                break;
+            }
+
+            default :
+                throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
+        }  //switch
+
+        return retVal;
+    }  // try
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::CalculusException(math::CalculusException::UNDEFINED);
+    }
 }

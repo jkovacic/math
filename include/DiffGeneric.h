@@ -20,7 +20,7 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class DiffGeneric and related classes that
+ * Declaration of functions within the namespace Diff with that
  * perform numerical differentiation of continuous functions.
  */
 
