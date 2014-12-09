@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * A test module to test functionality in statistics related classes 
- * and namespaces (SampleStat, SampleQuantileGeneric)
+ * and namespaces (SampleStat, NormalDist, SampleQuantileGeneric)
  */
 
 
@@ -32,6 +32,7 @@ limitations under the License.
 #include "mtcopy.h"
 #include "SampleStatGeneric.h"
 #include "SampleQuantileGeneric.h"
+#include "NormalDistGeneric.h"
 #include "StatisticsException.h"
 
 using namespace std;
@@ -125,6 +126,43 @@ void statisticsTest()
         cout << "r^2: " << SampleStat::r2(vmpgs, vwts) << " (expected: 0.7528328)" << endl;
 
         /*
+         * R code to test normal distribution related functions:
+         *
+           dnorm(4.5, mean=2, sd=3)
+           [1] 0.09397063
+
+           (6.7 - 2) / 3
+           [1] 1.566667
+
+           2 - 1.3 * 3
+           [1] -1.9
+
+           pnorm(1.72, mean=2, sd=3)
+           [1] 0.4628194
+
+           pnorm(2.48, mean=2, sd=3, lower.tail=FALSE)
+           [1] 0.4364405
+
+           pnorm(3, mean=2, sd=3) - pnorm(1, mean=2, sd=3)
+           [1] 0.2611173
+
+           qnorm(0.75, mean=2, sd=3)
+           [1] 4.023469
+
+           qnorm(0.52, mean=2, sd=3, lower.tail=FALSE)
+           [1] 1.849539
+         */
+                cout << endl;
+                cout << "N(2,3): z for x = 6.7:  " << NormalDist::getZ(6.7, 2.0, 3.0) << " (expected: 1.566667)" << endl;
+                cout << "N(2,3): x for z = -1.3: " << NormalDist::getX(-1.3, 2.0, 3.0) << " (expected: -1.9)" << endl;
+                cout << "N(2,3) at x=4.5: " << NormalDist::pdf(4.5, 2.0, 3.0) << " (expected: 0.09397063)" << endl;
+                cout << "N(2,3): P(x<1.72): " << NormalDist::prob(1.72, 2.0, 3.0) << " (expected: 0.4628194)" << endl;
+                cout << "N(2,3): P(x>2.48): " << NormalDist::prob(2.48, 2.0, 3.0, false) << " (expected: 0.4364405)" << endl;
+                cout << "N(2,3): P(1<x<3): " << NormalDist::probInt(3.0, 1.0, 2.0, 3.0) << " (expected: 0.2611173)" << endl;
+                cout << "N(2,3): q(p>0.75): " << NormalDist::quant(0.75, 2.0, 3.0) << " (expected: 4.023469)" << endl;
+                cout << "N(2,3): q(p<0.52): " << NormalDist::quant(0.52, 2.0, 3.0, false) << " (expected: 1.849539)" << endl;
+                cout << endl;
+        /*
          * R code to perform basic unit test of quantiles:
 
            data(mtcars)
@@ -172,7 +210,7 @@ void statisticsTest()
              }
          */
 
-        cout << "Test of various quantile methods:" << endl;
+        cout << endl << "Test of various quantile methods:" << endl;
 
         // Not really the best practice, but as long as the enum is contiguous...
         for ( int type=EQntlType::R1; type<=EQntlType::R9; ++type )

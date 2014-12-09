@@ -569,11 +569,22 @@ Sample covariance: -5.11668 (expected: -5.116685)
 Population covariance (w/o B.c.): -4.95679 (expected: -4.956788)
 Pearson's r: -0.867659 (expected: -0.8676594)
 r^2: 0.752833 (expected: 0.7528328)
+
+N(2,3): z for x = 6.7:  1.56667 (expected: 1.566667)
+N(2,3): x for z = -1.3: -1.9 (expected: -1.9)
+N(2,3) at x=4.5: 0.0939706 (expected: 0.09397063)
+N(2,3): P(x<1.72): 0.462819 (expected: 0.4628194)
+N(2,3): P(x>2.48): 0.436441 (expected: 0.4364405)
+N(2,3): P(1<x<3): 0.261117 (expected: 0.2611173)
+N(2,3): q(p>0.75): 4.02347 (expected: 4.023469)
+N(2,3): q(p<0.52): 1.8496 (expected: 1.849539)
+
 Median: 19.2 (expected: 19.2)
 1st quartile: 15.425 (expected: 15.425)
 3rd quartile: 22.8 (expected: 22.800)
 IQR: 7.375 (expected: 7.375)
 63th percentile: 21.212 (expected: 21.212)
+
 Test of various quantile methods:
 R1:	10.4	14.3	15.2	17.3	19.2	21	22.8	30.4	33.9
 Exp.:	10.4	14.3	15.2	17.3	19.2	21.0	22.8	30.4	33.9

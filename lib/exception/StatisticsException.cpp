@@ -70,6 +70,9 @@ void math::StatisticsException::what(std::ostream& str) const
         case UNSUPPORTED_QUANTILE_METHOD :
             str << "The method to estimate the quantile is not supported yet.";
             break;
+        case INVALID_STDEV :
+            str << "Standard deviation is negative or zero.";
+            break;
 
         default:
             // Should not occur but handle it anyway.

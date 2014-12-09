@@ -52,6 +52,7 @@ struct StatisticsException : public IMathException
         OUT_OF_MEMORY,                  /// allocation of memory failed
         INVALID_PROBABILTY,             /// probability is invalid
         UNSUPPORTED_QUANTILE_METHOD,    /// unsupported method to estimate the quantile
+        INVALID_STDEV,                  /// negative or zero standard deviation
     };
 
     err_codes error;    /// type of an error
