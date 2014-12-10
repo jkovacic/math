@@ -33,6 +33,7 @@ limitations under the License.
 
 
 // No #include "NormalDistGeneric.hpp" !!!
+#include <cstddef>
 #include <cmath>
 #include <algorithm>
 
@@ -40,14 +41,9 @@ limitations under the License.
 #include "util/IFunctionGeneric.hpp"
 #include "exception/FunctionException.hpp"
 #include "exception/StatisticsException.hpp"
-#include "calculus/IntegGeneric.hpp"
-#include "exception/CalculusException.hpp"
+#include "root_find/RootFindGeneric.hpp"
+#include "exception/RootFindException.hpp"
 
-
-// Optimal step size (0.0001)
-#define HSTEP              ( static_cast<T>(1) / static_cast<T>(10000) )
-// Selected Integration algorithm for calculation of probability intervals
-#define INT_ALG            math::EIntegAlg::SIMPSON_3_8
 
 namespace math
 {
@@ -98,6 +94,7 @@ public:
          */
     }
 
+
     /*
      * "Reimplementation" of 'func' to return the value of the
      * probability distribution function (pdf) for the given x,
@@ -140,11 +137,200 @@ public:
          (%o2)  3.989422804014326779399461b−1
          */
 
-    	const T z = (x - m_mu) / m_sigma;
+    	const T z = (x - this->m_mu) / this->m_sigma;
         return static_cast<T>(0.3989422804014326779399461L) *
-               std::exp( -z*z / static_cast<T>(2) ) / m_sigma;
+               std::exp( -z*z / static_cast<T>(2) ) / this->m_sigma;
     }
 };  // class NormDistPdf
+
+
+/*
+ * Extension of IFunctionGeneric whose function 'func'
+ * returns normal distribution's cumulative distribution function (cdf)
+ * for the given 'x'. Note that distribution's mean value and standard deviation
+ * are passed via the constructor.
+ *
+ * @note It is assumed that the standard deviation is valid
+ *       (strictly greater than 0). This check should be performed
+ *       beforehand.
+ *
+ * @note As this class is also passed to a root finding method, 'func'
+ *       actually returns the value of cdf, subtracted by the desired
+ *       probability 'p'. By default 'p' is set to 0 and must be set via
+ *       the setP() method.
+ */
+template <class T>
+class NormDistCdf : public math::IFunctionGeneric<T>
+{
+
+private:
+    const T m_mu;            // normal distribution's mean value
+    const T m_sigma;         // normal distribution's standard deviation
+    T m_p;                   // the actual value of cdf will be subtracted by this value
+
+public:
+
+    /*
+     * Constructor, assigns normal distribution's mean value
+     * and standard deviation that are used for calculation of cdf.
+     * The subtrahend is automatically set to 0.
+     *
+     * @note The constructor assumes that the standard deviation is
+     *       valid (strictly greater than 0) and does not check  this.
+     *
+     * @param mu - normal distribution's mean value (default 0)
+     * @param sigma - normal distribution's standard deviation, must be greater than 0 (default: 1)
+     */
+    NormDistCdf(
+                const T& mu = static_cast<T>(0),
+                const T& sigma = static_cast<T>(1) ) :
+        m_mu (mu), m_sigma (sigma), m_p(static_cast<T>(0))
+    {
+        /*
+         * All properties have been assigned above,
+         * so there is nothing else to do.
+         */
+    }
+
+
+    /*
+     * Sets the subtrahend to subtract from the actual cdf.
+     * This is useful when the class is passed to a root finding method.
+     * The constructor will set this subtrahend to 0.
+     *
+     * @param p - desired subtrahend
+     */
+    void setP(const T& p)
+    {
+        this->m_p = p;
+    }
+
+
+    /*
+     * "Reimplementation" of 'func' to return the value of the
+     * cumulative distribution function (cdf) for the given x,
+     * and previously assigned mean value and standard deviation.
+     * The cdf value is additionally subtracted by the subtrahend
+     * 'p' that can be set via setP().
+     *
+     * @param x - value to be calculated the cumulative distribution function
+     *
+     * @return cdf(x, mu, sigma) - p
+     *
+     * @throw FunctionException (never by this function)
+     */
+    T func(const T& x) const throw (math::FunctionException)
+    {
+        /*
+         * The cdf represents probability that a value from the normal
+         * distribution is smaller than a specified value 'x' and can be
+         * expressed as:
+         *
+         *             x                   x
+         *            /              1    /
+         *   P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
+         *            /              2    /
+         *          -inf                 mu
+         *
+         *  One approach to calculate this would be numerical integration,
+         *  however there are more efficient methods available.
+         *
+         *  As evident from:
+         * 	https://en.wikipedia.org/wiki/Normal_distribution
+         * 	cdf can be further expressed as:
+         *
+         * 	               +-                             -+
+         * 	            1  |         /      x - mu       \ |
+         * 	  cdf(x) = --- | 1 + erf | ----------------- | |
+         * 	            2  |         \  sigma * sqrt(2)  / |
+         * 	               +-                             -+
+         *
+         * 	where erf is the so called error function, defined as:
+         *
+         * 	                      inf
+         * 	               2       /  -t^2
+         * 	  erf(x) = ----------  | e    dt
+         * 	            sqrt(pi)   /
+         * 	                       x
+         *
+         * The definite integral cannot be calculated analytically,
+         * however the exponential can be expanded to a Taylor series
+         * and each term can be integrated separately. As evident from
+         * https://en.wikipedia.org/wiki/Error_function#Taylor_series
+         * the error function can thus be expanded into the following
+         * Taylor series:
+         *
+         *                       +-      3     5      7      9        -+
+         *                2      |      z     z      z      z          |
+         *   err(z) ~ ---------- | z - --- + ---- - ---- + ----- - ... |
+         *             sqrt(pi)  |      3     10     42     216        |
+         *                       +-                                   -+
+         *
+         *                        inf               i
+         *                       -----            -----     2
+         *                2      \        z       |   |   -z
+         *   err(z) ~ ----------  >   --------- * |   | -------
+         *             sqrt(pi)  /     2*i + 1    |   |    j
+         *                       -----            |   |
+         *                        i=0              j=1
+         *
+         * The implemented algorithm will add Taylor series terms until
+         * a term's absolute value drops below the specified tolerance.
+         */
+
+        /*
+         *
+         * High precision (25 digits) approximation for necessary numerical
+         * constants 1 / sqrt(2) and 2/sqrt(pi)
+         * as obtained by the following Maxima code:
+         *
+    	 (%i1)  fpprec : 25$
+    	 (%i2)  bfloat(1/sqrt(2));
+    	 (%o2)  7.071067811865475244008444b−1
+    	 (%i3)  bfloat(2/sqrt(%pi));
+    	 (%o3)  1.128379167095512573896159b0
+    	 */
+
+    	// Tolerance for the last Taylor series term (1e-5)
+    	const T TOL = static_cast<T>(1) / static_cast<T>(100000);
+
+        /*
+         *            x - mu
+         *   z = -----------------
+         *        sigma * sqrt(2)
+         */
+        const T z = static_cast<T>(0.7071067811865475244008444L) *
+                    ( x - this->m_mu ) / this->m_sigma;
+
+        // Subterms of the Taylor series:
+        T zt = z * static_cast<T>(1.128379167095512573896159L);
+        T t = zt;
+
+        // Initial value of the 'erf':
+        T erf = t;
+
+        // Add Taylor series terms to 'erf' until term's abs. value
+        // drops below TOL:
+        for ( size_t i=1; false==math::NumericUtil::isZero<T>(t, TOL); ++i )
+        {
+            // update the product term from the algorithm described above:
+            zt *= -z*z / static_cast<T>(i);
+            // new Taylor series element:
+            t = zt / (static_cast<T>(2) * static_cast<T>(i) + static_cast<T>(1) );
+            erf += t;
+        }
+
+        /*
+         * Finally calculate the return value:
+         *
+         * cdf = 0.5 * (1 + erf)
+         *
+         * Additionally m_p is subtracted from the cdf.
+         */
+        return ( erf + static_cast<T>(1) ) / static_cast<T>(2) - this->m_p;
+    }
+
+};  // class NormDistCdf
 
 
 /*
@@ -304,7 +490,7 @@ T math::NormalDist::probInt(
     /*
      *              b
      *              /
-     *   P(a<x<b) = | pdf(t) dt
+     *   P(a<x<b) = | pdf(t) dt  =  cdf(b) - cdf(a)
      *              /
      *              a
      */
@@ -312,23 +498,11 @@ T math::NormalDist::probInt(
     // sanity check:
     math::NormalDist::__private::__checkSigma<T>(sigma);
 
-    T retVal = static_cast<T>(0);
+    const T from = std::min(a, b);
+    const T to = std::max(a, b);
 
-    try
-    {
-        const T from = std::min(a, b);
-        const T to = std::max(a, b);
-        const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
-
-        retVal = math::Integ::integH<T>(pdf, from, to, HSTEP, INT_ALG);
-    }
-    catch ( math::CalculusException& cex )
-    {
-        // 'pdf' is defined everywhere, the same holds for integration,
-    	// hence this exception should never be  thrown.
-    }
-
-    return retVal;
+    return math::NormalDist::prob(to, mu, sigma) -
+           math::NormalDist::prob(from, mu, sigma);
 }
 
 
@@ -354,43 +528,32 @@ T math::NormalDist::prob(
     ) throw (math::StatisticsException)
 {
     /*
-     * Lower tail probability ( P(t<x) ):
+     * Lower tail probability ( P(t<x) ) is calculated inside the class
+     * NormDistCdf. See comments inside its implementation for more details.
      *
-     *            x                   x
-     *            /              1    /
-     *   P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
-     *            /              2    /
-     *          -inf                  mu
-     *
-     * (also valid for x<mu).
-     *
-     *
-     * Upper tail probability ( P(t>x) ):
-     *
-     *                               x                   mu
-     *                          1    /              1    /
-     *   P(t>x) = 1 - P(t<x) = --- - | pdf(t) dt = --- + | pdf(t) dt
-     *                          2    /              2    /
-     *                              mu                   x
+     * For the upper tail probability ( P(t>x) ) just return the complement
+     * of the lower tail probability: 1 - cdf(x)
      */
 
     // sanity check
     math::NormalDist::__private::__checkSigma<T>(sigma);
 
+    const math::NormalDist::__private::NormDistCdf<T> cdf(mu, sigma);
+
     T retVal = static_cast<T>(-1);
 
     try
     {
-        const T from = ( true==lowerTail ? mu : x );
-        const T to = ( true==lowerTail ? x : mu );
-        const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
+        retVal = cdf.func(x);
 
-        retVal = static_cast<T>(1) / static_cast<T>(2) +
-                 math::Integ::integH<T>(pdf, from, to, HSTEP, INT_ALG);
+        if ( false == lowerTail )
+        {
+            retVal = static_cast<T>(1) - retVal;
+        }
     }
-    catch ( math::CalculusException& cex )
+    catch ( const math::FunctionException& fex )
     {
-        // 'pdf' is defined everywhere, the same holds for integration,
+        // 'cdf' is defined everywhere,
         // hence this exception should never be  thrown.
     }
 
@@ -436,28 +599,6 @@ T math::NormalDist::quant(
      * monotonically increasing and its derivative (pdf) is also known and relatively
      * simple obtain, the Newton - Raphson root finding method is chosen that is
      * guaranteed to be reasonably precise and reasonably fast.
-     *
-     * However, the cdf is a special function (a result of integration) that cannot
-     * be expressed analytically, the root finding method, implemented by
-     * math::IntegrationGeneric<T>::newton() will not be used as it would require
-     * integration over the same intervals at each iteration, which may
-     * be time consuming. Instead a slightly modified procedure will be applied.
-     * When a new value of 'x' is calculated, the "integration" will just update
-     * the previous value of cdf by the integral over the difference in x's:
-     *
-     *              cdf(x0) - p
-     *    x = x0 - -------------
-     *                pdf(x0)
-     *
-     *                       x
-     *                       /
-     *    cdf(x) = cdf(x0) + | pdf(t) dt
-     *                       /
-     *                      x0
-     *
-     * The procedure is iterated until cdf(x) gets reasonably close to
-     * the desired probability 'p'. The algorithm is expected to converge
-     * quite quickly, so no limit in the number of iterations is imposed.
      */
 
     T retVal = static_cast<T>(0);
@@ -467,43 +608,16 @@ T math::NormalDist::quant(
         const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
         const T TOL = static_cast<T>(1) / static_cast<T>(10000);
         const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
+        math::NormalDist::__private::NormDistCdf<T> cdf(mu, sigma);
+        cdf.setP(P);
 
-        // The algorithm will start at x = mu, where the cdf is known
-        // to equal exactly 1/2.
-        T cdf0 = static_cast<T>(1) / static_cast<T>(2);
-        T x0 = mu;
-
-        // This initialization is necessary to perform the first loop condition check:
-        T x = x0;
-        T cdf = cdf0;
-
-        // Iterate until 'f' gets close enough to 'p'
-        while ( false == math::NumericUtil::isZero<T>(cdf-P, TOL) )
-        {
-            x = x0 - (cdf-P) / pdf.func(x0);
-            cdf = cdf0 + math::Integ::integH<T>(pdf, x0, x, HSTEP, INT_ALG);
-            x0 = x;
-            cdf0 = cdf;
-        }
-
-        retVal = x;
+        retVal = math::RootFind::newton(cdf, pdf, mu, TOL, static_cast<size_t>(-1));
     }
-    catch ( math::FunctionException& fex )
+    catch ( math::RootFindException& rex )
     {
-        // 'pdf' is defined everywhere, hence
-        // this exception should never be  thrown.
-    }
-    catch ( math::CalculusException& cex )
-    {
-        // 'pdf' and 'cdf' are defined everywhere, consequently
-    	// the integral of cdf is defined for any integration interval.
-        // Hence this exception should never be  thrown.
+        // The Newton's method should always converge quite quickly,
+        // hence this exception is never expected to be thrown.
     }
 
     return retVal;
 }
-
-
-// Undef all macros:
-#undef HSTEP
-#undef INT_ALG
