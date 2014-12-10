@@ -226,11 +226,11 @@ public:
          * distribution is smaller than a specified value 'x' and can be
          * expressed as:
          *
-         *             x                   x
-         *            /              1    /
-         *   P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
-         *            /              2    /
-         *          -inf                 mu
+         *                     x                   x
+         *                     /              1    /
+         *   cdf(x) = P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
+         *                     /              2    /
+         *                   -inf                 mu
          *
          *  One approach to calculate this would be numerical integration,
          *  however there are more efficient methods available.
@@ -501,8 +501,8 @@ T math::NormalDist::probInt(
     const T from = std::min(a, b);
     const T to = std::max(a, b);
 
-    return math::NormalDist::prob(to, mu, sigma) -
-           math::NormalDist::prob(from, mu, sigma);
+    return math::NormalDist::prob<T>(to, mu, sigma) -
+           math::NormalDist::prob<T>(from, mu, sigma);
 }
 
 
@@ -611,12 +611,14 @@ T math::NormalDist::quant(
         math::NormalDist::__private::NormDistCdf<T> cdf(mu, sigma);
         cdf.setP(P);
 
-        retVal = math::RootFind::newton(cdf, pdf, mu, TOL, static_cast<size_t>(-1));
+        retVal = math::RootFind::newton<T>(cdf, pdf, mu, TOL, static_cast<size_t>(-1));
     }
     catch ( math::RootFindException& rex )
     {
-        // The Newton's method should always converge quite quickly,
-        // hence this exception is never expected to be thrown.
+        // This exception can only be thrown in an unlikely event that the
+        // root find algorithm could not converge despite the large 
+        // number of allowed iterations.
+        throw math::StatisticsException(math::StatisticsException::OPERATION_FAILED);
     }
 
     return retVal;

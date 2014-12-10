@@ -53,6 +53,7 @@ struct StatisticsException : public IMathException
         INVALID_PROBABILTY,             /// probability is invalid
         UNSUPPORTED_QUANTILE_METHOD,    /// unsupported method to estimate the quantile
         INVALID_STDEV,                  /// negative or zero standard deviation
+        OPERATION_FAILED,               /// unable to perform an operation
     };
 
     err_codes error;    /// type of an error
