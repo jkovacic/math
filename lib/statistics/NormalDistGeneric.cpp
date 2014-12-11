@@ -37,13 +37,14 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
+#include "../settings/stat_settings.h"
+
 #include "util/NumericUtil.hpp"
 #include "util/IFunctionGeneric.hpp"
 #include "exception/FunctionException.hpp"
 #include "exception/StatisticsException.hpp"
 #include "root_find/RootFindGeneric.hpp"
 #include "exception/RootFindException.hpp"
-
 
 namespace math
 {
@@ -291,8 +292,9 @@ public:
     	 (%o3)  1.128379167095512573896159b0
     	 */
 
-    	// Tolerance for the last Taylor series term (1e-5)
-    	const T TOL = static_cast<T>(1) / static_cast<T>(100000);
+    	// Tolerance for the last Taylor series term
+    	const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / 
+                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
 
         /*
          *            x - mu
@@ -606,7 +608,11 @@ T math::NormalDist::quant(
     try
     {
         const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
-        const T TOL = static_cast<T>(1) / static_cast<T>(10000);
+
+        // Tolerance for the Newton - Raphson root finding method:
+        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / 
+                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+
         const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
         math::NormalDist::__private::NormDistCdf<T> cdf(mu, sigma);
         cdf.setP(P);

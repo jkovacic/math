@@ -109,6 +109,9 @@ DEP_OMPSETTINGS = $(SETTINGDIR)omp_settings.h
 DEP_OMPHEADER = $(LIBOMPDIR)omp_header.h
 DEP_OMPCOARSE = $(LIBOMPDIR)omp_coarse.h
 
+# Dependencies of other settings headers
+DEP_STAT_SETTINGS = $(SETTINGDIR)stat_settings.h
+
 
 # Object dependencies of templated classes
 # Note #1: Some dependencies may repeat several times.
@@ -148,7 +151,7 @@ DEP_ROOTFIND = $(LIBROOTFINDDIR)RootFindGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) 
 
 DEP_SAMPLESTAT = $(LIBSTATDIR)SampleStatGeneric $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 DEP_SAMPLEQUANT = $(LIBSTATDIR)SampleQuantileGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY)
-DEP_NORMDIST = $(LIBSTATDIR)NormalDistGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_ROOTFIND)
+DEP_NORMDIST = $(LIBSTATDIR)NormalDistGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_STAT_SETTINGS) $(DEP_ROOTFIND)
 
 
 
