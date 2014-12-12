@@ -233,26 +233,26 @@ public:
          *                     /              2    /
          *                   -inf                 mu
          *
-         *  One approach to calculate this would be numerical integration,
-         *  however there are more efficient methods available.
+         * One approach to calculate this would be numerical integration,
+         * however there are more efficient methods available.
          *
-         *  As evident from:
-         * 	https://en.wikipedia.org/wiki/Normal_distribution
-         * 	cdf can be further expressed as:
+         * As evident from:
+         * https://en.wikipedia.org/wiki/Normal_distribution
+         * cdf can be further expressed as:
          *
-         * 	               +-                             -+
-         * 	            1  |         /      x - mu       \ |
-         * 	  cdf(x) = --- | 1 + erf | ----------------- | |
-         * 	            2  |         \  sigma * sqrt(2)  / |
-         * 	               +-                             -+
+         *                +-                             -+
+         *             1  |         /      x - mu       \ |
+         *   cdf(x) = --- | 1 + erf | ----------------- | |
+         *             2  |         \  sigma * sqrt(2)  / |
+         *                +-                             -+
          *
-         * 	where erf is the so called error function, defined as:
+         * where erf is the so called error function, defined as:
          *
-         * 	                      inf
-         * 	               2       /  -t^2
-         * 	  erf(x) = ----------  | e    dt
-         * 	            sqrt(pi)   /
-         * 	                       x
+         *                       inf
+         *                2       /  -t^2
+         *   erf(x) = ----------  | e    dt
+         *             sqrt(pi)   /
+         *                        x
          *
          * The definite integral cannot be calculated analytically,
          * however the exponential can be expanded to a Taylor series
@@ -263,14 +263,14 @@ public:
          *
          *                       +-      3     5      7      9        -+
          *                2      |      z     z      z      z          |
-         *   err(z) ~ ---------- | z - --- + ---- - ---- + ----- - ... |
+         *   erf(z) ~ ---------- | z - --- + ---- - ---- + ----- - ... |
          *             sqrt(pi)  |      3     10     42     216        |
          *                       +-                                   -+
          *
          *                        inf               i
          *                       -----            -----     2
          *                2      \        z       |   |   -z
-         *   err(z) ~ ----------  >   --------- * |   | -------
+         *   erf(z) ~ ----------  >   --------- * |   | -------
          *             sqrt(pi)  /     2*i + 1    |   |    j
          *                       -----            |   |
          *                        i=0              j=1
@@ -297,9 +297,9 @@ public:
                       static_cast<T>(STAT_DIST_PROB_TOL_DEN);
 
         /*
-         *            x - mu
-         *   z = -----------------
-         *        sigma * sqrt(2)
+         *            x - mu            sqrt(2) * (x - mu)
+         *   z = -----------------  =  --------------------
+         *        sigma * sqrt(2)            2 * sigma
          */
         const T z = static_cast<T>(0.7071067811865475244008444L) *
                     ( x - this->m_mu ) / this->m_sigma;

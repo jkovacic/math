@@ -126,23 +126,23 @@ void rootFindTest()
          (%o5)  1.895494267033981
          */
         x0 = RootFind::bisection(f, 1.0, 3.0, 1e-9, 1e-9);
-        cout << "Bisection method:\t\tx0 = " << x0 << "\t";
+        cout << "Bisection method:       x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::regulaFalsi(f, 1.0, 3.0, 1e-9, 1e-9);
-        cout << "Regula falsi method:\tx0 = " << x0 << "\t";
+        cout << "Regula falsi method:    x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::secant(f, 1.0, 3.0, 1e-9);
-        cout << "Secant method:\t\t\tx0 = " << x0 << "\t";
+        cout << "Secant method:          x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::newton(f, d, 1.0, 1e-9);
-        cout << "Newton's method:\t\tx0 = " << x0 << "\t";
+        cout << "Newton's method:        x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::quasiNewton(f, 1.0, 1e-9, 0.001);
-        cout << "Quasi Newton's method:\tx0 = " << x0 << "\t";
+        cout << "Quasi Newton's method:  x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         cout << "Correct root: 1.895494267033981" << endl;

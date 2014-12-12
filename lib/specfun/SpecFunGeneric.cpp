@@ -25,6 +25,7 @@ limitations under the License.
 // no #include "SpecFunGeneric.hpp" !!!
 #include <cmath>
 #include <complex>
+#include <cstddef>
 
 #include "util/NumericUtil.hpp"
 
@@ -136,11 +137,11 @@ T __lnGamma(const T& x)
      * one of the most convenient ones is the Lanczos approximation
      * https://en.wikipedia.org/wiki/Lanczos_approximation
      *
-     *                                   z-0.5
-     *             _  -----+    (z+g-0.5)
-     *   G(z) ~=    \/ 2*pi  * ---------------- * Lg(z)
-     *                              z+g-0.5
-     *                             e
+     *                                  z-0.5
+     *               -----+    (z+g-0.5)
+     *   G(z) ~=   \/ 2*pi  * ---------------- * Lg(z)
+     *                             z+g-0.5
+     *                            e
      *
      * where Lg(z) is defined as:
      *
@@ -249,9 +250,9 @@ T __lnGamma(const T& x)
     /*
      *              N-1
      *             -----
-     *             \       c[i]
-     * Lg = c[0] +  >   ----------
-     *             /     x + i -1
+     *             \        c[i]
+     * Lg = c[0] +  >   -----------
+     *             /     x + i - 1
      *             -----
      *              i=1
      */
@@ -284,6 +285,16 @@ T __lnGamma(const T& x)
  *
  * Complex numbers are also supported.
  *
+ * Gamma function G(t) is defined as:
+ *
+ *         inf
+ *          /
+ *          |  t-1    -x
+ *   G(t) = | x    * e   dx
+ *          |
+ *          /
+ *          0
+ *
  * @param x - input argument
  *
  * @return Gamma(x)
@@ -294,26 +305,13 @@ template <class T>
 T math::SpecFun::gamma(const T& x) throw (math::SpecFunException)
 {
     /*
-     * Gamma function G(t) is defined as:
-     *
-     *         inf
-     *          /
-     *          |  t-1    -x
-     *   G(t) = | x    * e   dx
-     *          |
-     *          /
-     *          0
-     *
-     */
-
-    /*
      * High precision (25 digits) approximation for the
      * numerical constant pi, as obtained by Maxima:
      (%i1)  fpprec : 25$
      (%i2)  bfloat(%pi);
      (%o2)  3.141592653589793238462643b0
      */
-    const T pi = static_cast<T>(3.141592653589793238462643L);
+    const T PI = static_cast<T>(3.141592653589793238462643L);
 
     // sin(pi*x), only applicable when Re(x)<0
     T st;
@@ -340,7 +338,7 @@ T math::SpecFun::gamma(const T& x) throw (math::SpecFunException)
          *  In this case the real part of (1-x) will always be greater than 1.
          */
 
-        st = std::sin(pi*x);
+        st = std::sin(PI*x);
 
         // if sin(pi*x) equals 0, the gamma function is undefined:
         if ( true == math::NumericUtil::isZero<T>(st) )
@@ -401,12 +399,12 @@ T math::SpecFun::gamma(const T& x) throw (math::SpecFunException)
          *
          * G(x) can be obtained as:
          *
-         *                   pi
+         *                  pi
          *   G(x) = --------------------
          *           G(1-x) * sin(pi*x)
          */
 
-        retVal = pi / (g_temp * st);
+        retVal = PI / (g_temp * st);
     }
     else if ( true == math::SpecFun::__private::__midSegment(x) )
     {
@@ -447,6 +445,16 @@ T math::SpecFun::gamma(const T& x) throw (math::SpecFunException)
  *
  * Complex numbers are also supported.
  *
+ * Beta function B(x,y) is defined as:
+ *
+ *            1
+ *            /
+ *            |  x-1        y-1          gamma(x) * gamma(y)
+ *   B(x,y) = | t    * (1-t)     dt  =  ---------------------
+ *            |                               gamma(x+y)
+ *            /
+ *            0
+ *
  * @param x - first input argument
  * @param y - second input argument
  *
@@ -458,16 +466,6 @@ template <class T>
 T math::SpecFun::beta(const T& x, const T& y) throw (math::SpecFunException)
 {
     /*
-     * Beta function B(x,y) is defined as:
-     *
-     *            1
-     *            /
-     *            |  x-1        y-1
-     *   B(x,y) = | t    * (1-t)     dt
-     *            |
-     *            /
-     *            0
-     *
      * It can be shown that B(x,y) can be expressed with gamma
      * functions:
      *
