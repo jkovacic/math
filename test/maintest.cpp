@@ -39,6 +39,7 @@ extern void intExponentiaorTest();
 extern void intFactorizationTest();
 extern void intCombinatoricsTest();
 extern void combinatoricsTest();
+extern void specfunTest();
 extern void calculusTest();
 extern void rootFindTest();
 extern void statisticsTest();
@@ -88,6 +89,9 @@ int main(int argc, const char* argv[])
     
     cout << endl << "C O M B I N A T O R I C S   T E S T" << endl << endl;
     combinatoricsTest();
+
+    cout << endl << "S P E C I A L   F U N C T I O N   T E S T" << endl << endl;
+    specfunTest();
 
     cout << endl << "C A L C U L U S   T E S T" << endl << endl;
     calculusTest();

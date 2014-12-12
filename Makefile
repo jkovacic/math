@@ -57,6 +57,7 @@ LIBROOTFINDDIR = $(LIBDIR)root_find/
 LIBQUATDIR = $(LIBDIR)quaternion/
 LIBRATIONALDIR = $(LIBDIR)rational/
 LIBINTUTILDIR = $(LIBDIR)int_util/
+LIBSPECFUNDIR = $(LIBDIR)specfun/
 LIBOMPDIR = $(LIBDIR)omp/
 
 
@@ -94,6 +95,7 @@ TESTFILES += matrixTest
 TESTFILES += mtcopyTest
 TESTFILES += polyTest
 TESTFILES += quatTest
+TESTFILES += specfunTest
 TESTFILES += rationalTest
 TESTFILES += ratmatTest
 TESTFILES += rootfindTest
@@ -135,6 +137,8 @@ DEP_PERMUTATION =$(LIBCOMBDIR)PermutationGeneric $(DEP_MTCOPY)
 
 DEP_INTEXP =
 
+DEP_SPECFUN = $(LIBSPECFUNDIR)SpecFunGeneric $(DEP_NUMUTIL)
+
 DEP_MATRIX = $(LIBMATRIXDIR)MatrixGeneric $(DEP_MTCOPY) $(DEP_MTVECTOP) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 DEP_SQMATRIX = $(LIBMATRIXDIR)SqMatrixGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(LIBLINEQDIR)LinearEquationSolverGeneric $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 DEP_LINEQ = $(LIBLINEQDIR)LinearEquationSolverGeneric $(DEP_NUMUTIL) $(DEP_MATRIX) $(DEP_SQMATRIX) $(DEP_OMPSETTINGS)
@@ -173,6 +177,7 @@ TEST_CURVEFIT_OBJDEP = CurveFittingException
 TEST_INTEXP_OBJDEP = Rational MatrixException QuaternionException RationalException PolynomialException
 TEST_INTFACTOR_OBJDEP = IntFactorization IntFactorizationException
 TEST_INTCOMB_OBJDEP = IntCombinatorics CombinatoricsException
+TEST_SPECFUN_OBJDEP = SpecFunException
 TEST_COMB_OBJDEP = CombinatoricsException
 TEST_CALC_OBJDEP = FunctionException CalculusException
 TEST_ROOTFIND_OBJDEP = FunctionException RootFindException
@@ -196,6 +201,7 @@ TEST_CURVEFIT_GENDEP = $(DEP_POLYREG) $(DEP_POLYINT)
 TEST_INTEXP_GENDEP = $(DEP_INTEXP) $(DEP_SQMATRIX) $(DEP_QUATERNION) $(DEP_POLYNOMIAL)
 TEST_INTFACTOR_GENDEP = 
 TEST_INTCOMB_GENDEP = 
+TEST_SPECFUN_GENDEP = $(DEP_SPECFUN)
 TEST_COMB_GENDEP = $(DEP_PERMUTATION) $(DEP_COMBINATION)
 TEST_CALC_GENDEP = $(DEP_IFUNCTION) $(DEP_INTEG) $(DEP_DIFF)
 TEST_ROOTFIND_GENDEP = $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_ROOTFIND)
@@ -220,6 +226,7 @@ TEST_LINKOBJ += $(TEST_INTEXP_OBJDEP)
 TEST_LINKOBJ += $(TEST_INTFACTOR_OBJDEP)
 TEST_LINKOBJ += $(TEST_INTCOMB_OBJDEP)
 TEST_LINKOBJ += $(TEST_COMB_OBJDEP)
+TEST_LINKOBJ += $(TEST_SPECFUN_OBJDEP)
 TEST_LINKOBJ += $(TEST_CALC_OBJDEP)
 TEST_LINKOBJ += $(TEST_ROOTFIND_OBJDEP)
 TEST_LINKOBJ += $(TEST_STAT_OBJDEP)
@@ -363,6 +370,9 @@ $(OBJDIR)CalculusException$(OBJSUFFIX) : $(LIBEXCPDIR)CalculusException.cpp
 $(OBJDIR)RootFindException$(OBJSUFFIX) : $(LIBEXCPDIR)RootFindException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
+$(OBJDIR)SpecFunException$(OBJSUFFIX) : $(LIBEXCPDIR)SpecFunException.cpp
+	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+
 
 # Build rules for nontemplated classes
 $(OBJDIR)Rational$(OBJSUFFIX) : $(LIBRATIONALDIR)Rational.cpp
@@ -408,6 +418,9 @@ $(OBJDIR)intfactorTest$(OBJSUFFIX) : $(TESTDIR)intfactorTest.cpp $(call gen_deps
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
 $(OBJDIR)intcombTest$(OBJSUFFIX) : $(TESTDIR)intcombTest.cpp $(call gen_deps,$(TEST_INTCOMB_GENDEP))
+	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+
+$(OBJDIR)specfunTest$(OBJSUFFIX) : $(TESTDIR)specfunTest.cpp $(call gen_deps,$(TEST_SPECFUN_GENDEP))
 	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
 
 $(OBJDIR)combTest$(OBJSUFFIX) : $(TESTDIR)combTest.cpp $(call gen_deps,$(TEST_COMB_GENDEP))
