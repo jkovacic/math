@@ -36,7 +36,7 @@ limitations under the License.
 /* pi */
 #define MATH_CONST_PI               3.1415926535897932384626433832795028842L
 
-/* 1 / pi */
+/* 1/pi */
 #define MATH_CONST_INV_PI           0.31830988618379067153776752674502872407L
 
 /* sqrt(pi) */
@@ -48,10 +48,10 @@ limitations under the License.
 /* sqrt(2/pi) */
 #define MATH_CONST_SQRT_2_DIV_PI    0.79788456080286535587989211986876373695L
 
-/* sqrt( 1/(2*pi) )*/
+/* sqrt( 1/(2*pi) ) */
 #define MATH_CONST_SQRT_INV_2_PI    0.39894228040143267793994605993438186848L
 
-/* ln( 2*pi) */
+/* ln( 2*pi ) */
 #define MATH_CONST_LOG_SQRT_2_PI    0.91893853320467274178032973640561763986L
 
 
@@ -91,4 +91,4 @@ limitations under the License.
  */
 
 
-#endif  // _MATH_MATH_CONSTANT_H_
+#endif  /*  _MATH_MATH_CONSTANT_H_  */
