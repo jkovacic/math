@@ -28,6 +28,7 @@ limitations under the License.
 #include <cstddef>
 
 #include "util/NumericUtil.hpp"
+#include "util/math_constant.h"
 
 
 // Implementation of "private" functions
@@ -215,18 +216,7 @@ T __lnGamma(const T& x)
      *   ln( Gzx) ) ~= 0.5*ln(2*pi) + ln(Lg(z)) + (z-0.5)*ln(z+g-0.5) - (z+g-0.5)     *
      */
 
-
-    /*
-     * High precision (25 digits) numerical constants
-     * ln(sqrt(2*pi)),
-     * obtained by Maxima:
-     *
-     (%i1)  fpprec : 25$
-     (%i2)  bfloat(log(sqrt(2*%pi)));
-     (%o2)  9.189385332046727417803297b−1
-    */
-
-	// Chosen number of Lanczos coefficients:
+    // Chosen number of Lanczos coefficients:
     #define N_LANCZOS    ( 6 )
 
 	// Chosen parameter 'g' casted to T:
@@ -265,7 +255,7 @@ T __lnGamma(const T& x)
     /*
      * ln G(x) = ln sqrt(2*pi) + ln Lg + (x-0.5) * ln(x+g-0.5) - (x+g-0.5)
      */
-    return static_cast<T>(0.9189385332046727417803297L) +
+    return static_cast<T>(MATH_CONST_LOG_SQRT_2_PI) +
            std::log(lg) + (x - static_cast<T>(1)/static_cast<T>(2)) *
            std::log(term) - term;
 
@@ -304,14 +294,8 @@ T __lnGamma(const T& x)
 template <class T>
 T math::SpecFun::gamma(const T& x) throw (math::SpecFunException)
 {
-    /*
-     * High precision (25 digits) approximation for the
-     * numerical constant pi, as obtained by Maxima:
-     (%i1)  fpprec : 25$
-     (%i2)  bfloat(%pi);
-     (%o2)  3.141592653589793238462643b0
-     */
-    const T PI = static_cast<T>(3.141592653589793238462643L);
+
+    const T PI = static_cast<T>(MATH_CONST_PI);
 
     // sin(pi*x), only applicable when Re(x)<0
     T st;

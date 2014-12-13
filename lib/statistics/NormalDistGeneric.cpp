@@ -39,6 +39,7 @@ limitations under the License.
 
 #include "../settings/stat_settings.h"
 
+#include "util/math_constant.h"
 #include "util/NumericUtil.hpp"
 #include "util/IFunctionGeneric.hpp"
 #include "exception/FunctionException.hpp"
@@ -124,22 +125,8 @@ public:
     	 *
     	 */
 
-        /*
-         * High precision approximation for the constant 1 / sqrt(2*pi).
-         *
-         * According to this topic:
-         * http://stackoverflow.com/questions/476212/what-is-the-precision-of-long-double-in-c
-         * the precision for long double is around 18 digits.
-         * In Maxima this expression is evaluated in even higher precision
-         * (25 digits) and copied to the expression below. The compiler will
-         * cast it and round to the precision required by the type T.
-         (%i1)  fpprec : 25$
-         (%i2)  bfloat(1/sqrt(2 * %pi));
-         (%o2)  3.989422804014326779399461b−1
-         */
-
-    	const T z = (x - this->m_mu) / this->m_sigma;
-        return static_cast<T>(0.3989422804014326779399461L) *
+        const T z = (x - this->m_mu) / this->m_sigma;
+        return static_cast<T>(MATH_CONST_SQRT_INV_2_PI) *
                std::exp( -z*z / static_cast<T>(2) ) / this->m_sigma;
     }
 };  // class NormDistPdf
@@ -279,21 +266,9 @@ public:
          * a term's absolute value drops below the specified tolerance.
          */
 
-        /*
-         *
-         * High precision (25 digits) approximation for necessary numerical
-         * constants 1 / sqrt(2) and 2/sqrt(pi)
-         * as obtained by the following Maxima code:
-         *
-    	 (%i1)  fpprec : 25$
-    	 (%i2)  bfloat(1/sqrt(2));
-    	 (%o2)  7.071067811865475244008444b−1
-    	 (%i3)  bfloat(2/sqrt(%pi));
-    	 (%o3)  1.128379167095512573896159b0
-    	 */
 
-    	// Tolerance for the last Taylor series term
-    	const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / 
+        // Tolerance for the last Taylor series term
+        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
                       static_cast<T>(STAT_DIST_PROB_TOL_DEN);
 
         /*
@@ -301,11 +276,11 @@ public:
          *   z = -----------------  =  --------------------
          *        sigma * sqrt(2)            2 * sigma
          */
-        const T z = static_cast<T>(0.7071067811865475244008444L) *
+        const T z = static_cast<T>(MATH_CONST_SQRT_INV_2) *
                     ( x - this->m_mu ) / this->m_sigma;
 
         // Subterms of the Taylor series:
-        T zt = z * static_cast<T>(1.128379167095512573896159L);
+        T zt = z * static_cast<T>(2) * static_cast<T>(MATH_CONST_SQRT_INV_PI );
         T t = zt;
 
         // Initial value of the 'erf':

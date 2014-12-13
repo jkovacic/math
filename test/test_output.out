@@ -563,11 +563,11 @@ Expected result: 0.48496878235998
 
 R O O T   F I N D   T E S T
 
-Bisection method:		x0 = 1.89549	f(x0) = 2.68253e-10
-Regula falsi method:	x0 = 1.89549	f(x0) = 1.11022e-16
-Secant method:			x0 = 1.89549	f(x0) = 1.3633e-10
-Newton's method:		x0 = 1.89549	f(x0) = 0
-Quasi Newton's method:	x0 = 1.89549	f(x0) = 4.44089e-16
+Bisection method:       x0 = 1.89549	f(x0) = 2.68253e-10
+Regula falsi method:    x0 = 1.89549	f(x0) = 1.11022e-16
+Secant method:          x0 = 1.89549	f(x0) = 1.3633e-10
+Newton's method:        x0 = 1.89549	f(x0) = 0
+Quasi Newton's method:  x0 = 1.89549	f(x0) = 4.44089e-16
 Correct root: 1.895494267033981
 
 S T A T I S T I C S   T E S T
