@@ -62,6 +62,12 @@ void specfunTest()
          (%o11)  0.20932777350065*%i+0.16569818762925
          (%i12)  beta(-2+3.7*%i, 0.7-1.3*%i);
          (%o12)  0.0056684836950215*%i+0.005533333385785
+         (%i13)  erf(-1.2);
+         (%o13)  −0.91031397822963
+         (%i14)  erf(0.7);
+         (%o14)  0.67780119383741
+         (%i15)  erfc(0.2);
+         (%o15)  0.77729741078952
          */
 
         cout << "Gamma(3):    " << SpecFun::gamma(3.0) << " (expected: 2)" << endl;
@@ -78,6 +84,11 @@ void specfunTest()
         cout << "Beta(4, 5):   " << SpecFun::beta(4.0, 5.0) << " (expected: 0.0035714285714285)" << endl;
         cout << "Beta(3.2, 1-0.5i): " << SpecFun::beta<complex<double> >(3.2, complex<double>(1.0, -0.5)) << " (expected: (0.16569818762925, 0.20932777350065))" << endl;
         cout << "Beta(-2+3.7i, 0.7-1.3i)" << SpecFun::beta(complex<double>(-2.0, 3.7), complex<double>(0.7, -1.3)) << " (expected: (0.005533333385785, 0.0056684836950215))" << endl;
+
+        cout << endl;
+        cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: −0.91031397822963)" << endl;
+        cout << "erf(0.7):   " << SpecFun::erf(0.7) << " (expected: 0.67780119383741)" <<endl;
+        cout << "erfc(0.2):  " << SpecFun::erfc(0.2) << " (expected: 0.77729741078952)" << endl;
     }
     catch ( const SpecFunException& ex )
     {

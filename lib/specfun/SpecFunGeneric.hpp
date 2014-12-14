@@ -42,6 +42,12 @@ namespace SpecFun
     template <class T>
     T beta(const T& x, const T& y) throw (SpecFunException);
 
+    template <class T>
+    T erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) );
+
+    template <class T>
+    T erfc (const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) );
+
 }  // namespace SpecFun
 
 }  // namespace math

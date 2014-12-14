@@ -213,7 +213,7 @@ T __lnGamma(const T& x)
      * Applying the properties of logarithms, it can be further
      * simplified to:
      *
-     *   ln( Gzx) ) ~= 0.5*ln(2*pi) + ln(Lg(z)) + (z-0.5)*ln(z+g-0.5) - (z+g-0.5)     *
+     *   ln( Gzx) ) ~= 0.5*ln(2*pi) + ln(Lg(z)) + (z-0.5)*ln(z+g-0.5) - (z+g-0.5)
      */
 
     // Chosen number of Lanczos coefficients:
@@ -461,4 +461,91 @@ T math::SpecFun::beta(const T& x, const T& y) throw (math::SpecFunException)
     return math::SpecFun::gamma<T>(x) *
            math::SpecFun::gamma<T>(y) /
            math::SpecFun::gamma<T>(x+y);
+}
+
+
+/**
+ * Error function, defined as:
+ *
+ *                        x
+ *                2       /  -t^2
+ *   erf(x) = ----------  | e    dt
+ *             sqrt(pi)   /
+ *                        0
+ *
+ * @param x - input argument
+ * @param tol - tolerance of the last Taylor series term (default: 1e-6)
+ *
+ * @return erf(x)
+ */
+template <class T>
+T math::SpecFun::erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) )
+{
+    /*
+     * The definite integral could be calculated numerically, however
+     * a more efficient method exists. The exponential can be expanded
+     * into a Taylor series and each term can be integrated separately.
+     * As evident from
+     * https://en.wikipedia.org/wiki/Error_function#Taylor_series
+     * the error function can thus be expanded into the following
+     * Taylor series:
+     *
+     *                        +-      3     5      7      9        -+
+     *                 2      |      x     x      x      x          |
+     *   erf(x) ~= ---------- | x - --- + ---- - ---- + ----- - ... |
+     *              sqrt(pi)  |      3     10     42     216        |
+     *                        +-                                   -+
+     *
+     *                         inf               i
+     *                        -----            -----     2
+     *                 2      \        x       |   |   -x
+     *   erf(x) ~= ----------  >   --------- * |   | -------
+     *              sqrt(pi)  /     2*i + 1    |   |    j
+     *                        -----            |   |
+     *                         i=0              j=1
+     *
+     * The implemented algorithm will add Taylor series terms until
+     * a term's absolute value drops below the specified tolerance.
+     */
+
+    // Subterms of the Taylor series:
+    T xt = x * static_cast<T>(2) * static_cast<T>(MATH_CONST_SQRT_INV_PI );
+    T t = xt;
+
+    // Initial value of the 'erf':
+    T erf = t;
+
+    // Add Taylor series terms to 'erf' until term's abs. value
+    // drops below TOL:
+    for ( size_t i=1; false==math::NumericUtil::isZero<T>(t, tol); ++i )
+    {
+        // update the product term from the algorithm described above:
+        xt *= -x*x / static_cast<T>(i);
+        // new Taylor series element:
+        t = xt / (static_cast<T>(2) * static_cast<T>(i) + static_cast<T>(1) );
+        erf += t;
+    }
+
+    return erf;
+}
+
+
+/**
+ * Complementary error function, defined as:
+ *
+ *                        inf
+ *                 2       /  -t^2
+ *   erfc(x) = ----------  | e    dt  =  1 - erf(x)
+ *              sqrt(pi)   /
+ *                         x
+ *
+ * @param x - input argument
+ * @param tol - tolerance of the last Taylor series term (default: 1e-6)
+ *
+ * @return erfc(x)
+ */
+template <class T>
+T math::SpecFun::erfc (const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) )
+{
+    return static_cast<T>(1) - math::SpecFun::erf(x, tol);
 }

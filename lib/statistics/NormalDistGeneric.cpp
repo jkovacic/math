@@ -42,6 +42,7 @@ limitations under the License.
 #include "util/math_constant.h"
 #include "util/NumericUtil.hpp"
 #include "util/IFunctionGeneric.hpp"
+#include "specfun/SpecFunGeneric.hpp"
 #include "exception/FunctionException.hpp"
 #include "exception/StatisticsException.hpp"
 #include "root_find/RootFindGeneric.hpp"
@@ -233,37 +234,8 @@ public:
          *             2  |         \  sigma * sqrt(2)  / |
          *                +-                             -+
          *
-         * where erf is the so called error function, defined as:
-         *
-         *                       inf
-         *                2       /  -t^2
-         *   erf(x) = ----------  | e    dt
-         *             sqrt(pi)   /
-         *                        x
-         *
-         * The definite integral cannot be calculated analytically,
-         * however the exponential can be expanded to a Taylor series
-         * and each term can be integrated separately. As evident from
-         * https://en.wikipedia.org/wiki/Error_function#Taylor_series
-         * the error function can thus be expanded into the following
-         * Taylor series:
-         *
-         *                       +-      3     5      7      9        -+
-         *                2      |      z     z      z      z          |
-         *   erf(z) ~ ---------- | z - --- + ---- - ---- + ----- - ... |
-         *             sqrt(pi)  |      3     10     42     216        |
-         *                       +-                                   -+
-         *
-         *                        inf               i
-         *                       -----            -----     2
-         *                2      \        z       |   |   -z
-         *   erf(z) ~ ----------  >   --------- * |   | -------
-         *             sqrt(pi)  /     2*i + 1    |   |    j
-         *                       -----            |   |
-         *                        i=0              j=1
-         *
-         * The implemented algorithm will add Taylor series terms until
-         * a term's absolute value drops below the specified tolerance.
+         * where erf is the so called error function, implemented
+         * in the namespace math::SpecFun.
          */
 
 
@@ -279,32 +251,15 @@ public:
         const T z = static_cast<T>(MATH_CONST_SQRT_INV_2) *
                     ( x - this->m_mu ) / this->m_sigma;
 
-        // Subterms of the Taylor series:
-        T zt = z * static_cast<T>(2) * static_cast<T>(MATH_CONST_SQRT_INV_PI );
-        T t = zt;
-
-        // Initial value of the 'erf':
-        T erf = t;
-
-        // Add Taylor series terms to 'erf' until term's abs. value
-        // drops below TOL:
-        for ( size_t i=1; false==math::NumericUtil::isZero<T>(t, TOL); ++i )
-        {
-            // update the product term from the algorithm described above:
-            zt *= -z*z / static_cast<T>(i);
-            // new Taylor series element:
-            t = zt / (static_cast<T>(2) * static_cast<T>(i) + static_cast<T>(1) );
-            erf += t;
-        }
-
         /*
-         * Finally calculate the return value:
+         * Calculate the return value:
          *
-         * cdf = 0.5 * (1 + erf)
+         * cdf = 0.5 * (1 + erf(z))
          *
          * Additionally m_p is subtracted from the cdf.
          */
-        return ( erf + static_cast<T>(1) ) / static_cast<T>(2) - this->m_p;
+        return ( math::SpecFun::erf<T>(z, TOL) + static_cast<T>(1) ) /
+               static_cast<T>(2) - this->m_p;
     }
 
 };  // class NormDistCdf
