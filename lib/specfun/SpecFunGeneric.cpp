@@ -547,5 +547,5 @@ T math::SpecFun::erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>
 template <class T>
 T math::SpecFun::erfc (const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) )
 {
-    return static_cast<T>(1) - math::SpecFun::erf(x, tol);
+    return static_cast<T>(1) - math::SpecFun::erf<T>(x, tol);
 }
