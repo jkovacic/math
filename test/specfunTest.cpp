@@ -49,11 +49,11 @@ void specfunTest()
          (%i5)  gamma(-1.7);
          (%o5)  2.513923519065201
          (%i6)  gamma(-4.56);
-         (%o6)  −0.055452106757363
+         (%o6)  -0.055452106757363
          (%i7)  float(gamma(2-%i));
-         (%o7)  0.65296549642016−0.34306583981654*%i
+         (%o7)  0.65296549642016-0.34306583981654*%i
          (%i8)  gamma(0.7+1.2*%i);
-         (%o8)  0.31277447328267−0.23707614564003*%i
+         (%o8)  0.31277447328267-0.23707614564003*%i
          (%i9)  gamma(-2.3-2.1*%i);
          (%o9)  0.0011346997482228*%i+0.0064712261389299
          (%i10)  float(beta(4,5));
@@ -63,7 +63,7 @@ void specfunTest()
          (%i12)  beta(-2+3.7*%i, 0.7-1.3*%i);
          (%o12)  0.0056684836950215*%i+0.005533333385785
          (%i13)  erf(-1.2);
-         (%o13)  −0.91031397822963
+         (%o13)  -0.91031397822963
          (%i14)  erf(0.7);
          (%o14)  0.67780119383741
          (%i15)  erfc(0.2);
@@ -75,9 +75,9 @@ void specfunTest()
         cout << "Gamma(0.51): " << SpecFun::gamma(0.51) << " (expected: 1.738415068463864)" << endl;
         cout << "Gamma(0.23): " << SpecFun::gamma(0.23) << " (expected: 3.95980372335778)" << endl;
         cout << "Gamma(-1.7): " << SpecFun::gamma(-1.7) << " (expected: 2.513923519065201)" << endl;
-        cout << "Gamma(-4.56): " << SpecFun::gamma(-4.56) << " (expected: −0.055452106757363)" << endl;
-        cout << "Gamma(2-i):  " << SpecFun::gamma(complex<double>(2.0, -1.0)) << " (expected: (0.65296549642016, −0.34306583981654))" << endl;
-        cout << "Gamma(0.7+1.2i): " << SpecFun::gamma(complex<double>(0.7, 1.2)) << " (expected: (0.31277447328267, −0.23707614564003))" << endl;
+        cout << "Gamma(-4.56): " << SpecFun::gamma(-4.56) << " (expected: -0.055452106757363)" << endl;
+        cout << "Gamma(2-i):  " << SpecFun::gamma(complex<double>(2.0, -1.0)) << " (expected: (0.65296549642016, -0.34306583981654))" << endl;
+        cout << "Gamma(0.7+1.2i): " << SpecFun::gamma(complex<double>(0.7, 1.2)) << " (expected: (0.31277447328267, -0.23707614564003))" << endl;
         cout << "Gamma(-2.3-2.1i): " << SpecFun::gamma(complex<double>(-2.3, -2.1)) << " (expected: (0.0064712261389299, 0.0011346997482228))" << endl;
 
         cout << endl;
@@ -86,7 +86,7 @@ void specfunTest()
         cout << "Beta(-2+3.7i, 0.7-1.3i)" << SpecFun::beta(complex<double>(-2.0, 3.7), complex<double>(0.7, -1.3)) << " (expected: (0.005533333385785, 0.0056684836950215))" << endl;
 
         cout << endl;
-        cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: −0.91031397822963)" << endl;
+        cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: -0.91031397822963)" << endl;
         cout << "erf(0.7):   " << SpecFun::erf(0.7) << " (expected: 0.67780119383741)" <<endl;
         cout << "erfc(0.2):  " << SpecFun::erfc(0.2) << " (expected: 0.77729741078952)" << endl;
     }

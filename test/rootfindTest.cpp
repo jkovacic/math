@@ -82,7 +82,7 @@ public:
          *
          * Verified in Maxima:
            (%i3)  d(x) := ''(diff(f(x), x));
-           (%o3)  d(x):=cos(x)/x−sin(x)/x^2
+           (%o3)  d(x):=cos(x)/x-sin(x)/x^2
          */
 
         if ( true == NumericUtil::isZero<double>(x) )
