@@ -41,4 +41,15 @@ limitations under the License.
 #define STAT_DIST_PROB_TOL_DEN                ( 100000 )
 
 
+/**
+ * Numerical integration and step size for integration algorithms
+ * where applicable, e.g. Student's distribution.
+ *
+ * Step size is specified by its numerator and denominator.
+ */
+#define STAT_INTEG_ALG               math::EIntegAlg::SIMPSON_3_8
+#define STAT_NUM_INTEG_STEP_NUM               ( 1 )
+#define STAT_NUM_INTEG_STEP_DEN               ( 10000 )
+
+
 #endif  /* _MATH_STAT_SETTINGS_H_ */

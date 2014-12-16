@@ -19,7 +19,8 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * A test module to test functionality in statistics related classes 
- * and namespaces (SampleStat, NormalDist, SampleQuantileGeneric)
+ * and namespaces (SampleStat, NormalDist, StudentDist,
+ * SampleQuantileGeneric)
  */
 
 
@@ -33,6 +34,7 @@ limitations under the License.
 #include "SampleStatGeneric.h"
 #include "SampleQuantileGeneric.h"
 #include "NormalDistGeneric.h"
+#include "StudentDistGeneric.h"
 #include "StatisticsException.h"
 
 using namespace std;
@@ -162,6 +164,44 @@ void statisticsTest()
                 cout << "N(2,3): q(p>0.75): " << NormalDist::quant(0.75, 2.0, 3.0) << " (expected: 4.023469)" << endl;
                 cout << "N(2,3): q(p<0.52): " << NormalDist::quant(0.52, 2.0, 3.0, false) << " (expected: 1.849539)" << endl;
                 cout << endl;
+
+        /*
+         * R code to test Student's distribution related functions:
+         *
+           (3-2) / (1.5/sqrt(10))
+           [1] 2.108185
+
+           2 - 1.2 * 1.5/sqrt(10)
+           [1] 1.43079
+
+           dt(2,5)
+           [1] 0.06509031
+
+           pt(2, df=12)
+           [1] 0.9656725
+
+           pt(1.1, df=12, lower.tail=FALSE)
+           [1] 0.1464549
+
+           pt(1, df=12) - pt(-0.5, df=12)
+           [1] 0.5184167
+
+           qt(0.75, df=12)
+           [1] 0.6954829
+
+           qt(0.52, df=12, lower.tail=FALSE)
+           [1] -0.05121096
+         */
+        cout << "T(n=10, mu=2, s=1.5): t for x=3:    " << StudentDist::getT(3.0, 10, 2.0, 1.5) << " (expected: 2.108185)" << endl;
+        cout << "T(n=10, mu=2, s=1.5): x for t=-1.2: " << StudentDist::getX(-1.2, 10, 2.0, 1.5) << " (expected: 1.43079)" << endl;
+        cout << "T(df=5):  pdf at x=2:      " << StudentDist::pdf(2.0, 5.0) << " (expected: 0.06509031)" << endl;
+        cout << "T(df=12): P(t<2):   " << StudentDist::prob(2.0, 12.0) << " (expected: 0.9656725)" << endl;
+        cout << "T(df=12): P(t>1.1): " << StudentDist::prob(1.1, 12.0, false) << " (expected: 0.1464549)" << endl;
+        cout << "T(df=12): P(-0.5<t<1): " << StudentDist::probInt(-0.5, 1.0, 12.0) << " (expected: 0.5184167)" << endl;
+        cout << "T(df=12): q(p>0.75): " << StudentDist::quant(0.75, 12.0) << " (expected: 0.6954829)" << endl;
+        cout << "T(df=12): q(p<0.52): " << StudentDist::quant(0.52, 12.0, false) << " (expected: -0.05121096)" << endl;
+        cout << endl;
+
         /*
          * R code to perform basic unit test of quantiles:
 

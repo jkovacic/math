@@ -73,6 +73,9 @@ void math::StatisticsException::what(std::ostream& str) const
         case INVALID_STDEV :
             str << "Standard deviation is negative or zero.";
             break;
+        case INVALID_DF :
+            str << "Zero or negative number of degrees of freedom.";
+            break;
         case OPERATION_FAILED :
             str << "Unable to perform an operation.";
             break;
