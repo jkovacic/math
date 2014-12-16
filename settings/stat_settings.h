@@ -38,7 +38,7 @@ limitations under the License.
  * Note: typically statistical functions do not require very high accuracy.
  */
 #define STAT_DIST_PROB_TOL_NUM                ( 1 )
-#define STAT_DIST_PROB_TOL_DEN                ( 100000 )
+#define STAT_DIST_PROB_TOL_DEN                ( 1000000 )
 
 
 /**

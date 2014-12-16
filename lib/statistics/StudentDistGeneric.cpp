@@ -112,11 +112,11 @@ public:
         try
         {
             this->m_term = static_cast<T>(1) /
-                           (math::SpecFun::beta<T>(
-                                static_cast<T>(1)/static_cast<T>(2), df/2) *
-                                std::sqrt(df) * sigma );
+                           ( math::SpecFun::beta<T>(
+                                 static_cast<T>(1)/static_cast<T>(2), df/static_cast<T>(2)) *
+                             std::sqrt(df) * sigma );
         }
-        catch ( math::FunctionException& fex )
+        catch ( math::SpecFunException& sfex )
         {
             // If a valid 'df' is assumed, this exception
             // should never be thrown.
@@ -147,14 +147,14 @@ public:
          *                                       +-                         -+
          */
 
-  	    const T t = (x - this->m_mu) / this->m_sigma;
+        const T t = (x - this->m_mu) / this->m_sigma;
 
-  	    /*
-  	     * If an exponent is not integer, the power can be calculated as:
-  	     *
-  	     *    b      b*ln(a)
-  	     *   a   =  e
-  	     */
+        /*
+         * If an exponent is not integer, the power can be calculated as:
+         *
+         *    b      b*ln(a)
+         *   a   =  e
+         */
         return this->m_term * std::exp((-(this->m_df+static_cast<T>(1))/static_cast<T>(2)) *
                std::log(static_cast<T>(1) + t*t/this->m_df));
     }
@@ -351,7 +351,7 @@ T math::StudentDist::probInt(
 
     try
     {
-        const T HSTEP = static_cast<T>(STAT_NUM_INTEG_STEP_NUM) / static_cast<T>(STAT_NUM_INTEG_STEP_NUM);
+        const T HSTEP = static_cast<T>(STAT_NUM_INTEG_STEP_NUM) / static_cast<T>(STAT_NUM_INTEG_STEP_DEN);
 
         const T from = std::min(a, b);
         const T to = std::max(a, b);
@@ -420,7 +420,7 @@ T math::StudentDist::prob(
 
     try
     {
-        const T HSTEP = static_cast<T>(STAT_NUM_INTEG_STEP_NUM) / static_cast<T>(STAT_NUM_INTEG_STEP_NUM);
+        const T HSTEP = static_cast<T>(STAT_NUM_INTEG_STEP_NUM) / static_cast<T>(STAT_NUM_INTEG_STEP_DEN);
 
         const T from = ( true==lowerTail ? mu : x );
         const T to = ( true==lowerTail ? x : mu );
@@ -510,7 +510,7 @@ T math::StudentDist::quant(
     {
         const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
         const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / static_cast<T>(STAT_DIST_PROB_TOL_DEN);
-        const T HSTEP = static_cast<T>(STAT_NUM_INTEG_STEP_NUM) / static_cast<T>(STAT_NUM_INTEG_STEP_NUM);
+        const T HSTEP = static_cast<T>(STAT_NUM_INTEG_STEP_NUM) / static_cast<T>(STAT_NUM_INTEG_STEP_DEN);
 
         const math::StudentDist::__private::StudentDistPdf<T> pdf(df, mu, sigma);
 
