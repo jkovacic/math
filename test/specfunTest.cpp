@@ -96,4 +96,8 @@ void specfunTest()
         ex.what();
         cerr << endl;
     }
+    catch (...)
+    {
+        cerr << "Other exception caught.";
+    }
 }
