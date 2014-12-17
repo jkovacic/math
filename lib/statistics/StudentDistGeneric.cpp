@@ -149,14 +149,8 @@ public:
 
         const T t = (x - this->m_mu) / this->m_sigma;
 
-        /*
-         * If an exponent is not integer, the power can be calculated as:
-         *
-         *    b      b*ln(a)
-         *   a   =  e
-         */
-        return this->m_term * std::exp((-(this->m_df+static_cast<T>(1))/static_cast<T>(2)) *
-               std::log(static_cast<T>(1) + t*t/this->m_df));
+        return this->m_term * std::pow(static_cast<T>(1) + t*t/this->m_df,
+                                       -(this->m_df+static_cast<T>(1))/static_cast<T>(2));
     }
 
 };  // class StudentDistPdf
