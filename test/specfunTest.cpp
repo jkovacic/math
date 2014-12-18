@@ -56,18 +56,33 @@ void specfunTest()
          (%o8)  0.31277447328267-0.23707614564003*%i
          (%i9)  gamma(-2.3-2.1*%i);
          (%o9)  0.0011346997482228*%i+0.0064712261389299
+
          (%i10)  float(beta(4,5));
          (%o10)  0.0035714285714285
          (%i11)  beta(3.2, 1-0.5*%i);
          (%o11)  0.20932777350065*%i+0.16569818762925
          (%i12)  beta(-2+3.7*%i, 0.7-1.3*%i);
          (%o12)  0.0056684836950215*%i+0.005533333385785
-         (%i13)  erf(-1.2);
-         (%o13)  -0.91031397822963
-         (%i14)  erf(0.7);
-         (%o14)  0.67780119383741
-         (%i15)  erfc(0.2);
-         (%o15)  0.77729741078952
+
+         (%i13)  gamma_incomplete(2, 0.5);
+         (%o13)  0.90979598956895
+         (%i14)  gamma_incomplete(2, 5.0);
+         (%o14)  0.040427681994512
+         (%i15)  gamma(3) - gamma_incomplete(3, 2.5);
+         (%o15)  0.91237376823334
+         (%i16)  gamma(1.5) - gamma_incomplete(1.5, 4);
+         (%o16)  0.84545011298495
+         (%i17)  gamma_incomplete_regularized(3, 0.5);
+         (%o17)  0.98561232203302
+         (%i18)  1 - gamma_incomplete_regularized(1.5, 3.2);
+         (%o18)  0.90630920959237
+
+         (%i19)  erf(-1.2);
+         (%o19)  -0.91031397822963
+         (%i20)  erf(0.7);
+         (%o20)  0.67780119383741
+         (%i21)  erfc(0.2);
+         (%o21)  0.77729741078952
          */
 
         cout << "Gamma(3):    " << SpecFun::gamma(3.0) << " (expected: 2)" << endl;
@@ -84,6 +99,14 @@ void specfunTest()
         cout << "Beta(4, 5):   " << SpecFun::beta(4.0, 5.0) << " (expected: 0.0035714285714285)" << endl;
         cout << "Beta(3.2, 1-0.5i): " << SpecFun::beta<complex<double> >(3.2, complex<double>(1.0, -0.5)) << " (expected: (0.16569818762925, 0.20932777350065))" << endl;
         cout << "Beta(-2+3.7i, 0.7-1.3i)" << SpecFun::beta(complex<double>(-2.0, 3.7), complex<double>(0.7, -1.3)) << " (expected: (0.005533333385785, 0.0056684836950215))" << endl;
+
+        cout << endl;
+        cout << "Upper inc. gamma(2, 0.5): " << SpecFun::incGammaUpper(2.0, 0.5) << " (expected: 0.90979598956895)" << endl;
+        cout << "Upper inc. gamma(2, 5):   " << SpecFun::incGammaUpper(2.0, 5.0) << " (expected: 0.040427681994512)" << endl;
+        cout << "Lower inc. gamma(3, 2.5): " << SpecFun::incGammaLower(3.0, 2.5) << " (expected: 0.91237376823334)" << endl;
+        cout << "Lower inc. gamma(1.5, 4): " << SpecFun::incGammaLower(1.5, 4.0) << " (expected: 0.84545011298495)" << endl;
+        cout << "Reg. upper inc. gamma(3, 0.5):   " << SpecFun::incGammaUpperReg(3.0, 0.5) << " (expected: 0.98561232203302)" << endl;
+        cout << "Reg. lower inc. gamma(1.5, 3.2): " << SpecFun::incGammaLowerReg(1.5, 3.2) << " (expected: 0.90630920959237)" << endl;
 
         cout << endl;
         cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: -0.91031397822963)" << endl;

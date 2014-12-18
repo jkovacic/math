@@ -33,6 +33,10 @@ limitations under the License.
 namespace math
 {
 
+/**
+ * @brief A namespace with functions that evaluate several
+ *        special functions.
+ */
 namespace SpecFun
 {
 
@@ -41,6 +45,39 @@ namespace SpecFun
 
     template <class T>
     T beta(const T& x, const T& y) throw (SpecFunException);
+
+
+    template <class T>
+    T incGammaUpper(
+               const T& a,
+               const T& x,
+               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+             ) throw(SpecFunException);
+
+
+    template <class T>
+    T incGammaLower(
+               const T& a,
+               const T& x,
+               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+             ) throw(SpecFunException);
+
+
+    template <class T>
+    T incGammaUpperReg(
+               const T& a,
+               const T& x,
+               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+             ) throw(SpecFunException);
+
+
+    template <class T>
+    T incGammaLowerReg(
+               const T& a,
+               const T& x,
+               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+             ) throw(SpecFunException);
+
 
     template <class T>
     T erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) );

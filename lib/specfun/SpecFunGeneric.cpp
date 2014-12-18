@@ -29,6 +29,7 @@ limitations under the License.
 
 #include "util/NumericUtil.hpp"
 #include "util/math_constant.h"
+#include "specfun/CtdFracGeneric.hpp"
 
 
 // Implementation of "private" functions
@@ -461,6 +462,345 @@ T math::SpecFun::beta(const T& x, const T& y) throw (math::SpecFunException)
     return math::SpecFun::gamma<T>(x) *
            math::SpecFun::gamma<T>(y) /
            math::SpecFun::gamma<T>(x+y);
+}
+
+
+// implementation of an auxiliary "private" function:
+namespace math {  namespace SpecFun {  namespace __private {
+
+/*
+ * Evaluates an incomplete gamma function. The exact kind of the returned
+ * value depends on parameters 'upper' and 'reg'.
+ *
+ * @note both 'a' and 'x' must be strictly greater than 0
+ *
+ * @param a - first input argument
+ * @param x - second input argument, the integration limit
+ * @param upper - selects whether the upper (if 'true') or lower incomplete gamma functionis returned
+ * @param reg - if 'true', the regularized gamma function is returned, i.e. divided by gamma(a)
+ * @param tol - tolerance (default: 1e-6)
+ */
+template <class T>
+T __incGamma(
+                 const T& a,
+                 const T& x,
+                 bool upper,
+                 bool reg,
+                 const T& tol
+               ) throw(math::SpecFunException)
+{
+
+    /*
+     * When x > (1+a), the following continued fraction will be evaluated:
+     *
+     *                            1*(1-a)
+     *   cf = (x-a+1) - ---------------------------
+     *                                  2*(2-a)
+     *                    (x-a+3) - ---------------
+     *                               (x-a+5) - ...
+     *
+     * 'b_i' and 'a_i' are defined as follows:
+     *
+     * * a(x,i) = - i * (i-a)
+     * * b(x,i) = x - a + 1 + 2*i
+     */
+
+    // Derive a class from ICtdFracFuncGeneric that
+    // properly implements 'fa' and 'fb'.
+	// 'a' will be the class's internal parameter
+    class CtdF : public math::CtdFrac::ICtdFracFuncGeneric<T>
+    {
+
+    private:
+        const T m_a;      // parameter 'a'
+
+    public:
+        /*
+         * Constructor, sets value of 'm_a'
+         *
+         * @param a - parameter 'a' from the definition of incomplete gamma function
+         */
+        CtdF(const T& a) : m_a(a)
+        {
+            // nothing else to do
+        }
+
+        // a(x,i) = -i * (i-a)
+        T fa(const T& x, size_t i) const throw (math::FunctionException)
+        {
+        	(void) x;
+            const T f = static_cast<T>(i);
+            return -f * (f - this->m_a);
+        }
+
+        // b(x,i) = x - a + 1 + 2*i
+        T fb(const T& x, size_t i) const throw (math::FunctionException)
+        {
+            return x - this->m_a + static_cast<T>(1) + static_cast<T>(2*i);
+        }
+    };  // class CtdF
+
+
+    // An instance of Ctdf that implements 'fa' and 'fb':
+    CtdF coef(a);
+
+    // sanity check:
+    if ( a < math::NumericUtil::getEPS<T>() ||
+         x < math::NumericUtil::getEPS<T>() )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    /*
+     * The algorithm for numerical approximation of the incomplete gamma function
+     * as proposed in:
+     *
+     *   William H. Press, Saul A. Teukolsky, William T. Vetterling, Brian P. Flannery
+     *   Numerical Recipes, The Art of Scientific Computing, 3rd Edition,
+     *   Cambridge University Press, 2007
+     *
+     * When x > (a+1), the upper gamma function can be evaluated as
+     *
+     *                -x    a
+     *               e   * x
+     *  G(a,x) ~= --------------
+     *               cf(a,x)
+     *
+     * where 'cf(a,x) is the continued fraction defined above, its coefficients
+     * 'a_i' and 'b_i' are implented in 'coef'.
+     *
+     * When x < (a+1), it is more convenient to apply the following Taylor series
+     * that evalutes the lower incomplete gamma function:
+     *                         inf
+     *                        -----
+     *              -x   a    \        G(a)       i
+     *   g(a,x) ~= e   *x  *   >    ---------- * x
+     *                        /      G(a+i+i)
+     *                        -----
+     *                         i=0
+     *
+     * Applying the following property of the gamma function:
+     *
+     *   G(a+1) = a * G(a)
+     *
+     * The Taylor series above can be further simplified to:
+     *
+     *                         inf
+     *                        -----              i
+     *              -x   a    \                 x
+     *   g(a,x) ~= e   *x  *   >    -------------------------
+     *                        /      a * (a+1) * ... * (a+i)
+     *                        -----
+     *                         i=0
+     *
+     * Once either a lower or an upper incomplete gamma function is evaluted,
+     * the other value may be quickly obtained by applying the following
+     * property of the incomplete gamma function:
+     *
+     *   G(a,x) + g(a,x) = G(a)
+     *
+     * A value of a regularized incomplete gamma function is obtained
+     * by dividing g(a,x) or G(a,x) by G(a).
+     */
+
+    // This factor is common to both algorithms described above:
+    T ginc = std::exp(-x) * std::pow(x, a);
+
+    if ( x > (a + static_cast<T>(1)) )
+    {
+        /*
+         * x > (a + 1)
+         *
+         * In this case evaluate the upper gamma function as described above.
+         */
+
+    	const T G = ( true==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma(a) );
+
+        ginc /=  math::CtdFrac::ctdFrac(coef, x);
+
+        /*
+         * Apply properties of the incomplete gamma function
+         * if anything else except a generalized upper incomplete
+         * gamma function is desired.
+         */
+        if ( false == upper )
+        {
+            ginc = G - ginc;
+        }
+
+        if ( true == reg )
+        {
+            ginc /= G;
+        }
+    }
+    else
+    {
+        /*
+         * x < (a + 1)
+         *
+         * In this case evaluate the lower gamma function as described above.
+         */
+    	const T G = ( false==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma(a) );
+
+        // Initial term of the Taylor series at i=0:
+        ginc /= a;
+        T term = ginc;
+
+        // Proceed the Taylor series for i=1, 2, 3... until it converges:
+        for ( size_t i = 1; false==math::NumericUtil::isZero<T>(term, tol); ++i )
+        {
+            term *= x / (static_cast<T>(i) + a);
+            ginc += term;
+        }
+
+        /*
+         * Apply properties of the incomplete gamma function
+         * if anything else except a generalized lower incomplete
+         * gamma function is desired.
+         */
+        if ( true == upper )
+        {
+            ginc = G - ginc;
+        }
+
+        if ( true == reg )
+        {
+            ginc /= G;
+        }
+    }
+
+    return ginc;
+}
+
+}}}  // namespace math::SpecFun::__private
+
+
+
+/**
+ * Generalized upper incomplete gamma function, defined as:
+ *
+ *           inf
+ *            /
+ *            |  a-1    -t
+ *   G(a,x) = | t    * e   dt
+ *            |
+ *            /
+ *            x
+ *
+ * @note 'a' and 'x' must be greater than 0
+ *
+ * @param a - first input argument
+ * @param x - second input argument, the lower integration limit
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return G(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaUpper(
+               const T& a,
+               const T& x,
+               const T& tol
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incGamma(a, x, true, false, tol);
+}
+
+
+/**
+ * Generalized lower incomplete gamma function, defined as:
+ *
+ *            x
+ *            /
+ *            |  a-1    -t
+ *   g(a,x) = | t    * e   dt
+ *            |
+ *            /
+ *            0
+ *
+ * @note 'a' and 'x' must be greater than 0
+ *
+ * @param a - first input argument
+ * @param x - second input argument, the upper integration limit
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return g(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaLower(
+               const T& a,
+               const T& x,
+               const T& tol
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incGamma(a, x, false, false, tol);
+}
+
+
+/**
+ * Regularized upper incomplete gamma function, defined as:
+ *
+ *                  inf
+ *                   /
+ *              1    |  a-1    -t
+ *   Q(a,x) = ------ | t    * e   dt
+ *             G(a)  |
+ *                   /
+ *                   x
+ *
+ * @note 'a' and 'x' must be greater than 0
+ *
+ * @param a - first input argument
+ * @param x - second input argument, the lower integration limit
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return Q(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaUpperReg(
+               const T& a,
+               const T& x,
+               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incGamma(a, x, true, true, tol);
+}
+
+
+/**
+ * Regularized lower incomplete gamma function, defined as:
+ *
+ *                   x
+ *                   /
+ *              1    |  a-1    -t
+ *   P(a,x) = ------ | t    * e   dt
+ *             G(a)  |
+ *                   /
+ *                   0
+ *
+ * @note 'a' and 'x' must be greater than 0
+ *
+ * @param a - first input argument
+ * @param x - second input argument, the upper integration limit
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return P(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaLowerReg(
+               const T& a,
+               const T& x,
+               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incGamma(a, x, false, true, tol);
 }
 
 
