@@ -559,9 +559,9 @@ T __incGamma(
          * In this case evaluate the upper gamma function as described above.
          */
 
-    	const T G = ( true==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma(a) );
+    	const T G = ( true==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma<T>(a) );
 
-        ginc /=  math::CtdFrac::ctdFrac(coef, x);
+        ginc /=  math::CtdFrac::ctdFrac<T>(coef, x);
 
         /*
          * Apply properties of the incomplete gamma function
@@ -585,7 +585,7 @@ T __incGamma(
          *
          * In this case evaluate the lower gamma function as described above.
          */
-    	const T G = ( false==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma(a) );
+    	const T G = ( false==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma<T>(a) );
 
         // Initial term of the Taylor series at i=0:
         ginc /= a;
