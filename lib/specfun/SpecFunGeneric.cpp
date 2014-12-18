@@ -704,7 +704,7 @@ T math::SpecFun::incGammaUpper(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma(a, x, true, false, tol);
+    return math::SpecFun::__private::__incGamma<T>(a, x, true, false, tol);
 }
 
 
@@ -736,7 +736,7 @@ T math::SpecFun::incGammaLower(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma(a, x, false, false, tol);
+    return math::SpecFun::__private::__incGamma<T>(a, x, false, false, tol);
 }
 
 
@@ -765,10 +765,10 @@ template <class T>
 T math::SpecFun::incGammaUpperReg(
                const T& a,
                const T& x,
-               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+               const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma(a, x, true, true, tol);
+    return math::SpecFun::__private::__incGamma<T>(a, x, true, true, tol);
 }
 
 
@@ -797,10 +797,10 @@ template <class T>
 T math::SpecFun::incGammaLowerReg(
                const T& a,
                const T& x,
-               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+               const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma(a, x, false, true, tol);
+    return math::SpecFun::__private::__incGamma<T>(a, x, false, true, tol);
 }
 
 
@@ -814,16 +814,16 @@ T math::SpecFun::incGammaLowerReg(
  *                        0
  *
  * @param x - input argument
- * @param tol - tolerance of the last Taylor series term (default: 1e-6)
+ * @param tol - tolerance (default: 1e-6)
  *
  * @return erf(x)
  */
 template <class T>
-T math::SpecFun::erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) )
+T math::SpecFun::erf(const T& x, const T& tol)
 {
     /*
      * The definite integral could be calculated numerically, however
-     * a more efficient method exists. The exponential can be expanded
+     * more efficients methods exist. The exponential can be expanded
      * into a Taylor series and each term can be integrated separately.
      * As evident from
      * https://en.wikipedia.org/wiki/Error_function#Taylor_series
@@ -844,29 +844,35 @@ T math::SpecFun::erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>
      *                        -----            |   |
      *                         i=0              j=1
      *
-     * The implemented algorithm will add Taylor series terms until
-     * a term's absolute value drops below the specified tolerance.
+     * The error function can also be obtained via the incomplete
+     * gamma function:
+     *
+     *   erf(x) = P(1/2, x^2)   for x>0
+     *
+     * If x is negative, apply the following property:
+     *
+     *   erf(-x) = -erf(x)
      */
 
-    // Subterms of the Taylor series:
-    T xt = x * static_cast<T>(2) * static_cast<T>(MATH_CONST_SQRT_INV_PI );
-    T t = xt;
 
-    // Initial value of the 'erf':
-    T erf = t;
+    const T t = x * x;
 
-    // Add Taylor series terms to 'erf' until term's abs. value
-    // drops below TOL:
-    for ( size_t i=1; false==math::NumericUtil::isZero<T>(t, tol); ++i )
+    // If 't' is very close to 0, the incomplete gamma function
+    // might throw an exception, to prevent this,
+    // this is handled separately.
+    if ( true == math::NumericUtil::isZero<T>(t) )
     {
-        // update the product term from the algorithm described above:
-        xt *= -x*x / static_cast<T>(i);
-        // new Taylor series element:
-        t = xt / (static_cast<T>(2) * static_cast<T>(i) + static_cast<T>(1) );
-        erf += t;
+        return static_cast<T>(0);
     }
 
-    return erf;
+    T retVal = math::SpecFun::incGammaLowerReg<T>(static_cast<T>(1)/static_cast<T>(2), t, tol);
+
+    if ( x < static_cast<T>(0) )
+    {
+        retVal = -retVal;
+    }
+
+    return retVal;
 }
 
 
@@ -880,12 +886,41 @@ T math::SpecFun::erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>
  *                         x
  *
  * @param x - input argument
- * @param tol - tolerance of the last Taylor series term (default: 1e-6)
+ * @param tol - tolerance (default: 1e-6)
  *
  * @return erfc(x)
  */
 template <class T>
-T math::SpecFun::erfc (const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) )
+T math::SpecFun::erfc (const T& x, const T& tol)
 {
-    return static_cast<T>(1) - math::SpecFun::erf<T>(x, tol);
+    /*
+     * The complementary error function can also be obtained via the incomplete
+     * gamma function:
+     *
+     *   erfc(x) = Q(1/2, x^2)   for x>0
+     *
+     * If x is negative, apply the following property:
+     *
+     *   erfc(-x) = 2 - erfc(x)
+     */
+
+
+    const T t = x * x;
+
+    // If 't' is very close to 0, the incomplete gamma function
+    // might throw an exception, to prevent this,
+    // this is handled separately.
+    if ( true == math::NumericUtil::isZero<T>(t) )
+    {
+        return static_cast<T>(1);
+    }
+
+    T retVal = math::SpecFun::incGammaUpperReg<T>(static_cast<T>(1)/static_cast<T>(2), t, tol);
+
+    if ( x < static_cast<T>(0) )
+    {
+        retVal = static_cast<T>(2) - retVal;
+    }
+
+    return retVal;
 }
