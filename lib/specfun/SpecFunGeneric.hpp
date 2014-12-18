@@ -27,6 +27,8 @@ limitations under the License.
 #ifndef _MATH_SPECFUNGENERIC_HPP_
 #define _MATH_SPECFUNGENERIC_HPP_
 
+#include "../settings/specfun_settings.h"
+
 #include "exception/SpecFunException.hpp"
 
 
@@ -51,7 +53,7 @@ namespace SpecFun
     T incGammaUpper(
                const T& a,
                const T& x,
-               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
              ) throw(SpecFunException);
 
 
@@ -59,7 +61,7 @@ namespace SpecFun
     T incGammaLower(
                const T& a,
                const T& x,
-               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
              ) throw(SpecFunException);
 
 
@@ -67,7 +69,7 @@ namespace SpecFun
     T incGammaUpperReg(
                const T& a,
                const T& x,
-               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
              ) throw(SpecFunException);
 
 
@@ -75,15 +77,15 @@ namespace SpecFun
     T incGammaLowerReg(
                const T& a,
                const T& x,
-               const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
              ) throw(SpecFunException);
 
 
     template <class T>
-    T erf(const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) );
+    T erf(const T& x, const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN) );
 
     template <class T>
-    T erfc (const T& x, const T& tol = static_cast<T>(1)/static_cast<T>(1000000) );
+    T erfc (const T& x, const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN) );
 
 }  // namespace SpecFun
 

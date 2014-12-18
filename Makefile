@@ -113,7 +113,7 @@ DEP_OMPCOARSE = $(LIBOMPDIR)omp_coarse.h
 
 # Dependencies of other settings headers
 DEP_STAT_SETTINGS = $(SETTINGDIR)stat_settings.h
-
+DEP_SPECFUN_SETTINGS = $(SETTINGDIR)specfun_settings.h
 
 # Object dependencies of templated classes
 # Note #1: Some dependencies may repeat several times.
@@ -138,7 +138,8 @@ DEP_PERMUTATION =$(LIBCOMBDIR)PermutationGeneric $(DEP_MTCOPY)
 
 DEP_INTEXP =
 
-DEP_SPECFUN = $(LIBSPECFUNDIR)SpecFunGeneric $(LIBSPECFUNDIR)CtdFracGeneric $(DEP_NUMUTIL) $(DEP_MATHCONST)
+DEP_SPECFUN = $(LIBSPECFUNDIR)SpecFunGeneric $(DEP_NUMUTIL) $(DEP_MATHCONST) $(DEP_SPECFUN_SETTINGS)
+DEP_SPECFUN += $(LIBSPECFUNDIR)CtdFracGeneric $(DEP_NUMUTIL) $(DEP_SPECFUN_SETTINGS)
 
 DEP_MATRIX = $(LIBMATRIXDIR)MatrixGeneric $(DEP_MTCOPY) $(DEP_MTVECTOP) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 DEP_SQMATRIX = $(LIBMATRIXDIR)SqMatrixGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(LIBLINEQDIR)LinearEquationSolverGeneric $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)

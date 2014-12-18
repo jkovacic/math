@@ -30,6 +30,8 @@ limitations under the License.
 
 #include <cstddef>
 
+#include "../settings/specfun_settings.h"
+
 #include "exception/FunctionException.hpp"
 #include "exception/SpecFunException.hpp"
 
@@ -124,7 +126,7 @@ template <class T>
 T ctdFrac(
            const ICtdFracFuncGeneric<T>& ctdf,
            const T& x,
-           const T& tol = static_cast<T>(1)/static_cast<T>(1000000)
+           const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
          ) throw(SpecFunException);
 
 }  // namespace CtdFrac
