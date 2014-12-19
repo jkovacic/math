@@ -644,7 +644,7 @@ T __incBeta(
         ) throw (math::SpecFunException)
 {
 
-	/*
+    /*
      * The following continued fraction will be evaluated:
      *
      *                     a1
