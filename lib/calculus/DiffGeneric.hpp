@@ -31,9 +31,10 @@ limitations under the License.
 
 #include <cstddef>
 
+#include "../settings/calc_settings.h"
+#include "util/IFunctionGeneric.hpp"
 #include "exception/CalculusException.hpp"
 #include "exception/FunctionException.hpp"
-#include "util/IFunctionGeneric.hpp"
 
 
 namespace math
@@ -69,9 +70,17 @@ namespace Diff
     T diff(
                const IFunctionGeneric<T>& f,
                const T& x,
-               const T& h,
-               EDiffMethod::method method=EDiffMethod::CENTRAL
-             ) throw(CalculusException);
+               const T& h = static_cast<T>(DIFF_STEP_NUM) / static_cast<T>(DIFF_STEP_DEN),
+               EDiffMethod::method method = DIFF_DEFAULT_METHOD
+             ) throw (CalculusException);
+
+
+    template <class T>
+    T diff2(
+               const IFunctionGeneric<T>& f,
+               const T& x,
+               const T& h = static_cast<T>(DIFF_STEP_NUM) / static_cast<T>(DIFF_STEP_DEN)
+             ) throw (CalculusException);
 
 
 

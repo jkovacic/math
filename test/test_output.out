@@ -579,6 +579,8 @@ Method 2: f'(4) = 0.484969
 Method 3: f'(4) = 0.484969
 Expected result: 0.48496878235998
 
+f''(2) = 0.515031 (expected: 0.51503121764002)
+
 R O O T   F I N D   T E S T
 
 Bisection method:       x0 = 1.89549	f(x0) = 2.68253e-10

@@ -81,7 +81,7 @@ void calculusTest()
          * Exact slope obtained by Maxima:
            (%i3) df(x) := ''(diff(f(x), x))$
            (%i4) float(df(4));
-           (%o5) 0.48496878235998
+           (%o4) 0.48496878235998
          */
         cout << endl << "Numerical differentiation:" << endl;
         for ( int method=EDiffMethod::FORWARD; method<=EDiffMethod::FIVE_POINT; ++method )
@@ -90,6 +90,14 @@ void calculusTest()
                     Diff::diff(f, 4.0, 0.001, static_cast<EDiffMethod::method>(method)) << endl;
         }
         cout << "Expected result: 0.48496878235998" << endl;
+
+        /*
+         * Exact 2nd order derivative obtained by Maxima:
+           (%i5)  d2f(x) := ''(diff(f(x), x, 2))$
+           (%i6)  float(d2f(2));
+           (%o6)  0.51503121764002
+         */
+        cout << endl << "f''(2) = " << Diff::diff2(f, 2.0, 0.001) << " (expected: 0.51503121764002)" << endl;
     }
     catch ( const CalculusException& iex )
     {

@@ -25,6 +25,7 @@ limitations under the License.
 
 // No "include "DiffGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
+#include "DiffGeneric.hpp"
 
 
 // Implementation of "private" functions
@@ -59,9 +60,9 @@ T __forwardDiff(
 {
     /*
      *
-     *   df(x)       f(x+h) - f(x)
-     *  -------  ~  ---------------
-     *    dx               h
+     *   df(x)        f(x+h) - f(x)
+     *  -------  ~=  ---------------
+     *    dx                h
      *
      */
 
@@ -90,9 +91,9 @@ T __backwardDiff(
 {
     /*
      *
-     *   df(x)       f(x) - f(x-h)
-     *  -------  ~  ---------------
-     *    dx               h
+     *   df(x)        f(x) - f(x-h)
+     *  -------  ~=  ---------------
+     *    dx                h
      *
      */
 
@@ -121,9 +122,9 @@ T __centralDiff(
 {
     /*
      *
-     *   df(x)       f(x+h) - f(x-h)
-     *  -------  ~  -----------------
-     *    dx              2 * h
+     *   df(x)        f(x+h) - f(x-h)
+     *  -------  ~=  -----------------
+     *    dx               2 * h
      *
      */
 
@@ -152,9 +153,9 @@ T __5pointDiff(
 {
     /*
      *
-     *   df(x)       -f(x+2h) + 8*f(x+h) - 8*f(x-h) + f(x-2h)
-     *  -------  ~  ------------------------------------------
-     *    dx                           12*h
+     *   df(x)        -f(x+2h) + 8*f(x+h) - 8*f(x-h) + f(x-2h)
+     *  -------  ~=  ------------------------------------------
+     *    dx                            12*h
      *
      */
 
@@ -178,7 +179,7 @@ T __5pointDiff(
  *
  * @param f - instance of a class with the function to differentiate
  * @param x - point to estimate the slope
- * @param h - step size
+ * @param h - step size (default: 0.0001)
  * @param method - one of the supported methods (default: CENTRAL)
  *
  * @return estimation of function's slope at the point 'x'
@@ -235,6 +236,56 @@ T math::Diff::diff(
 
         return retVal;
     }  // try
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::CalculusException(math::CalculusException::UNDEFINED);
+    }
+}
+
+
+/**
+ * Numerical 2nd order derivative of the given function,
+ * using the 2nd order central method.
+ * 
+ * @param f - instance of a class with the function to differentiate
+ * @param x - point to estimate the 2nd order derivative
+ * @param h - step size (default: 0.0001)
+ *
+ * @return estimation of d2(x)/dx2 at the point 'x'
+ *
+ * @throw CalculusException if input arguments are invalid or the function is not defined near 'x'
+ */
+template <class T>
+T math::Diff::diff2(
+        const math::IFunctionGeneric<T>& f, 
+        const T& x, 
+        const T& h
+      ) throw (math::CalculusException)
+{
+    /*
+     * 2nd order central method:
+     * 
+     *     2
+     *    d f(x)        f(x+h) - 2*f(x) + f(x-h)
+     *   --------  ~=  --------------------------
+     *       2                     2
+     *     dx                     h
+     * 
+     */
+
+    const T h2 = h * h;
+
+    // sanity check
+    if ( h < math::NumericUtil::getEPS<T>() ||
+         true == math::NumericUtil::isZero<T>(h2) )
+    {
+        throw math::CalculusException(math::CalculusException::INVALID_STEP);
+    }
+    
+    try
+    {
+        return ( f.func(x+h) - static_cast<T>(2) * f.func(x) + f.func(x-h) ) / h2;
+    }
     catch ( const math::FunctionException& fex )
     {
         throw math::CalculusException(math::CalculusException::UNDEFINED);

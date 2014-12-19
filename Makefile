@@ -114,6 +114,7 @@ DEP_OMPCOARSE = $(LIBOMPDIR)omp_coarse.h
 # Dependencies of other settings headers
 DEP_STAT_SETTINGS = $(SETTINGDIR)stat_settings.h
 DEP_SPECFUN_SETTINGS = $(SETTINGDIR)specfun_settings.h
+DEP_CALC_SETTINGS = $(SETTINGDIR)calc_settings.h
 
 # Object dependencies of templated classes
 # Note #1: Some dependencies may repeat several times.
@@ -151,7 +152,7 @@ DEP_POLYINT = $(LIBCURVEFITDIR)PolynomialInterpolationGeneric $(DEP_CURVEFITPOLY
 DEP_POLYREG = $(LIBCURVEFITDIR)PolynomialRegressionGeneric $(DEP_CURVEFITPOLY) $(DEP_POLYNOMIAL) $(DEP_LINEQ) $(DEP_SQMATRIX) $(DEP_MATRIX)
 
 DEP_INTEG = $(LIBCALCULUSDIR)IntegGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE) 
-DEP_DIFF = $(LIBCALCULUSDIR)DiffGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION)
+DEP_DIFF = $(LIBCALCULUSDIR)DiffGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_CALC_SETTINGS)
 
 DEP_ROOTFIND = $(LIBROOTFINDDIR)RootFindGeneric $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_DIFF)
 
