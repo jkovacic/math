@@ -421,7 +421,7 @@ namespace math {  namespace SpecFun {  namespace __private {
  *
  * @param a - first input argument
  * @param x - second input argument, the integration limit
- * @param upper - selects whether the upper (if 'true') or lower incomplete gamma functionis returned
+ * @param upper - should the upper (if 'true') or the lower (if 'false) inc. gamma function be returned
  * @param reg - if 'true', the regularized gamma function is returned, i.e. divided by gamma(a)
  * @param tol - tolerance (default: 1e-6)
  */
@@ -487,7 +487,7 @@ T __incGamma(
 
 
     // An instance of Ctdf that implements 'fa' and 'fb':
-    CtdF coef(a);
+    const CtdF coef(a);
 
     // sanity check:
     if ( a < math::NumericUtil::getEPS<T>() ||
@@ -538,7 +538,7 @@ T __incGamma(
      *                        -----
      *                         i=0
      *
-     * Once either a lower or an upper incomplete gamma function is evaluted,
+     * Once either a lower or an upper incomplete gamma function is evaluated,
      * the other value may be quickly obtained by applying the following
      * property of the incomplete gamma function:
      *
@@ -617,12 +617,215 @@ T __incGamma(
     return ginc;
 }
 
+
+/*
+ * Evaluates an incomplete beta function. The exact kind of the returned
+ * value depends on parameters 'upper' and 'reg'.
+ *
+ * @note both 'a' and 'x' must be strictly greater than 0,
+ *       x must be greater than 0 and less than 1
+ *
+ * @param x - integration limit
+ * @param a - first input argument
+ * @param b - second input argument
+ * @param x - second input argument, the integration limit
+ * @param lower - should the lower (if 'true') or the upper (if 'false) inc. beta function be returned
+ * @param reg - if 'true', the regularized beta function is returned, i.e. divided by beta(a, b)
+ * @param tol - tolerance (default: 1e-6)
+ */
+template <class T>
+T __incBeta(
+          const T& x,
+          const T& a,
+          const T& b,
+          bool lower,
+          bool reg,
+          const T& tol
+        ) throw (math::SpecFunException)
+{
+
+	/*
+     * The following continued fraction will be evaluated:
+     *
+     *                     a1
+     *   cf = 1 + ---------------------
+     *                       a2
+     *             1 + ---------------
+     *                         a3
+     *                  1 + ---------
+     *                       1 + ...
+     *
+     * 'b_i' and 'a_i' are defined as follows:
+     *
+     * * b(x,i) = 1
+     * *
+     * *           /    (a+m) * (a+b+m) * x
+     * *           | - -------------------------   <== i = 2*m+1
+     * *           /    (a+2*m) * (a + 2*m + 1)
+     * * a(x,i) = {
+     * *           \       m * (b-m) * x
+     * *           |   ---------------------       <== i = 2*m
+     * *           \    (a+2*m-1) * (a+2*m)
+     */
+
+    // Derive a class from ICtdFracFuncGeneric that
+    // properly implements 'fa' and 'fb'.
+	// 'a' and 'b' will be the class's internal parameters
+    class CtdF : public math::CtdFrac::ICtdFracFuncGeneric<T>
+    {
+
+    private:
+
+        const T m_a;      // parameter 'a'
+        const T m_b;      // parameter 'b'
+
+    public:
+        /*
+         * Constructor, sets values of 'm_a' and 'm_b'
+         *
+         * @param a - parameter 'a' from the definition of the incomplete beta function
+         * @param b - parameter 'b' from the definition of the incomplete beta function
+         */
+        CtdF(const T& a, const T& b) : m_a(a), m_b(b)
+        {
+            // nothing else to do
+        }
+
+        /*
+         * a(x,i) = -(a+m)*(a+b+m)*x / ( (a+2m)*(a+2m+1) )   when i=2*m+1
+         * a(x,i) = m*(b-m)*x / ( (a+2m-1)*(a+2m) )          when i=2*m
+         */
+        T fa(const T& x, size_t i) const throw(math::FunctionException)
+        {
+            const size_t m = i / 2;
+            T ai = static_cast<T>(0);
+
+            if ( 1 == i%2 )
+            {
+                // 'i' is odd, i.e i=2*m+1
+                ai = -(this->m_a + static_cast<T>(m)) * (this->m_a + this->m_b + static_cast<T>(m)) * x /
+                      ( (this->m_a + static_cast<T>(2*m)) * (this->m_a + static_cast<T>(2*m) + static_cast<T>(1)) );
+            }
+            else
+            {
+                // 'i' is even, i.e i=2*m
+                ai = static_cast<T>(m) * (this->m_b - static_cast<T>(m)) * x /
+                     ( (this->m_a + static_cast<T>(2*m) - static_cast<T>(1)) * (this->m_a + static_cast<T>(2*m)) );
+            }
+
+            return ai;
+        }
+
+        // b(x,i) = 1
+        T fb(const T& x, size_t i) const throw(math::FunctionException)
+        {
+        	(void) x;
+        	(void) i;
+            return static_cast<T>(1);
+        }
+    };  // class CtdF
+
+    // sanity check
+    if ( a < math::NumericUtil::getEPS<T>() ||
+         b < math::NumericUtil::getEPS<T>() ||
+         x < static_cast<T>(0) || x > static_cast<T>(1) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    /*
+     * The algorithm is described in detail in Numerical Recipes, 3rd Edition:
+     *
+     * If x < (a+1)/(a+b+2), the incomplete beta function will be evaluated as:
+     *
+     *                  a        b
+     *                 x  * (1-x)
+     *   Bx(a,b) ~= ------------------
+     *                a * cf(x,a,b)
+     *
+     * where cf(x,a,b) is the continued fraction defined above, its
+     * coefficients are implemented in 'coef'.
+     *
+     * If x > (a+1)/(a+b+2), the algorithm will converge faster if the following
+     * property of the incomplete beta function is applied:
+     *
+     *   B (a, b) + B   (b, a) = B(a, b)
+     *    x          1-x
+     *
+     * and B_1-x(b,a) can be evaluated as described above.
+     *
+     * Once either a lower or an upper incomplete beta function is evaluated,
+     * the other value may be quickly obtained by applying the following
+     * property of the incomplete beta function:
+     *
+     *   Bx(a,b) + bx(a,b) = B(a,b)
+     *
+     * A value of a regularized incomplete beta function is obtained
+     * by dividing Bx(a,b) or bx(a,b) by B(a,b).
+     */
+
+    // checks if x is "large", i.e. greater than the threshold defined above:
+    const bool xlarge = (x > (a+static_cast<T>(1)) / (a+b+static_cast<T>(2)) );
+
+    // If x is large, the parameters must be swapped
+    const T xn = ( false==xlarge ? x :  static_cast<T>(1)-x );
+    const T an = ( false==xlarge ? a : b );
+    const T bn = ( false==xlarge ? b : a );
+
+    // B(a,b)
+    const T B = math::SpecFun::beta<T>(a, b);
+
+    // An instance of Ctdf that implements 'fa' and 'fb':
+    const CtdF coef(an, bn);
+
+    T binc;
+
+
+    if ( true == math::NumericUtil::isZero<T>(xn) )
+    {
+    	/*
+         * Both edge conditions are handled separately:
+   	     *   B0(a,b) = 0  and B1(a,b) = B(a,b)
+   	     */
+
+        binc = ( true==xlarge ? B : static_cast<T>(0) );
+    }
+    else
+    {
+        // 'x' is somewhere between 0 and 1, apply the algorithm described above
+
+        binc = std::pow(xn, an) * std::pow(static_cast<T>(1)-xn, bn) / an;
+        binc /= math::CtdFrac::ctdFrac<T>(coef, xn, tol);
+    }
+
+    /*
+     * When x is "large", the algorithm actually returns the
+     * upper incomplete beta function!
+     *
+     * Depending on the requested result ('lower') adjust
+     * 'binc' if necessary
+     */
+    if ( (false==xlarge && false==lower) ||
+         (true==xlarge  && true==lower) )
+    {
+        binc = B - binc;
+    }
+
+    // Finally regularize the result if requested (via 'reg')
+    if ( true == reg )
+    {
+        binc /= B;
+    }
+
+    return binc;
+}
+
 }}}  // namespace math::SpecFun::__private
 
 
 
 /**
- * Generalized upper incomplete gamma function, defined as:
+ * Upper incomplete gamma function, defined as:
  *
  *           inf
  *            /
@@ -654,7 +857,7 @@ T math::SpecFun::incGammaUpper(
 
 
 /**
- * Generalized lower incomplete gamma function, defined as:
+ * Lower incomplete gamma function, defined as:
  *
  *            x
  *            /
@@ -746,6 +949,146 @@ T math::SpecFun::incGammaLowerReg(
              ) throw(math::SpecFunException)
 {
     return math::SpecFun::__private::__incGamma<T>(a, x, false, true, tol);
+}
+
+
+/**
+ * Lower incomplete beta function, defined as:
+ *
+ *             x
+ *             /
+ *             |  a-1        b-1
+ *   Bx(a,b) = | t    * (1-t)    dt
+ *             |
+ *             /
+ *             0
+ *
+ * @note 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1
+ *
+ * @param x - integration limit
+ * @param a - first input argument
+ * @param b - second input argument
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return Bx(a,b)
+ *
+ * @throw SpecFunException if 'a', 'b' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaLower(
+               const T& x,
+               const T& a,
+               const T& b,
+               const T& tol
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incBeta<T>(x, a, b, true, false, tol);
+}
+
+
+/**
+ * Upper incomplete beta function, defined as:
+ *
+ *             1
+ *             /
+ *             |  a-1        b-1
+ *   bx(a,b) = | t    * (1-t)    dt = B(a,b) - Bx(a,b)
+ *             |
+ *             /
+ *             x
+ *
+ * @note 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1
+ *
+ * @param x - integration limit
+ * @param a - first input argument
+ * @param b - second input argument
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return bx(a,b)
+ *
+ * @throw SpecFunException if 'a', 'b' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaUpper(
+               const T& x,
+               const T& a,
+               const T& b,
+               const T& tol
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incBeta<T>(x, a, b, false, false, tol);
+}
+
+
+/**
+ * Regularized lower incomplete beta function, defined as:
+ *
+ *                      x
+ *                      /
+ *                1     |  a-1        b-1
+ *   Ix(a,b) = -------- | t    * (1-t)    dt
+ *              B(a,b)  |
+ *                      /
+ *                      0
+ *
+ * @note 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1
+ *
+ * @param x - integration limit
+ * @param a - first input argument
+ * @param b - second input argument
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return Ix(a,b)
+ *
+ * @throw SpecFunException if 'a', 'b' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaLowerReg(
+               const T& x,
+               const T& a,
+               const T& b,
+               const T& tol
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incBeta<T>(x, a, b, true, true, tol);
+}
+
+
+/**
+ * Regularized upper beta function, defined as:
+ *
+ *                      1
+ *                      /
+ *                1     |  a-1        b-1
+ *   ix(a,b) = -------- | t    * (1-t)    dt = 1 - Ix(a,b)
+ *              B(a,b)  |
+ *                      /
+ *                      x
+ *
+ * @note 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1
+ *
+ * @param x - integration limit
+ * @param a - first input argument
+ * @param b - second input argument
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return ix(a,b)
+ *
+ * @throw SpecFunException if 'a', 'b' or 'x' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaUpperReg(
+               const T& x,
+               const T& a,
+               const T& b,
+               const T& tol
+             ) throw(math::SpecFunException)
+{
+    return math::SpecFun::__private::__incBeta<T>(x, a, b, false, true, tol);
 }
 
 

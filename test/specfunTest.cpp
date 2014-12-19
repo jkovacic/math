@@ -77,12 +77,25 @@ void specfunTest()
          (%i18)  1 - gamma_incomplete_regularized(1.5, 3.2);
          (%o18)  0.90630920959237
 
-         (%i19)  erf(-1.2);
-         (%o19)  -0.91031397822963
-         (%i20)  erf(0.7);
-         (%o20)  0.67780119383741
-         (%i21)  erfc(0.2);
-         (%o21)  0.77729741078952
+         (%i19)  beta_incomplete(2, 5, 0.2);
+         (%o19)  0.011488
+         (%i20)  beta_incomplete(2, 5, 0.7);
+         (%o20)  0.032968833333333
+         (%i21)  beta(1, 2) - beta_incomplete(1, 2, 0.15);
+         (%o21)  0.36125
+         (%i22)  beta(1, 2) - beta_incomplete(1, 2, 0.82);
+         (%o22)  0.0162
+         (%i23)  beta_incomplete_regularized(3, 2, 0.12);
+         (%o23)  0.0062899199999999
+         (%i24)  1 - beta_incomplete_regularized(4, 1, 0.32);
+         (%o24)  0.98951424
+
+         (%i25)  erf(-1.2);
+         (%o25)  -0.91031397822963
+         (%i26)  erf(0.7);
+         (%o26)  0.67780119383741
+         (%i27)  erfc(0.2);
+         (%o27)  0.77729741078952
          */
 
         cout << "Gamma(3):    " << SpecFun::gamma(3.0) << " (expected: 2)" << endl;
@@ -107,6 +120,14 @@ void specfunTest()
         cout << "Lower inc. gamma(1.5, 4): " << SpecFun::incGammaLower(1.5, 4.0) << " (expected: 0.84545011298495)" << endl;
         cout << "Reg. upper inc. gamma(3, 0.5):   " << SpecFun::incGammaUpperReg(3.0, 0.5) << " (expected: 0.98561232203302)" << endl;
         cout << "Reg. lower inc. gamma(1.5, 3.2): " << SpecFun::incGammaLowerReg(1.5, 3.2) << " (expected: 0.90630920959237)" << endl;
+
+        cout << endl;
+        cout << "Lower inc. beta(0.2, 2, 5):  " << SpecFun::incBetaLower(0.2, 2.0, 5.0) << " (expected: 0.011488)" << endl;
+        cout << "Lower inc. beta(0.7, 2, 5):  " << SpecFun::incBetaLower(0.7, 2.0, 5.0) << " (expected: 0.032968833333333)" << endl;
+        cout << "Upper inc. beta(0.15, 1, 2): " << SpecFun::incBetaUpper(0.15, 1.0, 2.0) << " (expected: 0.36125)" << endl;
+        cout << "Upper inc. beta(0.82, 1, 2): " << SpecFun::incBetaUpper(0.82, 1.0, 2.0) << " (expected: 0.0162)" << endl;
+        cout << "Reg. lower inc. beta(0.12, 3, 2): " << SpecFun::incBetaLowerReg(0.12, 3.0, 2.0) << " (expected: 0.0062899199999999)" << endl;
+        cout << "Reg. upper inc. beta(0.32, 4, 1): " << SpecFun::incBetaUpperReg(0.32, 4.0, 1.0) << " (expected: 0.98951424)" << endl;
 
         cout << endl;
         cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: -0.91031397822963)" << endl;

@@ -549,6 +549,13 @@ Lower inc. gamma(1.5, 4): 0.84545 (expected: 0.84545011298495)
 Reg. upper inc. gamma(3, 0.5):   0.985612 (expected: 0.98561232203302)
 Reg. lower inc. gamma(1.5, 3.2): 0.906309 (expected: 0.90630920959237)
 
+Lower inc. beta(0.2, 2, 5):  0.011488 (expected: 0.011488)
+Lower inc. beta(0.7, 2, 5):  0.0329688 (expected: 0.032968833333333)
+Upper inc. beta(0.15, 1, 2): 0.36125 (expected: 0.36125)
+Upper inc. beta(0.82, 1, 2): 0.0162 (expected: 0.0162)
+Reg. lower inc. beta(0.12, 3, 2): 0.00628992 (expected: 0.0062899199999999)
+Reg. upper inc. beta(0.32, 4, 1): 0.989514 (expected: 0.98951424)
+
 erf(-1.2):  -0.910314 (expected: -0.91031397822963)
 erf(0.7):   0.677801 (expected: 0.67780119383741)
 erfc(0.2):  0.777297 (expected: 0.77729741078952)
