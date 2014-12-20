@@ -52,7 +52,7 @@ namespace RootFind
            const T& to,
            const T& epsx = static_cast<T>(ROOTFIND_EPSX_NUM) / static_cast<T>(ROOTFIND_EPSX_DEN),
            const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN)
-         ) throw(RootFindException);
+         ) throw (RootFindException);
 
 
     template <class T>
@@ -62,7 +62,7 @@ namespace RootFind
            const T& to,
            const T& epsx = static_cast<T>(ROOTFIND_EPSX_NUM) / static_cast<T>(ROOTFIND_EPSX_DEN),
            const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN)
-         ) throw(RootFindException);
+         ) throw (RootFindException);
 
 
     template <class T>
@@ -72,7 +72,7 @@ namespace RootFind
            const T& r1,
            const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
            size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw(RootFindException);
+         ) throw (RootFindException);
 
 
     template <class T>
@@ -82,7 +82,7 @@ namespace RootFind
            const T& x0,
            const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
            size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw(RootFindException);
+         ) throw (RootFindException);
 
 
     template <class T>
@@ -92,7 +92,49 @@ namespace RootFind
            const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
            const T& h = static_cast<T>(ROOTFIND_DIFF_STEP_NUM) / static_cast<T>(ROOTFIND_DIFF_STEP_DEN),
            size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw(RootFindException);
+         ) throw (RootFindException);
+
+
+    template <class T>
+    T halley(
+           const IFunctionGeneric<T>& f,
+           const IFunctionGeneric<T>& diff,
+           const IFunctionGeneric<T>& diff2,
+           const T& x0,
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
+           size_t Nmax = ROOTFIND_MAX_ITER
+         ) throw (RootFindException);
+
+
+    template <class T>
+    T quasiHalley(
+           const IFunctionGeneric<T>& f,
+           const T& x0,
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
+           const T& h = static_cast<T>(ROOTFIND_DIFF_STEP_NUM) / static_cast<T>(ROOTFIND_DIFF_STEP_DEN),
+           size_t Nmax = ROOTFIND_MAX_ITER
+         ) throw (RootFindException);
+
+
+    template <class T>
+    T halleyMod(
+           const IFunctionGeneric<T>& f,
+           const IFunctionGeneric<T>& diff,
+           const IFunctionGeneric<T>& diff2,
+           const T& x0,
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
+           size_t Nmax = ROOTFIND_MAX_ITER
+         ) throw (RootFindException);
+
+
+    template <class T>
+    T quasiHalleyMod(
+           const IFunctionGeneric<T>& f,
+           const T& x0,
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
+           const T& h = static_cast<T>(ROOTFIND_DIFF_STEP_NUM) / static_cast<T>(ROOTFIND_DIFF_STEP_DEN),
+           size_t Nmax = ROOTFIND_MAX_ITER
+         ) throw (RootFindException);
 
 }  // namepsace RootFind
 

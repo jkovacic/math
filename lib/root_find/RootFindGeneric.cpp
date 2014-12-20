@@ -112,11 +112,11 @@ T __newtonCommon(
         {
             const T dx = ( true == diffFunc ?
                       diff.func(x) :
-                      math::Diff::diff<T>(f, x,h, ROOTFIND_DEFAULT_DIFF_METHOD) );
+                      math::Diff::diff<T>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
 
             if ( true == math::NumericUtil::isZero<T>(dx) )
             {
-                // cannot continue as division by zero would occur inthe next step
+                // cannot continue as division by zero would occur in the next step
                 throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
             }
 
@@ -141,9 +141,150 @@ T __newtonCommon(
     catch ( const math::CalculusException& cex )
     {
         // cex is only thrown if derivation function is undefined near x
-        throw math::RootFindException(math::RootFindException::UNDEFINED);;
+        throw math::RootFindException(math::RootFindException::UNDEFINED);
     }
 }
+
+
+/*
+ * Common implementation of the Hayley's algorithm which is actually
+ * extended Newton's method.
+ *
+ * This is a private method, called by public methods.
+ *
+ * Depending on 'diffFunc', it will evaluate f's derivatives either
+ * via the provided functions 'diff' and 'diff2' or numerically via
+ * the central method. In the latter case 'diff' and 'diff2' are ignored.
+ *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
+ * @param f - instance of a class with the function to find its root
+ * @param d - instance of a class with the derivation of 'f.func'
+ * @param d2 - instance of a class with the 2nd order derivative of 'f.func'
+ * @param x0 - starting point of the algorithm
+ * @param epsy - tolerance
+ * @param h - step size for numerical derivation (ignored if 'diffFunc'==true)
+ * @param Nmax - maximum number of iterations
+ * @param diffFunc - if true evaluate f's slope via 'diff', otherwise numerically
+ * @param mod - if 'true', adjust the Halley's term to never be less than 0.8
+ *
+ * @return root of the function 'f' if it exists
+ *
+ * @throw RootFindException if the root could not be found
+ *
+ * @see halley
+ * @see quasiHalley
+ * @see halleyMod
+ * @see quasiHalleyMod
+ */
+template <class T>
+T __halleyCommon(
+        const math::IFunctionGeneric<T>& f,
+        const math::IFunctionGeneric<T>& d,
+        const math::IFunctionGeneric<T>& d2,
+        const T& x0,
+        const T& epsy,
+        const T& h,
+        size_t Nmax,
+        bool diffFunc,
+        bool mod
+      ) throw (math::RootFindException)
+{
+    /*
+     * The Halley's method is described in detail at:
+     * https://en.wikipedia.org/wiki/Halley%27s_method
+     */
+
+    // sanity check
+    if ( 0 == Nmax )
+    {
+        throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+    }
+
+    try
+    {
+        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
+
+        // sanity check of the final epsilon:
+        if ( EPSY <= static_cast<T>(0) )
+        {
+            throw math::RootFindException(math::RootFindException::INVALID_ARGS);
+        }
+
+        // Evaluate 'f' at the initial point
+        T x = x0;
+        T fx = f.func(x);
+
+        // start of the actual Halley's method
+        for ( size_t iter = Nmax;
+              false == math::NumericUtil::isZero<T>(fx, EPSY) && iter > 0;
+              --iter )
+        {
+            // Evaluate both derivatives at 'x':
+            const T dx = ( true == diffFunc ?
+                     d.func(x) :
+                     math::Diff::diff<T>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
+
+            const T d2x = ( true== diffFunc ?
+                     d2.func(x) :
+                     math::Diff::diff2<T>(f, x, h) );
+
+            if ( true == math::NumericUtil::isZero<T>(dx) ||
+                 true == math::NumericUtil::isZero<T>(d2x) )
+            {
+                // cannot continue as division by zero would occur in the next step
+                throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
+            }
+
+            /*
+             * Update x:
+             *
+             *                                f(xi)
+             *  x(i+1) = x(i) - ------------------------------------
+             *                            /      f(xi) * f''(xi)  \
+             *                   f'(xi) * | 1 - ----------------- |
+             *                            \       2 * f'(xi)^2    /
+             */
+            T term = static_cast<T>(1) - fx * d2x  / (2 * d2x * d2x );
+
+            if ( false==mod && true==math::NumericUtil::isZero<T>(term) )
+            {
+                // cannot continue as division by zero would occur in the next step
+                throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
+            }
+
+            if ( true == mod )
+            {
+                term = std::max( static_cast<T>(4) / static_cast<T>(5),
+                                 std::min(static_cast<T>(6) / static_cast<T>(5), term) );
+            }
+
+            // Update x
+            x -= fx / (dx * term);
+            fx = f.func(x);
+        } // for iter
+
+        // Has the algorithm converged to any root?
+        if ( false == math::NumericUtil::isZero<T>(fx, EPSY) )
+        {
+            // apparently not
+            throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
+        }
+
+        return x;
+    }
+    catch ( const math::FunctionException& fex )
+    {
+        throw math::RootFindException(math::RootFindException::UNDEFINED);
+    }
+    catch ( const math::CalculusException& cex )
+    {
+        // cex is only thrown if derivation function is undefined near x
+        throw math::RootFindException(math::RootFindException::UNDEFINED);
+    }
+}
+
 
 }  // namespace __private
 }  // namespace RootFind
@@ -577,7 +718,6 @@ T math::RootFind::newton(
  * @throw RootFindException if the root could not be found
  *
  * @see newton
- * @see EdiffMethod
  */
 template <class T>
 T math::RootFind::quasiNewton(
@@ -596,4 +736,206 @@ T math::RootFind::quasiNewton(
     // The algorithm is implemented in __newtonCommon:
     return math::RootFind::__private::__newtonCommon<T>(
             f, f, x0, epsy, h, Nmax, false );
+}
+
+
+/**
+ * Halley's method to find one root of a nonlinear function.
+ *
+ * The function's 1st and 2nd order derivations must be known
+ * in advance and passed as the second and third argument.
+ *
+ * @note The method is not guaranteed to converge towards any root
+ *       even if 'f.func' has roots
+ *
+ * @note If 'f.func' has more than one root, the method will converge
+ *       (not guaranteed) to one root only
+ *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
+ * @param f - instance of a class with the function to find its root
+ * @param diff - instance of a class with the derivation of 'f.func'
+ * @param diff2 - instance of a class with the 2nd order derivative of 'f.func'
+ * @param x0 - starting point of the algorithm
+ * @param epsy - tolerance (default: 1e-6)
+ * @param Nmax - maximum number of iterations (default: 10000)
+ *
+ * @return root of the function 'f' if it exists
+ *
+ * @throw RootFindException if the root could not be found
+ *
+ * @see quasiHalley
+ * @see halleyMod
+ * @see quasiHalleyMod
+ */
+template <class T>
+T math::RootFind::halley(
+       const math::IFunctionGeneric<T>& f,
+       const math::IFunctionGeneric<T>& diff,
+       const math::IFunctionGeneric<T>& diff2,
+       const T& x0,
+       const T& epsy,
+       size_t Nmax
+     ) throw (math::RootFindException)
+{
+    /*
+     * The Halley's method is described in detail at:
+     * https://en.wikipedia.org/wiki/Halley%27s_method
+     */
+
+    // The algorithm is implemented in __halleyCommon:
+    return math::RootFind::__private::__halleyCommon<T>(
+        f, diff, diff2, x0, epsy, static_cast<T>(0), Nmax, true, false);
+}
+
+
+/**
+ * Halley's method to find one root of a nonlinear function.
+ *
+ * Unlike 'halley', this method does not require any derivation of 'f'.
+ * Instead it performs numerical differentiation.
+ *
+ * @note The method is not guaranteed to converge towards any root
+ *       even if 'f.func' has roots
+ *
+ * @note If 'f.func' has more than one root, the method will converge
+ *       (not guaranteed) to one root only
+ *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
+ * @param f - instance of a class with the function to find its root
+ * @param x0 - starting point of the algorithm
+ * @param epsy - tolerance (default: 1e-6)
+ * @param h - step size for numerical derivation (default: 0.001)
+ * @param Nmax - maximum number of iterations (default: 10000)
+ *
+ * @return root of the function 'f' if it exists
+ *
+ * @throw RootFindException if the root could not be found
+ *
+ * @see halley
+ * @see halleyMod
+ * @see quasiHalleyMod
+ */
+template <class T>
+T math::RootFind::quasiHalley(
+       const math::IFunctionGeneric<T>& f,
+       const T& x0,
+       const T& epsy,
+       const T& h,
+       size_t Nmax
+     ) throw (math::RootFindException)
+{
+    /*
+     * The Halley's method is described in detail at:
+     * https://en.wikipedia.org/wiki/Halley%27s_method
+     */
+
+    // The algorithm is implemented in __halleyCommon:
+	return math::RootFind::__private::__halleyCommon<T>(
+        f, f, f, x0, epsy, h, Nmax, false, false);
+}
+
+
+/**
+ * Modified Halley's method to find one root of a nonlinear function.
+ * The Halley's term is adjusted to be never less than 0.8
+ *
+ * The function's 1st and 2nd order derivations must be known
+ * in advance and passed as the second and third argument.
+ *
+ * @note The method is not guaranteed to converge towards any root
+ *       even if 'f.func' has roots
+ *
+ * @note If 'f.func' has more than one root, the method will converge
+ *       (not guaranteed) to one root only
+ *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
+ * @param f - instance of a class with the function to find its root
+ * @param diff - instance of a class with the derivation of 'f.func'
+ * @param diff2 - instance of a class with the 2nd order derivative of 'f.func'
+ * @param x0 - starting point of the algorithm
+ * @param epsy - tolerance (default: 1e-6)
+ * @param Nmax - maximum number of iterations (default: 10000)
+ *
+ * @return root of the function 'f' if it exists
+ *
+ * @throw RootFindException if the root could not be found
+ *
+ * @see halley
+ * @see quasiHalley
+ * @see quasiHalleyMod
+ */
+template <class T>
+T math::RootFind::halleyMod(
+       const math::IFunctionGeneric<T>& f,
+       const math::IFunctionGeneric<T>& diff,
+       const math::IFunctionGeneric<T>& diff2,
+       const T& x0,
+       const T& epsy,
+       size_t Nmax
+     ) throw (math::RootFindException)
+{
+    /*
+     * The Halley's method is described in detail at:
+     * https://en.wikipedia.org/wiki/Halley%27s_method
+     */
+
+    // The algorithm is implemented in __halleyCommon:
+	return math::RootFind::__private::__halleyCommon<T>(
+        f, diff, diff2, x0, epsy, static_cast<T>(0), Nmax, true, true);
+}
+
+
+/**
+ * Halley's method to find one root of a nonlinear function.
+ * The Halley's term is adjusted to be never less than 0.8
+ *
+ * Unlike 'halley', this method does not require any derivation of 'f'.
+ * Instead it performs numerical differentiation.
+ *
+ * @note The method is not guaranteed to converge towards any root
+ *       even if 'f.func' has roots
+ *
+ * @note If 'f.func' has more than one root, the method will converge
+ *       (not guaranteed) to one root only
+ *
+ * @note 'epsy' will be increased to the system epsilon for the type
+ *       if its value is too small.
+ *
+ * @param f - instance of a class with the function to find its root
+ * @param x0 - starting point of the algorithm
+ * @param epsy - tolerance (default: 1e-6)
+ * @param h - step size for numerical derivation (default: 0.001)
+ * @param Nmax - maximum number of iterations (default: 10000)
+ *
+ * @return root of the function 'f' if it exists
+ *
+ * @throw RootFindException if the root could not be found
+ *
+ * @see halley
+ * @see halleyMod
+ * @see quasiHalleyMod
+ */
+template <class T>
+T math::RootFind::quasiHalleyMod(
+       const math::IFunctionGeneric<T>& f,
+       const T& x0,
+       const T& epsy,
+       const T& h,
+       size_t Nmax
+     ) throw (math::RootFindException)
+{
+    /*
+     * The Halley's method is described in detail at:
+     * https://en.wikipedia.org/wiki/Halley%27s_method
+     */
+
+    // The algorithm is implemented in __halleyCommon:
+    return math::RootFind::__private::__halleyCommon<T>(
+        f, f, f, x0, epsy, h, Nmax, false, true);
 }

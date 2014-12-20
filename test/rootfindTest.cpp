@@ -42,7 +42,7 @@ public:
     // function: sin(x)/x - 0.5
     double func(const double& x) const throw(FunctionException)
     {
-   	    if ( true == NumericUtil::isZero<double>(x) )
+        if ( true == NumericUtil::isZero<double>(x) )
         {
             /*
              * When x approaches 0, the division by zero can occur.
@@ -74,7 +74,7 @@ public:
     {
         /*
          * Derivation of the function f, defined above.
-         * Not that the subtrahend 0.5 is cancelled out by differentiation:
+         * Note that the subtrahend 0.5 is cancelled out by differentiation:
          *
          *  df(x)     cos(x)     sin(x)
          * ------- = -------- - --------
@@ -92,18 +92,62 @@ public:
              *
              *       /  cos(x)     sin(x)  \
              *  lim  | -------- - -------- | = 0
-             *  x->0 \    x         x**2   /
+             *  x->0 \    x          x^2   /
              *
              * Verified in Maxima:
              (%i4)  limit(d(x), x, 0);
              (%o4)  0
              */
 
-           	return 0.0;
+            return 0.0;
         }
         else
         {
             return  cos(x)/x - sin(x)/(x*x);
+        }
+    }
+};
+
+
+class D2Func : public IFunction
+{
+public:
+    double func(const double& x) const throw(FunctionException)
+    {
+        /*
+         * 2nd order derivation of the function f, defined above.
+         * Note that the subtrahend 0.5 is cancelled out by differentiation:
+         *
+         *   2
+         *  d f(x)       sin(x)     2 * cos(x)     2 * sin(x)
+         * -------- = - -------- - ------------ + ------------
+         *      2          x           x^2            x^3
+         *    dx
+         *
+         * Verified in Maxima:
+           (%i5)  d2(x) := ''(diff(f(x), x, 2));
+           (%o5)  d2(x):=−sin(x)/x+(2*sin(x))/x^3−(2*cos(x))/x^2
+         */
+
+        if ( true == NumericUtil::isZero<double>(x) )
+        {
+            /*
+             * Prevent division by 0 by applying the limit:
+             *
+             *       /    sin(x)     2 * cos(x)     2 * sin(x)  \      1
+             *  lim  | - -------- - ------------ + ------------ | = - ---
+             *  x->0 \      x           x^2            x^3      /      3
+             *
+             * Verified in Maxima:
+             (%i6)  limit(d2(x), x, 0);
+             (%o6)  −1/3
+             */
+
+            return 1.0 / 3.0;
+        }
+        else
+        {
+            return -sin(x)/x * (1.0 - 2.0/(x*x)) - 2.0 * cos(x)/(x*x);
         }
     }
 };
@@ -118,31 +162,48 @@ void rootFindTest()
     {
         const FFunc f;
         const DFunc d;
+        const D2Func d2;
         double x0;
 
         /*
          * "Exact" numerical solution found by Maxima:
-         (%i5)  find_root(f(x), x, 1, 3);
-         (%o5)  1.895494267033981
+         (%i7)  find_root(f(x), x, 1, 3);
+         (%o7)  1.895494267033981
          */
         x0 = RootFind::bisection(f, 1.0, 3.0, 1e-9, 1e-9);
-        cout << "Bisection method:       x0 = " << x0 << "\t";
+        cout << "Bisection method:            x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::regulaFalsi(f, 1.0, 3.0, 1e-9, 1e-9);
-        cout << "Regula falsi method:    x0 = " << x0 << "\t";
+        cout << "Regula falsi method:         x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::secant(f, 1.0, 3.0, 1e-9);
-        cout << "Secant method:          x0 = " << x0 << "\t";
+        cout << "Secant method:               x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::newton(f, d, 1.0, 1e-9);
-        cout << "Newton's method:        x0 = " << x0 << "\t";
+        cout << "Newton's method:             x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         x0 = RootFind::quasiNewton(f, 1.0, 1e-9, 0.001);
-        cout << "Quasi Newton's method:  x0 = " << x0 << "\t";
+        cout << "Quasi Newton's method:       x0 = " << x0 << "\t";
+        cout << "f(x0) = " << f.func(x0) << endl;
+
+        x0 = RootFind::halley(f, d, d2, 1.0, 1e-9);
+        cout << "Halleys's method:            x0 = " << x0 << "\t";
+        cout << "f(x0) = " << f.func(x0) << endl;
+
+        x0 = RootFind::quasiHalley(f, 1.0, 1e-9, 0.001);
+        cout << "Quasi Halleys's method:      x0 = " << x0 << "\t";
+        cout << "f(x0) = " << f.func(x0) << endl;
+
+        x0 = RootFind::halleyMod(f, d, d2, 1.0, 1e-9);
+        cout << "Mod. Halleys's method:       x0 = " << x0 << "\t";
+        cout << "f(x0) = " << f.func(x0) << endl;
+
+        x0 = RootFind::quasiHalleyMod(f, 1.0, 1e-9, 0.001);
+        cout << "Mod. quasi Halleys's method: x0 = " << x0 << "\t";
         cout << "f(x0) = " << f.func(x0) << endl;
 
         cout << "Correct root: 1.895494267033981" << endl;
