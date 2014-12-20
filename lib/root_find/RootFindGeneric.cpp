@@ -27,6 +27,7 @@ limitations under the License.
 #include <cstddef>
 #include <algorithm>
 
+#include "../settings/rootfind_settings.h"
 #include "util/NumericUtil.hpp"
 #include "exception/FunctionException.hpp"
 #include "util/IFunctionGeneric.hpp"
@@ -111,7 +112,7 @@ T __newtonCommon(
         {
             const T dx = ( true == diffFunc ?
                       diff.func(x) :
-                      math::Diff::diff<T>(f, x,h, math::EDiffMethod::CENTRAL) );
+                      math::Diff::diff<T>(f, x,h, ROOTFIND_DEFAULT_DIFF_METHOD) );
 
             if ( true == math::NumericUtil::isZero<T>(dx) )
             {
@@ -166,8 +167,8 @@ T __newtonCommon(
  * @param f - instance of a class with the function to find its root
  * @param from - lower boundary of the search interval
  * @param to - upper boundary of the search interval
- * @param epsx - the smallest width of the search interval (default: type dependent system epsilon)
- * @param epsy - tolerance (default: type dependent system epsilon)
+ * @param epsx - the smallest width of the search interval (default: 1e-4)
+ * @param epsy - tolerance (default: 1e-6)
  *
  * @return root of the function 'f' if it exists
  *
@@ -293,8 +294,8 @@ T math::RootFind::bisection(
  * @param f - instance of a class with the function to find its root
  * @param from - lower boundary of the search interval
  * @param to - upper boundary of the search interval
- * @param epsx - the smallest width of the search interval (default: type dependent system epsilon)
- * @param epsy - tolerance (default: type dependent system epsilon)
+ * @param epsx - the smallest width of the search interval (default: 1e-4)
+ * @param epsy - tolerance (default: 1e-6)
  *
  * @return root of the function 'f' if it exists
  *
@@ -417,7 +418,7 @@ T math::RootFind::regulaFalsi(
  * @param f - instance of a class with the function to find its root
  * @param r0 - first initial value
  * @param r1 - second initial value
- * @param epsy - tolerance (default: type dependent system epsilon)
+ * @param epsy - tolerance (default: 1e-6)
  * @param Nmax - maximum number of iterations (default: 10000)
  *
  * @return root of the function 'f' if it exists
@@ -519,7 +520,7 @@ T math::RootFind::secant(
  * @param f - instance of a class with the function to find its root
  * @param diff - instance of a class with the derivation of 'f.func'
  * @param x0 - starting point of the algorithm
- * @param epsy - tolerance (default: type dependent system epsilon)
+ * @param epsy - tolerance (default: 1e-6)
  * @param Nmax - maximum number of iterations (default: 10000)
  *
  * @return root of the function 'f' if it exists
@@ -567,7 +568,7 @@ T math::RootFind::newton(
  *
  * @param f - instance of a class with the function to find its root
  * @param x0 - starting point of the algorithm
- * @param epsy - tolerance (default: type dependent system epsilon)
+ * @param epsy - tolerance (default: 1e-6)
  * @param h - step size for numerical derivation (default: 0.001)
  * @param Nmax - maximum number of iterations (default: 10000)
  *

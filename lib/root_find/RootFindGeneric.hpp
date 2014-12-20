@@ -30,6 +30,7 @@ limitations under the License.
 
 #include <cstddef>
 
+#include "../settings/rootfind_settings.h"
 #include "exception/RootFindException.hpp"
 #include "util/IFunctionGeneric.hpp"
 
@@ -49,8 +50,8 @@ namespace RootFind
            const IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
-           const T& epsx = static_cast<T>(0),
-           const T& epsy = static_cast<T>(0)
+           const T& epsx = static_cast<T>(ROOTFIND_EPSX_NUM) / static_cast<T>(ROOTFIND_EPSX_DEN),
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN)
          ) throw(RootFindException);
 
 
@@ -59,8 +60,8 @@ namespace RootFind
            const IFunctionGeneric<T>& f,
            const T& from,
            const T& to,
-           const T& epsx = static_cast<T>(0),
-           const T& epsy = static_cast<T>(0)
+           const T& epsx = static_cast<T>(ROOTFIND_EPSX_NUM) / static_cast<T>(ROOTFIND_EPSX_DEN),
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN)
          ) throw(RootFindException);
 
 
@@ -69,8 +70,8 @@ namespace RootFind
            const IFunctionGeneric<T>& f,
            const T& r0,
            const T& r1,
-           const T& epsy = static_cast<T>(0),
-           size_t Nmax = 10000
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
+           size_t Nmax = ROOTFIND_MAX_ITER
          ) throw(RootFindException);
 
 
@@ -79,8 +80,8 @@ namespace RootFind
            const IFunctionGeneric<T>& f,
            const IFunctionGeneric<T>& diff,
            const T& x0,
-           const T& epsy = static_cast<T>(0),
-           size_t Nmax = 10000
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
+           size_t Nmax = ROOTFIND_MAX_ITER
          ) throw(RootFindException);
 
 
@@ -88,9 +89,9 @@ namespace RootFind
     T quasiNewton(
            const IFunctionGeneric<T>& f,
            const T& x0,
-           const T& epsy = static_cast<T>(0),
-           const T& h = static_cast<T>(1) / static_cast<T>(1000),
-           size_t Nmax = 10000
+           const T& epsy = static_cast<T>(ROOTFIND_EPSY_NUM) / static_cast<T>(ROOTFIND_EPSY_DEN),
+           const T& h = static_cast<T>(ROOTFIND_DIFF_STEP_NUM) / static_cast<T>(ROOTFIND_DIFF_STEP_DEN),
+           size_t Nmax = ROOTFIND_MAX_ITER
          ) throw(RootFindException);
 
 }  // namepsace RootFind
