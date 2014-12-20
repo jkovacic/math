@@ -28,6 +28,28 @@ limitations under the License.
 
 
 /**
+ * Default step size for numerical integration.
+ * 
+ * For better flexibility with generic (templated) functions
+ * the step size is given by its numerator and denominator.
+ */
+#define INTEG_STEP_NUM             ( 1 )
+#define INTEG_STEP_DEN             ( 10000 )
+
+/**
+ * Default number of integration steps
+ */
+#define INTEG_DEFAULT_STEPS        ( 10000 )
+
+
+/**
+ * Default integration method
+ */
+#define INTEG_DEFAULT_METHOD       math::EIntegAlg::SIMPSON
+
+
+
+/**
  * Default step size for numerical differentiation.
  * 
  * For better flexibility with generic (templated) functions

@@ -30,6 +30,7 @@ limitations under the License.
 
 #include <cstddef>
 
+#include "../settings/calc_settings.h"
 #include "exception/CalculusException.hpp"
 #include "util/IFunctionGeneric.hpp"
 
@@ -66,8 +67,8 @@ namespace Integ
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
-               size_t n,
-               EIntegAlg::alg algorithm=EIntegAlg::SIMPSON
+               size_t n = INTEG_DEFAULT_STEPS,
+               EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
 
@@ -76,8 +77,8 @@ namespace Integ
                const IFunctionGeneric<T>& f,
                const T& a,
                const T& b,
-               const T& h,
-               EIntegAlg::alg algorithm=EIntegAlg::SIMPSON
+               const T& h = static_cast<T>(INTEG_STEP_NUM) / static_cast<T>(INTEG_STEP_DEN),
+               EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
 

@@ -72,13 +72,13 @@ T __rectangle(
 {
     /*
      *
-     *     b                    N-1
-     *     /                   -----
-     *     |                   \
-     *     | f(x) dx   ~   h *  >  f(a + i*h)
-     *     |                   /
-     *    /                    -----
-     *    a                     i=0
+     *     b                     N-1
+     *     /                    -----
+     *     |                    \
+     *     | f(x) dx   ~=   h *  >  f(a + i*h)
+     *     |                    /
+     *     /                    -----
+     *     a                     i=0
      *
      * where h = (b - a) / N
      */
@@ -241,13 +241,13 @@ T __trapezoidal(
 {
     /*
      *
-     *     b                     N-1
-     *     /                    -----
-     *     |              h     \   /                         \
-     *     | f(x) dx   ~ ---  *  >  | f(a+i*h) + f(a+(i+1)*h) |  =
-     *     |              2     /   \                         /
-     *    /                     -----
-     *    a                      i=0
+     *     b                      N-1
+     *     /                     -----
+     *     |               h     \   /                         \
+     *     | f(x) dx   ~= ---  *  >  | f(a+i*h) + f(a+(i+1)*h) |  =
+     *     |               2     /   \                         /
+     *     /                     -----
+     *     a                      i=0
      *
      *
      *         /                   N-2          \
@@ -304,12 +304,12 @@ T __simpson(
 {
     /*
      *   b
-     *   /                 /                                                             \
-     *   |              h  |                                                             |
-     *   | f(x) dx  ~  --- | f(x0) + 4*f(x1) + 2*f(x2) + 4*f(x3) + 4*f(x4) + ... + f(xN) |
-     *   |              3  |                                                             |
-     *  /                  \                                                             /
-     *  a
+     *   /                  /                                                             \
+     *   |               h  |                                                             |
+     *   | f(x) dx  ~=  --- | f(x0) + 4*f(x1) + 2*f(x2) + 4*f(x3) + 4*f(x4) + ... + f(xN) |
+     *   |               3  |                                                             |
+     *   /                  \                                                             /
+     *   a
      *
      *  where h = (b-1) / N,  xi = a + i *h,
      *  and N must be an even number (divisible by 2)
@@ -349,12 +349,12 @@ T __simpson38(
 {
     /*
      *   b
-     *   /                   /                                                                                 \
-     *   |              3*h  |                                                                                 |
-     *   | f(x) dx  ~  ----- | f(x0) + 3*f(x1) + 3*f(x2) + 2*f(x3) + 3*f(x4) + 3*f(x5) + 2*f(x6) + ... + f(xN) |
-     *   |               8   |                                                                                 |
-     *  /                    \                                                                                 /
-     *  a
+     *   /                    /                                                                                 \
+     *   |               3*h  |                                                                                 |
+     *   | f(x) dx  ~=  ----- | f(x0) + 3*f(x1) + 3*f(x2) + 2*f(x3) + 3*f(x4) + 3*f(x5) + 2*f(x6) + ... + f(xN) |
+     *   |                8   |                                                                                 |
+     *   /                    \                                                                                 /
+     *   a
      *
      *  where h = (b-1) / N,  xi = a + i *h,
      *  and N must be divisible by 3
@@ -395,12 +395,12 @@ T __boole(
 {
     /*
      *   b
-     *   /                   /
-     *   |              2*h  |
-     *   | f(x) dx  ~  ----- | 7*f(x0) + 32*f(x1) + 12*f(x2) + 32*f(x3) + 14*f(x4) +
-     *   |              45   |
-     *  /                    \
-     *  a
+     *   /                    /
+     *   |               2*h  |
+     *   | f(x) dx  ~=  ----- | 7*f(x0) + 32*f(x1) + 12*f(x2) + 32*f(x3) + 14*f(x4) +
+     *   |               45   |
+     *   /                    \
+     *   a
      *
      *                                                                           \
      *                                                                           |
@@ -441,7 +441,7 @@ T __boole(
  * @param f - instance of a class with the function to integrate
  * @param a - lower bound of the integration interval
  * @param b - upper bound of the integration interval
- * @param n - desired number of integrating intervals
+ * @param n - desired number of integrating intervals (default: 10000)
  * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
  *
  * @return definite integral of f.func() between 'a' and 'b'
@@ -538,7 +538,7 @@ T math::Integ::integ(
  * @param f - instance of a class with the function to integrate
  * @param a - lower bound of the integration interval
  * @param b - upper bound of the integration interval
- * @param h - desired size of an integrating step
+ * @param h - desired size of an integrating step (default: 0.0001)
  * @param algorithm - one of the supported algorithms to obtain the definite integral (default: SIMPSON)
  *
  * @return definite integral of f.func() between 'a' and 'b'
