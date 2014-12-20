@@ -230,15 +230,15 @@ T __halleyCommon(
                      d2.func(x) :
                      math::Diff::diff2<T>(f, x, h) );
 
-            if ( true == math::NumericUtil::isZero<T>(dx) ||
-                 true == math::NumericUtil::isZero<T>(d2x) )
+            // check the first derivative to prevent possible division by zero
+            if ( true == math::NumericUtil::isZero<T>(dx) )
             {
                 // cannot continue as division by zero would occur in the next step
                 throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
             }
 
             /*
-             * Update x:
+             * x will be updated as follows:
              *
              *                                f(xi)
              *  x(i+1) = x(i) - ------------------------------------
@@ -246,21 +246,25 @@ T __halleyCommon(
              *                   f'(xi) * | 1 - ----------------- |
              *                            \       2 * f'(xi)^2    /
              */
+
+            // Obtain the Halley's term:
             T term = static_cast<T>(1) - fx * d2x  / (2 * d2x * d2x );
 
+            // Theoretically the term can also equal 0...
             if ( false==mod && true==math::NumericUtil::isZero<T>(term) )
             {
                 // cannot continue as division by zero would occur in the next step
                 throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
             }
 
+            // Adjust the term to min. 0.8 if required
             if ( true == mod )
             {
                 term = std::max( static_cast<T>(4) / static_cast<T>(5),
                                  std::min(static_cast<T>(6) / static_cast<T>(5), term) );
             }
 
-            // Update x
+            // Finally update x
             x -= fx / (dx * term);
             fx = f.func(x);
         } // for iter
