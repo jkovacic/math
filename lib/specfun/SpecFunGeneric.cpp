@@ -404,13 +404,21 @@ T math::SpecFun::beta(const T& x, const T& y) throw (math::SpecFunException)
      *               G(x+y)
      */
 
+    const T gxy = math::SpecFun::gamma<T>(x + y);
+
+    // handle a very unlikely occassion that G(x,y) gets very close to 0:
+    if ( true == math::NumericUtil::isZero<T>(gxy) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
     return math::SpecFun::gamma<T>(x) *
            math::SpecFun::gamma<T>(y) /
-           math::SpecFun::gamma<T>(x+y);
+           gxy;
 }
 
 
-// implementation of an auxiliary "private" function:
+// implementation of auxiliary "private" functions:
 namespace math {  namespace SpecFun {  namespace __private {
 
 /*
@@ -516,6 +524,7 @@ T __incGamma(
      *
      * When x < (a+1), it is more convenient to apply the following Taylor series
      * that evalutes the lower incomplete gamma function:
+     * 
      *                         inf
      *                        -----
      *              -x   a    \        G(a)       i
@@ -575,6 +584,7 @@ T __incGamma(
 
         if ( true == reg )
         {
+            // Note: if a>0, gamma(a) is always greater than 0
             ginc /= G;
         }
     }
@@ -610,6 +620,7 @@ T __incGamma(
 
         if ( true == reg )
         {
+            // Note: if a>0, gamma(a) is always greater than 0
             ginc /= G;
         }
     }
@@ -670,7 +681,7 @@ T __incBeta(
 
     // Derive a class from ICtdFracFuncGeneric that
     // properly implements 'fa' and 'fb'.
-	// 'a' and 'b' will be the class's internal parameters
+    // 'a' and 'b' will be the class's internal parameters
     class CtdF : public math::CtdFrac::ICtdFracFuncGeneric<T>
     {
 
@@ -719,8 +730,8 @@ T __incBeta(
         // b(x,i) = 1
         T fb(const T& x, size_t i) const throw(math::FunctionException)
         {
-        	(void) x;
-        	(void) i;
+            (void) x;
+            (void) i;
             return static_cast<T>(1);
         }
     };  // class CtdF
@@ -783,10 +794,10 @@ T __incBeta(
 
     if ( true == math::NumericUtil::isZero<T>(xn) )
     {
-    	/*
+        /*
          * Both edge conditions are handled separately:
-   	     *   B0(a,b) = 0  and B1(a,b) = B(a,b)
-   	     */
+         *   B0(a,b) = 0  and B1(a,b) = B(a,b)
+         */
 
         binc = ( true==xlarge ? B : static_cast<T>(0) );
     }
@@ -814,6 +825,12 @@ T __incBeta(
     // Finally regularize the result if requested (via 'reg')
     if ( true == reg )
     {
+        // Just in case handle the very unlikely case
+        if ( true == math::NumericUtil::isZero<T>(B) )
+        {
+            throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+        }
+
         binc /= B;
     }
 
@@ -1111,7 +1128,7 @@ T math::SpecFun::erf(const T& x, const T& tol)
 {
     /*
      * The definite integral could be calculated numerically, however
-     * more efficients methods exist. The exponential can be expanded
+     * more efficient methods exist. The exponential can be expanded
      * into a Taylor series and each term can be integrated separately.
      * As evident from
      * https://en.wikipedia.org/wiki/Error_function#Taylor_series
