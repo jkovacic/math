@@ -38,6 +38,7 @@ limitations under the License.
 #include <algorithm>
 
 #include "../settings/stat_settings.h"
+#include "util/math_constant.h"
 #include "util/NumericUtil.hpp"
 #include "util/IFunctionGeneric.hpp"
 #include "specfun/SpecFunGeneric.hpp"
@@ -111,9 +112,12 @@ public:
 
         try
         {
-            this->m_term = static_cast<T>(1) /
-                           ( math::SpecFun::beta<T>(
-                                 static_cast<T>(1)/static_cast<T>(2), df/static_cast<T>(2)) *
+            // The first version (with two gamma functions) is computationally
+            // more efficient as evaluation of the beta function requires
+            // evaluation of three different gamma functions.
+            this->m_term = math::SpecFun::gamma<T>((df + static_cast<T>(1)) / static_cast<T>(2)) *
+                           static_cast<T>(MATH_CONST_SQRT_INV_PI) /
+                           ( math::SpecFun::gamma<T>(df / static_cast<T>(2)) *
                              std::sqrt(df) * sigma );
         }
         catch ( math::SpecFunException& sfex )
