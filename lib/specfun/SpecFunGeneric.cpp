@@ -525,13 +525,13 @@ T __incGamma(
      * When x < (a+1), it is more convenient to apply the following Taylor series
      * that evalutes the lower incomplete gamma function:
      * 
-     *                         inf
-     *                        -----
-     *              -x   a    \        G(a)       i
-     *   g(a,x) ~= e   *x  *   >    ---------- * x
-     *                        /      G(a+i+i)
-     *                        -----
-     *                         i=0
+     *                          inf
+     *                         -----
+     *              -x    a    \        G(a)       i
+     *   g(a,x) ~= e   * x  *   >    ---------- * x
+     *                         /      G(a+i+i)
+     *                         -----
+     *                          i=0
      *
      * Applying the following property of the gamma function:
      *
@@ -539,13 +539,13 @@ T __incGamma(
      *
      * The Taylor series above can be further simplified to:
      *
-     *                         inf
-     *                        -----              i
-     *              -x   a    \                 x
-     *   g(a,x) ~= e   *x  *   >    -------------------------
-     *                        /      a * (a+1) * ... * (a+i)
-     *                        -----
-     *                         i=0
+     *                          inf
+     *                         -----              i
+     *              -x    a    \                 x
+     *   g(a,x) ~= e   * x  *   >    -------------------------
+     *                         /      a * (a+1) * ... * (a+i)
+     *                         -----
+     *                          i=0
      *
      * Once either a lower or an upper incomplete gamma function is evaluated,
      * the other value may be quickly obtained by applying the following
@@ -623,6 +623,106 @@ T __incGamma(
             // Note: if a>0, gamma(a) is always greater than 0
             ginc /= G;
         }
+    }
+
+    return ginc;
+}
+
+
+/*
+ * Partial "specialization" of __incGamma for complex numbers.
+ * 
+ * Evaluates an incomplete gamma function. The exact kind of the returned
+ * value depends on parameters 'upper' and 'reg'.
+ *
+ * @note unlike at real numbers, incomplete gamma function is defined
+ *       virtually everywhere on the complex plane except a = negative integer
+ *
+ * @param a - first input argument
+ * @param x - second input argument, the integration limit
+ * @param upper - should the upper (if 'true') or the lower (if 'false) inc. gamma function be returned
+ * @param reg - if 'true', the regularized gamma function is returned, i.e. divided by gamma(a)
+ * @param tol - tolerance (default: 1e-6)
+ */
+template <class T>
+std::complex<T> __incGamma(
+                 const std::complex<T>& a,
+                 const std::complex<T>& x,
+                 bool upper,
+                 bool reg,
+                 const std::complex<T>& tol
+               ) throw(math::SpecFunException)
+{
+    /*
+     * The lower incomplete gamma function can be expanded into:
+     *
+     *                          inf
+     *                         -----              i
+     *              -x    a    \                 x
+     *   g(a,x) ~= e   * x  *   >    -------------------------
+     *                         /      a * (a+1) * ... * (a+i)
+     *                         -----
+     *                          i=0
+     *
+     * Once either a lower incomplete gamma function is evaluated,
+     * the upper one may be quickly obtained by applying the following
+     * property of the incomplete gamma function:
+     *
+     *   G(a,x) + g(a,x) = G(a)
+     *
+     * A value of a regularized incomplete gamma function is obtained
+     * by dividing g(a,x) or G(a,x) by G(a).
+     */
+
+    // If 'a' equals zero, division by zero would occur
+    if ( true == math::NumericUtil::isZero<std::complex<T> >(a) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    // G = gamma(a)
+    const std::complex<T> G = math::SpecFun::gamma<std::complex<T> >(a);
+
+    std::complex<T> at = a;
+
+    // The first term of the series
+    std::complex<T> ginc = std::pow(x, a) * std::exp(-x) / a;
+    std::complex<T> term = ginc;
+
+    // proceed the series until it converges
+    while ( false == math::NumericUtil::isZero<std::complex<T> >(term, tol) )
+    {
+        at += static_cast<T>(1);
+
+        // if 'a' is a negative integer, sooner or later this exception will be thrown
+        if ( true == math::NumericUtil::isZero<std::complex<T> >(at) )
+        {
+            throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+        }
+        
+        term *= x / at;
+        ginc += term;
+    }
+
+    /*
+     * Apply properties of the incomplete gamma function
+     * if anything else except a non-regularized lower incomplete
+     * gamma function is desired.
+     */
+    if ( true == upper )
+    {
+        ginc = G - ginc;
+    }
+
+    if ( true == reg )
+    {
+        // very unlikely but check it anyway
+        if ( true == math::NumericUtil::isZero<std::complex<T> >(G) )
+        {
+            throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+        }
+
+        ginc /= G;
     }
 
     return ginc;
@@ -869,7 +969,7 @@ T math::SpecFun::incGammaUpper(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma<T>(a, x, true, false, tol);
+    return math::SpecFun::__private::__incGamma(a, x, true, false, tol);
 }
 
 
@@ -901,7 +1001,7 @@ T math::SpecFun::incGammaLower(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma<T>(a, x, false, false, tol);
+    return math::SpecFun::__private::__incGamma(a, x, false, false, tol);
 }
 
 
@@ -933,7 +1033,7 @@ T math::SpecFun::incGammaUpperReg(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma<T>(a, x, true, true, tol);
+    return math::SpecFun::__private::__incGamma(a, x, true, true, tol);
 }
 
 
@@ -965,7 +1065,7 @@ T math::SpecFun::incGammaLowerReg(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incGamma<T>(a, x, false, true, tol);
+    return math::SpecFun::__private::__incGamma(a, x, false, true, tol);
 }
 
 
