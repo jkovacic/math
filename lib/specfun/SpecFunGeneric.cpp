@@ -733,7 +733,7 @@ std::complex<T> __incGamma(
  * Evaluates an incomplete beta function. The exact kind of the returned
  * value depends on parameters 'upper' and 'reg'.
  *
- * @note both 'a' and 'x' must be strictly greater than 0,
+ * @note both 'a', 'b' and 'x' must be strictly greater than 0,
  *       x must be greater than 0 and less than 1
  *
  * @param x - integration limit
@@ -937,6 +937,121 @@ T __incBeta(
     return binc;
 }
 
+
+/*
+ * Partial "specialization" of __incGamma for complex numbers.
+ * 
+ * Evaluates an incomplete beta function. The exact kind of the returned
+ * value depends on parameters 'upper' and 'reg'.
+ *
+ * @note unlike at real numbers, incomplete beta function is defined
+ *       virtually everywhere except if 'a' is a negative integer, currently this
+ *       function additionally requires that /x/ < 1 otherwise it may not converge.
+ *
+ * @param x - integration limit
+ * @param a - first input argument
+ * @param b - second input argument
+ * @param x - second input argument, the integration limit
+ * @param lower - should the lower (if 'true') or the upper (if 'false) inc. beta function be returned
+ * @param reg - if 'true', the regularized beta function is returned, i.e. divided by beta(a, b)
+ * @param tol - tolerance (default: 1e-6)
+ */
+template <class T>
+std::complex<T> __incBeta(
+          const std::complex<T>& x,
+          const std::complex<T>& a,
+          const std::complex<T>& b,
+          bool lower,
+          bool reg,
+          const std::complex<T>& tol
+        ) throw (math::SpecFunException)
+{
+    /*
+     * Series expansion of the incomplete beta function as explained at:
+     * http://functions.wolfram.com/GammaBetaErf/Beta3/06/01/03/01/01/
+     * 
+     *                a    /                                   2        \
+     *               x     |      a*(1-b)*x     a*(1-b)*(2-b)*x         |
+     *   Bx(a,b) ~= ---- * | 1 + ----------- + ------------------ + ... | =
+     *               a     |        (a+1)           2*(a+2)             |
+     *                     \                                            /
+     * 
+     * 
+     *                     /       inf                                         \
+     *                a    |      -----                                     i  |
+     *               x     |      \      a * (1-b) * (2-b) * ... * (i-b) * x   |
+     *            = ---- * | 1 +   >    -------------------------------------- |
+     *               a     |      /                  i! * (a+i)                |
+     *                     |      -----                                        |
+     *                     \       i=1                                         /
+     * 
+     */
+
+    // Division by zero will occur if a==0
+    if ( true == math::NumericUtil::isZero<std::complex<T> >(a) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    // Currently the function requires that /x/ < 1
+    // when the series is guaranteed to converge
+    if ( std::norm(x) >= static_cast<T>(1) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    // B(a,b)
+    const std::complex<T> B = math::SpecFun::beta<std::complex<T> >(a, b);
+
+    // The first term of the series
+    std::complex<T> binc = std::pow(x, a) / a;
+    std::complex<T> term = binc * a;
+
+    std::complex<T> at = a;
+    std::complex<T> bt = -b;
+ 
+    // proceed the series until it converges
+    for ( size_t i = 1;
+          false == math::NumericUtil::isZero<std::complex<T> >(term, tol);
+          ++i )
+    {
+        at += static_cast<T>(1);
+        bt += static_cast<T>(1);
+ 
+        // if 'a' is a negative integer, sooner or later this exception will be thrown
+        if ( true == math::NumericUtil::isZero<std::complex<T> >(at) )
+        {
+            throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+        }
+
+        term *= x * bt / static_cast<T>(i);
+        
+        binc += term / at;
+    }
+
+    /*
+     * Apply properties of the incomplete gamma function
+     * if anything else except a non-regularized lower incomplete
+     * gamma function is desired.
+     */
+    if ( false == lower )
+    {
+        binc = B - binc;
+    }
+    
+    if ( true == reg )
+    {
+        // Very unlikely but check it anyway
+        if ( true == math::NumericUtil::isZero<std::complex<T> >(B) )
+        {
+            throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+        }
+
+        binc /= B;
+    }
+    return binc;
+}
+
 }}}  // namespace math::SpecFun::__private
 
 
@@ -1100,7 +1215,7 @@ T math::SpecFun::incBetaLower(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta<T>(x, a, b, true, false, tol);
+    return math::SpecFun::__private::__incBeta(x, a, b, true, false, tol);
 }
 
 
@@ -1135,7 +1250,7 @@ T math::SpecFun::incBetaUpper(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta<T>(x, a, b, false, false, tol);
+    return math::SpecFun::__private::__incBeta(x, a, b, false, false, tol);
 }
 
 
@@ -1170,7 +1285,7 @@ T math::SpecFun::incBetaLowerReg(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta<T>(x, a, b, true, true, tol);
+    return math::SpecFun::__private::__incBeta(x, a, b, true, true, tol);
 }
 
 
@@ -1205,7 +1320,7 @@ T math::SpecFun::incBetaUpperReg(
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta<T>(x, a, b, false, true, tol);
+    return math::SpecFun::__private::__incBeta(x, a, b, false, true, tol);
 }
 
 

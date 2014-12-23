@@ -101,9 +101,9 @@ void specfunTest()
          (%o19)  1.123545237341651*%i+0.29474062291749
          (%i20)  gamma(1.4-0.7*%i) - gamma_incomplete(1.4-0.7*%i, 0.3+0.1*%i);
          (%o20)  0.13052172604872*%i-0.016291214690452
-         (%i21)  rectform(gamma_incomplete(-1.1+0.8*%i, 2.4-1.3*%i) / gamma(-1.1+0.8*%i));
+         (%i21)  gamma_incomplete_regularized(-1.1+0.8*%i, 2.4-1.3*%i);
          (%o21)  0.016252537791964*%i+0.0019715754028325
-         (%i22)  1 - rectform(gamma_incomplete(-3.2-1.4*%i, -2-0.5*%i) / gamma(-3.2-1.4*%i));
+         (%i22)  1 - gamma_incomplete_regularized(-3.2-1.4*%i, -2-0.5*%i);
          (%o22)  0.43578355528153*%i+0.23971636701011
         */
 
@@ -133,6 +133,14 @@ void specfunTest()
          (%o27)  0.0062899199999999
          (%i28)  1 - beta_incomplete_regularized(4, 1, 0.32);
          (%o28)  0.98951424
+         (%i29)  beta_incomplete(2.0-%i, 3.0+%i, 0.1+0.1*%i);
+         (%o29)  -0.01056283280605*%i-0.014279979073459
+         (%i30)  beta(-1.2+%i, -3.0-%i) - beta_incomplete(-1.2+%i, -3.0-%i, 0.1-0.2*%i);
+         (%o30)  12.57396933746574*%i+35.01301965518782
+         (%i31)  beta_incomplete_regularized(2.2-0.2*%i, 1.4+0.7*%i, -0.3+0.4*%i);
+         (%o31)  0.82213042903643-0.40178180061493*%i
+         (%i32)  1 - beta_incomplete_regularized(-3.8-0.7*%i, -3.4+2.7*%i, -0.6-0.1*%i);
+         (%o32)  0.0021282694663258*%i+0.0010989969711688
         */
         
         cout << endl;
@@ -142,15 +150,19 @@ void specfunTest()
         cout << "Upper inc. beta(0.82, 1, 2): " << SpecFun::incBetaUpper(0.82, 1.0, 2.0) << " (expected: 0.0162)" << endl;
         cout << "Reg. lower inc. beta(0.12, 3, 2): " << SpecFun::incBetaLowerReg(0.12, 3.0, 2.0) << " (expected: 0.0062899199999999)" << endl;
         cout << "Reg. upper inc. beta(0.32, 4, 1): " << SpecFun::incBetaUpperReg(0.32, 4.0, 1.0) << " (expected: 0.98951424)" << endl;
+        cout << "Lower inc. beta(0.1+0.1i, 2-i, 3+i): " << SpecFun::incBetaLower(complex<double>(0.1, 0.1), complex<double>(2.0, -1.0), complex<double>(3.0, 1.0)) << " (expected: (-0.014279979073459, -0.01056283280605))" << endl;
+        cout << "Upper inc. beta(0.1-0.2i, -1.2+i, -3-i): " << SpecFun::incBetaUpper(complex<double>(0.1, -0.2), complex<double>(-1.2, 1.0), complex<double>(-3.0, -1.0)) << " (expected: (35.01301965518782, 12.57396933746574))" << endl;
+        cout << "Reg. lower inc. beta(-0.3+0.4i, 2.2-0.2i, 1.4+0.7i): " << SpecFun::incBetaLowerReg(complex<double>(-0.3, 0.4), complex<double>(2.2, -0.2), complex<double>(1.4, 0.7)) << " (expected: (0.82213042903643, -0.40178180061493))" << endl;
+        cout << "Reg. upper inc. beta(-0.6-0.1i, -3.8-0.7i, -3.4+2.7i): " << SpecFun::incBetaUpperReg(complex<double>(-0.6, -0.1), complex<double>(-3.8, -0.7), complex<double>(-3.4, 2.7)) << " (expected: (0.0010989969711688, 0.0021282694663258))" << endl;
 
 
         /*
-         (%i29)  erf(-1.2);
-         (%o29)  -0.91031397822963
-         (%i30)  erf(0.7);
-         (%o30)  0.67780119383741
-         (%i31)  erfc(0.2);
-         (%o31)  0.77729741078952
+         (%i33)  erf(-1.2);
+         (%o33)  -0.91031397822963
+         (%i34)  erf(0.7);
+         (%o34)  0.67780119383741
+         (%i35)  erfc(0.2);
+         (%o35)  0.77729741078952
          */
         
         cout << endl;
@@ -160,7 +172,7 @@ void specfunTest()
     }
     catch ( const SpecFunException& ex )
     {
-        cerr << "Statistics exception caught: ";
+        cerr << "SpecFun exception caught: ";
         ex.what();
         cerr << endl;
     }
