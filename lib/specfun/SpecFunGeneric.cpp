@@ -895,8 +895,8 @@ T __incBeta(
     if ( true == math::NumericUtil::isZero<T>(xn) )
     {
         /*
-         * Both edge conditions are handled separately:
-         *   B0(a,b) = 0  and B1(a,b) = B(a,b)
+         * Both boundary conditions are handled separately:
+         *   B0(a,b) = 0  and  B1(a,b) = B(a,b)
          */
 
         binc = ( true==xlarge ? B : static_cast<T>(0) );
@@ -939,7 +939,7 @@ T __incBeta(
 
 
 /*
- * Partial "specialization" of __incGamma for complex numbers.
+ * Partial "specialization" of __incBeta for complex numbers.
  * 
  * Evaluates an incomplete beta function. The exact kind of the returned
  * value depends on parameters 'upper' and 'reg'.
@@ -1030,9 +1030,9 @@ std::complex<T> __incBeta(
     }
 
     /*
-     * Apply properties of the incomplete gamma function
+     * Apply properties of the incomplete beta function
      * if anything else except a non-regularized lower incomplete
-     * gamma function is desired.
+     * beta function is desired.
      */
     if ( false == lower )
     {
@@ -1067,7 +1067,10 @@ std::complex<T> __incBeta(
  *            /
  *            x
  *
- * @note 'a' and 'x' must be greater than 0
+ * @note For real arguments, 'a' and 'x' must be greater than 0.
+ *       For complex arguments, the function is defined for virtually
+ *       any combination of 'a' and 'x' except when 'a' is 0 or a
+ *       negative integer.
  *
  * @param a - first input argument
  * @param x - second input argument, the lower integration limit
@@ -1099,7 +1102,10 @@ T math::SpecFun::incGammaUpper(
  *            /
  *            0
  *
- * @note 'a' and 'x' must be greater than 0
+ * @note For real arguments, 'a' and 'x' must be greater than 0.
+ *       For complex arguments, the function is defined for virtually
+ *       any combination of 'a' and 'x' except when 'a' is 0 or a
+ *       negative integer.
  *
  * @param a - first input argument
  * @param x - second input argument, the upper integration limit
@@ -1131,7 +1137,10 @@ T math::SpecFun::incGammaLower(
  *                   /
  *                   x
  *
- * @note 'a' and 'x' must be greater than 0
+ * @note For real arguments, 'a' and 'x' must be greater than 0.
+ *       For complex arguments, the function is defined for virtually
+ *       any combination of 'a' and 'x' except when 'a' is 0 or a
+ *       negative integer.
  *
  * @param a - first input argument
  * @param x - second input argument, the lower integration limit
@@ -1163,7 +1172,10 @@ T math::SpecFun::incGammaUpperReg(
  *                   /
  *                   0
  *
- * @note 'a' and 'x' must be greater than 0
+ * @note For real arguments, 'a' and 'x' must be greater than 0.
+ *       For complex arguments, the function is defined for virtually
+ *       any combination of 'a' and 'x' except when 'a' is 0 or a
+ *       negative integer.
  *
  * @param a - first input argument
  * @param x - second input argument, the upper integration limit
@@ -1195,8 +1207,11 @@ T math::SpecFun::incGammaLowerReg(
  *             /
  *             0
  *
- * @note 'a' and 'b' must be greater than 0,
- *       'x' must be greater than 0 and less than 1
+ * @note For real arguments, 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1.
+ *       For complex arguments, 'a' and 'b' can be any complex values except
+ *       'a' must not be 0 or a negative integer. Currently the x is restricted
+ *       to: /x/ < 1.
  *
  * @param x - integration limit
  * @param a - first input argument
@@ -1230,8 +1245,11 @@ T math::SpecFun::incBetaLower(
  *             /
  *             x
  *
- * @note 'a' and 'b' must be greater than 0,
- *       'x' must be greater than 0 and less than 1
+ * @note For real arguments, 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1.
+ *       For complex arguments, 'a' and 'b' can be any complex values except
+ *       'a' must not be 0 or a negative integer. Currently the x is restricted
+ *       to: /x/ < 1.
  *
  * @param x - integration limit
  * @param a - first input argument
@@ -1265,8 +1283,11 @@ T math::SpecFun::incBetaUpper(
  *                      /
  *                      0
  *
- * @note 'a' and 'b' must be greater than 0,
- *       'x' must be greater than 0 and less than 1
+ * @note For real arguments, 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1.
+ *       For complex arguments, 'a' and 'b' can be any complex values except
+ *       'a' must not be 0 or a negative integer. Currently the x is restricted
+ *       to: /x/ < 1.
  *
  * @param x - integration limit
  * @param a - first input argument
@@ -1300,8 +1321,11 @@ T math::SpecFun::incBetaLowerReg(
  *                      /
  *                      x
  *
- * @note 'a' and 'b' must be greater than 0,
- *       'x' must be greater than 0 and less than 1
+ * @note For real arguments, 'a' and 'b' must be greater than 0,
+ *       'x' must be greater than 0 and less than 1.
+ *       For complex arguments, 'a' and 'b' can be any complex values except
+ *       'a' must not be 0 or a negative integer. Currently the x is restricted
+ *       to: /x/ < 1.
  *
  * @param x - integration limit
  * @param a - first input argument
