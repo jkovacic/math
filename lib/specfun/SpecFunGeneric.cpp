@@ -568,7 +568,9 @@ T __incGamma(
          * In this case evaluate the upper gamma function as described above.
          */
 
-    	const T G = ( true==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma<T>(a) );
+    	const T G = ( true==upper && false==reg ? 
+            static_cast<T>(0) : 
+            math::SpecFun::gamma<T>(a) );
 
         ginc /=  math::CtdFrac::ctdFrac<T>(coef, x);
 
@@ -595,7 +597,9 @@ T __incGamma(
          *
          * In this case evaluate the lower gamma function as described above.
          */
-    	const T G = ( false==upper && false==reg ? static_cast<T>(0) : math::SpecFun::gamma<T>(a) );
+    	const T G = ( false==upper && false==reg ? 
+            static_cast<T>(0) : 
+            math::SpecFun::gamma<T>(a) );
 
         // Initial term of the Taylor series at i=0:
         ginc /= a;
@@ -680,8 +684,10 @@ std::complex<T> __incGamma(
         throw math::SpecFunException(math::SpecFunException::UNDEFINED);
     }
 
-    // G = gamma(a)
-    const std::complex<T> G = math::SpecFun::gamma<std::complex<T> >(a);
+    // G = gamma(a) or (0,0) when the value is not used
+    const std::complex<T> G = ( true==reg || true==upper ? 
+               math::SpecFun::gamma<std::complex<T> >(a) : 
+               std::complex<T>(static_cast<T>(0)) );
 
     std::complex<T> at = a;
 
@@ -883,8 +889,11 @@ T __incBeta(
     const T an = ( false==xlarge ? a : b );
     const T bn = ( false==xlarge ? b : a );
 
-    // B(a,b)
-    const T B = math::SpecFun::beta<T>(a, b);
+    // B = B(a,b) or 0 when the value is not used
+    const T B = ( 
+        true==reg || (false==xlarge && false==lower) || (true==xlarge  && true==lower) ?
+        math::SpecFun::beta<T>(a, b) :
+        static_cast<T>(0) );
 
     // An instance of Ctdf that implements 'fa' and 'fb':
     const CtdF coef(an, bn);
@@ -1000,8 +1009,11 @@ std::complex<T> __incBeta(
         throw math::SpecFunException(math::SpecFunException::UNDEFINED);
     }
 
-    // B(a,b)
-    const std::complex<T> B = math::SpecFun::beta<std::complex<T> >(a, b);
+    // B = B(a,b) or (0,0) when the value is not used
+    const std::complex<T> B = ( 
+            true==reg || false==lower ?
+            math::SpecFun::beta<std::complex<T> >(a, b) :
+            std::complex<T>(static_cast<T>(0)) );
 
     // The first term of the series
     std::complex<T> binc = std::pow(x, a) / a;
