@@ -422,6 +422,142 @@ T math::SpecFun::beta(const T& x, const T& y) throw (math::SpecFunException)
 namespace math {  namespace SpecFun {  namespace __private {
 
 /*
+ * Extension of ICtdFracFuncGeneric, that evaluates coefficients of
+ * the following continued fraction, necessary to evaluate the
+ * incomplete gamma function:
+ * 
+ * When x > (1+a), the following continued fraction will be evaluated:
+ *
+ *                            1*(1-a)
+ *   cf = (x-a+1) - ---------------------------
+ *                                  2*(2-a)
+ *                    (x-a+3) - ---------------
+ *                               (x-a+5) - ...
+ *
+ * 'b_i' and 'a_i' are defined as follows:
+ *
+ * * a(x,i) = - i * (i-a)
+ * * b(x,i) = x - a + 1 + 2*i
+ * 
+ * 'a' is the class' internal parameter
+ */
+template< class T>
+class __CtdFIncGamma : public math::CtdFrac::ICtdFracFuncGeneric<T>
+{
+
+private:
+    const T m_a;      // parameter 'a'
+
+public:
+    /*
+     * Constructor, sets value of 'm_a'
+     *
+     * @param a - parameter 'a' from the definition of incomplete gamma function
+     */
+    __CtdFIncGamma(const T& a) : m_a(a)
+    {
+        // nothing else to do
+    }
+
+    // a(x,i) = -i * (i-a)
+    T fa(const T& x, size_t i) const throw (math::FunctionException)
+    {
+        (void) x;
+        const T f = static_cast<T>(i);
+        return -f * (f - this->m_a);
+    }
+
+    // b(x,i) = x - a + 1 + 2*i
+    T fb(const T& x, size_t i) const throw (math::FunctionException)
+    {
+        return x - this->m_a + static_cast<T>(1) + static_cast<T>(2*i);
+    }
+};  // class __CtdFIncGamma
+
+
+/*
+ * Extension of ICtdFracFuncGeneric, that evaluates coefficients of
+ * the following continued fraction, necessary to evaluate the
+ * incomplete beta function:
+ *
+ *                     a1
+ *   cf = 1 + ---------------------
+ *                       a2
+ *             1 + ---------------
+ *                         a3
+ *                  1 + ---------
+ *                       1 + ...
+ *
+ * 'b_i' and 'a_i' are defined as follows:
+ *
+ * * b(x,i) = 1
+ * *
+ * *           /    (a+m) * (a+b+m) * x
+ * *           | - -------------------------   <== i = 2*m+1
+ * *           /    (a+2*m) * (a + 2*m + 1)
+ * * a(x,i) = {
+ * *           \       m * (b-m) * x
+ * *           |   ---------------------       <== i = 2*m
+ * *           \    (a+2*m-1) * (a+2*m)
+ * 
+ * 'a' and 'b' are the class' internal parameters
+ */
+template <class T>
+class __CtdFIncBeta : public math::CtdFrac::ICtdFracFuncGeneric<T>
+{
+private:
+
+    const T m_a;      // parameter 'a'
+    const T m_b;      // parameter 'b'
+
+public:
+    /*
+     * Constructor, sets values of 'm_a' and 'm_b'
+     *
+     * @param a - parameter 'a' from the definition of the incomplete beta function
+     * @param b - parameter 'b' from the definition of the incomplete beta function
+     */
+    __CtdFIncBeta(const T& a, const T& b) : m_a(a), m_b(b)
+    {
+        // nothing else to do
+    }
+
+    /*
+     * a(x,i) = -(a+m)*(a+b+m)*x / ( (a+2m)*(a+2m+1) )   when i=2*m+1
+     * a(x,i) = m*(b-m)*x / ( (a+2m-1)*(a+2m) )          when i=2*m
+     */
+    T fa(const T& x, size_t i) const throw(math::FunctionException)
+    {
+        const size_t m = i / 2;
+        T ai = static_cast<T>(0);
+
+        if ( 1 == i%2 )
+        {
+            // 'i' is odd, i.e i=2*m+1
+            ai = -(this->m_a + static_cast<T>(m)) * (this->m_a + this->m_b + static_cast<T>(m)) * x /
+                  ( (this->m_a + static_cast<T>(2*m)) * (this->m_a + static_cast<T>(2*m) + static_cast<T>(1)) );
+        }
+        else
+        {
+            // 'i' is even, i.e i=2*m
+            ai = static_cast<T>(m) * (this->m_b - static_cast<T>(m)) * x /
+                 ( (this->m_a + static_cast<T>(2*m) - static_cast<T>(1)) * (this->m_a + static_cast<T>(2*m)) );
+        }
+
+        return ai;
+    }
+
+    // b(x,i) = 1
+    T fb(const T& x, size_t i) const throw(math::FunctionException)
+    {
+        (void) x;
+        (void) i;
+        return static_cast<T>(1);
+    }
+};  // class __CtdFIncBeta
+    
+    
+/*
  * Evaluates an incomplete gamma function. The exact kind of the returned
  * value depends on parameters 'upper' and 'reg'.
  *
@@ -442,60 +578,8 @@ T __incGamma(
                  const T& tol
                ) throw(math::SpecFunException)
 {
-
-    /*
-     * When x > (1+a), the following continued fraction will be evaluated:
-     *
-     *                            1*(1-a)
-     *   cf = (x-a+1) - ---------------------------
-     *                                  2*(2-a)
-     *                    (x-a+3) - ---------------
-     *                               (x-a+5) - ...
-     *
-     * 'b_i' and 'a_i' are defined as follows:
-     *
-     * * a(x,i) = - i * (i-a)
-     * * b(x,i) = x - a + 1 + 2*i
-     */
-
-    // Derive a class from ICtdFracFuncGeneric that
-    // properly implements 'fa' and 'fb'.
-	// 'a' will be the class's internal parameter
-    class CtdF : public math::CtdFrac::ICtdFracFuncGeneric<T>
-    {
-
-    private:
-        const T m_a;      // parameter 'a'
-
-    public:
-        /*
-         * Constructor, sets value of 'm_a'
-         *
-         * @param a - parameter 'a' from the definition of incomplete gamma function
-         */
-        CtdF(const T& a) : m_a(a)
-        {
-            // nothing else to do
-        }
-
-        // a(x,i) = -i * (i-a)
-        T fa(const T& x, size_t i) const throw (math::FunctionException)
-        {
-        	(void) x;
-            const T f = static_cast<T>(i);
-            return -f * (f - this->m_a);
-        }
-
-        // b(x,i) = x - a + 1 + 2*i
-        T fb(const T& x, size_t i) const throw (math::FunctionException)
-        {
-            return x - this->m_a + static_cast<T>(1) + static_cast<T>(2*i);
-        }
-    };  // class CtdF
-
-
-    // An instance of Ctdf that implements 'fa' and 'fb':
-    const CtdF coef(a);
+    // An instance of __CtdFIncGamma that implements 'fa' and 'fb':
+    const math::SpecFun::__private::__CtdFIncGamma<T> coef(a);
 
     // sanity check:
     if ( a < math::NumericUtil::getEPS<T>() ||
@@ -760,88 +844,6 @@ T __incBeta(
           const T& tol
         ) throw (math::SpecFunException)
 {
-
-    /*
-     * The following continued fraction will be evaluated:
-     *
-     *                     a1
-     *   cf = 1 + ---------------------
-     *                       a2
-     *             1 + ---------------
-     *                         a3
-     *                  1 + ---------
-     *                       1 + ...
-     *
-     * 'b_i' and 'a_i' are defined as follows:
-     *
-     * * b(x,i) = 1
-     * *
-     * *           /    (a+m) * (a+b+m) * x
-     * *           | - -------------------------   <== i = 2*m+1
-     * *           /    (a+2*m) * (a + 2*m + 1)
-     * * a(x,i) = {
-     * *           \       m * (b-m) * x
-     * *           |   ---------------------       <== i = 2*m
-     * *           \    (a+2*m-1) * (a+2*m)
-     */
-
-    // Derive a class from ICtdFracFuncGeneric that
-    // properly implements 'fa' and 'fb'.
-    // 'a' and 'b' will be the class's internal parameters
-    class CtdF : public math::CtdFrac::ICtdFracFuncGeneric<T>
-    {
-
-    private:
-
-        const T m_a;      // parameter 'a'
-        const T m_b;      // parameter 'b'
-
-    public:
-        /*
-         * Constructor, sets values of 'm_a' and 'm_b'
-         *
-         * @param a - parameter 'a' from the definition of the incomplete beta function
-         * @param b - parameter 'b' from the definition of the incomplete beta function
-         */
-        CtdF(const T& a, const T& b) : m_a(a), m_b(b)
-        {
-            // nothing else to do
-        }
-
-        /*
-         * a(x,i) = -(a+m)*(a+b+m)*x / ( (a+2m)*(a+2m+1) )   when i=2*m+1
-         * a(x,i) = m*(b-m)*x / ( (a+2m-1)*(a+2m) )          when i=2*m
-         */
-        T fa(const T& x, size_t i) const throw(math::FunctionException)
-        {
-            const size_t m = i / 2;
-            T ai = static_cast<T>(0);
-
-            if ( 1 == i%2 )
-            {
-                // 'i' is odd, i.e i=2*m+1
-                ai = -(this->m_a + static_cast<T>(m)) * (this->m_a + this->m_b + static_cast<T>(m)) * x /
-                      ( (this->m_a + static_cast<T>(2*m)) * (this->m_a + static_cast<T>(2*m) + static_cast<T>(1)) );
-            }
-            else
-            {
-                // 'i' is even, i.e i=2*m
-                ai = static_cast<T>(m) * (this->m_b - static_cast<T>(m)) * x /
-                     ( (this->m_a + static_cast<T>(2*m) - static_cast<T>(1)) * (this->m_a + static_cast<T>(2*m)) );
-            }
-
-            return ai;
-        }
-
-        // b(x,i) = 1
-        T fb(const T& x, size_t i) const throw(math::FunctionException)
-        {
-            (void) x;
-            (void) i;
-            return static_cast<T>(1);
-        }
-    };  // class CtdF
-
     // sanity check
     if ( a < math::NumericUtil::getEPS<T>() ||
          b < math::NumericUtil::getEPS<T>() ||
@@ -895,8 +897,8 @@ T __incBeta(
         math::SpecFun::beta<T>(a, b) :
         static_cast<T>(0) );
 
-    // An instance of Ctdf that implements 'fa' and 'fb':
-    const CtdF coef(an, bn);
+    // An instance of __CtdFIncBeta that implements 'fa' and 'fb':
+    const math::SpecFun::__private::__CtdFIncBeta<T> coef(an, bn);
 
     T binc;
 
