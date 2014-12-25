@@ -598,10 +598,10 @@ T __incGamma(
      *
      * When x > (a+1), the upper gamma function can be evaluated as
      *
-     *                -x    a
-     *               e   * x
-     *  G(a,x) ~= --------------
-     *               cf(a,x)
+     *                 -x    a
+     *                e   * x
+     *   G(a,x) ~= --------------
+     *                cf(a,x)
      *
      * where 'cf(a,x) is the continued fraction defined above, its coefficients
      * 'a_i' and 'b_i' are implented in 'coef'.
@@ -689,11 +689,22 @@ T __incGamma(
         ginc /= a;
         T term = ginc;
 
-        // Proceed the Taylor series for i=1, 2, 3... until it converges:
-        for ( size_t i = 1; false==math::NumericUtil::isZero<T>(term, tol); ++i )
+        // Proceed the Taylor series for i = 1, 2, 3... until it converges:
+        T at = a;
+        size_t i = 1;
+        for ( i = 1; 
+              false==math::NumericUtil::isZero<T>(term, tol) && i<SPECFUN_MAX_ITER; 
+              ++i )
         {
-            term *= x / (static_cast<T>(i) + a);
+            at += static_cast<T>(1);
+            term *= x / at;
             ginc += term;
+        }
+
+        // has the series converged?
+        if ( i >= SPECFUN_MAX_ITER )
+        {
+            throw math::SpecFunException(math::SpecFunException::NO_CONVERGENCE);
         }
 
         /*
@@ -780,7 +791,11 @@ std::complex<T> __incGamma(
     std::complex<T> term = ginc;
 
     // proceed the series until it converges
-    while ( false == math::NumericUtil::isZero<std::complex<T> >(term, tol) )
+    size_t i = 0;
+    for ( i = 0;
+          false == math::NumericUtil::isZero<std::complex<T> >(term, tol) &&
+            i < SPECFUN_MAX_ITER;
+          ++i )
     {
         at += static_cast<T>(1);
 
@@ -792,6 +807,12 @@ std::complex<T> __incGamma(
         
         term *= x / at;
         ginc += term;
+    }
+
+    // has the series converged?
+    if ( i >= SPECFUN_MAX_ITER )
+    {
+        throw math::SpecFunException(math::SpecFunException::NO_CONVERGENCE);
     }
 
     /*
@@ -901,7 +922,6 @@ T __incBeta(
     const math::SpecFun::__private::__CtdFIncBeta<T> coef(an, bn);
 
     T binc;
-
 
     if ( true == math::NumericUtil::isZero<T>(xn) )
     {
@@ -1025,8 +1045,10 @@ std::complex<T> __incBeta(
     std::complex<T> bt = -b;
  
     // proceed the series until it converges
-    for ( size_t i = 1;
-          false == math::NumericUtil::isZero<std::complex<T> >(term, tol);
+    size_t i = 1;
+    for ( i = 1;
+          false == math::NumericUtil::isZero<std::complex<T> >(term, tol) &&
+                i <= SPECFUN_MAX_ITER;
           ++i )
     {
         at += static_cast<T>(1);
@@ -1041,6 +1063,12 @@ std::complex<T> __incBeta(
         term *= x * bt / static_cast<T>(i);
         
         binc += term / at;
+    }
+
+    // has the series converged?
+    if ( i>= SPECFUN_MAX_ITER )
+    {
+        throw math::SpecFunException(math::SpecFunException::NO_CONVERGENCE);
     }
 
     /*
@@ -1063,6 +1091,7 @@ std::complex<T> __incBeta(
 
         binc /= B;
     }
+
     return binc;
 }
 

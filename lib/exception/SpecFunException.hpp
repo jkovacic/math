@@ -45,6 +45,7 @@ struct SpecFunException : public IMathException
     enum err_codes
     {
         UNDEFINED,           /// function not defined for the given input argument
+        NO_CONVERGENCE,      /// evaluation algorithm did not converge
     };
 
     err_codes error;    /// type of an error

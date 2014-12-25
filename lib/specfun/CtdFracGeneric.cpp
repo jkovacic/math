@@ -27,6 +27,7 @@ limitations under the License.
 #include <cstddef>
 #include <cmath>
 
+#include "../settings/specfun_settings.h"
 #include "util/NumericUtil.hpp"
 
 #include "exception/FunctionException.hpp"
@@ -116,11 +117,16 @@ T math::CtdFrac::ctdFrac(
         // Initially Delta should not be equal to 1
         T Delta = static_cast<T>(0);
 
-        for ( size_t j=1; false == math::NumericUtil::isZero<T>(Delta-static_cast<T>(1), tol); ++j )
+        size_t j = 1;
+        for ( 
+              j=1; 
+              false == math::NumericUtil::isZero<T>(Delta-static_cast<T>(1), tol) &&
+                     j <= SPECFUN_MAX_ITER ; 
+              ++j )
         {
             // obtain 'aj' and 'bj'
-        	const T a = ctdf.fa(x, j);
-        	const T b = ctdf.fb(x, j);
+            const T a = ctdf.fa(x, j);
+            const T b = ctdf.fb(x, j);
 
             // dj = bj + aj * d_j-1
             d = b + a * d;
@@ -151,7 +157,13 @@ T math::CtdFrac::ctdFrac(
             // is less than the tolerance
         }
 
-        // ... and return the fj
+        // check if the algorithm has converged:
+        if ( j >= SPECFUN_MAX_ITER )
+        {
+            throw math::SpecFunException(math::SpecFunException::NO_CONVERGENCE);
+        }
+
+        // ... if yes, return the fj
         return f;
     }
     catch ( const math::FunctionException& fex )

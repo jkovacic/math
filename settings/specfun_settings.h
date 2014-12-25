@@ -38,4 +38,10 @@ limitations under the License.
 #define SPECFUN_TOL_DEN                       ( 1000000 )
 
 
+/**
+ * Maximum number of iterations
+ */
+#define SPECFUN_MAX_ITER                      ( 10000 )
+
+
 #endif  /* _MATH_SPECFUN_SETTINGS_H_ */

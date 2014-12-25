@@ -49,6 +49,9 @@ void math::SpecFunException::what(std::ostream& str) const
         case UNDEFINED :
             str << "Function undefined for the given input argument.";
             break;
+        case NO_CONVERGENCE :
+            str << "Evaluation of the special function did not converge.";
+            break;
 
         default:
             // Should not occur but handle it anyway.
