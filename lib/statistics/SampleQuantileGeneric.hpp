@@ -32,6 +32,7 @@ limitations under the License.
 #include <vector>
 #include <set>
 
+#include "../settings/stat_settings.h"
 #include "exception/StatisticsException.hpp"
 
 
@@ -87,29 +88,29 @@ private:
 
 public:
     // Constructor
-    SampleQuantileGeneric(const std::vector<T>& sample) throw(StatisticsException);
+    SampleQuantileGeneric(const std::vector<T>& sample) throw (StatisticsException);
 
     // Methods to obtain quantiles of the sample:
     size_t sampleSize() const;
 
     T quantile(
            size_t num,
-           size_t den, EQntlType::type method = EQntlType::R7 )
-         const throw(StatisticsException);
+           size_t den, EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
+         ) const throw (StatisticsException);
 
     T qntl(
            const T& p,
-           EQntlType::type method = EQntlType::R7 )
-         const throw(StatisticsException);
+           EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
+         ) const throw (StatisticsException);
 
     T median() const;
 
     T quartile(
            size_t q,
-           EQntlType::type method = EQntlType::R7 )
-         const throw(StatisticsException);
+           EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
+         ) const throw (StatisticsException);
 
-    T iqr(EQntlType::type method = EQntlType::R7) const;
+    T iqr(EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
 
     T min() const;
 
@@ -117,12 +118,15 @@ public:
 
     bool isOutlier(
            const T& val,
-           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), EQntlType::type = EQntlType::R7)
-         const;
+           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), 
+           EQntlType::type =STAT_DEFAULT_QUANTILE_ALG
+        )  const;
 
     void outliers(
            std::set<T>& outl,
-           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), EQntlType::type = EQntlType::R7) const throw(StatisticsException );
+           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), 
+           EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
+         ) const throw (StatisticsException );
 
     // Destructor
     virtual ~SampleQuantileGeneric();
@@ -156,9 +160,7 @@ typedef SampleQuantileGeneric<long double>  LDSampleQuantile;
 }  // namespace math
 
 
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
+// DEFINITION
 #include "statistics/SampleQuantileGeneric.cpp"
 
 #endif   // _MATH_SAMPLEQUANTILEGENERIC_HPP_

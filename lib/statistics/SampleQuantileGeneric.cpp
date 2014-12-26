@@ -26,7 +26,7 @@ limitations under the License.
  */
 
 
-// deliberately there is no #include "SampleQuantileGeneric.hpp" !
+// no #include "SampleQuantileGeneric.hpp" !
 
 #include <vector>
 #include <algorithm>

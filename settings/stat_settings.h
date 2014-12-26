@@ -41,4 +41,10 @@ limitations under the License.
 #define STAT_DIST_PROB_TOL_DEN                ( 1000000 )
 
 
+/**
+ * Default method to estimate a quantile
+ */
+#define STAT_DEFAULT_QUANTILE_ALG             math::EQntlType::R7
+
+
 #endif  /* _MATH_STAT_SETTINGS_H_ */
