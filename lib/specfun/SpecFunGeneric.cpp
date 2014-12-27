@@ -563,7 +563,7 @@ public:
  *
  * @note both 'a' and 'x' must be strictly greater than 0
  *
- * @param a - first input argument
+ * @param a - parameter of the incomplete gamma function
  * @param x - second input argument, the integration limit
  * @param upper - should the upper (if 'true') or the lower (if 'false) inc. gamma function be returned
  * @param reg - if 'true', the regularized gamma function is returned, i.e. divided by gamma(a)
@@ -737,7 +737,7 @@ T __incGamma(
  * @note unlike at real numbers, incomplete gamma function is defined
  *       virtually everywhere on the complex plane except a = negative integer
  *
- * @param a - first input argument
+ * @param a - parameter of the incomplete gamma function
  * @param x - second input argument, the integration limit
  * @param upper - should the upper (if 'true') or the lower (if 'false) inc. gamma function be returned
  * @param reg - if 'true', the regularized gamma function is returned, i.e. divided by gamma(a)
@@ -1115,7 +1115,7 @@ std::complex<T> __incBeta(
  *       any combination of 'a' and 'x' except when 'a' is 0 or a
  *       negative integer.
  *
- * @param a - first input argument
+ * @param a - parameter of the incomplete gamma function
  * @param x - second input argument, the lower integration limit
  * @param tol - tolerance (default: 1e-6)
  *
@@ -1150,7 +1150,7 @@ T math::SpecFun::incGammaUpper(
  *       any combination of 'a' and 'x' except when 'a' is 0 or a
  *       negative integer.
  *
- * @param a - first input argument
+ * @param a - parameter of the incomplete gamma function
  * @param x - second input argument, the upper integration limit
  * @param tol - tolerance (default: 1e-6)
  *
@@ -1185,7 +1185,7 @@ T math::SpecFun::incGammaLower(
  *       any combination of 'a' and 'x' except when 'a' is 0 or a
  *       negative integer.
  *
- * @param a - first input argument
+ * @param a - parameter of the incomplete gamma function
  * @param x - second input argument, the lower integration limit
  * @param tol - tolerance (default: 1e-6)
  *
@@ -1220,7 +1220,7 @@ T math::SpecFun::incGammaUpperReg(
  *       any combination of 'a' and 'x' except when 'a' is 0 or a
  *       negative integer.
  *
- * @param a - first input argument
+ * @param a - parameter of the incomplete gamma function
  * @param x - second input argument, the upper integration limit
  * @param tol - tolerance (default: 1e-6)
  *
@@ -1510,4 +1510,373 @@ T math::SpecFun::erfc (const T& x, const T& tol)
     }
 
     return retVal;
+}
+
+
+
+// Implementation of "private" functions that evaluate
+// inverses of incomplete gamma and beta
+namespace math {  namespace SpecFun {  namespace __private {
+
+
+/*
+ * Evaluates inverse of an incomplete gamma function. The exact kind
+ * of the returned value depends on parameters 'upper' and 'reg'.
+ *
+ * @note both 'a' and 'g' must be strictly greater than 0
+ *
+ * @param a - parameter of the incomplete gamma function
+ * @param g - desired value of the incomplete gamma function
+ * @param upper -  if 'true', inverse of the upper incomplete gamma function will be evaluated
+ * @param reg - if 'true', inverse of the regularized incomplete gamma function (divided by gamma(a)) will be evaluated
+ * @param tol - tolerance
+ */
+template <class T>
+T __invIncGamma(
+             const T& a,
+             const T& g,
+             bool upper,
+             bool reg,
+             const T& tol
+           ) throw (math::SpecFunException)
+{
+    // sanity check
+	if ( a < math::NumericUtil::getEPS<T>() ||
+         g < static_cast<T>(0) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    /*
+     * The algorithm finds an inverse of the regularized lower
+     * incomplete gamma function. If 'g' represents a result of
+     * any other kind of the incomplete gamma function (specified)
+     * by 'upper' and 'reg' it should be converted to a result of
+     * the regularized lower incomplete gamma function by applying
+     * well known properties of this function.
+     */
+
+    // gamma(a)
+    const T G = math::SpecFun::gamma(a);
+
+    T p = g;
+    if ( false == reg )
+    {
+        p /= G;
+    }
+    if ( true == upper )
+    {
+        p = static_cast<T>(1) - p;
+    }
+
+    // if 'p' equals 0 (or is very close to it),
+    // the inverse inc. gamma function will also equal 0.
+    if ( true == math::NumericUtil::isZero<T>(p) )
+    {
+        return static_cast<T>(0);
+    }
+
+    /*
+     * If 'p' is greater than 1, the incomplete gamma function
+     * is not defined at all.
+     * If 'p' equals 1 (or is very close to it), the result would
+     * be infinity which is not supported by this algorithm.
+     */
+    if ( p>= (static_cast<T>(1) - math::NumericUtil::getEPS<T>()) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+
+    /*
+     * There is no direct series or continued fraction to evaluate
+     * an inverse of the incomplete gamma function. On the other hand
+     * there are known algorithms that estimate this value very well.
+     * This algorithm implements approximation method proposed by the
+     * Numerical Recipes.
+     *
+     * When an approximation is known, the Newton - Raphson method can be
+     * applied to refine it further to the desired tolerance.
+     */
+
+    T x = static_cast<T>(1);
+
+    if ( a <= static_cast<T>(1) )
+    {
+        /*
+         * a <= 1:
+         *
+         * First P(a,1) is approximated by:
+         *
+         *   Pa = P(a,1) ~= a* (0.253 + 0.12 * a)
+         *
+         * If 'p' is less than Pa's complement value, 'x' is
+         * approximated as:
+         *
+         *         a      +------+
+         *        --+    /   p
+         *   x ~=    \  / ------
+         *            \/   1-Pa
+         *
+         * If 'p' is greater than 1-Pa, 'x' is approximated as:
+         *
+         *                1 - p
+         *   x ~= 1 - ln -------
+         *                 Pa
+         *
+         * Note: as long as 0<a<1, Pa will never get even close to 1,
+         *       hence the first expression is always defined.
+         */
+
+        const T c1 = static_cast<T>(253) / static_cast<T>(1000);  // 0.253
+        const T c2 = static_cast<T>(12) / static_cast<T>(100);    // 0.12
+        const T Pa = a * (c1 + c2 * a);
+        const T cpa = static_cast<T>(1) - Pa;
+
+        x = ( p<cpa ?
+                 std::pow(p / cpa, static_cast<T>(1) / a) :
+                 static_cast<T>(1) - std::log((static_cast<T>(1) - p)/ Pa) );
+    }
+    else
+    {
+        /*
+         * a > 1:
+         *
+         * The algorithm is only valid when 'p' < 0.5. If this does not hold,
+         * its complement must be calculated first.
+         *
+         * Then lpp is calculated as:
+         *
+         *               +--------+
+         *        -+    /     1                +------------+
+         *   lpp =  \  /  ln -----   =    -+  / (-2) * ln(p)
+         *           \/       p^2           \/
+         *
+         * Then initial approximation of 'x' can be calculated as:
+         *
+         *                        2.30753 + 0.27061 * lpp
+         *   x0 ~= lpp - -------------------------------------
+         *                1 + lpp * (0.99229 + 0.04481 * lpp)
+         *
+         * If the original 'p' is less than 0.5, the x0 must be
+         * reversed its sign.
+         *
+         * Finally the approximated x0 is evaulated as:
+         *
+         *             /       1          x      \ 3
+         *   x0 ~= a * | 1 - ----- + ----------- |
+         *             \      9*a     3*sqrt(a)  /
+         *
+         */
+
+        const T pp = ( p>= static_cast<T>(1) / static_cast<T>(2) ?
+                       static_cast<T>(1) - p : p );
+
+        const T lpp = std::sqrt(static_cast<T>(-2) * std::log(pp) );
+
+        const T a0 = static_cast<T>(230753) / static_cast<T>(100000);   // 2.30753
+        const T a1 = static_cast<T>(27061) / static_cast<T>(100000);    // 0.27061
+        const T b0 = static_cast<T>(99229) / static_cast<T>(100000);    // 0.99229
+        const T b1 = static_cast<T>(4481) / static_cast<T>(100000);     // 0.04481
+
+		x = lpp - (a0 + a1 * lpp) / (1.0 + lpp * (b0 + b1 * lpp));
+        if ( p < static_cast<T>(1) / static_cast<T>(2) )
+        {
+            x = -x;
+        }
+
+        x = static_cast<T>(1) - static_cast<T>(1) / (static_cast<T>(9) * a) +
+                x / ( static_cast<T>(3) * std::sqrt(a) );
+
+        // x = a * x^3:
+        x  *= a * x * x;
+    }
+
+
+    /*
+     * When the initial value of 'x' is obtained, a root finding
+     * method is applied to determine the exact inverse. This algorithm
+     * applies the slightly modified Newton - Raphson method:
+     * if 'x' tries to go negative, its half value is assigned
+     * to the new value.
+     * For that reason, the Newton - Raphson method must be reimplemented
+     * as the general implementation (root_find/RootFindGeneric) cannot
+     * be used.
+     */
+
+    /*
+     * The Newton - Raphson algorithm also requires the differentiation of
+     * the regularized lower incomplete gamma function. It can be expressed
+     * as:
+     *
+     *                  a-1    -x
+     *    dP(a,x)      x    * e
+     *   --------- = --------------
+     *       dx        gamma(a)
+     *
+     * Verified by Maxima:
+     (%i1)  diff(1-gamma_incomplete(a, x)/gamma(a), x);
+     (%o1)  (x^a−1*%e^−x)/gamma(a)
+     */
+
+    T xn;
+    T f = math::SpecFun::incGammaLowerReg<T>(a, x, tol) - p;
+    size_t i = 0;
+    for ( i = 0;
+          false==math::NumericUtil::isZero<T>(f, tol) && i<SPECFUN_MAX_ITER;
+          ++i )
+    {
+        xn = x - f * G * std::exp(x) / std::pow(x, a-static_cast<T>(1));
+        // x must not go negative!
+        x = ( xn > math::NumericUtil::getEPS<T>() ?
+              xn : x / static_cast<T>(2) );
+        f = math::SpecFun::incGammaLowerReg<T>(a, x, tol) - p;
+    }
+
+    // Has the algorithm converged?
+    if ( i>= SPECFUN_MAX_ITER )
+    {
+        throw math::SpecFunException(math::SpecFunException::NO_CONVERGENCE);
+    }
+
+    return x;
+}
+
+}}}  // namespace math::SpecFun::__private
+
+
+
+/**
+ * Inverse of the lower incomplete gamma function,
+ * i.e. it returns such 'x' that solves the equation:
+ *
+ *    x
+ *    /
+ *    |  a-1    -t
+ *    | t    * e   dt  =  g
+ *    |
+ *    /
+ *    0
+ *
+ * @note 'a' must be strictly greater than 0, 'g' must be greater or equal
+ *       to zero and less than gamma(a).
+ *
+ * @param a - parameter of the incomplete gamma function
+ * @param g - desired value of the lower incomplete gamma function
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of g(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'g' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaLowerInv(
+           const T& a,
+           const T& g,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+    return math::SpecFun::__private::__invIncGamma<T>(a, g, false, false, tol);
+}
+
+
+/**
+ * Inverse of the upper incomplete gamma function,
+ * i.e. it returns such 'x' that solves the equation:
+ *
+ *   inf
+ *    /
+ *    |  a-1    -t
+ *    | t    * e   dt  =  g
+ *    |
+ *    /
+ *    x
+ *
+ * @note 'a' must be strictly greater than 0, 'g' must be greater than
+ *       to zero and less or equal to gamma(a).
+ *
+ * @param a - parameter of the incomplete gamma function
+ * @param g - desired value of the upper incomplete gamma function
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of G(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'g' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaUpperInv(
+           const T& a,
+           const T& g,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+	return math::SpecFun::__private::__invIncGamma<T>(a, g, true, false, tol);
+}
+
+
+/**
+ * Inverse of the regularized lower incomplete gamma function,
+ * i.e. it returns such 'x' that solves the equation:
+ *
+ *          x
+ *          /
+ *     1    |  a-1    -t
+ *   ------ | t    * e   dt  =  g
+ *    G(a)  |
+ *          /
+ *          0
+ *
+ * @note 'a' must be strictly greater than 0, 'g' must be greater or equal
+ *       to zero and less than 1.
+ *
+ * @param a - parameter of the incomplete gamma function
+ * @param g - desired value of the regularized lower incomplete gamma function
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of P(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'g' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaLowerRegInv(
+           const T& a,
+           const T& g,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+	return math::SpecFun::__private::__invIncGamma<T>(a, g, false, true, tol);
+}
+
+
+/**
+ * Inverse of the upper incomplete gamma function,
+ * i.e. it returns such 'x' that solves the equation:
+ *
+ *         inf
+ *          /
+ *     1    |  a-1    -t
+ *   ------ | t    * e   dt  =  g
+ *    G(a)  |
+ *          /
+ *          x
+ *
+ * @note 'a' must be strictly greater than 0, 'g' must be greater than
+ *       to zero and less or equal to 1.
+ *
+ * @param a - parameter of the incomplete gamma function
+ * @param g - desired value of the regularized upper incomplete gamma function
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of Q(a,x)
+ *
+ * @throw SpecFunException if 'a' or 'g' is invalid
+ */
+template <class T>
+T math::SpecFun::incGammaUpperRegInv(
+           const T& a,
+           const T& g,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+	return math::SpecFun::__private::__invIncGamma<T>(a, g, true, true, tol);
 }

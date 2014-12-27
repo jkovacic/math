@@ -564,6 +564,15 @@ Upper inc. beta(0.1-0.2i, -1.2+i, -3-i): (35.013,12.574) (expected: (35.01301965
 Reg. lower inc. beta(-0.3+0.4i, 2.2-0.2i, 1.4+0.7i): (0.82213,-0.401782) (expected: (0.82213042903643, -0.40178180061493))
 Reg. upper inc. beta(-0.6-0.1i, -3.8-0.7i, -3.4+2.7i): (0.001099,0.00212827) (expected: (0.0010989969711688, 0.0021282694663258))
 
+Inverse of reg. lower inc. gamma(0.2, 0.3):  0.00158779 (expected: 0.0015877907243441165)
+Inverse of reg. lower inc. gamma(3, 0.7):    3.61557 (expected: 3.6155676658659912)
+Inverse of reg. upper inc. gamma(0.3, 0.4):  0.141253 (expected: 0.14125250363107111)
+Inverse of reg. upper inc. gamma(5.2, 0.82): 3.12968 (expected: 3.1296773937114928)
+Inverse of lower inc. gamma(0.24, 0.94):     0.00202436 ( expected: 0.0020243626374425194)
+Inverse of lower inc. gamma(2.8, 0.17):      0.987393 (expected: 0.98739187202809553)
+Inverse of upper inc. gamma(0.65, 0.86):     0.217366 (expected: 0.21736651483075647)
+Inverse of upper inc. gamma(3.5, 0.43):      5.60901 (expected: 5.6090136314893515)
+
 erf(-1.2):  -0.910314 (expected: -0.91031397822963)
 erf(0.7):   0.677801 (expected: 0.67780119383741)
 erfc(0.2):  0.777297 (expected: 0.77729741078952)

@@ -157,6 +157,38 @@ void specfunTest()
 
 
         /*
+         * Unit test results obtained by SciPy (Python's scientific library):
+         *
+         >>> import scipy.special as sp
+         >>> sp.gammaincinv(0.2, 0.3)
+         0.0015877907243441165
+         >>> sp.gammaincinv(3.0, 0.7)
+         3.6155676658659912
+         >>> sp.gammainccinv(0.3, 0.4)
+         0.14125250363107111
+         >>> sp.gammainccinv(5.2, 0.82)
+         3.1296773937114928
+         >>> sp.gammaincinv(0.24, 0.94/sp.gamma(0.24))
+         0.0020243626374425194
+         >>> sp.gammaincinv(2.8, 0.17/sp.gamma(2.8))
+         0.98739187202809553
+         >>> sp.gammainccinv(0.65, 0.86/sp.gamma(0.65))
+         0.21736651483075647
+         >>> sp.gammainccinv(3.5, 0.43/sp.gamma(3.5))
+         5.6090136314893515
+         */
+        cout << endl;
+        cout << "Inverse of reg. lower inc. gamma(0.2, 0.3):  " << SpecFun::incGammaLowerRegInv(0.2, 0.3) << " (expected: 0.0015877907243441165)" << endl;
+        cout << "Inverse of reg. lower inc. gamma(3, 0.7):    " << SpecFun::incGammaLowerRegInv(3.0, 0.7) << " (expected: 3.6155676658659912)" << endl;
+        cout << "Inverse of reg. upper inc. gamma(0.3, 0.4):  " << SpecFun::incGammaUpperRegInv(0.3, 0.4) << " (expected: 0.14125250363107111)" << endl;
+        cout << "Inverse of reg. upper inc. gamma(5.2, 0.82): " << SpecFun::incGammaUpperRegInv(5.2, 0.82) << " (expected: 3.1296773937114928)" << endl;
+        cout << "Inverse of lower inc. gamma(0.24, 0.94):     " << SpecFun::incGammaLowerInv(0.24, 0.94) << " ( expected: 0.0020243626374425194)" << endl;
+        cout << "Inverse of lower inc. gamma(2.8, 0.17):      " << SpecFun::incGammaLowerInv(2.8, 0.17) << " (expected: 0.98739187202809553)" << endl;
+        cout << "Inverse of upper inc. gamma(0.65, 0.86):     " << SpecFun::incGammaUpperInv(0.65, 0.86) << " (expected: 0.21736651483075647)" << endl;
+        cout << "Inverse of upper inc. gamma(3.5, 0.43):      " << SpecFun::incGammaUpperInv(3.5, 0.43) << " (expected: 5.6090136314893515)" << endl;
+
+
+        /*
          (%i33)  erf(-1.2);
          (%o33)  -0.91031397822963
          (%i34)  erf(0.7);
