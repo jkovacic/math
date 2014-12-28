@@ -1607,6 +1607,14 @@ T __invIncGamma(
      * [Numerical Recipes], section 6.2.1 and [Abramowitz & Stegun],
      * sections 26.2.22 and 26.4.17.
      *
+     * Note: another method to estimate the initial value of the incomplete
+     * gamma function is described in:
+     *   Armido R. DiDonato, Alfred H. Morris
+     *   Computation of the incomplete gamma function ratios and their inverse
+     *   ACM Transactions on Mathematical Software 
+     *   Volume 12 Issue 4, Dec. 1986, pp. 377-393
+     *   http://dl.acm.org/citation.cfm?id=23109&coll=portal&dl=ACM
+     * 
      * When an approximation is known, the Newton - Raphson method can be
      * applied to refine it further to the desired tolerance.
      */
@@ -1692,7 +1700,7 @@ T __invIncGamma(
         const T b0 = static_cast<T>(99229) / static_cast<T>(100000);    // 0.99229
         const T b1 = static_cast<T>(4481) / static_cast<T>(100000);     // 0.04481
 
-		x = lpp - (a0 + a1 * lpp) / (1.0 + lpp * (b0 + b1 * lpp));
+        x = lpp - (a0 + a1 * lpp) / (1.0 + lpp * (b0 + b1 * lpp));
         if ( p < static_cast<T>(1) / static_cast<T>(2) )
         {
             x = -x;
@@ -1740,9 +1748,11 @@ T __invIncGamma(
           ++i )
     {
         xn = x - f * G * std::exp(x) / std::pow(x, a-static_cast<T>(1));
+        
         // x must not go negative!
         x = ( xn > math::NumericUtil::getEPS<T>() ?
               xn : x / static_cast<T>(2) );
+        
         f = math::SpecFun::incGammaLowerReg<T>(a, x, tol) - p;
     }
 
