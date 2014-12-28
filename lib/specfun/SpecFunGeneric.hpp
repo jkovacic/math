@@ -150,10 +150,32 @@ namespace SpecFun
 
 
     template <class T>
-    T erf(const T& x, const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN) );
+    T erf(
+               const T& x,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             );
+
 
     template <class T>
-    T erfc (const T& x, const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN) );
+    T erfc (
+               const T& x,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             );
+
+
+    template <class T>
+    T erfInv(
+               const T& e,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             ) throw (SpecFunException);
+
+
+    template <class T>
+    T erfcInv(
+               const T& e,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             ) throw (SpecFunException);
+
 
 }  // namespace SpecFun
 

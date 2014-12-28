@@ -201,6 +201,27 @@ void specfunTest()
         cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: -0.91031397822963)" << endl;
         cout << "erf(0.7):   " << SpecFun::erf(0.7) << " (expected: 0.67780119383741)" <<endl;
         cout << "erfc(0.2):  " << SpecFun::erfc(0.2) << " (expected: 0.77729741078952)" << endl;
+
+
+        /*
+         * Unit test results obtained by SciPy (Python's scientific library):
+         *
+         >>> import scipy.special as sp
+         >>> sp.erfinv(-0.12)
+         -0.1067513560281844
+         >>> sp.erfinv(0.34)
+         0.31106558258078482
+         >>> sp.erfcinv(1.7)
+         -0.73286907795921696
+         >>> sp.erfcinv(0.65)
+         0.32085832171518158
+         */
+
+        cout << endl;
+        cout << "erfInv(-0.12):  " << SpecFun::erfInv(-0.12) << " (expected: -0.1067513560281844)" << endl;
+        cout << "erfInv(0.34):   " << SpecFun::erfInv(0.34) << " (expected: 0.31106558258078482)"  << endl;
+        cout << "erfcInv(1.7):   " << SpecFun::erfcInv(1.7) << " (expected: -0.73286907795921696)" << endl;
+        cout << "erfcInv(0.65):  " << SpecFun::erfcInv(0.65) << " (expected: 0.32085832171518158)" << endl;
     }
     catch ( const SpecFunException& ex )
     {

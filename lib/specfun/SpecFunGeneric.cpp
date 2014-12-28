@@ -33,15 +33,29 @@ limitations under the License.
 #include "specfun/CtdFracGeneric.hpp"
 
 
+/*
+ * The following two publications are often referred in this file:
+ *
+ * - [Numerical Recipes] or shorter [NR]:
+ *      William H. Press, Saul A. Teukolsky, William T. Vetterling, Brian P. Flannery
+ *      Numerical Recipes, The Art of Scientific Computing, 3rd Edition,
+ *      Cambridge University Press, 2007
+ *      http://www.nr.com
+ *
+ * - [Abramowitz & Stegun] or shorter [AS]:
+ *      Milton Abramowitz, Irene A. Stegun
+ *      Handbook of Mathematical Functions with Formulas, Graphs and Mathematical Tables
+ *      National Bureau of Standards,
+ *      Applied Mathematics Series 55
+ *      Issued in June 1964
+ *
+ *      The book is copyright free and can be downloaded from:
+ *      http://www.cs.bham.ac.uk/~aps/research/projects/as/book.php
+ */
+
+
 // Implementation of "private" functions
-
-namespace math
-{
-
-namespace SpecFun
-{
-
-namespace __private
+namespace math {  namespace SpecFun {  namespace __private
 {
 
 
@@ -210,9 +224,7 @@ T __lnGamma(const T& x)
 
 }
 
-}  // namespace __private
-}  // namespace SpecFun
-}  // namespace math
+}}}  // namespace math::SpecFun::__private
 
 
 
@@ -590,11 +602,7 @@ T __incGamma(
 
     /*
      * The algorithm for numerical approximation of the incomplete gamma function
-     * as proposed in:
-     *
-     *   William H. Press, Saul A. Teukolsky, William T. Vetterling, Brian P. Flannery
-     *   Numerical Recipes, The Art of Scientific Computing, 3rd Edition,
-     *   Cambridge University Press, 2007
+     * as proposed by [Numerical Recipes], section 6.2:
      *
      * When x > (a+1), the upper gamma function can be evaluated as
      *
@@ -607,13 +615,13 @@ T __incGamma(
      * 'a_i' and 'b_i' are implented in 'coef'.
      *
      * When x < (a+1), it is more convenient to apply the following Taylor series
-     * that evalutes the lower incomplete gamma function:
+     * that evaluates the lower incomplete gamma function:
      * 
      *                          inf
      *                         -----
      *              -x    a    \        G(a)       i
      *   g(a,x) ~= e   * x  *   >    ---------- * x
-     *                         /      G(a+i+i)
+     *                         /      G(a+1+i)
      *                         -----
      *                          i=0
      *
@@ -874,7 +882,7 @@ T __incBeta(
     }
 
     /*
-     * The algorithm is described in detail in Numerical Recipes, 3rd Edition:
+     * The algorithm is described in detail in [Numerical Recipes], section 6.4
      *
      * If x < (a+1)/(a+b+2), the incomplete beta function will be evaluated as:
      *
@@ -1554,6 +1562,9 @@ T __invIncGamma(
      * by 'upper' and 'reg' it should be converted to a result of
      * the regularized lower incomplete gamma function by applying
      * well known properties of this function.
+     *
+     * The algorithm is proposed in [Numerical Recipes], section 6.2.1.
+     *
      */
 
     // gamma(a)
@@ -1593,7 +1604,8 @@ T __invIncGamma(
      * an inverse of the incomplete gamma function. On the other hand
      * there are known algorithms that estimate this value very well.
      * This algorithm implements approximation method proposed by the
-     * Numerical Recipes.
+     * [Numerical Recipes], section 6.2.1 and [Abramowitz & Stegun],
+     * sections 26.2.22 and 26.4.17.
      *
      * When an approximation is known, the Newton - Raphson method can be
      * applied to refine it further to the desired tolerance.
@@ -1661,7 +1673,7 @@ T __invIncGamma(
          * If the original 'p' is less than 0.5, the x0 must be
          * reversed its sign.
          *
-         * Finally the approximated x0 is evaulated as:
+         * Finally the approximated x0 is evaluated as:
          *
          *             /       1          x      \ 3
          *   x0 ~= a * | 1 - ----- + ----------- |
@@ -1674,6 +1686,7 @@ T __invIncGamma(
 
         const T lpp = std::sqrt(static_cast<T>(-2) * std::log(pp) );
 
+        // [Abramowitz & Stegun], section 26.2.22:
         const T a0 = static_cast<T>(230753) / static_cast<T>(100000);   // 2.30753
         const T a1 = static_cast<T>(27061) / static_cast<T>(100000);    // 0.27061
         const T b0 = static_cast<T>(99229) / static_cast<T>(100000);    // 0.99229
@@ -1685,6 +1698,7 @@ T __invIncGamma(
             x = -x;
         }
 
+        // [Abramowitz & Stegun], section 26.4.17:
         x = static_cast<T>(1) - static_cast<T>(1) / (static_cast<T>(9) * a) +
                 x / ( static_cast<T>(3) * std::sqrt(a) );
 
@@ -1706,16 +1720,15 @@ T __invIncGamma(
 
     /*
      * The Newton - Raphson algorithm also requires the differentiation of
-     * the regularized lower incomplete gamma function. It can be expressed
-     * as:
+     * the regularized lower incomplete gamma function:
      *
-     *                  a-1    -x
-     *    dP(a,x)      x    * e
-     *   --------- = --------------
-     *       dx        gamma(a)
+     *                   a-1    -x
+     *    d P(a,x)      x    * e
+     *   ---------- = --------------
+     *       dx         gamma(a)
      *
      * Verified by Maxima:
-     (%i1)  diff(1-gamma_incomplete(a, x)/gamma(a), x);
+     (%i1)  diff(gamma_incomplete_regularized(a, x), x);
      (%o1)  (x^a−1*%e^−x)/gamma(a)
      */
 
@@ -1748,7 +1761,7 @@ T __invIncGamma(
 
 /**
  * Inverse of the lower incomplete gamma function,
- * i.e. it returns such 'x' that solves the equation:
+ * i.e. it returns such 'x' that satisfies:
  *
  *    x
  *    /
@@ -1782,7 +1795,7 @@ T math::SpecFun::incGammaLowerInv(
 
 /**
  * Inverse of the upper incomplete gamma function,
- * i.e. it returns such 'x' that solves the equation:
+ * i.e. it returns such 'x' that satisfies:
  *
  *   inf
  *    /
@@ -1816,7 +1829,7 @@ T math::SpecFun::incGammaUpperInv(
 
 /**
  * Inverse of the regularized lower incomplete gamma function,
- * i.e. it returns such 'x' that solves the equation:
+ * i.e. it returns such 'x' that satisfies:
  *
  *          x
  *          /
@@ -1850,7 +1863,7 @@ T math::SpecFun::incGammaLowerRegInv(
 
 /**
  * Inverse of the upper incomplete gamma function,
- * i.e. it returns such 'x' that solves the equation:
+ * i.e. it returns such 'x' that satisfies:
  *
  *         inf
  *          /
@@ -1879,4 +1892,123 @@ T math::SpecFun::incGammaUpperRegInv(
          ) throw (math::SpecFunException)
 {
 	return math::SpecFun::__private::__invIncGamma<T>(a, g, true, true, tol);
+}
+
+
+/**
+ * Inverse of the error function, i.e it returns such 'x'
+ * that satisfies:
+ *
+ *   erf(x) = e
+ *
+ * @note 'e' must be greater than -1 and less than 1
+ *
+ * @param e - desired value of the error function
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of erf(x)
+ *
+ * @throw SpecFunException if 'e' is out of the definition range
+ */
+template <class T>
+T math::SpecFun::erfInv(
+           const T& e,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+    /*
+     * The following properties of the error function will be applied:
+     *
+     *   x >= 0  ==>  erf(x) = P(1/2, x^2)  and  0 <= erf(x) <= 1
+     *   x <= 0  ==>  erf(x) = -erf(x)  and  -1 <= erf(x) <= 0
+     *
+     * 'x' can be obtained as follows:
+     *
+     * If e>=0:
+     *   x = sqrt(invP(1/2, e))
+     *
+     * If e<0:
+     *   x = -sqrt(invP(1/2, -e)
+     */
+
+    // sanity check
+    if ( e < (static_cast<T>(-1) + math::NumericUtil::getEPS<T>()) ||
+         e > (static_cast<T>(1) - math::NumericUtil::getEPS<T>()) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    // handle e==0 as a special case:
+    if ( true == math::NumericUtil::isZero<T>(e) )
+    {
+        return static_cast<T>(0);
+    }
+
+    const T arg = ( e<static_cast<T>(0) ? -e : e );
+    const T x = std::sqrt(math::SpecFun::incGammaLowerRegInv<T>(
+             static_cast<T>(1) / static_cast<T>(2),
+             arg,
+             tol ) );
+
+    return ( e>static_cast<T>(0) ? x : -x );
+
+}
+
+
+/**
+ * Inverse of the complementary error function, i.e it returns
+ * such 'x' that satisfies:
+ *
+ *   erfc(x) = e
+ *
+ * @note 'e' must be greater than 0 and less than 2
+ *
+ * @param e - desired value of the complementary error function
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of erfc(x)
+ *
+ * @throw SpecFunException if 'e' is out of the definition range
+ */
+template <class T>
+T math::SpecFun::erfcInv(
+           const T& e,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+    /*
+     * The following properties of the complementary error function will be applied:
+     *
+     *   x >= 0  ==>  erfc(x) = Q(1/2, x^2)  and  0 <= erfc(x) <= 1
+     *   x <= 0  ==>  erfc(x) = 2 - erfc(-x)  and  1 <= erfc(x) <= 2
+     *
+     * 'x' can be obtained as follows:
+     *
+     * If e<=1:
+     *   x = sqrt(invQ(1/2, e))
+     *
+     * If e>1:
+     *   x = -sqrt(invQ(1/2, 2-e))
+     */
+
+    // sanity check
+    if ( e < math::NumericUtil::getEPS<T>() ||
+         e > (static_cast<T>(2) - math::NumericUtil::getEPS<T>()) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    // handle e==1 as a special case:
+    if ( true == math::NumericUtil::isZero<T>(e-static_cast<T>(1)) )
+    {
+        return static_cast<T>(0);
+    }
+
+    const T arg = ( e<static_cast<T>(1) ? e : static_cast<T>(2)-e );
+    const T x = std::sqrt(math::SpecFun::incGammaUpperRegInv<T>(
+              static_cast<T>(1) / static_cast<T>(2),
+              arg,
+              tol ) );
+
+    return ( e<static_cast<T>(1) ? x : -x );
 }
