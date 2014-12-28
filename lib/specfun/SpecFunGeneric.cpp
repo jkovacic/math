@@ -1549,7 +1549,7 @@ T __invIncGamma(
            ) throw (math::SpecFunException)
 {
     // sanity check
-	if ( a < math::NumericUtil::getEPS<T>() ||
+    if ( a < math::NumericUtil::getEPS<T>() ||
          g < static_cast<T>(0) )
     {
         throw math::SpecFunException(math::SpecFunException::UNDEFINED);
