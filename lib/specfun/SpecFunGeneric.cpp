@@ -1528,6 +1528,61 @@ namespace math {  namespace SpecFun {  namespace __private {
 
 
 /*
+ * Implementation of the formula 26.2.22 in [Abramowitz & Stegun].
+ *
+ * Unlike the original formula,this function accepts 'p' being
+ * greater than 0.5.
+ *
+ * @note This "private" function expects that p is greater than 0
+ *       and less than 1.
+ *
+ * @param p - desired probability
+ *
+ * @return approximation of 'x' that satisfies Q(x) ~= p
+ */
+template <class T>
+T __as26_2_22(const T& p)
+{
+    /*
+     * If 0 < p < 0.5:
+     *
+     *             +--------+
+     *      -+    /      1               +------------+
+     *   t =  \  /  ln -----   =    -+  / (-2) * ln(p)
+     *         \/       p^2           \/
+     *
+     * Then initial approximation of 'x' can be calculated as:
+     *
+     *                 2.30753 + 0.27061 * t
+     *   x ~= t - ---------------------------------
+     *             1 + t * (0.99229 + 0.04481 * t)
+     *
+     * If p > 0.5, the expressions above are performed on its complementary
+     * value (1-p) and the sign of the final  'x' is reversed.
+     */
+
+    const T pp = ( p>= static_cast<T>(1) / static_cast<T>(2) ?
+                     static_cast<T>(1) - p : p );
+
+    const T t = std::sqrt(static_cast<T>(-2) * std::log(pp) );
+
+    // [Abramowitz & Stegun], section 26.2.22:
+    const T a0 = static_cast<T>(230753) / static_cast<T>(100000);   // 2.30753
+    const T a1 = static_cast<T>(27061) / static_cast<T>(100000);    // 0.27061
+    const T b0 = static_cast<T>(99229) / static_cast<T>(100000);    // 0.99229
+    const T b1 = static_cast<T>(4481) / static_cast<T>(100000);     // 0.04481
+
+    T x = t - (a0 + a1 * t) / (1.0 + t * (b0 + b1 * t));
+    if ( p > static_cast<T>(1) / static_cast<T>(2) )
+    {
+        x = -x;
+    }
+
+    return x;
+}
+
+
+/*
  * Evaluates inverse of an incomplete gamma function. The exact kind
  * of the returned value depends on parameters 'upper' and 'reg'.
  *
@@ -1568,7 +1623,7 @@ T __invIncGamma(
      */
 
     // gamma(a)
-    const T G = math::SpecFun::gamma(a);
+    const T G = math::SpecFun::gamma<T>(a);
 
     T p = g;
     if ( false == reg )
@@ -1662,24 +1717,9 @@ T __invIncGamma(
         /*
          * a > 1:
          *
-         * The algorithm is only valid when 'p' < 0.5. If this does not hold,
-         * its complement must be calculated first.
-         *
-         * Then lpp is calculated as:
-         *
-         *               +--------+
-         *        -+    /     1                +------------+
-         *   lpp =  \  /  ln -----   =    -+  / (-2) * ln(p)
-         *           \/       p^2           \/
-         *
-         * Then initial approximation of 'x' can be calculated as:
-         *
-         *                        2.30753 + 0.27061 * lpp
-         *   x0 ~= lpp - -------------------------------------
-         *                1 + lpp * (0.99229 + 0.04481 * lpp)
-         *
-         * If the original 'p' is less than 0.5, the x0 must be
-         * reversed its sign.
+         * The initial approximation of 'x' is obtained by the function
+         * math::SpecFun::__private::__as26_2_22()
+         * that implements [Abramowitz & Stegun], section 26.2.22.
          *
          * Finally the approximated x0 is evaluated as:
          *
@@ -1689,22 +1729,7 @@ T __invIncGamma(
          *
          */
 
-        const T pp = ( p>= static_cast<T>(1) / static_cast<T>(2) ?
-                       static_cast<T>(1) - p : p );
-
-        const T lpp = std::sqrt(static_cast<T>(-2) * std::log(pp) );
-
-        // [Abramowitz & Stegun], section 26.2.22:
-        const T a0 = static_cast<T>(230753) / static_cast<T>(100000);   // 2.30753
-        const T a1 = static_cast<T>(27061) / static_cast<T>(100000);    // 0.27061
-        const T b0 = static_cast<T>(99229) / static_cast<T>(100000);    // 0.99229
-        const T b1 = static_cast<T>(4481) / static_cast<T>(100000);     // 0.04481
-
-        x = lpp - (a0 + a1 * lpp) / (1.0 + lpp * (b0 + b1 * lpp));
-        if ( p < static_cast<T>(1) / static_cast<T>(2) )
-        {
-            x = -x;
-        }
+        x = -math::SpecFun::__private::__as26_2_22<T>(p);
 
         // [Abramowitz & Stegun], section 26.4.17:
         x = static_cast<T>(1) - static_cast<T>(1) / (static_cast<T>(9) * a) +
