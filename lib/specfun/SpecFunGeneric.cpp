@@ -1614,7 +1614,7 @@ T __invIncGamma(
      * The algorithm finds an inverse of the regularized lower
      * incomplete gamma function. If 'g' represents a result of
      * any other kind of the incomplete gamma function (specified)
-     * by 'upper' and 'reg' it should be converted to a result of
+     * by 'upper' and 'reg', it should be converted to a result of
      * the regularized lower incomplete gamma function by applying
      * well known properties of this function.
      *
@@ -1790,6 +1790,243 @@ T __invIncGamma(
     return x;
 }
 
+
+/*
+ * Evaluates inverse of an incomplete beta function. The exact kind
+ * of the returned value depends on parameters 'lower' and 'reg'.
+ *
+ * @note 'a', 'b' and 'y' must be strictly greater than 0
+ *
+ * @param a - parameter a of the incomplete beta function
+ * @param b - parameter b of the incomplete beta function
+ * @param y - desired value of the incomplete beta function
+ * @param lower -  if 'true', inverse of the lower incomplete beta function will be evaluated
+ * @param reg - if 'true', inverse of the regularized incomplete beta function (divided by beta(a,b)) will be evaluated
+ * @param tol - tolerance
+ */
+template <class T>
+T __invIncBeta(
+             const T& a,
+             const T& b,
+             const T& y,
+             bool lower,
+             bool reg,
+             const T& tol
+           ) throw (math::SpecFunException)
+{
+    // sanity check
+    if ( a < math::NumericUtil::getEPS<T>() ||
+         b < math::NumericUtil::getEPS<T>() ||
+         y < static_cast<T>(0) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    /*
+     * The algorithm finds an inverse of the regularized lower
+     * incomplete beta function. If 'y' represents a result of
+     * any other kind of the incomplete beta function (specified)
+     * by 'lower' and 'reg', it should be converted to a result of
+     * the regularized lower incomplete beta function by applying
+     * well known properties of this function.
+     *
+     * The algorithm is proposed in [Numerical Recipes], section 6.4.
+     *
+     */
+
+    // beta(a,b)
+    const T B = math::SpecFun::beta<T>(a, b);
+
+    T p = y;
+
+    if ( false == reg )
+    {
+        p /= B;
+    }
+
+    if (false == lower)
+    {
+        p = static_cast<T>(1) - p;
+    }
+
+    // if 'p' equals 0 (or is very close to it),
+    // the inverse inc. beta function will also equal 0.
+    if ( true == math::NumericUtil::isZero<T>(p) )
+    {
+        return static_cast<T>(0);
+    }
+
+    /*
+     * If 'p' is greater than 1, the incomplete beta function
+     * is not defined at all.
+     * If 'p' equals 1 (or is very close to it), the result would
+     * be infinity which is not supported by this algorithm.
+     */
+    if ( p>= (static_cast<T>(1) - math::NumericUtil::getEPS<T>()) )
+    {
+        throw math::SpecFunException(math::SpecFunException::UNDEFINED);
+    }
+
+    /*
+     * There is no known direct series or continued fraction to evaluate
+     * an inverse of the incomplete betaa function. On the other hand
+     * there are known algorithms that estimate this value quite well.
+     * This algorithm implements approximation method proposed by the
+     * [Numerical Recipes], section 6.4 and [Abramowitz & Stegun],
+     * section 26.5.22.
+     *
+     * When an approximation is known, the Newton - Raphson method can be
+     * applied to refine it further to the desired tolerance.
+     */
+
+    T x = static_cast<T>(0);
+
+    if (a>=static_cast<T>(1) && b>=static_cast<T>(1) )
+    {
+        /*
+         * a >= 1  and  b >= 1:
+         *
+         * Initial 'x' is approximated as described in [Abramowitz & Stegun],
+         * section 26.2.22 (implemented in a separate function).
+         *
+         * Then it is further refined as described in [Abramowitz & Stegun],
+         * section 26.5.22:
+         *
+         *           1                   1
+         *   ta = -------   and  tb = -------
+         *         2*a-1               2*b-1
+         *
+         *              2
+         *             x  - 3
+         *   lambda = --------
+         *               6
+         *
+         *           2
+         *   h = ---------
+         *        ta + tb
+         *
+         *        x * sqrt(h + lambda)                /           5      2   \
+         *   w = ---------------------- - (tb - ta) * | lambda + --- - ----- |
+         *                h                           \           6     3*h  /
+         *
+         *                   a
+         *   x  ~=   ------------------
+         *                       2*w
+         *              a + b * e
+         */
+
+        // [Abramowitz & Stegun], section 26.2.22:
+        x = math::SpecFun::__private::__as26_2_22<T>(p);
+
+        const T lambda = (x*x - static_cast<T>(3)) / static_cast<T>(6);
+        const T ta = static_cast<T>(1) / ( static_cast<T>(2) * a - static_cast<T>(1) );
+        const T tb = static_cast<T>(1) / ( static_cast<T>(2) * b - static_cast<T>(1) );
+        const T h = static_cast<T>(2) / (ta + tb);
+
+        const T w = x * std::sqrt(h + lambda) / h - (tb - ta) *
+               (lambda + static_cast<T>(5) / static_cast<T>(6) - static_cast<T>(2) / (static_cast<T>(3) * h) );
+
+        x = a / (a + b * std::exp(static_cast<T>(2) * w));
+    }
+    else
+    {
+        /*
+         * Either 'a' or 'b' or both are less than 1:
+         *
+         * In this case the initial 'x' is approximated as
+         * described in [Numerical Recipes], section 6.4:
+         *
+         *
+         *         1    /    a    \a              1    /    b    \b
+         *   ta = --- * | ------- |    and  tb = --- * | ------- |
+         *         a    \  a + b  /               b    \  a + b  /
+         *
+         *
+         *   S = ta + tb
+         *
+         * If p < ta/S:
+         *
+         *         a    +----------+
+         *   x ~=  -+  / p * S * a
+         *           \/
+         *
+         * If p >= ta/S:
+         *
+         *        b    +----------+
+         *   x ~= -+  / 1 - p*S*b
+         *          \/
+         */
+
+        const T ta = std::pow(a/(a+b), a) / a;
+        const T tb = std::pow(b/(a+b), b) / b;
+        const T S = ta + tb;
+
+        x = ( p < ta/S ?
+                std::pow(p*S*a, static_cast<T>(1)/a) :
+                std::pow(static_cast<T>(1)-p*S*b, static_cast<T>(1)/b) );
+    }
+
+    /*
+     * When the initial value of 'x' is obtained, a root finding
+     * method is applied to determine the exact inverse. This algorithm
+     * applies the slightly modified Newton - Raphson method:
+     * if 'x' tries to go negative or beyond 1, it is bisected between
+     * its current value and the upper/lower bondary.
+     * For that reason, the Newton - Raphson method must be reimplemented
+     * as the general implementation (root_find/RootFindGeneric) cannot
+     * be used.
+     */
+
+    /*
+     * The Newton - Raphson algorithm also requires the differentiation of
+     * the regularized lower incomplete beta function:
+     *
+     *                   a-1        b-1
+     *    d Ix(a,b)     x    * (1-x)
+     *   ----------- = ------------------
+     *      dx             beta(a,b)
+     *
+     * Verified by Maxima:
+     (%i1) diff(beta_incomplete_regularized(a, b, x), x);
+     (%o1) ((1−x)^b−1*x^a−1)/beta(a,b)
+     */
+
+    T xn;
+    T f = math::SpecFun::incBetaLowerReg<T>(x, a, b, tol) - p;
+    size_t i = 0;
+    for ( i = 0;
+          false==math::NumericUtil::isZero<T>(f, tol) && i<SPECFUN_MAX_ITER;
+          ++i )
+    {
+        xn = x - f * B / (std::pow(x, a-static_cast<T>(1)) * std::pow(static_cast<T>(1)-x, b-static_cast<T>(1)) );
+
+        // x must not go negative or beyond 1!
+        if ( xn < math::NumericUtil::getEPS<T>() )
+        {
+            x /= static_cast<T>(2);
+        }
+        else if ( xn > (static_cast<T>(1)-math::NumericUtil::getEPS<T>()) )
+        {
+            x = (static_cast<T>(1) + x) / static_cast<T>(2);
+        }
+        else
+        {
+            x = xn;
+        }
+
+        f = math::SpecFun::incBetaLowerReg<T>(x, a, b, tol) - p;
+    }
+
+    // Has the algorithm converged?
+    if ( i>= SPECFUN_MAX_ITER )
+    {
+        throw math::SpecFunException(math::SpecFunException::NO_CONVERGENCE);
+    }
+
+    return x;
+}
+
+
 }}}  // namespace math::SpecFun::__private
 
 
@@ -1927,6 +2164,150 @@ T math::SpecFun::incGammaUpperRegInv(
          ) throw (math::SpecFunException)
 {
 	return math::SpecFun::__private::__invIncGamma<T>(a, g, true, true, tol);
+}
+
+
+/**
+ * Inverse of the lower incomplete beta function,
+ * i.e. it returns such 'x' that satisfies:
+ *
+ *             x
+ *             /
+ *             |  a-1        b-1
+ *   Bx(a,b) = | t    * (1-t)    dt = y
+ *             |
+ *             /
+ *             0
+ *
+ * @note 'a' and 'b' must be strictly greater than 0, 'y' must be greater or equal
+ *       to zero and less than beta(a,b).
+ *
+ * @param a - parameter 'a' of the incomplete beta function
+ * @param b - parameter 'b' of the incomplete beta function
+ * @param y - desired value of the lower incomplete beta function (Bx(a,b))
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of Bx(a,b)
+ *
+ * @throw SpecFunException if 'a', b' or 'y' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaLowerInv(
+           const T& a,
+           const T& b,
+           const T& y,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+    return math::SpecFun::__private::__invIncBeta<T>(a, b, y, true, false, tol);
+}
+
+
+/**
+ * Inverse of the upper incomplete beta function,
+ * i.e. it returns such 'x' that satisfies:
+ *
+ *             1
+ *             /
+ *             |  a-1        b-1
+ *   bx(a,b) = | t    * (1-t)    dt = y
+ *             |
+ *             /
+ *             x
+ *
+ * @note 'a' and 'b' must be strictly greater than 0, 'y' must be greater or equal
+ *       to zero and less than beta(a,b).
+ *
+ * @param a - parameter 'a' of the incomplete beta function
+ * @param b - parameter 'b' of the incomplete beta function
+ * @param y - desired value of the upper incomplete beta function (bx(a,b))
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of bx(a,b)
+ *
+ * @throw SpecFunException if 'a', b' or 'y' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaUpperInv(
+           const T& a,
+           const T& b,
+           const T& y,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+    return math::SpecFun::__private::__invIncBeta<T>(a, b, y, false, false, tol);
+}
+
+
+/**
+ * Inverse of the regularized lower incomplete beta function,
+ * i.e. it returns such 'x' that satisfies:
+ *
+ *                       x
+ *                       /
+ *                1      |  a-1        b-1
+ *   Ix(a,b) = --------  | t    * (1-t)    dt = y
+ *              B(a,b)   |
+ *                       /
+ *                       0
+ *
+ * @note 'a' and 'b' must be strictly greater than 0, 'y' must be greater or equal
+ *       to zero and less than 1.
+ *
+ * @param a - parameter 'a' of the incomplete beta function
+ * @param b - parameter 'b' of the incomplete beta function
+ * @param y - desired value of the regularized lower incomplete beta function (Ix(a,b))
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of Ix(a,b)
+ *
+ * @throw SpecFunException if 'a', b' or 'y' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaLowerRegInv(
+           const T& a,
+           const T& b,
+           const T& y,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+    return math::SpecFun::__private::__invIncBeta<T>(a, b, y, true, true, tol);
+}
+
+
+/**
+ * Inverse of the regularized upper incomplete beta function,
+ * i.e. it returns such 'x' that satisfies:
+ *
+ *                      1
+ *                      /
+ *                1     |  a-1        b-1
+ *   ix(a,b) = -------  | t    * (1-t)    dt = y
+ *              B(a,b)  |
+ *                      /
+ *                      x
+ *
+ * @note 'a' and 'b' must be strictly greater than 0, 'y' must be greater or equal
+ *       to zero and less than 1.
+ *
+ * @param a - parameter 'a' of the incomplete beta function
+ * @param b - parameter 'b' of the incomplete beta function
+ * @param y - desired value of the regularized upper incomplete beta function (ix(a,b))
+ * @param tol - tolerance (default: 1e-6)
+ *
+ * @return inverse of ix(a,b)
+ *
+ * @throw SpecFunException if 'a', b' or 'y' is invalid
+ */
+template <class T>
+T math::SpecFun::incBetaUpperRegInv(
+           const T& a,
+           const T& b,
+           const T& y,
+           const T& tol
+         ) throw (math::SpecFunException)
+{
+    return math::SpecFun::__private::__invIncBeta<T>(a, b, y, false, true, tol);
 }
 
 

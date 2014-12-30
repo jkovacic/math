@@ -150,6 +150,42 @@ namespace SpecFun
 
 
     template <class T>
+    T incBetaLowerInv(
+               const T& a,
+               const T& b,
+               const T& y,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             ) throw (SpecFunException);
+
+
+    template <class T>
+    T incBetaUpperInv(
+               const T& a,
+               const T& b,
+               const T& y,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             ) throw (SpecFunException);
+
+
+    template <class T>
+    T incBetaLowerRegInv(
+               const T& a,
+               const T& b,
+               const T& y,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             ) throw (SpecFunException);
+
+
+    template <class T>
+    T incBetaUpperRegInv(
+               const T& a,
+               const T& b,
+               const T& y,
+               const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
+             ) throw (SpecFunException);
+
+
+    template <class T>
     T erf(
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)

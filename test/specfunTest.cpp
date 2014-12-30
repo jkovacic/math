@@ -189,6 +189,39 @@ void specfunTest()
 
 
         /*
+         * Unit test results obtained by SciPy (Python's scientific library):
+         *
+         >>> import scipy.special as sp
+         >>> sp.betaincinv(0.3, 0.2, 0.7)
+         0.97855341496201675
+         >>> sp.betaincinv(2.4, 3.5, 0.6)
+         0.4494282880364161
+         >>> sp.betaincinv(0.9, 1.5, 1-0.7)
+         0.18163313417789329
+         >>> sp.betaincinv(1.9, 2.7, 1-0.25)
+         0.56482998094684855
+         >>> sp.betaincinv(2.8, 0.3, 2/sp.beta(2.8, 0.3))
+         0.99973356680513126
+         >>> sp.betaincinv(1.1, 1.3, 0.4/sp.beta(1.1, 1.3))
+         0.51901101120350224
+         >>> sp.betaincinv(0.4, 0.5, 1-1.8/sp.beta(0.4, 0.5))
+         0.41086943388574249
+         >>> sp.betaincinv(1.7, 1.1, 1-0.2/sp.beta(1.7, 1.1))
+         0.72055257197528588
+         */
+
+        cout << endl;
+        cout << "Inverse of reg. lower inc. beta(0.3, 0.2, 0.7):  " << SpecFun::incBetaLowerRegInv(0.3, 0.2, 0.7) << " (expected: 0.97855341496201675)" << endl;
+        cout << "Inverse of reg. lower inc. beta(2.4, 3.5, 0.6):  " << SpecFun::incBetaLowerRegInv(2.4, 3.5, 0.6) << " (expected: 0.4494282880364161)" << endl;
+        cout << "Inverse of reg. upper inc. beta(0.9, 1.5, 0.7):  " << SpecFun::incBetaUpperRegInv(0.9, 1.5, 0.7) << " (expected: 0.18163313417789329)" << endl;
+        cout << "Inverse of reg. upper inc. beta(1.9, 2.7, 0.25): " << SpecFun::incBetaUpperRegInv(1.9, 2.7, 0.25) << " (expected: 0.56482998094684855)" << endl;
+        cout << "Inverse of lower inc. beta(2.8, 0.3, 2):         " << SpecFun::incBetaLowerInv(2.8, 0.3, 2.0) << " (expected: 0.99973356680513126)" << endl;
+        cout << "Inverse of lower inc. beta(1.1, 1.3, 0.4):       " << SpecFun::incBetaLowerInv(1.1, 1.3, 0.4) << " (expected: 0.51901101120350224)" << endl;
+        cout << "Inverse of upper inc. beta(0.4, 0.5, 1.8):       " << SpecFun::incBetaUpperInv(0.4, 0.5, 1.8) << " (expected: 0.41086943388574249)" << endl;
+        cout << "Inverse of upper inc. beta(1.7, 1.1, 0.2):       " << SpecFun::incBetaUpperInv(1.7, 1.1, 0.2) << " (expected: 0.72055257197528588)" << endl;
+
+
+        /*
          (%i33)  erf(-1.2);
          (%o33)  -0.91031397822963
          (%i34)  erf(0.7);
