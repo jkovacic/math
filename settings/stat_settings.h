@@ -47,4 +47,15 @@ limitations under the License.
 #define STAT_DEFAULT_QUANTILE_ALG             math::EQntlType::R7
 
 
+/**
+ * Default number of interquartile ranges (IQRs) below/above
+ * Q1 and Q3 to determine whether an element is an outlier.
+ * 
+ * The parameter is specified by its numerator and denominator. This ensures
+ * more flexibility for generic (templated) statistical functions.
+ */
+#define STAT_OUTLIER_IQRS_NUM                 ( 3 )
+#define STAT_OUTLIER_IQRS_DEN                 ( 2 )
+
+
 #endif  /* _MATH_STAT_SETTINGS_H_ */

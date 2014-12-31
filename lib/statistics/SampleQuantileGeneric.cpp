@@ -556,7 +556,7 @@ T math::SampleQuantileGeneric<T>::max() const
  * quartiles will not be reestimated to include this sample.
  * 
  * @param val - value to be checked
- * @param iqrs - number of interquartile ranges below/above Q1 and Q2 (default 1.5)
+ * @param iqrs - number of interquartile ranges below/above Q1 and Q3 (default 1.5)
  * @param method - method to estimate quartiles (default R7)
  * 
  * @return a logical value indicating whether 'val' is an outlier or not 
@@ -586,7 +586,7 @@ bool math::SampleQuantileGeneric<T>::isOutlier(
  * equal to 1.5.
  * 
  * @param outl - a reference to a set to be filled with outliers
- * @param iqrs - number of interquartile ranges below/above Q1 and Q2 (default 1.5)
+ * @param iqrs - number of interquartile ranges below/above Q1 and Q3 (default 1.5)
  * @param method - method to estimate quartiles (default R7)
  * 
  * @throw StatisticsException if allocation of memory fails

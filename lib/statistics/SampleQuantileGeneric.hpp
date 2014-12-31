@@ -95,7 +95,8 @@ public:
 
     T quantile(
            size_t num,
-           size_t den, EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
+           size_t den, 
+           EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
     T qntl(
@@ -118,13 +119,13 @@ public:
 
     bool isOutlier(
            const T& val,
-           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), 
-           EQntlType::type =STAT_DEFAULT_QUANTILE_ALG
+           const T& iqrs = static_cast<T>(STAT_OUTLIER_IQRS_NUM) / static_cast<T>(STAT_OUTLIER_IQRS_DEN), 
+           EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
         )  const;
 
     void outliers(
            std::set<T>& outl,
-           const T& iqrs = static_cast<T>(3)/static_cast<T>(2), 
+           const T& iqrs = static_cast<T>(STAT_OUTLIER_IQRS_NUM) / static_cast<T>(STAT_OUTLIER_IQRS_DEN), 
            EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
          ) const throw (StatisticsException );
 
