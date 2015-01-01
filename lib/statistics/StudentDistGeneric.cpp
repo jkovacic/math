@@ -309,10 +309,10 @@ public:
              *    t
              */
         
-            T cdf = math::SpecFun::incBetaLowerReg<T>(
-                    t, 
+            T cdf = math::SpecFun::incBetaLowerReg<T>( 
                     this->m_df / static_cast<T>(2),
                     static_cast<T>(1) / static_cast<T>(2),
+                    t,
                     TOL );
             cdf /= static_cast<T>(2);
 

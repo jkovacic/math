@@ -144,16 +144,16 @@ void specfunTest()
         */
         
         cout << endl;
-        cout << "Lower inc. beta(0.2, 2, 5):  " << SpecFun::incBetaLower(0.2, 2.0, 5.0) << " (expected: 0.011488)" << endl;
-        cout << "Lower inc. beta(0.7, 2, 5):  " << SpecFun::incBetaLower(0.7, 2.0, 5.0) << " (expected: 0.032968833333333)" << endl;
-        cout << "Upper inc. beta(0.15, 1, 2): " << SpecFun::incBetaUpper(0.15, 1.0, 2.0) << " (expected: 0.36125)" << endl;
-        cout << "Upper inc. beta(0.82, 1, 2): " << SpecFun::incBetaUpper(0.82, 1.0, 2.0) << " (expected: 0.0162)" << endl;
-        cout << "Reg. lower inc. beta(0.12, 3, 2): " << SpecFun::incBetaLowerReg(0.12, 3.0, 2.0) << " (expected: 0.0062899199999999)" << endl;
-        cout << "Reg. upper inc. beta(0.32, 4, 1): " << SpecFun::incBetaUpperReg(0.32, 4.0, 1.0) << " (expected: 0.98951424)" << endl;
-        cout << "Lower inc. beta(0.1+0.1i, 2-i, 3+i): " << SpecFun::incBetaLower(complex<double>(0.1, 0.1), complex<double>(2.0, -1.0), complex<double>(3.0, 1.0)) << " (expected: (-0.014279979073459, -0.01056283280605))" << endl;
-        cout << "Upper inc. beta(0.1-0.2i, -1.2+i, -3-i): " << SpecFun::incBetaUpper(complex<double>(0.1, -0.2), complex<double>(-1.2, 1.0), complex<double>(-3.0, -1.0)) << " (expected: (35.01301965518782, 12.57396933746574))" << endl;
-        cout << "Reg. lower inc. beta(-0.3+0.4i, 2.2-0.2i, 1.4+0.7i): " << SpecFun::incBetaLowerReg(complex<double>(-0.3, 0.4), complex<double>(2.2, -0.2), complex<double>(1.4, 0.7)) << " (expected: (0.82213042903643, -0.40178180061493))" << endl;
-        cout << "Reg. upper inc. beta(-0.6-0.1i, -3.8-0.7i, -3.4+2.7i): " << SpecFun::incBetaUpperReg(complex<double>(-0.6, -0.1), complex<double>(-3.8, -0.7), complex<double>(-3.4, 2.7)) << " (expected: (0.0010989969711688, 0.0021282694663258))" << endl;
+        cout << "Lower inc. beta(2, 5, 0.2):  " << SpecFun::incBetaLower(2.0, 5.0, 0.2) << " (expected: 0.011488)" << endl;
+        cout << "Lower inc. beta(2, 5, 0.7):  " << SpecFun::incBetaLower(2.0, 5.0, 0.7) << " (expected: 0.032968833333333)" << endl;
+        cout << "Upper inc. beta(1, 2, 0.15): " << SpecFun::incBetaUpper(1.0, 2.0, 0.15) << " (expected: 0.36125)" << endl;
+        cout << "Upper inc. beta(1, 2, 0.82): " << SpecFun::incBetaUpper(1.0, 2.0, 0.82) << " (expected: 0.0162)" << endl;
+        cout << "Reg. lower inc. beta(3, 2, 0.12): " << SpecFun::incBetaLowerReg(3.0, 2.0, 0.12) << " (expected: 0.0062899199999999)" << endl;
+        cout << "Reg. upper inc. beta(4, 1, 0.32): " << SpecFun::incBetaUpperReg(4.0, 1.0, 0.32) << " (expected: 0.98951424)" << endl;
+        cout << "Lower inc. beta(2-i, 3+i, 0.1+0.1i): " << SpecFun::incBetaLower(complex<double>(2.0, -1.0), complex<double>(3.0, 1.0), complex<double>(0.1, 0.1)) << " (expected: (-0.014279979073459, -0.01056283280605))" << endl;
+        cout << "Upper inc. beta(-1.2+i, -3-i, 0.1-0.2i): " << SpecFun::incBetaUpper(complex<double>(-1.2, 1.0), complex<double>(-3.0, -1.0), complex<double>(0.1, -0.2)) << " (expected: (35.01301965518782, 12.57396933746574))" << endl;
+        cout << "Reg. lower inc. beta(2.2-0.2i, 1.4+0.7i, -0.3+0.4i): " << SpecFun::incBetaLowerReg(complex<double>(2.2, -0.2), complex<double>(1.4, 0.7), complex<double>(-0.3, 0.4)) << " (expected: (0.82213042903643, -0.40178180061493))" << endl;
+        cout << "Reg. upper inc. beta(-3.8-0.7i, -3.4+2.7i, -0.6-0.1i): " << SpecFun::incBetaUpperReg(complex<double>(-3.8, -0.7), complex<double>(-3.4, 2.7), complex<double>(-0.6, -0.1)) << " (expected: (0.0010989969711688, 0.0021282694663258))" << endl;
 
 
         /*

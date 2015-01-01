@@ -855,19 +855,18 @@ std::complex<T> __incGamma(
  * @note both 'a', 'b' and 'x' must be strictly greater than 0,
  *       x must be greater than 0 and less than 1
  *
- * @param x - integration limit
- * @param a - first input argument
- * @param b - second input argument
- * @param x - second input argument, the integration limit
+ * @param a - parameter 'a' of the beta function
+ * @param b - parameter 'b' of the beta function
+ * @param x - the integration limit
  * @param lower - should the lower (if 'true') or the upper (if 'false) inc. beta function be returned
  * @param reg - if 'true', the regularized beta function is returned, i.e. divided by beta(a, b)
  * @param tol - tolerance (default: 1e-6)
  */
 template <class T>
 T __incBeta(
-          const T& x,
           const T& a,
           const T& b,
+          const T& x,
           bool lower,
           bool reg,
           const T& tol
@@ -987,19 +986,18 @@ T __incBeta(
  *       virtually everywhere except if 'a' is a negative integer, currently this
  *       function additionally requires that /x/ < 1 otherwise it may not converge.
  *
+ * @param a - parameter 'a' of the beta function
+ * @param b - parameter 'b' of the beta function
  * @param x - integration limit
- * @param a - first input argument
- * @param b - second input argument
- * @param x - second input argument, the integration limit
  * @param lower - should the lower (if 'true') or the upper (if 'false) inc. beta function be returned
  * @param reg - if 'true', the regularized beta function is returned, i.e. divided by beta(a, b)
  * @param tol - tolerance (default: 1e-6)
  */
 template <class T>
 std::complex<T> __incBeta(
-          const std::complex<T>& x,
           const std::complex<T>& a,
           const std::complex<T>& b,
+          const std::complex<T>& x,
           bool lower,
           bool reg,
           const std::complex<T>& tol
@@ -1264,9 +1262,9 @@ T math::SpecFun::incGammaLowerReg(
  *       'a' must not be 0 or a negative integer. Currently the x is restricted
  *       to: /x/ < 1.
  *
+ * @param a - parameter 'a' of the beta function
+ * @param b - parameter 'b' of the beta function
  * @param x - integration limit
- * @param a - first input argument
- * @param b - second input argument
  * @param tol - tolerance (default: 1e-6)
  *
  * @return Bx(a,b)
@@ -1275,13 +1273,13 @@ T math::SpecFun::incGammaLowerReg(
  */
 template <class T>
 T math::SpecFun::incBetaLower(
-               const T& x,
                const T& a,
                const T& b,
+               const T& x,
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta(x, a, b, true, false, tol);
+    return math::SpecFun::__private::__incBeta(a, b, x, true, false, tol);
 }
 
 
@@ -1302,9 +1300,9 @@ T math::SpecFun::incBetaLower(
  *       'a' must not be 0 or a negative integer. Currently the x is restricted
  *       to: /x/ < 1.
  *
+ * @param a - parameter 'a' of the beta function
+ * @param b - parameter 'b' of the beta function
  * @param x - integration limit
- * @param a - first input argument
- * @param b - second input argument
  * @param tol - tolerance (default: 1e-6)
  *
  * @return bx(a,b)
@@ -1313,13 +1311,13 @@ T math::SpecFun::incBetaLower(
  */
 template <class T>
 T math::SpecFun::incBetaUpper(
-               const T& x,
                const T& a,
                const T& b,
+               const T& x,
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta(x, a, b, false, false, tol);
+    return math::SpecFun::__private::__incBeta(a, b, x, false, false, tol);
 }
 
 
@@ -1340,9 +1338,9 @@ T math::SpecFun::incBetaUpper(
  *       'a' must not be 0 or a negative integer. Currently the x is restricted
  *       to: /x/ < 1.
  *
+ * @param a - parameter 'a' of the beta function
+ * @param b - parameter 'b' of the beta function
  * @param x - integration limit
- * @param a - first input argument
- * @param b - second input argument
  * @param tol - tolerance (default: 1e-6)
  *
  * @return Ix(a,b)
@@ -1351,13 +1349,13 @@ T math::SpecFun::incBetaUpper(
  */
 template <class T>
 T math::SpecFun::incBetaLowerReg(
-               const T& x,
                const T& a,
                const T& b,
+               const T& x,
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta(x, a, b, true, true, tol);
+    return math::SpecFun::__private::__incBeta(a, b, x, true, true, tol);
 }
 
 
@@ -1378,9 +1376,9 @@ T math::SpecFun::incBetaLowerReg(
  *       'a' must not be 0 or a negative integer. Currently the x is restricted
  *       to: /x/ < 1.
  *
+ * @param a - parameter 'a' of the beta function
+ * @param b - parameter 'b' of the beta function
  * @param x - integration limit
- * @param a - first input argument
- * @param b - second input argument
  * @param tol - tolerance (default: 1e-6)
  *
  * @return ix(a,b)
@@ -1389,13 +1387,13 @@ T math::SpecFun::incBetaLowerReg(
  */
 template <class T>
 T math::SpecFun::incBetaUpperReg(
-               const T& x,
                const T& a,
                const T& b,
+               const T& x,
                const T& tol
              ) throw(math::SpecFunException)
 {
-    return math::SpecFun::__private::__incBeta(x, a, b, false, true, tol);
+    return math::SpecFun::__private::__incBeta(a, b, x, false, true, tol);
 }
 
 
@@ -1992,7 +1990,7 @@ T __invIncBeta(
      */
 
     T xn;
-    T f = math::SpecFun::incBetaLowerReg<T>(x, a, b, tol) - p;
+    T f = math::SpecFun::incBetaLowerReg<T>(a, b, x, tol) - p;
     size_t i = 0;
     for ( i = 0;
           false==math::NumericUtil::isZero<T>(f, tol) && i<SPECFUN_MAX_ITER;
@@ -2014,7 +2012,7 @@ T __invIncBeta(
             x = xn;
         }
 
-        f = math::SpecFun::incBetaLowerReg<T>(x, a, b, tol) - p;
+        f = math::SpecFun::incBetaLowerReg<T>(a, b, x, tol) - p;
     }
 
     // Has the algorithm converged?
