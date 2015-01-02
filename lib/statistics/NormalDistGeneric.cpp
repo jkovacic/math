@@ -33,7 +33,6 @@ limitations under the License.
 
 
 // No #include "NormalDistGeneric.hpp" !!!
-#include <cstddef>
 #include <cmath>
 #include <algorithm>
 
@@ -41,229 +40,12 @@ limitations under the License.
 
 #include "util/math_constant.h"
 #include "util/NumericUtil.hpp"
-#include "util/IFunctionGeneric.hpp"
 #include "specfun/SpecFunGeneric.hpp"
-#include "exception/FunctionException.hpp"
+#include "exception/SpecFunException.hpp"
 #include "exception/StatisticsException.hpp"
-#include "root_find/RootFindGeneric.hpp"
-#include "exception/RootFindException.hpp"
 
-namespace math
+namespace math {  namespace NormalDist {  namespace __private
 {
-
-namespace NormalDist
-{
-
-namespace __private
-{
-
-/*
- * Extension of IFunctionGeneric whose function 'func'
- * returns normal probability distribution for the given 'x'.
- * Note that distribution's mean value and standard deviation
- * are passed via the constructor.
- *
- * @note It is assumed that the standard deviation is valid
- *       (strictly greater than 0). This check should be performed
- *       beforehand.
- */
-template <class T>
-class NormDistPdf : public math::IFunctionGeneric<T>
-{
-
-private:
-    const T m_mu;            // normal distribution's mean value
-    const T m_sigma;         // normal distribution's standard deviation
-
-public:
-    /*
-     * Constructor, assigns normal distribution's mean value
-     * and standard deviation that are used for calculation of pdf.
-     *
-     * @note The constructor assumes that the standard deviation is
-     *       valid (strictly greater than 0) and does not check  this.
-     *
-     * @param mu - normal distribution's mean value (default 0)
-     * @param sigma - normal distribution's standard deviation, must be greater than 0 (default: 1)
-     */
-    NormDistPdf(
-                const T& mu = static_cast<T>(0),
-                const T& sigma = static_cast<T>(1) ) :
-        m_mu (mu), m_sigma (sigma)
-    {
-        /*
-         * Both properties have been assigned above,
-         * so there is nothing else to do.
-         */
-    }
-
-
-    /*
-     * "Reimplementation" of 'func' to return the value of the
-     * probability distribution function (pdf) for the given x,
-     * and previously assigned mean value and standard deviation.
-     *
-     * @param x - value to be calculated the probability distribution function
-     *
-     * @return pdf(x, mu, sigma)
-     *
-     * @throw FunctionException (never by this function)
-     */
-    T func(const T& x) const throw (math::FunctionException)
-    {
-    	/*
-    	 * Probability density function of the normal distribution:
-    	 *
-    	 *                            2
-    	 *                    (x - mu)
-    	 *                - --------------
-    	 *                             2
-    	 *                    2 * sigma
-    	 *              e
-    	 *   pdf =   -----------------------
-    	 *                        ------+
-    	 *              sigma * \/ 2*pi
-    	 *
-    	 */
-
-        const T z = (x - this->m_mu) / this->m_sigma;
-        return static_cast<T>(MATH_CONST_SQRT_INV_2_PI) *
-               std::exp( -z*z / static_cast<T>(2) ) / this->m_sigma;
-    }
-};  // class NormDistPdf
-
-
-/*
- * Extension of IFunctionGeneric whose function 'func'
- * returns normal distribution's cumulative distribution function (cdf)
- * for the given 'x'. Note that distribution's mean value and standard deviation
- * are passed via the constructor.
- *
- * @note It is assumed that the standard deviation is valid
- *       (strictly greater than 0). This check should be performed
- *       beforehand.
- *
- * @note As this class is also passed to a root finding method, 'func'
- *       actually returns the value of cdf, subtracted by the desired
- *       probability 'p'. By default 'p' is set to 0 and must be set via
- *       the setP() method.
- */
-template <class T>
-class NormDistCdf : public math::IFunctionGeneric<T>
-{
-
-private:
-    const T m_mu;            // normal distribution's mean value
-    const T m_sigma;         // normal distribution's standard deviation
-    T m_p;                   // the actual value of cdf will be subtracted by this value
-
-public:
-
-    /*
-     * Constructor, assigns normal distribution's mean value
-     * and standard deviation that are used for calculation of cdf.
-     * The subtrahend is automatically set to 0.
-     *
-     * @note The constructor assumes that the standard deviation is
-     *       valid (strictly greater than 0) and does not check  this.
-     *
-     * @param mu - normal distribution's mean value (default 0)
-     * @param sigma - normal distribution's standard deviation, must be greater than 0 (default: 1)
-     */
-    NormDistCdf(
-                const T& mu = static_cast<T>(0),
-                const T& sigma = static_cast<T>(1) ) :
-        m_mu (mu), m_sigma (sigma), m_p(static_cast<T>(0))
-    {
-        /*
-         * All properties have been assigned above,
-         * so there is nothing else to do.
-         */
-    }
-
-
-    /*
-     * Sets the subtrahend to subtract from the actual cdf.
-     * This is useful when the class is passed to a root finding method.
-     * The constructor will set this subtrahend to 0.
-     *
-     * @param p - desired subtrahend
-     */
-    void setP(const T& p)
-    {
-        this->m_p = p;
-    }
-
-
-    /*
-     * "Reimplementation" of 'func' to return the value of the
-     * cumulative distribution function (cdf) for the given x,
-     * and previously assigned mean value and standard deviation.
-     * The cdf value is additionally subtracted by the subtrahend
-     * 'p' that can be set via setP().
-     *
-     * @param x - value to be calculated the cumulative distribution function
-     *
-     * @return cdf(x, mu, sigma) - p
-     *
-     * @throw FunctionException (never by this function)
-     */
-    T func(const T& x) const throw (math::FunctionException)
-    {
-        /*
-         * The cdf represents probability that a value from the normal
-         * distribution is smaller than a specified value 'x' and can be
-         * expressed as:
-         *
-         *                     x                   x
-         *                     /              1    /
-         *   cdf(x) = P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
-         *                     /              2    /
-         *                   -inf                 mu
-         *
-         * One approach to calculate this would be numerical integration,
-         * however there are more efficient methods available.
-         *
-         * As evident from:
-         * https://en.wikipedia.org/wiki/Normal_distribution
-         * cdf can be further expressed as:
-         *
-         *                +-                             -+
-         *             1  |         /      x - mu       \ |
-         *   cdf(x) = --- | 1 + erf | ----------------- | |
-         *             2  |         \  sigma * sqrt(2)  / |
-         *                +-                             -+
-         *
-         * where erf is the so called error function, implemented
-         * in the namespace math::SpecFun.
-         */
-
-
-        // Tolerance for the last Taylor series term
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
-
-        /*
-         *            x - mu            sqrt(2) * (x - mu)
-         *   z = -----------------  =  --------------------
-         *        sigma * sqrt(2)            2 * sigma
-         */
-        const T z = static_cast<T>(MATH_CONST_SQRT_INV_2) *
-                    ( x - this->m_mu ) / this->m_sigma;
-
-        /*
-         * Calculate the return value:
-         *
-         * cdf = 0.5 * (1 + erf(z))
-         *
-         * Additionally m_p is subtracted from the cdf.
-         */
-        return ( math::SpecFun::erf<T>(z, TOL) + static_cast<T>(1) ) /
-               static_cast<T>(2) - this->m_p;
-    }
-
-};  // class NormDistCdf
-
 
 /*
  * Checks the validity of the given standard deviation.
@@ -282,9 +64,7 @@ void __checkSigma(const T& sigma) throw (math::StatisticsException)
     }
 }
 
-}  // namespace __private
-}  // namespace NormalDist
-}  // namespace math
+}}}  // namespace math::NormalDist::__private
 
 
 
@@ -372,24 +152,27 @@ T math::NormalDist::pdf(
       const T& sigma
     ) throw (math::StatisticsException)
 {
+    /*
+     * Probability density function of the normal distribution:
+     *
+     *                            2
+     *                    (x - mu)
+     *                - --------------
+     *                             2
+     *                    2 * sigma
+     *              e
+     *   pdf =   -----------------------
+     *                        ------+
+     *              sigma * \/ 2*pi
+     *
+     */
+    
     // sanity check:
     math::NormalDist::__private::__checkSigma<T>(sigma);
 
-    T retVal = static_cast<T>(-1);
-
-    try
-    {
-        const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
-
-        retVal = pdf.func(x);
-    }
-    catch ( math::FunctionException& fex )
-    {
-        // 'pdf' is defined everywhere, hence
-        // this exception should never be  thrown.
-    }
-
-    return retVal;
+    const T z = (x - mu) / sigma;
+    return static_cast<T>(MATH_CONST_SQRT_INV_2_PI) *
+           std::exp( -z*z / static_cast<T>(2) ) / sigma;
 }
 
 
@@ -433,8 +216,8 @@ T math::NormalDist::probInt(
     const T from = std::min(a, b);
     const T to = std::max(a, b);
 
-    return math::NormalDist::prob<T>(to, mu, sigma) -
-           math::NormalDist::prob<T>(from, mu, sigma);
+    return math::NormalDist::prob<T>(to, mu, sigma, true) -
+           math::NormalDist::prob<T>(from, mu, sigma, true);
 }
 
 
@@ -460,8 +243,35 @@ T math::NormalDist::prob(
     ) throw (math::StatisticsException)
 {
     /*
-     * Lower tail probability ( P(t<x) ) is calculated inside the class
-     * NormDistCdf. See comments inside its implementation for more details.
+     * The cdf represents probability that a value from the normal
+     * distribution is smaller than a specified value 'x' and can be
+     * expressed as:
+     *
+     *                     x                   x
+     *                     /              1    /
+     *   cdf(x) = P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
+     *                     /              2    /
+     *                   -inf                 mu
+     *
+     * One approach to calculate this would be numerical integration,
+     * however there are more efficient methods available.
+     *
+     * As evident from:
+     * https://en.wikipedia.org/wiki/Normal_distribution
+     * cdf can be further expressed as:
+     *
+     *                +-                             -+
+     *             1  |         /      x - mu       \ |
+     *   cdf(x) = --- | 1 + erf | ----------------- | | =
+     *             2  |         \  sigma * sqrt(2)  / |
+     *                +-                             -+
+     *
+     *             1         /        x - mu       \
+     *          = --- * erfc | - ----------------- |
+     *             2         \    sigma * sqrt(2)  /
+     * 
+     * where 'erf' is the so called error function, implemented
+     * in the namespace math::SpecFun.
      *
      * For the upper tail probability ( P(t>x) ) just return the complement
      * of the lower tail probability: 1 - cdf(x)
@@ -470,26 +280,28 @@ T math::NormalDist::prob(
     // sanity check
     math::NormalDist::__private::__checkSigma<T>(sigma);
 
-    const math::NormalDist::__private::NormDistCdf<T> cdf(mu, sigma);
+    // Tolerance for the last Taylor series term
+    const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
+                  static_cast<T>(STAT_DIST_PROB_TOL_DEN);
 
-    T retVal = static_cast<T>(-1);
+    /*
+     *            x - mu            sqrt(2) * (x - mu)
+     *   z = -----------------  =  --------------------
+     *        sigma * sqrt(2)            2 * sigma
+     */
 
-    try
-    {
-        retVal = cdf.func(x);
+    const T z = static_cast<T>(MATH_CONST_SQRT_INV_2) * ( x - mu ) / sigma;
 
-        if ( false == lowerTail )
-        {
-            retVal = static_cast<T>(1) - retVal;
-        }
-    }
-    catch ( const math::FunctionException& fex )
-    {
-        // 'cdf' is defined everywhere,
-        // hence this exception should never be  thrown.
-    }
+    /*
+     * Calculate the return value:
+     *
+     *   cdf = 0.5 * (1 + erf(z)) = 0.5 * erfc(-z)
+     */
 
-    return retVal;
+    const T cdf = math::SpecFun::erfc<T>(-z, TOL) / static_cast<T>(2);
+
+    // the return value depends on 'lowerTail':
+    return ( true==lowerTail ? cdf : static_cast<T>(1)-cdf );
 }
 
 
@@ -525,37 +337,39 @@ T math::NormalDist::quant(
 
     /*
      * Quantile is a value of 'x' that solves the nonlinear equation:
+     * 
      *   cdf(x) = p
      *
-     * Since the cumulative distribution function (cdf) is continuous, smooth and
-     * monotonically increasing and its derivative (pdf) is also known and relatively
-     * simple obtain, the Newton - Raphson root finding method is chosen that is
-     * guaranteed to be reasonably precise and reasonably fast.
+     * If the cumulative density function is expressed as:
+     * 
+     *                          1         /        x - mu       \
+     *   cdf(x,mu,sigma) = p = --- * erfc | - ----------------- |
+     *                          2         \    sigma * sqrt(2)  /
+     * 
+     * the following expression for 'x' can be derived quickly:
+     * 
+     *   x = mu - sqrt(2) * sigma * erfcInv(2 * p)
      */
-
-    T retVal = static_cast<T>(0);
 
     try
     {
+        // The actual probability in the expressions above depends on 'lowerTail':
         const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
 
-        // Tolerance for the Newton - Raphson root finding method:
+        // Tolerance for the algorithm that evaluates erfcInv():)
         const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / 
                       static_cast<T>(STAT_DIST_PROB_TOL_DEN);
 
-        const math::NormalDist::__private::NormDistPdf<T> pdf(mu, sigma);
-        math::NormalDist::__private::NormDistCdf<T> cdf(mu, sigma);
-        cdf.setP(P);
-
-        retVal = math::RootFind::newton<T>(cdf, pdf, mu, TOL, static_cast<size_t>(-1));
+        return mu - math::SpecFun::erfcInv<T>(static_cast<T>(2) * P, TOL) * 
+                    sigma * static_cast<T>(MATH_CONST_SQRT_2);
     }
-    catch ( math::RootFindException& rex )
+    catch ( math::SpecFunException& spex )
     {
-        // This exception can only be thrown in an unlikely event that the
-        // root find algorithm could not converge despite the large 
-        // number of allowed iterations.
+        /*
+         * The validity of 'p' is checked beforehand.
+         * Although very unlikely, it is theoretically possible that
+         * the algorithm to evaluate erfcInv will not converge.
+         */
         throw math::StatisticsException(math::StatisticsException::OPERATION_FAILED);
     }
-
-    return retVal;
 }
