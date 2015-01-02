@@ -58,7 +58,7 @@ namespace math {  namespace NormalDist {  namespace __private
 template <class T>
 void __checkSigma(const T& sigma) throw (math::StatisticsException)
 {
-    if ( sigma < NumericUtil::getEPS<T>() )
+    if ( sigma < math::NumericUtil::getEPS<T>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_STDEV);
     }
