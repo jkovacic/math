@@ -40,299 +40,16 @@ limitations under the License.
 #include "../settings/stat_settings.h"
 #include "util/math_constant.h"
 #include "util/NumericUtil.hpp"
-#include "util/IFunctionGeneric.hpp"
 #include "specfun/SpecFunGeneric.hpp"
-#include "root_find/RootFindGeneric.hpp"
 
 #include "exception/StatisticsException.hpp"
-#include "exception/FunctionException.hpp"
 #include "exception/SpecFunException.hpp"
-#include "exception/RootFindException.hpp"
 
 
 // Implementation of "private" functions
 
-namespace math
+namespace math {  namespace StudentDist {  namespace __private
 {
-
-namespace StudentDist
-{
-
-namespace __private
-{
-
-/*
- * Extension of IFunctionGeneric whose function 'func'
- * returns Student's probability distribution for the given 'x'.
- * Note that distribution's mean value, standard deviation and
- * degrees of freedom are passed via the constructor.
- *
- * @note It is assumed that the standard deviation and degrees
- *       of freedom are valid (strictly greater than 0). This check
- *       should be performed beforehand.
- */
-template <class T>
-class StudentDistPdf : public math::IFunctionGeneric<T>
-{
-
-private:
-    const T m_mu;            // normal distribution's mean value
-    const T m_sigma;         // normal distribution's standard deviation
-    const T m_df;            // degrees of freedom
-    T m_term;                // the multiplicand of the pdf, depends on df and sigma
-
-
-public:
-
-    /*
-     * Constructor, assigns Student's distribution's mean value,
-     * standard deviation and number of degrees of freedom that
-     * are used for calculation of pdf.
-     *
-     * @note The constructor assumes that the standard deviation and
-     *       degress of freedom are valid (strictly greater than 0)
-     *       and does not check  this.
-     *
-     * @param df - degrees of freedom, must be greater than 0
-     * @param mu - Student's distribution's mean value (default 0)
-     * @param sigma - Student's distribution's standard deviation, must be greater than 0 (default: 1)
-     */
-    StudentDistPdf( const T& df, const T& mu, const T& sigma) :
-        m_mu(mu), m_sigma(sigma), m_df(df)
-    {
-        /*
-         * The term below is not very trivial to compute, hence its value
-         * is calculated at instantiation of this class and stored into a variable:
-         *
-         *
-         *                    G((df+1)/2)                            1
-         * m_term = ------------------------------- = ---------------------------------
-         *           G(df/2) * sqrt(pi*df) * sigma     B(1/2, df/2) * sqrt(df) * sigma
-         */
-
-        try
-        {
-            // The first version (with two gamma functions) is computationally
-            // more efficient as evaluation of the beta function requires
-            // evaluation of three different gamma functions.
-            this->m_term = math::SpecFun::gamma<T>((df + static_cast<T>(1)) / static_cast<T>(2)) *
-                           static_cast<T>(MATH_CONST_SQRT_INV_PI) /
-                           ( math::SpecFun::gamma<T>(df / static_cast<T>(2)) *
-                             std::sqrt(df) * sigma );
-        }
-        catch ( math::SpecFunException& sfex )
-        {
-            // If a valid 'df' is assumed, this exception
-            // should never be thrown.
-        }
-    }
-
-
-    /*
-     * "Reimplementation" of 'func' that returns the value of the
-     * Student's distribution's probability distribution function
-     * (pdf) for the given x, and previously assigned number of
-     * degrees of freedom, mean value and standard deviation.
-     *
-     * @param x - value to be calculated the probability distribution function
-     *
-     * @return pdf(x, df, mu, sigma)
-     *
-     * @throw FunctionException (never by this function)
-     */
-    T func(const T& x) const throw (math::FunctionException)
-    {
-        /*
-         *                                                                        df+1
-         *                                       +-                         -+ - ------
-         *                 G((df+1)/2)           |      1     /  x - mu  \ 2 |     2
-         * pdf = ------------------------------- | 1 + ---- * | -------- |   |
-         *        G(df/2) * sqrt(pi*df) * sigma  |      df    \   sigma  /   |
-         *                                       +-                         -+
-         */
-
-        const T t = (x - this->m_mu) / this->m_sigma;
-
-        return this->m_term * std::pow(static_cast<T>(1) + t*t/this->m_df,
-                                       -(this->m_df + static_cast<T>(1)) / static_cast<T>(2));
-    }
-
-};  // class StudentDistPdf
-
-
-/*
- * Extension of IFunctionGeneric whose function 'func'
- * returns Student's distribution's cumulative distribution function (cdf)
- * for the given 'x'. Note that distribution's degrees of freedom, mean value 
- * and standard deviation are passed via the constructor.
- *
- * @note It is assumed that the degrees of freedom and the standard deviation 
- *       are valid (strictly greater than 0). This check should be performed
- *       beforehand.
- *
- * @note As this class is also passed to a root finding method, 'func'
- *       actually returns the value of cdf, subtracted by the desired
- *       probability 'p'. By default 'p' is set to 0 and must be set via
- *       the setP() method.
- */
-template <class T>
-class StudDistCdf : public math::IFunctionGeneric<T>
-{
-
-private:
-    const T m_df;            // Student's distribution degrees of freedom
-    const T m_mu;            // Student's distribution's mean value
-    const T m_sigma;         // Student's distribution's standard deviation
-    T m_p;                   // the actual value of cdf will be subtracted by this value
-
-public:
-
-    /*
-     * Constructor, assigns Student's distribution's degrees of freedom,
-     * mean value and standard deviation that are used for calculation of cdf.
-     * The subtrahend is automatically set to 0.
-     *
-     * @note The constructor assumes that the standard deviation is
-     *       valid (strictly greater than 0) and does not check  this.
-     *
-     * @param df - Student's distribution degrees of freedom
-     * @param mu - Student's distribution's mean value (default 0)
-     * @param sigma - Student's distribution's standard deviation, must be greater than 0 (default: 1)
-     */
-    StudDistCdf(
-                const T& df,
-                const T& mu = static_cast<T>(0),
-                const T& sigma = static_cast<T>(1) ) :
-        m_df(df), m_mu (mu), m_sigma (sigma), m_p(static_cast<T>(0))
-    {
-        /*
-         * All properties have been assigned above,
-         * so there is nothing else to do.
-         */
-    }
-
-
-    /*
-     * Sets the subtrahend to subtract from the actual cdf.
-     * This is useful when the class is passed to a root finding method.
-     * The constructor will set this subtrahend to 0.
-     *
-     * @param p - desired subtrahend
-     */
-    void setP(const T& p)
-    {
-        this->m_p = p;
-    }
-
-
-    /*
-     * "Reimplementation" of 'func' to return the value of the
-     * cumulative distribution function (cdf) for the given x,
-     * and previously assigned degrees of freedom, mean value and 
-     * standard deviation. The cdf value is additionally subtracted
-     * by the subtrahend 'm_p' that can be set via setP().
-     *
-     * @param x - value to be calculated the cumulative distribution function
-     *
-     * @return cdf(x, df, mu, sigma) - p
-     *
-     * @throw FunctionException (never by this function)
-     */
-    T func(const T& x) const throw (math::FunctionException)
-    {
-        /*
-         * The cdf represents probability that a value from the normal
-         * distribution is smaller than a specified value 'x' and can be
-         * expressed as:
-         *
-         *                     x                   x
-         *                     /              1    /
-         *   cdf(x) = P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
-         *                     /              2    /
-         *                   -inf                 mu
-         *
-         * One approach to calculate this would be numerical integration,
-         * however there are more efficient methods available.
-         *
-         * As evident from:
-         * https://en.wikipedia.org/wiki/Student%27s_t-distribution#Cumulative_distribution_function
-         * 't' can be defined as:
-         * 
-         *              df
-         *  t = --------------------
-         *            /  t - mu  \2
-         *       df + | -------- | 
-         *            \  sigma   /
-         * 
-         * then the cdf can be further expressed as:
-         *
-         *             /  1     /  df    1  \
-         *             | --- I  | ----, --- |        <== x <= mu
-         *             /  2   t \   2    2  /
-         *   cdf(t) = {
-         *             \      1     /  df    1  \
-         *             | 1 - --- I  | ----, --- |    <== x > mu
-         *             \      2   t \   2    2  /
-         *
-         * where It(a,b) is the incomplete beta function, implemented
-         * in the namespace math::SpecFun.
-         */
-
-        try
-        {
-            // Tolerance for the incomplete beta function
-            const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                          static_cast<T>(STAT_DIST_PROB_TOL_DEN);
-
-            /*
-             *            df
-             *   t = --------------------
-             *             /  x - mu  \2
-             *        df + | -------- |
-             *             \  sigma   /
-             */
-
-            const T ttemp = (x - this->m_mu) / this->m_sigma;
-
-            // if 'x' is very close to 'mu', the probability is exactly 0.5
-            if ( true == math::NumericUtil::isZero<T>(ttemp) )
-            {
-                return static_cast<T>(1) / static_cast<T>(2) - this->m_p;
-            }
-
-            const T t = this->m_df / ( this->m_df + ttemp*ttemp );
-
-            /*
-             * Evaluate:
-             * 
-             *   I  (df/2, 1/2) / 2
-             *    t
-             */
-        
-            T cdf = math::SpecFun::incBetaLowerReg<T>( 
-                    this->m_df / static_cast<T>(2),
-                    static_cast<T>(1) / static_cast<T>(2),
-                    t,
-                    TOL );
-            cdf /= static_cast<T>(2);
-
-            // Adjust the cdf if x>mu:
-            if ( x > this->m_mu )
-            {
-                cdf = static_cast<T>(1) - cdf;
-            }
-
-            // Additionally m_p is subtracted from the cdf.
-            return cdf - this->m_p;
-        }
-        catch ( const math::SpecFunException& spex )
-        {
-            throw math::FunctionException(math::FunctionException::UNDEFINED);
-        }
-    }
-
-};  // class StudDistCdf
-
 
 /*
  * Checks the validity of the given standard deviation
@@ -347,7 +64,7 @@ public:
 template <class T>
 void __checkParams(const T& sigma, const T& df) throw (math::StatisticsException)
 {
-    if ( sigma < NumericUtil::getEPS<T>() )
+    if ( sigma < math::NumericUtil::getEPS<T>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_STDEV);
     }
@@ -358,9 +75,7 @@ void __checkParams(const T& sigma, const T& df) throw (math::StatisticsException
     }
 }
 
-}  // namespace __private
-}  // namespace StudentDist
-}  // namespace math
+}}}  // namespace math::StudentDist::__private
 
 
 
@@ -463,21 +178,34 @@ T math::StudentDist::pdf(
     // sanity check
     math::StudentDist::__private::__checkParams<T>(sigma, df);
 
-    T retVal = static_cast<T>(-1);
+    /*
+     *                                                                        df+1
+     *                                       +-                         -+ - ------
+     *                 G((df+1)/2)           |      1     /  x - mu  \ 2 |     2
+     * pdf = ------------------------------- | 1 + ---- * | -------- |   |
+     *        G(df/2) * sqrt(pi*df) * sigma  |      df    \   sigma  /   |
+     *                                       +-                         -+
+     */
+
+    T pdf = static_cast<T>(-1);
 
     try
     {
-        const math::StudentDist::__private::StudentDistPdf<T> pdf(df, mu, sigma);
+        const T t = (x - mu) / sigma;
 
-        retVal = pdf.func(x);
+        pdf = math::SpecFun::gamma<T>((df + static_cast<T>(1)) / static_cast<T>(2)) *
+              static_cast<T>(MATH_CONST_SQRT_INV_PI) /
+              ( math::SpecFun::gamma<T>(df / static_cast<T>(2)) *
+                std::sqrt(df) * sigma );
+
+        pdf *= std::pow(static_cast<T>(1) + t*t/df, -(df + static_cast<T>(1)) / static_cast<T>(2));
     }
-    catch ( const math::FunctionException &fex )
+    catch ( const math::SpecFunException& sfex )
     {
-        // 'pdf' is defined everywhere, hence
-        // this exception should never be  thrown.
+        // this exception should never be thrown.
     }
 
-    return retVal;
+    return pdf;
 }
 
 
@@ -551,8 +279,41 @@ T math::StudentDist::prob(
       ) throw (math::StatisticsException)
 {
     /*
-     * Lower tail probability ( P(t<x) ) is calculated inside the class
-     * StudDistCdf. See comments inside its implementation for more details.
+     * The cdf represents probability that a value from the normal
+     * distribution is smaller than a specified value 'x' and can be
+     * expressed as:
+     *
+     *                     x                   x
+     *                     /              1    /
+     *   cdf(x) = P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
+     *                     /              2    /
+     *                   -inf                 mu
+     *
+     * One approach to calculate this would be numerical integration,
+     * however there are more efficient methods available.
+     *
+     * As evident from:
+     * https://en.wikipedia.org/wiki/Student%27s_t-distribution#Cumulative_distribution_function
+     * 't' can be defined as:
+     * 
+     *              df
+     *  t = --------------------
+     *            /  x - mu  \2
+     *       df + | -------- | 
+     *            \  sigma   /
+     * 
+     * then the cdf can be further expressed as:
+     *
+     *             /  1     /  df    1  \
+     *             | --- I  | ----, --- |        <== x <= mu
+     *             /  2   t \   2    2  /
+     *   cdf(t) = {
+     *             \      1     /  df    1  \
+     *             | 1 - --- I  | ----, --- |    <== x > mu
+     *             \      2   t \   2    2  /
+     *
+     * where It(a,b) is the incomplete beta function, implemented
+     * in the namespace math::SpecFun.
      *
      * For the upper tail probability ( P(t>x) ) just return the complement
      * of the lower tail probability: 1 - cdf(x)
@@ -561,26 +322,61 @@ T math::StudentDist::prob(
     // sanity check
     math::StudentDist::__private::__checkParams<T>(sigma, df);
 
-    const math::StudentDist::__private::StudDistCdf<T> cdf(df, mu, sigma);
-
-    T retVal = static_cast<T>(-1);
+    T cdf = static_cast<T>(-1);
 
     try
     {
-        retVal = cdf.func(x);
+        // Tolerance for the incomplete beta function
+        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
 
-        if ( false == lowerTail )
+        /*
+         *            df
+         *   t = --------------------
+         *             /  x - mu  \2
+         *        df + | -------- |
+         *             \  sigma   /
+         */
+
+        const T ttemp = (x - mu) / sigma;
+
+        // if 'x' is very close to 'mu', the probability is exactly 0.5
+        if ( true == math::NumericUtil::isZero<T>(ttemp) )
         {
-            retVal = static_cast<T>(1) - retVal;
+            return static_cast<T>(1) / static_cast<T>(2);
+        }
+
+        const T t = df / ( df + ttemp*ttemp );
+
+        /*
+         * Evaluate:
+         * 
+         *   I  (df/2, 1/2) / 2
+         *    t
+         */
+        
+        cdf = math::SpecFun::incBetaLowerReg<T>( 
+                df / static_cast<T>(2),
+                static_cast<T>(1) / static_cast<T>(2),
+                t,
+                TOL );
+        cdf /= static_cast<T>(2);
+
+        // Adjust the cdf depending on 'x' (w.r.t. 'mu') and 'lowerTail':
+        if ( ( x>mu && true==lowerTail ) ||
+             ( x<mu && false==lowerTail ) )
+        {
+            cdf = static_cast<T>(1) - cdf;
         }
     }
-    catch ( const math::FunctionException& fex )
+    catch ( const math::SpecFunException& sfex )
     {
-        // 'cdf' is defined everywhere,
-        // hence this exception should never be  thrown.
+        // should only occur in a very unlikely event
+        // that incomplete beta does not converge
+        throw math::StatisticsException(math::StatisticsException::OPERATION_FAILED);
     }
 
-    return retVal;
+    return cdf;
 }
 
 
@@ -611,7 +407,8 @@ T math::StudentDist::quant(
 {
     // sanity check
     math::StudentDist::__private::__checkParams<T>(sigma, df);
-    if ( p<=static_cast<T>(0) || p>=static_cast<T>(1) )
+    if ( p <= math::NumericUtil::getEPS<T>() || 
+         p >= static_cast<T>(1)-math::NumericUtil::getEPS<T>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -620,35 +417,76 @@ T math::StudentDist::quant(
      * Quantile is a value of 'x' that solves the nonlinear equation:
      *   cdf(x) = p
      *
-     * Since the cumulative distribution function (cdf) is continuous, smooth and
-     * monotonically increasing and its derivative (pdf) is also known and relatively
-     * simple to evaluate, the Newton - Raphson root finding method is chosen that is
-     * guaranteed to be reasonably precise and reasonably fast.
+     * If x < mu ==> p < 0.5
+     * In this case 't' (as defined in comments of prob()) can be calculated as:
+     * 
+     *        -1 /  df    1  \
+     *   t = I   | ----, --- |
+     *        2p \   2    2  /
+     * 
+     * If p > 0.5, its complement (1-p) should be obtained and a
+     * solution being greater than 'mu' should be considered.
+     * 
+     * If 't' is defined as:
+     * 
+     *                df
+     *   t = --------------------
+     *             /  x - mu  \2
+     *        df + | -------- |
+     *             \   sigma  /
+     * 
+     * then 'x' can be quickly derived from this equation. Note that
+     * the equation has two solutions, consider the one being either smaller
+     * or greater than 'mu', depending on the initial 'p'.
+     * 
+     *                        +---------------+
+     *   x = mu +/- sigma * \/ df * ( 1/t - 1)
+     * 
+     * From properties of the regularized incomplete beta function
+     * and its inverse it is evident that 't' will always be greater than 0
+     * (except when p==0 ==> x=-inf) and less than 1 (except when p==0.5 ==> x=mu) 
+     * hence the expression for 'x' is defined always except the two special cases
+     * that are handled separately.
      */
 
-    T retVal = static_cast<T>(0);
+    T x = static_cast<T>(0);
+
+    // separate handling of p==1/2:
+    if ( true==math::NumericUtil::isZero<T>(p-static_cast<T>(1)/static_cast<T>(2)) )
+    {
+        return mu;
+    }
 
     try
     {
         const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
 
-        // Tolerance for the Newton - Raphson root finding method:
+        // consider the p<1/2:
+        const T PP = std::min(P, static_cast<T>(1)-P);
+
+        // Tolerance for the inverse incomplete beta function:
         const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / 
                       static_cast<T>(STAT_DIST_PROB_TOL_DEN);
 
-        const math::StudentDist::__private::StudentDistPdf<T> pdf(df, mu, sigma);
-        math::StudentDist::__private::StudDistCdf<T> cdf(df, mu, sigma);
-        cdf.setP(P);
+        // t = Iinv(df/2, 1/2, 2*p):
+        const T t = math::SpecFun::incBetaLowerRegInv<T>(
+                    df / static_cast<T>(2),
+                    static_cast<T>(1) / static_cast<T>(2),
+                    static_cast<T>(2) * PP,
+                    TOL );
 
-        retVal = math::RootFind::newton<T>(cdf, pdf, mu, TOL, static_cast<size_t>(-1));
+        // From t obtain tt = sqrt(df * (1/t - 1)):
+        const T tt = sigma * std::sqrt(df * (static_cast<T>(1) - t) / t);
+    
+        // And finally add or subtract 'tt' to/from 'mu', depending on the initial 'p':
+        x = ( P > static_cast<T>(1) / static_cast<T>(2) ? mu + tt : mu - tt );        
     }
-    catch ( math::RootFindException& rex )
+    catch ( math::SpecFunException& sfex )
     {
-        // This exception can only be thrown in an unlikely event that the
-        // root find algorithm could not converge despite the large 
-        // number of allowed iterations.
+        // This exception can only be thrown in an unlikely event
+        // that the inverse incomplete beta function does not converge.
         throw math::StatisticsException(math::StatisticsException::OPERATION_FAILED);
     }
 
-    return retVal;
+    return x;
 }
