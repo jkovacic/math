@@ -141,7 +141,9 @@ T math::SampleQuantileGeneric<T>::linIntrp(const T& h) const
      *   qp = x[hf-1] + (h - hf) * (x[hf] - x[hf-1])
      */
 
-    return ( x.at(toInt(hf)-1) + (h - hf) * (x.at(toInt(hf)) - x.at(toInt(hf)-1)) );
+    return ( x.at(math::NumericUtil::intRound<T, size_t>(hf) - 1) + 
+            (h - hf) * (x.at(math::NumericUtil::intRound<T, size_t>(hf)) - 
+             x.at(math::NumericUtil::intRound<T, size_t>(hf) - 1)) );
 }
 
 
@@ -171,7 +173,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     const size_t& N = this->m_N;
     const std::vector<T>& x = this->m_v;
 
-    // N casted to , used often in nonint expressions
+    // N casted to T, used often in nonint expressions
     const T NT = static_cast<T>(N);
 
     if ( p<static_cast<T>(0) || p>static_cast<T>(1) )
@@ -206,7 +208,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
         else
         {
             const T h = NT * p + HALF;
-            retVal = x.at(toInt(std::ceil(h-HALF)) - 1);
+            retVal = x.at(math::NumericUtil::intCeil<T, size_t>(h-HALF) - 1);
         }
 
         break;
@@ -228,8 +230,8 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
         else
         {
             const T h = NT * p + HALF;
-            retVal = ( x.at(toInt(std::ceil(h-HALF)) - 1) + 
-                       x.at(toInt(std::floor(h+HALF)) - 1) ) * HALF;
+            retVal = ( x.at(math::NumericUtil::intCeil<T, size_t>(h-HALF) - 1) + 
+                       x.at(math::NumericUtil::intFloor<T, size_t>(h+HALF) - 1) ) * HALF;
         }
 
         break;
@@ -247,7 +249,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
         {
             const T h = NT * p;
             const T frac = h - std::floor(h);
-            size_t idx = toInt(std::floor(h));
+            size_t idx = math::NumericUtil::intFloor<T, size_t>(h);
 
             /*
              * The index is h, rounded to the nearest integer.

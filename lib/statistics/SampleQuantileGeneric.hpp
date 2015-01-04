@@ -134,18 +134,6 @@ public:
 
 private:
     // internally used functions:
-
-    /*
-     * Converts a (positive) real number to an integer (size_t).
-     * Note that a rounded float/double may be actually a bit less
-     * than expected, so addition of 0.5 ensures that the number is
-     * properly converted (truncated) to an integer.
-     */
-    static inline size_t toInt(const T& n)
-    {
-        return static_cast<size_t>(n + static_cast<T>(1)/static_cast<T>(2) );
-    }
-
     T linIntrp(const T& h) const;
 
 };  // class SampleQuantileGeneric

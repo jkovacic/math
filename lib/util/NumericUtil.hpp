@@ -60,19 +60,21 @@ namespace NumericUtil
     template <class T>
     short int sign(const T& num);
 
-}
+    // round from a floating type T to an integer type I 
+    template <class T, class I>
+    I intRound(const T& n);
 
+    template <class T, class I>
+    I intFloor(const T& n);
 
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
-} // namespace math
+    template <class T, class I>
+    I intCeil(const T& n);
+
+}  // namespace NumericUtil 
+
+}  // namespace math
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
-
 #include "util/NumericUtil.cpp"
 
 #endif	// _MATH_NUMERICUTIL_HPP_

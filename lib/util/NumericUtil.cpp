@@ -27,7 +27,7 @@ limitations under the License.
 #include <cstddef>
 #include <complex>
 #include <limits>
-
+#include <cmath>
 
 
 /**
@@ -205,4 +205,77 @@ short int math::NumericUtil::sign(const T& num)
     }
 
     return ( num < static_cast<T>(0) ? -1 : 1 );
+}
+
+
+/**
+ * Rounds a real number (of type T) to the nearest integer (of type I).
+ * 
+ * @note An attempt to convert a negative 'n' to an unsigned type will
+ *       return 0.
+ * 
+ * @note If 'n' is out of I's range, an overflow will occur.
+ * 
+ * @param n - a real value to be rounded to the nearest integer
+ * 
+ * @return 'n' rounded to the nearest integer
+ */
+template <class T, class I>
+inline I math::NumericUtil::intRound(const T& n)
+{
+    // if attempting to cast a negative 'n' to an unsigned type,
+    // return 0 immediately:
+    if ( n < static_cast<T>(0) && 
+         static_cast<I>(-1) > static_cast<I>(0) )
+    {
+        return static_cast<I>(0);
+    }
+    
+    /*
+     * 0.5 is added to a positive 'n' or subtracted from a negative 'n'.
+     * Casting to I will then cut off the fractional part.
+     */
+    return ( n >= static_cast<T>(0) ? 
+             static_cast<I>(n + static_cast<T>(1)/static_cast<T>(2) ) : 
+             static_cast<I>(n - static_cast<T>(1)/static_cast<T>(2) ) );
+}
+
+
+/**
+ * Rounds the real value (of type T) 'n' downwards, returning the
+ * largest integer value (of type I) that is not greater than 'n'.
+ * 
+ * @note An attempt to convert a negative 'n' to an unsigned type will
+ *       return 0.
+ * 
+ * @note If 'n' is out of I's range, an overflow will occur.
+ * 
+ * @param n - a real value to be rounded to an integer
+ * 
+ * @return floor(n) casted to I
+ */
+template <class T, class I>
+inline I math::NumericUtil::intFloor(const T& n)
+{
+    return math::NumericUtil::intRound<T, I>(std::floor(n));
+}
+
+
+/**
+ * Rounds the real value (of type T) 'n' upwards, returning the
+ * largest integer value (of type I) that is not less than 'n'.
+ * 
+ * @note An attempt to convert a negative 'n' to an unsigned type will
+ *       return 0.
+ * 
+ * @note If 'n' is out of I's range, an overflow will occur.
+ * 
+ * @param n - a real value to be rounded to an integer
+ * 
+ * @return ceil(n) casted to I
+ */
+template <class T, class I>
+inline I math::NumericUtil::intCeil(const T& n)
+{
+    return math::NumericUtil::intRound<T, I>(std::ceil(n));
 }
