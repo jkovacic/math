@@ -330,7 +330,8 @@ T math::NormalDist::quant(
 {
     // sanity check
     math::NormalDist::__private::__checkSigma<T>(sigma);
-    if ( p<=static_cast<T>(0) || p>=static_cast<T>(1) )
+    if ( p <= math::NumericUtil::getEPS<T>() || 
+         p >= static_cast<T>(1)-math::NumericUtil::getEPS<T>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
