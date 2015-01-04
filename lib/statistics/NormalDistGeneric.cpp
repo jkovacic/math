@@ -364,7 +364,7 @@ T math::NormalDist::quant(
         return mu - math::SpecFun::erfcInv<T>(static_cast<T>(2) * P, TOL) * 
                     sigma * static_cast<T>(MATH_CONST_SQRT_2);
     }
-    catch ( math::SpecFunException& spex )
+    catch ( const math::SpecFunException& sfex )
     {
         /*
          * The validity of 'p' is checked beforehand.

@@ -481,7 +481,7 @@ T math::StudentDist::quant(
         // And finally add or subtract 'tt' to/from 'mu', depending on the initial 'p':
         x = ( P > static_cast<T>(1) / static_cast<T>(2) ? mu + tt : mu - tt );        
     }
-    catch ( math::SpecFunException& sfex )
+    catch ( const math::SpecFunException& sfex )
     {
         // This exception can only be thrown in an unlikely event
         // that the inverse incomplete beta function does not converge.
