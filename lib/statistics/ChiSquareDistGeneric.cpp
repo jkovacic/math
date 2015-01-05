@@ -272,7 +272,8 @@ T math::ChiSquareDist::quant(
         /*
          * The validity of 'p' is checked beforehand.
          * Although very unlikely, it is theoretically possible that
-         * the algorithm to evaluate erfcInv will not converge.
+         * the algorithm to evaluate incGammaLowerRegInv will 
+         * not converge.
          */
         throw math::StatisticsException(math::StatisticsException::OPERATION_FAILED);
     }
