@@ -54,6 +54,7 @@ struct StatisticsException : public IMathException
         UNSUPPORTED_QUANTILE_METHOD,    /// unsupported method to estimate the quantile
         INVALID_STDEV,                  /// negative or zero standard deviation
         INVALID_DF,                     /// negative or zero degrees of freedom
+        INVALID_ARG,                    /// invalid input argument
         OPERATION_FAILED,               /// unable to perform an operation
     };
 

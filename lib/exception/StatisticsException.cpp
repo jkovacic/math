@@ -76,6 +76,9 @@ void math::StatisticsException::what(std::ostream& str) const
         case INVALID_DF :
             str << "Zero or negative number of degrees of freedom.";
             break;
+        case INVALID_ARG :
+            str << "Invalid value of the input argument.";
+            break;
         case OPERATION_FAILED :
             str << "Unable to perform an operation.";
             break;
