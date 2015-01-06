@@ -19,7 +19,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Collection of basic unit tests for all mathematical classes
+ * A collection of basic smoke tests for all mathematical classes
+ * and functions.
  */
 
 
@@ -49,7 +50,7 @@ using namespace std;
 
 
 /*
- * Main function that starts several unit test modules
+ * Main function that starts several smoke test modules
  */
 int main(int argc, const char* argv[])
 {

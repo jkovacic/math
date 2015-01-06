@@ -19,8 +19,8 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * A test module to test functionality in statistics related classes 
- * and namespaces (SampleStat, NormalDist, StudentDist,
- * SampleQuantileGeneric)
+ * and namespaces (SampleStat, NormalDist, StudentDist, ChiSquareDist,
+ * FDist, SampleQuantileGeneric)
  */
 
 

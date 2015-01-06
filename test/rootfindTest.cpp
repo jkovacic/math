@@ -18,7 +18,8 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * A test module to test root finding functions (RootFind)
+ * A test module to test root finding functions
+ * (namespace RootFind)
  */
 
 
