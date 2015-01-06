@@ -55,6 +55,7 @@ struct StatisticsException : public IMathException
         INVALID_STDEV,                  /// negative or zero standard deviation
         INVALID_DF,                     /// negative or zero degrees of freedom
         INVALID_ARG,                    /// invalid input argument
+        UNDEFINED,                      /// operation is not defined for the given combination of arguments
         OPERATION_FAILED,               /// unable to perform an operation
     };
 

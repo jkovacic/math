@@ -36,6 +36,7 @@ limitations under the License.
 #include "NormalDistGeneric.h"
 #include "StudentDistGeneric.h"
 #include "ChiSquareDistGeneric.h"
+#include "FDistGeneric.h"
 #include "StatisticsException.h"
 
 using namespace std;
@@ -257,6 +258,50 @@ void statisticsTest()
         cout << "ChiSq(df=3.8):  q(p>0.25): " << ChiSquareDist::quant(0.25, 3.8) << " (expected: 1.776557)" << endl;
         cout << "ChiSq(df=0.8):  q(p<0.25): " << ChiSquareDist::quant(0.25, 0.8, false) << " (expected: 1.009612)" << endl;
         cout << "ChiSq(df=6):    q(p<0.25): " << ChiSquareDist::quant(0.25, 6.0, false) << " (expected: 7.840804)" << endl;
+        cout << endl;
+
+
+        /*
+         * R code to test F-distribution related functions:
+         *
+           df(2.1, df1=1, df2=3)
+           [1] 0.08776311
+           df(3.5, df1=4, df2=3)
+           [1] 0.05386789
+           pf(4, df1=0.7, df2=2.5)
+           [1] 0.8499816
+           pf(4, df1=2.5, df2=0.7)
+           [1] 0.5759108
+           pf(3, df1=0.8, df2=3.5, lower.tail=FALSE)
+           [1] 0.1645458
+           pf(3, df1=3.5, df2=1.5, lower.tail=FALSE)
+           [1] 0.3174175
+           pf(3, df1=0.5, df2=0.5) - pf(1, df1=0.5, df2=0.5)
+           [1] 0.1022432
+           pf(3, df1=4, df2=0.2) - pf(1, df1=4, df2=0.2)
+           [1] 0.07963281
+           qf(0.63, df1=0.7, df2=0.3)
+           [1] 45.799
+           qf(0.63, df1=5, df2=6)
+           [1] 1.313811
+           qf(0.72, df1=0.3, df2=0.7, lower.tail=FALSE)
+           [1] 0.003393905
+           qf(0.72, df1=6, df2=5, lower.tail=FALSE)
+           [1] 0.6081648
+         */
+
+        cout << "F(1,3): pdf at x=2.1: " << FDist::pdf(2.1, 1.0, 3.0) << " (expected: 0.08776311)" << endl;
+        cout << "F(4,3): pdf at x=3.5: " << FDist::pdf(3.5, 4.0, 3.0) << " (expected: 0.05386789)" << endl;
+        cout << "F(0.7, 2.5): P(X<4): " << FDist::prob(4.0, 0.7, 2.5) << " (expected: 0.8499816)" << endl;
+        cout << "F(2.5, 0.7): P(X<4): " << FDist::prob(4.0, 2.5, 0.7) << " (expected: 0.5759108)" << endl;
+        cout << "F(0.8, 3.5): P(X>3): " << FDist::prob(3.0, 0.8, 3.5, false) << " (expected: 0.1645458)" << endl;
+        cout << "F(3.5, 1.5): P(X>3): " << FDist::prob(3.0, 3.5, 1.5, false) << " (expected: 0.3174175)" << endl;
+        cout << "F(0.5, 0.5): P(1<X<3): " << FDist::probInt(1.0, 3.0, 0.5, 0.5) << " (expected: 0.1022432)" << endl;
+        cout << "F(4, 0.2):   P(1<X<3): " << FDist::probInt(1.0, 3.0, 4.0, 0.2) << " (expected: 0.07963281)" << endl;
+        cout << "F(0.7, 0.3): q(p>0.63): " << FDist::quant(0.63, 0.7, 0.3) << " (expected: 45.799)" << endl;
+        cout << "F(5, 6):     q(p>0.63): " << FDist::quant(0.63, 5.0, 6.0) << " (expected: 1.313811)" << endl;
+        cout << "F(0.3, 0.7): q(p<0.72): " << FDist::quant(0.72, 0.3, 0.7, false) << " (expected: 0.003393905)" << endl;
+        cout << "F(6, 5):     q(p<0.72): " << FDist::quant(0.72, 6.0, 5.0, false) << " (expected: 0.6081648)" << endl;
         cout << endl;
 
 
