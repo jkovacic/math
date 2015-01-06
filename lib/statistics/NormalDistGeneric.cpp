@@ -190,7 +190,7 @@ T math::NormalDist::pdf(
  * @param mu - normal distribution's mean value (default: 0)
  * @param sigma - normal distribution's standard deviation (default: 1)
  *
- * @return P(a<x<b) or P(b<x<a)
+ * @return P(a<X<b) or P(b<X<a)
  *
  * @throw StatisticsException if the standard deviation is invalid
  */
@@ -205,7 +205,7 @@ T math::NormalDist::probInt(
     /*
      *              b
      *              /
-     *   P(a<x<b) = | pdf(t) dt  =  cdf(b) - cdf(a)
+     *   P(a<X<b) = | pdf(t) dt  =  cdf(b) - cdf(a)
      *              /
      *              a
      */
@@ -230,7 +230,7 @@ T math::NormalDist::probInt(
  * @param sigma - normal distribution's standard deviation (default: 1)
  * @param lowerTail - if true, returns P(t<x), otherwise P(t>x) (default: true)
  *
- * @return P(t<x) if 'lowerTail' equals true, P(t>x) if 'lowerTail' equals false
+ * @return P(X<x) if 'lowerTail' equals true, P(X>x) if 'lowerTail' equals false
  *
  * @throw StatisticsException if the standard deviation is invalid
  */
@@ -249,7 +249,7 @@ T math::NormalDist::prob(
      *
      *                     x                   x
      *                     /              1    /
-     *   cdf(x) = P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
+     *   cdf(x) = P(X<x) = | pdf(t) dt = --- + | pdf(t) dt
      *                     /              2    /
      *                   -inf                 mu
      *
@@ -273,7 +273,7 @@ T math::NormalDist::prob(
      * where 'erf' is the so called error function, implemented
      * in the namespace math::SpecFun.
      *
-     * For the upper tail probability ( P(t>x) ) just return the complement
+     * For the upper tail probability ( P(X>x) ) just return the complement
      * of the lower tail probability: 1 - cdf(x)
      */
 
@@ -308,15 +308,15 @@ T math::NormalDist::prob(
 /**
  * Quantile function for the specified normal distribution.
  *
- * If 'lowerTail' equals true, it returns such 'x' that P(t<x) = p
- * If 'lowerTail' equals false, it returns such 'x' that P(t>x) = p
+ * If 'lowerTail' equals true, it returns such 'x' that P(X<x) = p
+ * If 'lowerTail' equals false, it returns such 'x' that P(X>x) = p
  *
  * @param p - probability (must be greater than 0 and less than 1)
  * @param mu - normal distribution's mean value (default: 0)
  * @param sigma - normal distribution's standard deviation (default: 1)
- * @param lowerTail - if true, returns q(t<x), otherwise q(t>x) (default: true)
+ * @param lowerTail - if true, returns q(X<x), otherwise q(X>x) (default: true)
  *
- * @return x: P(t<x) if 'lowerTail' equals true, x: P(t>x) if 'lowerTail' equals false
+ * @return x: P(X<x) if 'lowerTail' equals true, x: P(X>x) if 'lowerTail' equals false
  *
  * @throw StatisticsException if either 'sigma' or 'p' is invalid
  */

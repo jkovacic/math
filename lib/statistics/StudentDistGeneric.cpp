@@ -223,7 +223,7 @@ T math::StudentDist::pdf(
  * @param mu - Student's distribution's mean value (default: 0)
  * @param sigma - Student's distribution's standard deviation (default: 1)
  *
- * @return P(a<x<b) or P(b<x<a)
+ * @return P(a<X<b) or P(b<X<a)
  *
  * @throw StatisticsException if 'df' or 'sigma' is invalid
  */
@@ -239,7 +239,7 @@ T math::StudentDist::probInt(
     /*
      *              b
      *              /
-     *   P(a<x<b) = | pdf(t) dt
+     *   P(a<X<b) = | pdf(t) dt
      *              /
      *              a
      */
@@ -261,11 +261,11 @@ T math::StudentDist::probInt(
  *
  * @param x - value
  * @param df - degrees of freedom
- * @param lowerTail - if true, returns P(t<x), otherwise P(t>x) (default: true)
+ * @param lowerTail - if true, returns P(X<x), otherwise P(X>x) (default: true)
  * @param mu - Student's distribution's mean value (default: 0)
  * @param sigma - Student's distribution's standard deviation (default: 1)
  *
- * @return P(t<x) if 'lowerTail' equals true, P(t>x) if 'lowerTail' equals false
+ * @return P(X<x) if 'lowerTail' equals true, P(X>x) if 'lowerTail' equals false
  *
  * @throw StatisticsException if 'df' or 'sigma' is invalid
  */
@@ -285,7 +285,7 @@ T math::StudentDist::prob(
      *
      *                     x                   x
      *                     /              1    /
-     *   cdf(x) = P(t<x) = | pdf(t) dt = --- + | pdf(t) dt
+     *   cdf(x) = P(X<x) = | pdf(t) dt = --- + | pdf(t) dt
      *                     /              2    /
      *                   -inf                 mu
      *
@@ -315,7 +315,7 @@ T math::StudentDist::prob(
      * where It(a,b) is the incomplete beta function, implemented
      * in the namespace math::SpecFun.
      *
-     * For the upper tail probability ( P(t>x) ) just return the complement
+     * For the upper tail probability ( P(X>x) ) just return the complement
      * of the lower tail probability: 1 - cdf(x)
      */
     
@@ -383,16 +383,16 @@ T math::StudentDist::prob(
 /**
  * Quantile function for the specified Student's distribution.
  *
- * If 'lowerTail' equals true, it returns such 'x' that P(t<x) = p
- * If 'lowerTail' equals false, it returns such 'x' that P(t>x) = p
+ * If 'lowerTail' equals true, it returns such 'x' that P(X<x) = p
+ * If 'lowerTail' equals false, it returns such 'x' that P(X>x) = p
  *
  * @param p - probability (must be greater than 0 and less than 1)
  * @param df - degrees of freedom
- * @param lowerTail - if true, returns q(t<x), otherwise q(t>x) (default: true)
+ * @param lowerTail - if true, returns q(X<x), otherwise q(X>x) (default: true)
  * @param mu - Student's distribution's mean value (default: 0)
  * @param sigma - Student's distribution's standard deviation (default: 1)
  *
- * @return x: P(t<x) if 'lowerTail' equals true, x: P(t>x) if 'lowerTail' equals false
+ * @return x: P(X<x) if 'lowerTail' equals true, x: P(X>x) if 'lowerTail' equals false
  *
  * @throw StatisticsException if either 'p' or 'df' or 'sigma' is invalid
  */

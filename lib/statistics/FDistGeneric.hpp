@@ -78,7 +78,7 @@ namespace FDist
     T quant(
           const T& p,
           const T& d1,
-          const T&d2,
+          const T& d2,
           bool lowerTail = true
         ) throw (math::StatisticsException);
 

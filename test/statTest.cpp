@@ -170,9 +170,9 @@ void statisticsTest()
         cout << "N(2,3): z for x = 6.7:  " << NormalDist::getZ(6.7, 2.0, 3.0) << " (expected: 1.566667)" << endl;
         cout << "N(2,3): x for z = -1.3: " << NormalDist::getX(-1.3, 2.0, 3.0) << " (expected: -1.9)" << endl;
         cout << "N(2,3) at x=4.5: " << NormalDist::pdf(4.5, 2.0, 3.0) << " (expected: 0.09397063)" << endl;
-        cout << "N(2,3): P(x<1.72): " << NormalDist::prob(1.72, 2.0, 3.0) << " (expected: 0.4628194)" << endl;
-        cout << "N(2,3): P(x>2.48): " << NormalDist::prob(2.48, 2.0, 3.0, false) << " (expected: 0.4364405)" << endl;
-        cout << "N(2,3): P(1<x<3): " << NormalDist::probInt(3.0, 1.0, 2.0, 3.0) << " (expected: 0.2611173)" << endl;
+        cout << "N(2,3): P(X<1.72): " << NormalDist::prob(1.72, 2.0, 3.0) << " (expected: 0.4628194)" << endl;
+        cout << "N(2,3): P(X>2.48): " << NormalDist::prob(2.48, 2.0, 3.0, false) << " (expected: 0.4364405)" << endl;
+        cout << "N(2,3): P(1<X<3): " << NormalDist::probInt(3.0, 1.0, 2.0, 3.0) << " (expected: 0.2611173)" << endl;
         cout << "N(2,3): q(p>0.75): " << NormalDist::quant(0.75, 2.0, 3.0) << " (expected: 4.023469)" << endl;
         cout << "N(2,3): q(p<0.52): " << NormalDist::quant(0.52, 2.0, 3.0, false) << " (expected: 1.849539)" << endl;
         cout << endl;
@@ -209,9 +209,9 @@ void statisticsTest()
         cout << "T(n=10, mu=2, s=1.5): t for x=3:    " << StudentDist::getT(3.0, 10, 2.0, 1.5) << " (expected: 2.108185)" << endl;
         cout << "T(n=10, mu=2, s=1.5): x for t=-1.2: " << StudentDist::getX(-1.2, 10, 2.0, 1.5) << " (expected: 1.43079)" << endl;
         cout << "T(df=5):  pdf at x=2:      " << StudentDist::pdf(2.0, 5.0) << " (expected: 0.06509031)" << endl;
-        cout << "T(df=12): P(t<2):   " << StudentDist::prob(2.0, 12.0) << " (expected: 0.9656725)" << endl;
-        cout << "T(df=12): P(t>1.1): " << StudentDist::prob(1.1, 12.0, false) << " (expected: 0.1464549)" << endl;
-        cout << "T(df=12): P(-0.5<t<1): " << StudentDist::probInt(-0.5, 1.0, 12.0) << " (expected: 0.5184167)" << endl;
+        cout << "T(df=12): P(X<2):   " << StudentDist::prob(2.0, 12.0) << " (expected: 0.9656725)" << endl;
+        cout << "T(df=12): P(X>1.1): " << StudentDist::prob(1.1, 12.0, false) << " (expected: 0.1464549)" << endl;
+        cout << "T(df=12): P(-0.5<X<1): " << StudentDist::probInt(-0.5, 1.0, 12.0) << " (expected: 0.5184167)" << endl;
         cout << "T(df=12): q(p>0.75): " << StudentDist::quant(0.75, 12.0) << " (expected: 0.6954829)" << endl;
         cout << "T(df=12): q(p<0.52): " << StudentDist::quant(0.52, 12.0, false) << " (expected: -0.05121096)" << endl;
         cout << endl;
@@ -221,39 +221,50 @@ void statisticsTest()
          * R code to test chi-squared distribution related functions:
          *
            dchisq(1.2, df=2)
-           [1] 0.2744058
+           [1] 0.2744058 
+
            dchisq(3.1, df=7)
            [1] 0.0955139
+
            pchisq(2.7, df=1)
            [1] 0.8996518
+
            pchisq(1.8, df=4)
            [1] 0.2275176
+
            pchisq(3.4, df=0.3, lower.tail=FALSE)
            [1] 0.01365495
+
            pchisq(1.7, df=5, lower.tail=FALSE)
            [1] 0.8888998
+
            pchisq(3, df=1.3) - pchisq(2, df=1.3)
            [1] 0.0975555
+
            pchisq(3, df=4.2) - pchisq(2, df=4.2)
            [1] 0.1737052
+
            qchisq(0.25, df=0.75)
            [1] 0.03672361
+
            qchisq(0.25, df=3.8)
            [1] 1.776557
+
            qchisq(0.25, df=0.8, lower.tail=FALSE)
            [1] 1.009612
+
            qchisq(0.25, df=6, lower.tail=FALSE)
            [1] 7.840804
          */
 
         cout << "ChiSq(df=2) : pdf at x=1.2: " << ChiSquareDist::pdf(1.2, 2.0) << " (expected: 0.2744058)" << endl;
         cout << "ChiSq(df=7) : pdf at x=3.1: " << ChiSquareDist::pdf(3.1, 7.0) << " (expected: 0.0955139)" << endl;
-        cout << "ChiSq(df=1): P(t<2.7): " <<  ChiSquareDist::prob(2.7, 1.0) << " (expected: 0.8996518)" << endl;
-        cout << "ChiSq(df=4): P(t<1.8): " << ChiSquareDist::prob(1.8, 4.0) << " (expected: 0.2275176)" << endl;
-        cout << "ChiSq(df=0.3): P(t>3.4): " << ChiSquareDist::prob(3.4, 0.3, false) << " (expected: 0.01365495)" << endl;
-        cout << "ChiSq(df=5):   P(t>1.7): " << ChiSquareDist::prob(1.7, 5.0, false) << " (expected: 0.8888998)" << endl;
-        cout << "ChiSq(df=1.3): P(2<t<3): " << ChiSquareDist::probInt(2.0, 3.0, 1.3) << " (expected: 0.0975555)" << endl;
-        cout << "ChiSq(df=4.2): P(2<t<3): " << ChiSquareDist::probInt(3.0, 2.0, 4.2) << " (expected: 0.1737052)" << endl;
+        cout << "ChiSq(df=1): P(X<2.7): " <<  ChiSquareDist::prob(2.7, 1.0) << " (expected: 0.8996518)" << endl;
+        cout << "ChiSq(df=4): P(X<1.8): " << ChiSquareDist::prob(1.8, 4.0) << " (expected: 0.2275176)" << endl;
+        cout << "ChiSq(df=0.3): P(X>3.4): " << ChiSquareDist::prob(3.4, 0.3, false) << " (expected: 0.01365495)" << endl;
+        cout << "ChiSq(df=5):   P(X>1.7): " << ChiSquareDist::prob(1.7, 5.0, false) << " (expected: 0.8888998)" << endl;
+        cout << "ChiSq(df=1.3): P(2<X<3): " << ChiSquareDist::probInt(2.0, 3.0, 1.3) << " (expected: 0.0975555)" << endl;
+        cout << "ChiSq(df=4.2): P(2<X<3): " << ChiSquareDist::probInt(3.0, 2.0, 4.2) << " (expected: 0.1737052)" << endl;
         cout << "ChiSq(df=0.75): q(p>0.25): " << ChiSquareDist::quant(0.25, 0.75) << " (expected: 0.03672361)" << endl;
         cout << "ChiSq(df=3.8):  q(p>0.25): " << ChiSquareDist::quant(0.25, 3.8) << " (expected: 1.776557)" << endl;
         cout << "ChiSq(df=0.8):  q(p<0.25): " << ChiSquareDist::quant(0.25, 0.8, false) << " (expected: 1.009612)" << endl;
@@ -266,26 +277,37 @@ void statisticsTest()
          *
            df(2.1, df1=1, df2=3)
            [1] 0.08776311
+
            df(3.5, df1=4, df2=3)
            [1] 0.05386789
+
            pf(4, df1=0.7, df2=2.5)
            [1] 0.8499816
+
            pf(4, df1=2.5, df2=0.7)
            [1] 0.5759108
+
            pf(3, df1=0.8, df2=3.5, lower.tail=FALSE)
            [1] 0.1645458
+
            pf(3, df1=3.5, df2=1.5, lower.tail=FALSE)
            [1] 0.3174175
+
            pf(3, df1=0.5, df2=0.5) - pf(1, df1=0.5, df2=0.5)
            [1] 0.1022432
+
            pf(3, df1=4, df2=0.2) - pf(1, df1=4, df2=0.2)
            [1] 0.07963281
+
            qf(0.63, df1=0.7, df2=0.3)
            [1] 45.799
+
            qf(0.63, df1=5, df2=6)
            [1] 1.313811
+
            qf(0.72, df1=0.3, df2=0.7, lower.tail=FALSE)
            [1] 0.003393905
+
            qf(0.72, df1=6, df2=5, lower.tail=FALSE)
            [1] 0.6081648
          */

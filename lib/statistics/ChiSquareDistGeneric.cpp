@@ -120,7 +120,7 @@ T math::ChiSquareDist::pdf(
  * @param b - upper limit of the interval
  * @param df - degrees of freedom
  *
- * @return P(a<x<b) or P(b<x<a)
+ * @return P(a<X<b) or P(b<X<a)
  *
  * @throw StatisticsException if any argument is invalid
  */
@@ -134,7 +134,7 @@ T math::ChiSquareDist::probInt(
     /*
      *              b
      *              /
-     *   P(a<x<b) = | pdf(t) dt  =  cdf(b) - cdf(a)
+     *   P(a<X<b) = | pdf(t) dt  =  cdf(b) - cdf(a)
      *              /
      *              a
      */
@@ -154,10 +154,10 @@ T math::ChiSquareDist::probInt(
  * than the given value 'x' for the specified chi-squared distribution.
  *
  * @param x - value
- * @param df - degees of freedom
- * @param lowerTail - if true, returns P(t<x), otherwise P(t>x) (default: true)
+ * @param df - degrees of freedom
+ * @param lowerTail - if true, returns P(X<x), otherwise P(X>x) (default: true)
  *
- * @return P(t<x) if 'lowerTail' equals true, P(t>x) if 'lowerTail' equals false
+ * @return P(X<x) if 'lowerTail' equals true, P(X>x) if 'lowerTail' equals false
  *
  * @throw StatisticsException if any argument is invalid
  */
@@ -180,7 +180,7 @@ T math::ChiSquareDist::prob(
      * where P(a,x) denotes the regularized lowered incomplete gamma function,
      * implemented in the namespace math::SpecFun.
      *
-     * For the upper tail probability ( P(t>x) ) just return the complement
+     * For the upper tail probability ( P(X>x) ) just return the complement
      * of the lower tail probability: 1 - cdf(x)
      */
 
@@ -211,14 +211,14 @@ T math::ChiSquareDist::prob(
  * Quantile function for the chi-squared distribution with the specified
  * number of degrees of freedom.
  *
- * If 'lowerTail' equals true, it returns such 'x' that P(t<x) = p
- * If 'lowerTail' equals false, it returns such 'x' that P(t>x) = p
+ * If 'lowerTail' equals true, it returns such 'x' that P(X<x) = p
+ * If 'lowerTail' equals false, it returns such 'x' that P(X>x) = p
  *
  * @param p - probability (must be greater than 0 and less than 1)
  * @param df - degrees of freedom
- * @param lowerTail - if true, returns q(t<x), otherwise q(t>x) (default: true)
+ * @param lowerTail - if true, returns q(X<x), otherwise q(X>x) (default: true)
  *
- * @return x: P(t<x) if 'lowerTail' equals true, x: P(t>x) if 'lowerTail' equals false
+ * @return x: P(X<x) if 'lowerTail' equals true, x: P(X>x) if 'lowerTail' equals false
  *
  * @throw StatisticsException if any argument is invalid
  */

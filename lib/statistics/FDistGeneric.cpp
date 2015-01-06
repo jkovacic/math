@@ -79,8 +79,8 @@ void __checkParams(const T& x, const T& d1, const T& d2) throw (math::Statistics
  * function (pdf) for the given 'x'.
  *
  * @param x - value to be calculated its probability distribution function
- * @param d1 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
- * @param d2 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
+ * @param d1 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
+ * @param d2 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
  *
  * @return pdf(x, d1, d2)
  *
@@ -118,7 +118,7 @@ T math::FDist::pdf(
         if ( true == math::NumericUtil::isZero<T>(x) )
         {
             /*
-             * x ~= 0:
+             * x ~= 0 :
              *
              * This situation requires special handling to prevent possible
              * division by zero:
@@ -172,8 +172,8 @@ T math::FDist::pdf(
  *
  * @param a - lower limit of the interval
  * @param b - upper limit of the interval
- * @param d1 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
- * @param d2 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
+ * @param d1 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
+ * @param d2 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
  *
  * @return P(a<X<b) or P(b<X<a)
  *
@@ -190,7 +190,7 @@ T math::FDist::probInt(
     /*
      *              b
      *              /
-     *   P(a<x<b) = | pdf(t) dt  =  cdf(b) - cdf(a)
+     *   P(a<X<b) = | pdf(t) dt  =  cdf(b) - cdf(a)
      *              /
      *              a
      */
@@ -210,9 +210,9 @@ T math::FDist::probInt(
  * than the given value 'x' for the specified F-distribution.
  *
  * @param x - value
- * @param d1 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
- * @param d2 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
- * @param lowerTail - if true, returns P(t<x), otherwise P(t>x) (default: true)
+ * @param d1 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
+ * @param d2 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
+ * @param lowerTail - if true, returns P(X<x), otherwise P(X>x) (default: true)
  *
  * @return P(X<x) if 'lowerTail' equals true, P(X>x) if 'lowerTail' equals false
  *
@@ -243,7 +243,7 @@ T math::FDist::prob(
      *   F = -----------
      *        d1*x + d2
      *
-     * For the upper tail probability ( P(t>x) ) just return the complement
+     * For the upper tail probability ( P(X>x) ) just return the complement
      * of the lower tail probability: 1 - cdf(x)
      */
 
@@ -280,8 +280,8 @@ T math::FDist::prob(
  * If 'lowerTail' equals false, it returns such 'x' that P(X>x) = p
  *
  * @param p - probability (must be greater than 0 and less than 1)
- * @param d1 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
- * @param d2 - F-distribution's paramaeter 1 (degrees of freedom), must be greater than 0
+ * @param d1 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
+ * @param d2 - F-distribution's parameter 1 (degrees of freedom), must be greater than 0
  * @param lowerTail - if true, returns q(X<x), otherwise q(X>x) (default: true)
  *
  * @return x: P(X<x) if 'lowerTail' equals true, x: P(X>x) if 'lowerTail' equals false
