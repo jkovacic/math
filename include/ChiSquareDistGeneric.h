@@ -30,6 +30,6 @@ limitations under the License.
 #ifndef _MATH_CHISQUARETDISTGENERIC_H_
 #define _MATH_CHISQUARETDISTGENERIC_H_
 
-#include "statistics/ChiSquareDistGeneric.hpp"
+#include "statistics/dist/ChiSquareDistGeneric.hpp"
 
 #endif  /* _MATH_CHISQUARETDISTGENERIC_H_ */

@@ -31,6 +31,6 @@ limitations under the License.
 #ifndef _MATH_NORMALDISTGENERIC_H_
 #define _MATH_NORMALDISTGENERIC_H_
 
-#include "statistics/NormalDistGeneric.hpp"
+#include "statistics/dist/NormalDistGeneric.hpp"
 
 #endif  /* _MATH_NORMALDISTGENERIC_H_ */

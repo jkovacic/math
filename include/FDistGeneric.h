@@ -30,6 +30,6 @@ limitations under the License.
 #ifndef _MATH_FDISTGENERIC_H_
 #define _MATH_FDISTGENERIC_H_
 
-#include "statistics/FDistGeneric.hpp"
+#include "statistics/dist/FDistGeneric.hpp"
 
 #endif  /* _MATH_FDISTGENERIC_H_ */

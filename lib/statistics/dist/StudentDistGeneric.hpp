@@ -116,6 +116,6 @@ namespace StudentDist
 
 
 // DEFINITION
-#include "statistics/StudentDistGeneric.cpp"
+#include "statistics/dist/StudentDistGeneric.cpp"
 
 #endif  // _MATH_STUDENTDISTGENERIC_HPP_

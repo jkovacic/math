@@ -105,6 +105,6 @@ namespace NormalDist
 }  // namespace math
 
 // DEFINITION
-#include "statistics/NormalDistGeneric.cpp"
+#include "statistics/dist/NormalDistGeneric.cpp"
 
 #endif  // _MATH_NORMALDISTGENERIC_HPP_

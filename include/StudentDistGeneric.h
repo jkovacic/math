@@ -31,6 +31,6 @@ limitations under the License.
 #ifndef _MATH_STUDENTDISTGENERIC_H_
 #define _MATH_STUDENTDISTGENERIC_H_
 
-#include "statistics/StudentDistGeneric.hpp"
+#include "statistics/dist/StudentDistGeneric.hpp"
 
 #endif  /* _MATH_STUDENTDISTGENERIC_H_ */

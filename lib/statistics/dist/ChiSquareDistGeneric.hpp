@@ -19,17 +19,17 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{FDistGeneric.h}
+ * @headername{ChiSquareDistGeneric.h}
  *
- * Declaration of functions within the namespace FDist
- * that perform various F-distribution (a.k.a.Fisher - Snedecor distribution)
- * related operations, such as calculation of upper and lower tail
+ * Declaration of functions within the namespace ChiSquareDist
+ * that perform various chi-squared distribution related
+ * operations, such as calculation of upper and lower tail
  * probabilities and quantiles, probability distribution function, etc.
  */
 
 
-#ifndef _MATH_FDISTGENERIC_HPP_
-#define _MATH_FDISTGENERIC_HPP_
+#ifndef _MATH_CHISQUAREDISTGENERIC_HPP_
+#define _MATH_CHISQUAREDISTGENERIC_HPP_
 
 
 #include "exception/StatisticsException.hpp"
@@ -40,19 +40,17 @@ namespace math
 
 /**
  * @brief A namespace with functions that perform
- * various F-distribution (a.k.a.Fisher-Snedecor distribution)
- * related operations, such as calculation of upper and lower
- * tail probabilities and quantiles, probability distribution
- * function, etc.
+ * various chi-squared distribution related operations, such as
+ * calculation of upper and lower tail probabilities and
+ * quantiles, probability distribution function, etc.
  */
-namespace FDist
+namespace ChiSquareDist
 {
 
     template <class T>
     T pdf(
           const T& x,
-          const T& d1,
-          const T& d2
+          const T& df
         ) throw (StatisticsException);
 
 
@@ -60,16 +58,14 @@ namespace FDist
     T probInt(
           const T& a,
           const T& b,
-          const T& d1,
-          const T& d2
+          const T& df
         ) throw (StatisticsException);
 
 
     template <class T>
     T prob(
           const T& x,
-          const T& d1,
-          const T& d2,
+          const T& df,
           bool lowerTail = true
        ) throw (StatisticsException);
 
@@ -77,17 +73,16 @@ namespace FDist
     template <class T>
     T quant(
           const T& p,
-          const T& d1,
-          const T& d2,
+          const T& df,
           bool lowerTail = true
         ) throw (math::StatisticsException);
 
-}  // namespace FDist
+}  // namespace ChiSquareDist
 
 }  // namespace math
 
 
 // DEFINITION
-#include "statistics/FDistGeneric.cpp"
+#include "statistics/dist/ChiSquareDistGeneric.cpp"
 
-#endif  // _MATH_FDISTGENERIC_HPP_
+#endif  // _MATH_CHISQUAREDISTGENERIC_HPP_
