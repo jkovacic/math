@@ -20,21 +20,18 @@ limitations under the License.
  *
  * Implementation of the class QuaternionGeneric.
  *
- * Please note that quaternions make sense if T represents a real-number type
- * (e.g. float or double), in case of any other type, results of many methods
- * do not make much sense, some methods even throw an exception immediately.
- * If you wish to template it with any "officially" unsupported type, you should
- * specialize those methods (i.e. introduce your own implementation of sqrt for the
- * desired type).
- *
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
+ * Please note that quaternions make sense if F represents a real-number type
+ * (e.g. float, double or long double), in case of any other type, results of
+ * many methods do not make much sense, some methods even throw an exception
+ * immediately. If you wish to template it with any "officially" unsupported
+ * type, you should specialize those methods (i.e. introduce your own
+ * implementation of sqrt for the desired type).
  */
 
 
 #include <cmath>
 
-// no #include "QuaternionGeneric.hpp" !
+// no #include "QuaternionGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
 
