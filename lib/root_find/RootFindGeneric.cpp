@@ -70,13 +70,13 @@ namespace __private
  * @see newton
  * @see quasiNewton
  */
-template <class T>
-T __newtonCommon(
-           const math::IFunctionGeneric<T>& f,
-           const math::IFunctionGeneric<T>& diff,
-           const T& x0,
-           const T& epsy,
-           const T& h,
+template <typename F>
+F __newtonCommon(
+           const math::IFunctionGeneric<F>& f,
+           const math::IFunctionGeneric<F>& diff,
+           const F& x0,
+           const F& epsy,
+           const F& h,
            size_t Nmax,
            bool diffFunc
          ) throw(math::RootFindException)
@@ -94,27 +94,27 @@ T __newtonCommon(
 
     try
     {
-        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
+        const F EPSY = std::max(epsy, math::NumericUtil::getEPS<F>() );
 
         // sanity check of the final epsilon:
-        if ( EPSY <= static_cast<T>(0) )
+        if ( EPSY <= static_cast<F>(0) )
         {
             throw math::RootFindException(math::RootFindException::INVALID_ARGS);
         }
 
-        T x = x0;
-        T fx = f.func(x);
+        F x = x0;
+        F fx = f.func(x);
 
         // start of the actual Newton - Raphson method
         for ( size_t iter = Nmax;
-              false == math::NumericUtil::isZero<T>(fx, EPSY) && iter > 0;
+              false == math::NumericUtil::isZero<F>(fx, EPSY) && iter > 0;
               --iter )
         {
-            const T dx = ( true == diffFunc ?
+            const F dx = ( true == diffFunc ?
                       diff.func(x) :
-                      math::Diff::diff<T>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
+                      math::Diff::diff<F>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
 
-            if ( true == math::NumericUtil::isZero<T>(dx) )
+            if ( true == math::NumericUtil::isZero<F>(dx) )
             {
                 // cannot continue as division by zero would occur in the next step
                 throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
@@ -126,7 +126,7 @@ T __newtonCommon(
         }  // for iter
 
         // Has the algorithm converged to any root?
-        if ( false == math::NumericUtil::isZero<T>(fx, EPSY) )
+        if ( false == math::NumericUtil::isZero<F>(fx, EPSY) )
         {
             // apparently not
             throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
@@ -147,7 +147,7 @@ T __newtonCommon(
 
 
 /*
- * Common implementation of the Hayley's algorithm which is actually
+ * Common implementation of the Halley's algorithm which is actually
  * extended Newton's method.
  *
  * This is a private method, called by public methods.
@@ -178,14 +178,14 @@ T __newtonCommon(
  * @see halleyMod
  * @see quasiHalleyMod
  */
-template <class T>
-T __halleyCommon(
-        const math::IFunctionGeneric<T>& f,
-        const math::IFunctionGeneric<T>& d,
-        const math::IFunctionGeneric<T>& d2,
-        const T& x0,
-        const T& epsy,
-        const T& h,
+template <typename F>
+F __halleyCommon(
+        const math::IFunctionGeneric<F>& f,
+        const math::IFunctionGeneric<F>& d,
+        const math::IFunctionGeneric<F>& d2,
+        const F& x0,
+        const F& epsy,
+        const F& h,
         size_t Nmax,
         bool diffFunc,
         bool mod
@@ -204,34 +204,34 @@ T __halleyCommon(
 
     try
     {
-        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
+        const F EPSY = std::max(epsy, math::NumericUtil::getEPS<F>() );
 
         // sanity check of the final epsilon:
-        if ( EPSY <= static_cast<T>(0) )
+        if ( EPSY <= static_cast<F>(0) )
         {
             throw math::RootFindException(math::RootFindException::INVALID_ARGS);
         }
 
         // Evaluate 'f' at the initial point
-        T x = x0;
-        T fx = f.func(x);
+        F x = x0;
+        F fx = f.func(x);
 
         // start of the actual Halley's method
         for ( size_t iter = Nmax;
-              false == math::NumericUtil::isZero<T>(fx, EPSY) && iter > 0;
+              false == math::NumericUtil::isZero<F>(fx, EPSY) && iter > 0;
               --iter )
         {
             // Evaluate both derivatives at 'x':
-            const T dx = ( true == diffFunc ?
+            const F dx = ( true == diffFunc ?
                      d.func(x) :
-                     math::Diff::diff<T>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
+                     math::Diff::diff<F>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
 
-            const T d2x = ( true== diffFunc ?
+            const F d2x = ( true== diffFunc ?
                      d2.func(x) :
-                     math::Diff::diff2<T>(f, x, h) );
+                     math::Diff::diff2<F>(f, x, h) );
 
             // check the first derivative to prevent possible division by zero
-            if ( true == math::NumericUtil::isZero<T>(dx) )
+            if ( true == math::NumericUtil::isZero<F>(dx) )
             {
                 // cannot continue as division by zero would occur in the next step
                 throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
@@ -248,10 +248,10 @@ T __halleyCommon(
              */
 
             // Obtain the Halley's term:
-            T term = static_cast<T>(1) - fx * d2x  / (2 * d2x * d2x );
+            F term = static_cast<F>(1) - fx * d2x  / (static_cast<F>(2) * d2x * d2x );
 
             // Theoretically the term can also equal 0...
-            if ( false==mod && true==math::NumericUtil::isZero<T>(term) )
+            if ( false==mod && true==math::NumericUtil::isZero<F>(term) )
             {
                 // cannot continue as division by zero would occur in the next step
                 throw math::RootFindException(math::RootFindException::ZERO_SLOPE);
@@ -260,8 +260,8 @@ T __halleyCommon(
             // Adjust the term to min. 0.8 if required
             if ( true == mod )
             {
-                term = std::max( static_cast<T>(4) / static_cast<T>(5),
-                                 std::min(static_cast<T>(6) / static_cast<T>(5), term) );
+                term = std::max( static_cast<F>(4) / static_cast<F>(5),
+                                 std::min(static_cast<F>(6) / static_cast<F>(5), term) );
             }
 
             // Finally update x
@@ -270,7 +270,7 @@ T __halleyCommon(
         } // for iter
 
         // Has the algorithm converged to any root?
-        if ( false == math::NumericUtil::isZero<T>(fx, EPSY) )
+        if ( false == math::NumericUtil::isZero<F>(fx, EPSY) )
         {
             // apparently not
             throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
@@ -319,13 +319,13 @@ T __halleyCommon(
  *
  * @throw RootFindException if the root could not be found
  */
-template <class T>
-T math::RootFind::bisection(
-           const math::IFunctionGeneric<T>& f,
-           const T& from,
-           const T& to,
-           const T& epsx,
-           const T& epsy
+template <typename F>
+F math::RootFind::bisection(
+           const math::IFunctionGeneric<F>& f,
+           const F& from,
+           const F& to,
+           const F& epsx,
+           const F& epsy
          ) throw(math::RootFindException)
 {
     /*
@@ -335,35 +335,35 @@ T math::RootFind::bisection(
 
     try
     {
-        const T EPSX = std::max(epsx, math::NumericUtil::getEPS<T>() );
-        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
+        const F EPSX = std::max(epsx, math::NumericUtil::getEPS<F>() );
+        const F EPSY = std::max(epsy, math::NumericUtil::getEPS<F>() );
 
         // sanity check of final epsilons:
-        if ( EPSX <= static_cast<T>(0) ||
-             EPSY <= static_cast<T>(0) )
+        if ( EPSX <= static_cast<F>(0) ||
+             EPSY <= static_cast<F>(0) )
         {
             throw math::RootFindException(math::RootFindException::INVALID_ARGS);
         }
 
-        T a, fa;
-        T b, fb;
-        T c, fc;
+        F a, fa;
+        F b, fb;
+        F c, fc;
         short int sa, sb, sc;
 
         a = std::min(from, to);
         b = std::max(from, to);
         fa = f.func(a);
         fb = f.func(b);
-        sa = math::NumericUtil::sign<T>(fa);
-        sb = math::NumericUtil::sign<T>(fb);
+        sa = math::NumericUtil::sign<F>(fa);
+        sb = math::NumericUtil::sign<F>(fb);
 
         // Maybe a boundary is already a root?
-        if ( true == math::NumericUtil::isZero<T>(fa, EPSY) )
+        if ( true == math::NumericUtil::isZero<F>(fa, EPSY) )
         {
             return a;
         }
 
-        if ( true == math::NumericUtil::isZero<T>(fb, EPSY) )
+        if ( true == math::NumericUtil::isZero<F>(fb, EPSY) )
         {
             return b;
         }
@@ -376,14 +376,14 @@ T math::RootFind::bisection(
 
         // Start of the actual bisection method.
         // Proceed until the interval narrows down to EPSX.
-        while ( false == math::NumericUtil::isZero<T>(b-a, EPSX) )
+        while ( false == math::NumericUtil::isZero<F>(b-a, EPSX) )
         {
-            c = (a+b) / static_cast<T>(2);
+            c = (a+b) / static_cast<F>(2);
             fc = f.func(c);
-            sc = math::NumericUtil::sign<T>(fc);
+            sc = math::NumericUtil::sign<F>(fc);
 
             // Maybe c is a root?
-            if ( true == math::NumericUtil::isZero<T>(c, EPSY) )
+            if ( true == math::NumericUtil::isZero<F>(c, EPSY) )
             {
                 // if it is, just exit the loop
                 break;  // out of while (!isZero(b-a))
@@ -446,13 +446,13 @@ T math::RootFind::bisection(
  *
  * @throw RootFindException if the root could not be found
  */
-template <class T>
-T math::RootFind::regulaFalsi(
-           const math::IFunctionGeneric<T>& f,
-           const T& from,
-           const T& to,
-           const T& epsx,
-           const T& epsy
+template <typename F>
+F math::RootFind::regulaFalsi(
+           const math::IFunctionGeneric<F>& f,
+           const F& from,
+           const F& to,
+           const F& epsx,
+           const F& epsy
          ) throw(math::RootFindException)
 {
     /*
@@ -462,35 +462,35 @@ T math::RootFind::regulaFalsi(
 
     try
     {
-        const T EPSX = std::max(epsx, math::NumericUtil::getEPS<T>() );
-        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
+        const F EPSX = std::max(epsx, math::NumericUtil::getEPS<F>() );
+        const F EPSY = std::max(epsy, math::NumericUtil::getEPS<F>() );
 
         // sanity check of final epsilons:
-        if ( EPSX <= static_cast<T>(0) ||
-             EPSY <= static_cast<T>(0) )
+        if ( EPSX <= static_cast<F>(0) ||
+             EPSY <= static_cast<F>(0) )
         {
             throw math::RootFindException(math::RootFindException::INVALID_ARGS);
         }
 
-        T a, fa;
-        T b, fb;
-        T c, fc;
+        F a, fa;
+        F b, fb;
+        F c, fc;
         short int sa, sb, sc;
 
         a = std::min(from, to);
         b = std::max(from, to);
         fa = f.func(a);
         fb = f.func(b);
-        sa = math::NumericUtil::sign<T>(fa);
-        sb = math::NumericUtil::sign<T>(fb);
+        sa = math::NumericUtil::sign<F>(fa);
+        sb = math::NumericUtil::sign<F>(fb);
 
         // Maybe a boundary is already a root?
-        if ( true == math::NumericUtil::isZero<T>(fa, EPSY) )
+        if ( true == math::NumericUtil::isZero<F>(fa, EPSY) )
         {
             return a;
         }
 
-        if ( true == math::NumericUtil::isZero<T>(fb, EPSY) )
+        if ( true == math::NumericUtil::isZero<F>(fb, EPSY) )
         {
              return b;
         }
@@ -503,14 +503,14 @@ T math::RootFind::regulaFalsi(
 
         // Start of the actual regula falsi method.
         // Proceed until the interval narrows down to EPSX.
-        while ( false == math::NumericUtil::isZero<T>(b-a, EPSX) )
+        while ( false == math::NumericUtil::isZero<F>(b-a, EPSX) )
         {
             c = a - fa * (b-a) / (fb-fa);
             fc = f.func(c);
-            sc = math::NumericUtil::sign<T>(fc);
+            sc = math::NumericUtil::sign<F>(fc);
 
             // Maybe c is a root?
-            if ( true == math::NumericUtil::isZero<T>(c, EPSY) )
+            if ( true == math::NumericUtil::isZero<F>(c, EPSY) )
             {
                 // if it is, just exit the loop
                 break;  // out of while (!isZero(b-a))
@@ -570,12 +570,12 @@ T math::RootFind::regulaFalsi(
  *
  * @throw RootFindException if the root could not be found
  */
-template <class T>
-T math::RootFind::secant(
-           const math::IFunctionGeneric<T>& f,
-           const T& r0,
-           const T& r1,
-           const T& epsy,
+template <typename F>
+F math::RootFind::secant(
+           const math::IFunctionGeneric<F>& f,
+           const F& r0,
+           const F& r1,
+           const F& epsy,
            size_t Nmax
          ) throw(math::RootFindException)
 {
@@ -592,38 +592,38 @@ T math::RootFind::secant(
 
     try
     {
-        const T EPSY = std::max(epsy, math::NumericUtil::getEPS<T>() );
+        const F EPSY = std::max(epsy, math::NumericUtil::getEPS<F>() );
 
         // sanity check of the final epsilon:
-        if ( EPSY <= static_cast<T>(0) )
+        if ( EPSY <= static_cast<F>(0) )
         {
             throw math::RootFindException(math::RootFindException::INVALID_ARGS);
         }
 
-        T xo = r0;
-        T xn = r1;
-        T fo = f.func(xo);
-        T fn = f.func(xn);
+        F xo = r0;
+        F xn = r1;
+        F fo = f.func(xo);
+        F fn = f.func(xn);
 
         // Maybe xo is already a root?
-        if ( true == math::NumericUtil::isZero<T>(fo, EPSY) )
+        if ( true == math::NumericUtil::isZero<F>(fo, EPSY) )
         {
             return xo;
         }
 
         // Start of the actual secant method
         for ( size_t iter = Nmax;
-              false==math::NumericUtil::isZero<T>(fn, EPSY) && iter > 0;
+              false==math::NumericUtil::isZero<F>(fn, EPSY) && iter > 0;
               --iter )
         {
-            const T df = fo - fn;
-            if ( true == math::NumericUtil::isZero<T>(df) )
+            const F df = fo - fn;
+            if ( true == math::NumericUtil::isZero<F>(df) )
             {
                 throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
             }
 
             // Obtain new 'xn' (and 'fn') and update 'xo' (and 'fo')
-            const T c = xo - fo * (xo-xn) / df;
+            const F c = xo - fo * (xo-xn) / df;
             xo = xn;
             fo = fn;
             xn = c;
@@ -631,7 +631,7 @@ T math::RootFind::secant(
         }  // for iter
 
         // Finally check whether the algorithm has converged to any root
-        if ( false == math::NumericUtil::isZero<T>(fn, EPSY) )
+        if ( false == math::NumericUtil::isZero<F>(fn, EPSY) )
         {
             // apparently not
             throw math::RootFindException(math::RootFindException::NO_CONVERGENCE);
@@ -674,12 +674,12 @@ T math::RootFind::secant(
  *
  * @see quasiNewton
  */
-template <class T>
-T math::RootFind::newton(
-           const math::IFunctionGeneric<T>& f,
-           const math::IFunctionGeneric<T>& diff,
-           const T& x0,
-           const T& epsy,
+template <typename F>
+F math::RootFind::newton(
+           const math::IFunctionGeneric<F>& f,
+           const math::IFunctionGeneric<F>& diff,
+           const F& x0,
+           const F& epsy,
            size_t Nmax
          ) throw(math::RootFindException)
 {
@@ -689,8 +689,8 @@ T math::RootFind::newton(
      */
 
     // The algorithm is implemented in __newtonCommon:
-    return math::RootFind::__private::__newtonCommon<T>(
-            f, diff, x0, epsy, static_cast<T>(0), Nmax, true );
+    return math::RootFind::__private::__newtonCommon<F>(
+            f, diff, x0, epsy, static_cast<F>(0), Nmax, true );
 }
 
 
@@ -723,12 +723,12 @@ T math::RootFind::newton(
  *
  * @see newton
  */
-template <class T>
-T math::RootFind::quasiNewton(
-           const math::IFunctionGeneric<T>& f,
-           const T& x0,
-           const T& epsy,
-           const T& h,
+template <typename F>
+F math::RootFind::quasiNewton(
+           const math::IFunctionGeneric<F>& f,
+           const F& x0,
+           const F& epsy,
+           const F& h,
            size_t Nmax
          ) throw(math::RootFindException)
 {
@@ -738,7 +738,7 @@ T math::RootFind::quasiNewton(
      */
 
     // The algorithm is implemented in __newtonCommon:
-    return math::RootFind::__private::__newtonCommon<T>(
+    return math::RootFind::__private::__newtonCommon<F>(
             f, f, x0, epsy, h, Nmax, false );
 }
 
@@ -773,13 +773,13 @@ T math::RootFind::quasiNewton(
  * @see halleyMod
  * @see quasiHalleyMod
  */
-template <class T>
-T math::RootFind::halley(
-       const math::IFunctionGeneric<T>& f,
-       const math::IFunctionGeneric<T>& diff,
-       const math::IFunctionGeneric<T>& diff2,
-       const T& x0,
-       const T& epsy,
+template <typename F>
+F math::RootFind::halley(
+       const math::IFunctionGeneric<F>& f,
+       const math::IFunctionGeneric<F>& diff,
+       const math::IFunctionGeneric<F>& diff2,
+       const F& x0,
+       const F& epsy,
        size_t Nmax
      ) throw (math::RootFindException)
 {
@@ -789,8 +789,8 @@ T math::RootFind::halley(
      */
 
     // The algorithm is implemented in __halleyCommon:
-    return math::RootFind::__private::__halleyCommon<T>(
-        f, diff, diff2, x0, epsy, static_cast<T>(0), Nmax, true, false);
+    return math::RootFind::__private::__halleyCommon<F>(
+        f, diff, diff2, x0, epsy, static_cast<F>(0), Nmax, true, false);
 }
 
 
@@ -823,12 +823,12 @@ T math::RootFind::halley(
  * @see halleyMod
  * @see quasiHalleyMod
  */
-template <class T>
-T math::RootFind::quasiHalley(
-       const math::IFunctionGeneric<T>& f,
-       const T& x0,
-       const T& epsy,
-       const T& h,
+template <typename F>
+F math::RootFind::quasiHalley(
+       const math::IFunctionGeneric<F>& f,
+       const F& x0,
+       const F& epsy,
+       const F& h,
        size_t Nmax
      ) throw (math::RootFindException)
 {
@@ -838,7 +838,7 @@ T math::RootFind::quasiHalley(
      */
 
     // The algorithm is implemented in __halleyCommon:
-	return math::RootFind::__private::__halleyCommon<T>(
+	return math::RootFind::__private::__halleyCommon<F>(
         f, f, f, x0, epsy, h, Nmax, false, false);
 }
 
@@ -874,13 +874,13 @@ T math::RootFind::quasiHalley(
  * @see quasiHalley
  * @see quasiHalleyMod
  */
-template <class T>
-T math::RootFind::halleyMod(
-       const math::IFunctionGeneric<T>& f,
-       const math::IFunctionGeneric<T>& diff,
-       const math::IFunctionGeneric<T>& diff2,
-       const T& x0,
-       const T& epsy,
+template <typename F>
+F math::RootFind::halleyMod(
+       const math::IFunctionGeneric<F>& f,
+       const math::IFunctionGeneric<F>& diff,
+       const math::IFunctionGeneric<F>& diff2,
+       const F& x0,
+       const F& epsy,
        size_t Nmax
      ) throw (math::RootFindException)
 {
@@ -890,8 +890,8 @@ T math::RootFind::halleyMod(
      */
 
     // The algorithm is implemented in __halleyCommon:
-	return math::RootFind::__private::__halleyCommon<T>(
-        f, diff, diff2, x0, epsy, static_cast<T>(0), Nmax, true, true);
+	return math::RootFind::__private::__halleyCommon<F>(
+        f, diff, diff2, x0, epsy, static_cast<F>(0), Nmax, true, true);
 }
 
 
@@ -925,12 +925,12 @@ T math::RootFind::halleyMod(
  * @see halleyMod
  * @see quasiHalleyMod
  */
-template <class T>
-T math::RootFind::quasiHalleyMod(
-       const math::IFunctionGeneric<T>& f,
-       const T& x0,
-       const T& epsy,
-       const T& h,
+template <typename F>
+F math::RootFind::quasiHalleyMod(
+       const math::IFunctionGeneric<F>& f,
+       const F& x0,
+       const F& epsy,
+       const F& h,
        size_t Nmax
      ) throw (math::RootFindException)
 {
@@ -940,6 +940,6 @@ T math::RootFind::quasiHalleyMod(
      */
 
     // The algorithm is implemented in __halleyCommon:
-    return math::RootFind::__private::__halleyCommon<T>(
+    return math::RootFind::__private::__halleyCommon<F>(
         f, f, f, x0, epsy, h, Nmax, false, true);
 }
