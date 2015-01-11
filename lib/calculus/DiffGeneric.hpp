@@ -66,20 +66,20 @@ struct EDiffMethod
 namespace Diff
 {
 
-    template <class T>
-    T diff(
-               const IFunctionGeneric<T>& f,
-               const T& x,
-               const T& h = static_cast<T>(DIFF_STEP_NUM) / static_cast<T>(DIFF_STEP_DEN),
+    template <typename F>
+    F diff(
+               const IFunctionGeneric<F>& f,
+               const F& x,
+               const F& h = static_cast<F>(DIFF_STEP_NUM) / static_cast<F>(DIFF_STEP_DEN),
                EDiffMethod::method method = DIFF_DEFAULT_METHOD
              ) throw (CalculusException);
 
 
-    template <class T>
-    T diff2(
-               const IFunctionGeneric<T>& f,
-               const T& x,
-               const T& h = static_cast<T>(DIFF_STEP_NUM) / static_cast<T>(DIFF_STEP_DEN)
+    template <typename F>
+    F diff2(
+               const IFunctionGeneric<F>& f,
+               const F& x,
+               const F& h = static_cast<F>(DIFF_STEP_NUM) / static_cast<F>(DIFF_STEP_DEN)
              ) throw (CalculusException);
 
 

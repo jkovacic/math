@@ -51,11 +51,11 @@ namespace __private
  *
  * @throw FunctionException if the function is not defined near 'x'
  */
-template <class T>
-T __forwardDiff(
-        const math::IFunctionGeneric<T>& f,
-        const T& x,
-        const T& h
+template <typename F>
+F __forwardDiff(
+        const math::IFunctionGeneric<F>& f,
+        const F& x,
+        const F& h
       ) throw(math::FunctionException)
 {
     /*
@@ -82,11 +82,11 @@ T __forwardDiff(
  *
  * @throw FunctionException if the function is not defined near 'x'
  */
-template <class T>
-T __backwardDiff(
-        const math::IFunctionGeneric<T>& f,
-        const T& x,
-        const T& h
+template <typename F>
+F __backwardDiff(
+        const math::IFunctionGeneric<F>& f,
+        const F& x,
+        const F& h
       ) throw(math::FunctionException)
 {
     /*
@@ -113,11 +113,11 @@ T __backwardDiff(
  *
  * @throw FunctionException if the function is not defined near 'x'
  */
-template <class T>
-T __centralDiff(
-        const math::IFunctionGeneric<T>& f,
-        const T& x,
-        const T& h
+template <typename F>
+F __centralDiff(
+        const math::IFunctionGeneric<F>& f,
+        const F& x,
+        const F& h
       ) throw(math::FunctionException)
 {
     /*
@@ -128,7 +128,7 @@ T __centralDiff(
      *
      */
 
-    return (f.func(x+h) - f.func(x-h)) / ( static_cast<T>(2) * h );
+    return (f.func(x+h) - f.func(x-h)) / ( static_cast<F>(2) * h );
 }
 
 
@@ -144,11 +144,11 @@ T __centralDiff(
  *
  * @throw FunctionException if the function is not defined near 'x'
  */
-template <class T>
-T __5pointDiff(
-        const math::IFunctionGeneric<T>& f,
-        const T& x,
-        const T& h
+template <typename F>
+F __5pointDiff(
+        const math::IFunctionGeneric<F>& f,
+        const F& x,
+        const F& h
       ) throw(math::FunctionException)
 {
     /*
@@ -159,11 +159,11 @@ T __5pointDiff(
      *
      */
 
-    return ( -f.func(x + static_cast<T>(2) * h) +
-              static_cast<T>(8) * f.func(x+h) -
-              static_cast<T>(8) * f.func(x-h) +
-              f.func(x - static_cast<T>(2) * h) ) /
-           (static_cast<T>(12) * h);
+    return ( -f.func(x + static_cast<F>(2) * h) +
+              static_cast<F>(8) * f.func(x+h) -
+              static_cast<F>(8) * f.func(x-h) +
+              f.func(x - static_cast<F>(2) * h) ) /
+           (static_cast<F>(12) * h);
 }
 
 
@@ -186,47 +186,47 @@ T __5pointDiff(
  *
  * @throw CalculusException if input arguments are invalid or the function is not defined near 'x'
  */
-template <class T>
-T math::Diff::diff(
-        const math::IFunctionGeneric<T>& f,
-        const T& x,
-        const T& h,
+template <typename F>
+F math::Diff::diff(
+        const math::IFunctionGeneric<F>& f,
+        const F& x,
+        const F& h,
         math::EDiffMethod::method method
       ) throw(math::CalculusException)
 {
     // sanity check:
-    if ( h < math::NumericUtil::getEPS<T>() )
+    if ( h < math::NumericUtil::getEPS<F>() )
     {
         throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }
 
     try
     {
-        T retVal;
+        F retVal;
 
         switch (method)
         {
             case math::EDiffMethod::FORWARD :
             {
-                retVal = math::Diff::__private::__forwardDiff<T>(f, x, h);
+                retVal = math::Diff::__private::__forwardDiff<F>(f, x, h);
                 break;
             }
 
             case math::EDiffMethod::BACKWARD :
             {
-                retVal = math::Diff::__private::__backwardDiff<T>(f, x, h);
+                retVal = math::Diff::__private::__backwardDiff<F>(f, x, h);
                 break;
             }
 
             case math::EDiffMethod::CENTRAL :
             {
-                retVal = math::Diff::__private::__centralDiff<T>(f, x, h);
+                retVal = math::Diff::__private::__centralDiff<F>(f, x, h);
                 break;
             }
 
             case math::EDiffMethod::FIVE_POINT :
             {
-                retVal = math::Diff::__private::__5pointDiff<T>(f, x, h);
+                retVal = math::Diff::__private::__5pointDiff<F>(f, x, h);
                 break;
             }
 
@@ -255,11 +255,11 @@ T math::Diff::diff(
  *
  * @throw CalculusException if input arguments are invalid or the function is not defined near 'x'
  */
-template <class T>
-T math::Diff::diff2(
-        const math::IFunctionGeneric<T>& f, 
-        const T& x, 
-        const T& h
+template <typename F>
+F math::Diff::diff2(
+        const math::IFunctionGeneric<F>& f, 
+        const F& x, 
+        const F& h
       ) throw (math::CalculusException)
 {
     /*
@@ -273,18 +273,18 @@ T math::Diff::diff2(
      * 
      */
 
-    const T h2 = h * h;
+    const F h2 = h * h;
 
     // sanity check
-    if ( h < math::NumericUtil::getEPS<T>() ||
-         true == math::NumericUtil::isZero<T>(h2) )
+    if ( h < math::NumericUtil::getEPS<F>() ||
+         true == math::NumericUtil::isZero<F>(h2) )
     {
         throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }
     
     try
     {
-        return ( f.func(x+h) - static_cast<T>(2) * f.func(x) + f.func(x-h) ) / h2;
+        return ( f.func(x+h) - static_cast<F>(2) * f.func(x) + f.func(x-h) ) / h2;
     }
     catch ( const math::FunctionException& fex )
     {

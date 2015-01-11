@@ -62,11 +62,11 @@ namespace __private
  *
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
-template <class T>
-T __rectangle(
-        const math::IFunctionGeneric<T>& f,
-        const T& a,
-        const T& b,
+template <typename F>
+F __rectangle(
+        const math::IFunctionGeneric<F>& f,
+        const F& a,
+        const F& b,
         size_t n
       ) throw(math::CalculusException)
 {
@@ -89,9 +89,9 @@ T __rectangle(
         // N points, the same number as integrating intervals
 
         const size_t& N = n;
-        const T h = (b-a) / static_cast<T>(N);
+        const F h = (b-a) / static_cast<F>(N);
 
-        T sum = static_cast<T>(0);
+        F sum = static_cast<F>(0);
 
         // Coarse grained parallelism
         #pragma omp parallel num_threads(ompIdeal(N)) \
@@ -105,8 +105,8 @@ T __rectangle(
             const size_t istart = elems_per_thread * thnr;
             const size_t iend = std::min(istart + elems_per_thread, N);
 
-            T tempSum = static_cast<T>(0);
-            T xi = a + static_cast<T>(istart) * h;
+            F tempSum = static_cast<F>(0);
+            F xi = a + static_cast<F>(istart) * h;
             for (size_t i = istart;
                  i < iend;
                  ++i, xi += h )
@@ -145,16 +145,16 @@ T __rectangle(
  *
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
-template <class T>
-T __closedNewtonCotes(
-               const math::IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
+template <typename F>
+F __closedNewtonCotes(
+               const math::IFunctionGeneric<F>& f,
+               const F& a,
+               const F& b,
                size_t n,
                size_t degree,
-               const T* coef,
-               const T& bCoef,
-               const T& hCoef
+               const F* coef,
+               const F& bCoef,
+               const F& hCoef
              ) throw(math::CalculusException)
 {
     /*
@@ -173,11 +173,11 @@ T __closedNewtonCotes(
 
         // N must be divisible by 'degree' !
         const size_t N = n + ( 0!=n%degree ? degree-n%degree: 0 );
-        const T h = (b-a) / static_cast<T>(N);
+        const F h = (b-a) / static_cast<F>(N);
 
         // Do not preinitialize sum to hCoef * (f(a) + f(b)) now as it may
         // be reset back to 0 by the reduction clause
-        T sum = static_cast<T>(0);
+        F sum = static_cast<F>(0);
 
         // Coarse grained parallelism
         #pragma omp parallel num_threads(ompIdeal(N-1)) \
@@ -191,11 +191,11 @@ T __closedNewtonCotes(
             const size_t istart = elems_per_thread * thnr + 1;
             const size_t iend = std::min(istart + elems_per_thread, N);
 
-            T tempSum = static_cast<T>(0);
-            T xi = a + static_cast<T>(istart) * h;
+            F tempSum = static_cast<F>(0);
+            F xi = a + static_cast<F>(istart) * h;
             for ( size_t i=istart;
                   i < iend;
-                  ++i,  xi += h )
+                  ++i, xi += h )
             {
                 tempSum += coef[i%degree] * f.func(xi);
             }
@@ -231,11 +231,11 @@ T __closedNewtonCotes(
  *
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
-template <class T>
-T __trapezoidal(
-        const math::IFunctionGeneric<T>& f,
-        const T& a,
-        const T& b,
+template <typename F>
+F __trapezoidal(
+        const math::IFunctionGeneric<F>& f,
+        const F& a,
+        const F& b,
         size_t n
       ) throw(math::CalculusException)
 {
@@ -271,10 +271,10 @@ T __trapezoidal(
      * where h = (b - a) / N
      */
 
-    const T c[1] = { static_cast<T>(1) };
+    const F c[1] = { static_cast<F>(1) };
 
-    return __closedNewtonCotes<T>(
-            f, a, b, n, 1, c, static_cast<T>(1)/static_cast<T>(2), static_cast<T>(1)
+    return __closedNewtonCotes<F>(
+            f, a, b, n, 1, c, static_cast<F>(1)/static_cast<F>(2), static_cast<F>(1)
         );
 }
 
@@ -294,11 +294,11 @@ T __trapezoidal(
  *
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
-template <class T>
-T __simpson(
-       const math::IFunctionGeneric<T>& f,
-       const T& a,
-       const T& b,
+template <typename F>
+F __simpson(
+       const math::IFunctionGeneric<F>& f,
+       const F& a,
+       const F& b,
        size_t n
      ) throw(math::CalculusException)
 {
@@ -315,11 +315,11 @@ T __simpson(
      *  and N must be an even number (divisible by 2)
      */
 
-    const T c[2] = { static_cast<T>(2),
-                     static_cast<T>(4) };
+    const F c[2] = { static_cast<F>(2),
+                     static_cast<F>(4) };
 
-    return math::Integ::__private::__closedNewtonCotes<T>(
-            f, a, b, n, 2, c, static_cast<T>(1), static_cast<T>(1)/static_cast<T>(3)
+    return math::Integ::__private::__closedNewtonCotes<F>(
+            f, a, b, n, 2, c, static_cast<F>(1), static_cast<F>(1)/static_cast<F>(3)
         );
 }
 
@@ -339,11 +339,11 @@ T __simpson(
  *
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
-template <class T>
-T __simpson38(
-      const math::IFunctionGeneric<T>& f,
-      const T& a,
-      const T& b,
+template <typename F>
+F __simpson38(
+      const math::IFunctionGeneric<F>& f,
+      const F& a,
+      const F& b,
       size_t n
     ) throw(math::CalculusException)
 {
@@ -360,12 +360,12 @@ T __simpson38(
      *  and N must be divisible by 3
      */
 
-    const T c[3] = { static_cast<T>(2),
-                     static_cast<T>(3),
-                     static_cast<T>(3) };
+    const F c[3] = { static_cast<F>(2),
+                     static_cast<F>(3),
+                     static_cast<F>(3) };
 
-    return math::Integ::__private::__closedNewtonCotes<T>(
-            f, a, b, n, 3, c, static_cast<T>(1), static_cast<T>(3)/static_cast<T>(8)
+    return math::Integ::__private::__closedNewtonCotes<F>(
+            f, a, b, n, 3, c, static_cast<F>(1), static_cast<F>(3)/static_cast<F>(8)
         );
 }
 
@@ -385,11 +385,11 @@ T __simpson38(
  *
  * @throw CalculusException if function is not defined between 'a' and 'b'
  */
-template <class T>
-T __boole(
-      const math::IFunctionGeneric<T>& f,
-      const T& a,
-      const T& b,
+template <typename F>
+F __boole(
+      const math::IFunctionGeneric<F>& f,
+      const F& a,
+      const F& b,
       size_t n
     ) throw(math::CalculusException)
 {
@@ -412,13 +412,13 @@ T __boole(
      *  and N must be divisible by 3
      */
 
-    const T c[4] = { static_cast<T>(14),
-                     static_cast<T>(32),
-                     static_cast<T>(12),
-                     static_cast<T>(32) };
+    const F c[4] = { static_cast<F>(14),
+                     static_cast<F>(32),
+                     static_cast<F>(12),
+                     static_cast<F>(32) };
 
-    return math::Integ::__private::__closedNewtonCotes<T>(
-            f, a, b, n, 4, c, static_cast<T>(7), static_cast<T>(2)/static_cast<T>(45)
+    return math::Integ::__private::__closedNewtonCotes<F>(
+            f, a, b, n, 4, c, static_cast<F>(7), static_cast<F>(2)/static_cast<F>(45)
         );
 }
 
@@ -450,11 +450,11 @@ T __boole(
  *
  * @see IFunctionGeneric
  */
-template <class T>
-T math::Integ::integ(
-        const math::IFunctionGeneric<T>& f,
-        const T& a,
-        const T& b,
+template <typename F>
+F math::Integ::integ(
+        const math::IFunctionGeneric<F>& f,
+        const F& a,
+        const F& b,
         size_t n,
         math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
@@ -466,9 +466,9 @@ T math::Integ::integ(
     }
 
     // If both boundaries are the same, the result is equal to 0
-    if ( true == math::NumericUtil::isZero<T>(a-b) )
+    if ( true == math::NumericUtil::isZero<F>(a-b) )
     {
-        return static_cast<T>(0);
+        return static_cast<F>(0);
     }
 
     /*
@@ -476,10 +476,10 @@ T math::Integ::integ(
      * greater than 'a'. If this is not the case, swap the boundaries
      * and revert the result's sign.
      */
-    T retVal = static_cast<T>(1);
+    F retVal = static_cast<F>(1);
 
-    const T from = std::min(a, b);
-    const T to   = std::max(a, b);
+    const F from = std::min(a, b);
+    const F to   = std::max(a, b);
     if ( a > b )
     {
         retVal = -retVal;
@@ -489,31 +489,31 @@ T math::Integ::integ(
     {
         case math::EIntegAlg::RECTANGLE :
         {
-            retVal *= math::Integ::__private::__rectangle<T>(f, from, to, n);
+            retVal *= math::Integ::__private::__rectangle<F>(f, from, to, n);
             break;
         }
 
         case math::EIntegAlg::TRAPEZOIDAL :
         {
-            retVal *= math::Integ::__private::__trapezoidal<T>(f, from, to, n);
+            retVal *= math::Integ::__private::__trapezoidal<F>(f, from, to, n);
             break;
         }
 
         case math::EIntegAlg::SIMPSON :
         {
-            retVal *= math::Integ::__private::__simpson<T>(f, from, to , n);
+            retVal *= math::Integ::__private::__simpson<F>(f, from, to , n);
             break;
         }
 
         case math::EIntegAlg::SIMPSON_3_8 :
         {
-            retVal *= math::Integ::__private::__simpson38<T>(f, from, to, n);
+            retVal *= math::Integ::__private::__simpson38<F>(f, from, to, n);
             break;
         }
 
         case math::EIntegAlg::BOOLE :
         {
-            retVal *= math::Integ::__private::__boole<T>(f, from, to, n);
+            retVal *= math::Integ::__private::__boole<F>(f, from, to, n);
             break;
         }
 
@@ -547,16 +547,16 @@ T math::Integ::integ(
  *
  * @see IFunctionGeneric
  */
-template <class T>
-T math::Integ::integH(
-        const math::IFunctionGeneric<T>& f,
-        const T& a,
-        const T& b,
-        const T& h,
+template <typename F>
+F math::Integ::integH(
+        const math::IFunctionGeneric<F>& f,
+        const F& a,
+        const F& b,
+        const F& h,
         math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
-    if ( h < math::NumericUtil::getEPS<T>() )
+    if ( h < math::NumericUtil::getEPS<F>() )
     {
         throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }
@@ -564,7 +564,7 @@ T math::Integ::integH(
     // Just obtain the (approximate) number of integrating intervals
     // from the size
     const size_t n = static_cast<size_t>(std::floor(std::abs(b-a) / h) +
-    		static_cast<T>(1) / static_cast<T>(2) ) + 1;
+    		static_cast<F>(1) / static_cast<F>(2) ) + 1;
 
-    return math::Integ::integ<T>( f, a, b, n, algorithm );
+    return math::Integ::integ<F>( f, a, b, n, algorithm );
 }

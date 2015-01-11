@@ -62,22 +62,22 @@ struct EIntegAlg
 namespace Integ
 {
 
-    template <class T>
-    T integ(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
+    template <typename F>
+    F integ(
+               const IFunctionGeneric<F>& f,
+               const F& a,
+               const F& b,
                size_t n = INTEG_DEFAULT_STEPS,
                EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
 
-    template <class T>
-    T integH(
-               const IFunctionGeneric<T>& f,
-               const T& a,
-               const T& b,
-               const T& h = static_cast<T>(INTEG_STEP_NUM) / static_cast<T>(INTEG_STEP_DEN),
+    template <typename F>
+    F integH(
+               const IFunctionGeneric<F>& f,
+               const F& a,
+               const F& b,
+               const F& h = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
