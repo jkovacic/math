@@ -21,12 +21,9 @@ limitations under the License.
  *
  * Implementation of the class PolynomialRegressionGeneric. The class
  * calculates a regression polynomial using the method of least squares.
- * 
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
-// Deliberately there is no #include "PolynomialRegressionGeneric.hpp" !
+// no #include "PolynomialRegressionGeneric.hpp" !!!
 #include "matrix/MatrixGeneric.hpp"
 #include "matrix/SqMatrixGeneric.hpp"
 #include "lineq/LinearEquationSolverGeneric.hpp"
@@ -41,11 +38,11 @@ limitations under the License.
  * 
  * It initializes all its internal structures.
  */
-template<class T>
-math::PolynomialRegressionGeneric<T>::PolynomialRegressionGeneric()
+template <typename F>
+math::PolynomialRegressionGeneric<F>::PolynomialRegressionGeneric()
 {
     // all necessary functionality is implemented by the base class's init()
-    math::CurveFittingGenericAb<T>::_init();
+    math::CurveFittingGenericAb<F>::_init();
 }
 
 /**
@@ -55,8 +52,8 @@ math::PolynomialRegressionGeneric<T>::PolynomialRegressionGeneric()
  * 
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
-template<class T>
-void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (math::CurveFittingException)
+template <typename F>
+void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
     this->_curveGenerationCheck();
@@ -99,19 +96,19 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
         // number of polynomial's coefficients
         const size_t N = degree + 1;
 
-        math::SqMatrixGeneric<T> a(N);
-        math::MatrixGeneric<T> b(N, 1);
+        math::SqMatrixGeneric<F> a(N);
+        math::MatrixGeneric<F> b(N, 1);
         
         /*
              Instead of calculating all powers of x, all points will be
              traversed once and the appropriate terms will be added to 
              matrices' elements
          */
-        for ( typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin(); it!=this->points.end(); ++it )
+        for ( typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->points.begin(); it!=this->points.end(); ++it )
         {
             // initial values of summands
-            T aterm = static_cast<T>(1);
-            T bterm = it->p_y;
+            F aterm = static_cast<F>(1);
+            F bterm = it->p_y;
 
             // i actually determines a position inside both matrices: i = r+c             
             for ( size_t i=0; i<(2*N-1); ++i )
@@ -145,8 +142,8 @@ void math::PolynomialRegressionGeneric<T>::generateCurve(size_t degree) throw (m
         }  // for it
 
         // Matrices are filled, solve the system of linear equations
-        math::MatrixGeneric<T> x;
-        math::LinearEquationSolver::solve<T>(a, b, x);
+        math::MatrixGeneric<F> x;
+        math::LinearEquationSolver::solve<F>(a, b, x);
 
         // And finally fill the regression polynomial
         for ( size_t i=0; i<N; ++i )

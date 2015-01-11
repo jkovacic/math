@@ -22,12 +22,9 @@ limitations under the License.
  * Implementation of the class PolynomialInterpolationGeneric. The class
  * calculates an interpolation polynomial that goes exactly through
  * entered points.
- * 
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
-// Deliberately there is no #include "PolynomialInterpolationGeneric.hpp"
+// no #include "PolynomialInterpolationGeneric.hpp" !!!
 #include "polynomial/PolynomialGeneric.hpp"
 #include "exception/CurveFittingException.hpp"
 #include "../settings/omp_settings.h"
@@ -42,10 +39,10 @@ limitations under the License.
  * 
  * It initializes all its internal structures.
  */
-template<class T>
-math::PolynomialInterpolationGeneric<T>::PolynomialInterpolationGeneric()
+template <typename F>
+math::PolynomialInterpolationGeneric<F>::PolynomialInterpolationGeneric()
 {
-    math::CurveFittingGenericAb<T>::_init();
+    math::CurveFittingGenericAb<F>::_init();
 }
 
 /**
@@ -57,8 +54,8 @@ math::PolynomialInterpolationGeneric<T>::PolynomialInterpolationGeneric()
  * 
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
-template<class T>
-void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw (math::CurveFittingException)
+template <typename F>
+void math::PolynomialInterpolationGeneric<F>::generateCurve(size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
     this->_curveGenerationCheck();
@@ -110,8 +107,8 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
         const size_t N = this->points.size();
 
         // create vectors to store temporary results:
-        std::vector<T> a;
-        std::vector<T> x;
+        std::vector<F> a;
+        std::vector<F> x;
         
         if ( N > a.max_size() )
         {
@@ -127,7 +124,7 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
             // traverse the list only once and populate appropriate elements of a and b
             size_t idx = 0;
             for ( 
-              typename std::list<typename math::CurveFittingGenericAb<T>::CPoint>::const_iterator it=this->points.begin();
+              typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->points.begin();
               it!=this->points.end(); 
               ++it, ++idx )
                 {
@@ -138,20 +135,20 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
         
         // Polynomials:
         // (x-y0)*(x-y1)*...*(x-yi)
-        math::PolynomialGeneric<T> temp(true, 1);
+        math::PolynomialGeneric<F> temp(true, 1);
         // partial polynomial sum (sum of temp*a(i,i))
-        math::PolynomialGeneric<T> sum(true, 1);
+        math::PolynomialGeneric<F> sum(true, 1);
         // 1st degree term (x-y) that will be multiplied by temp
-        math::PolynomialGeneric<T> term(true, 2);
+        math::PolynomialGeneric<F> term(true, 2);
 
         // Initialize the polynomials:
 
         // term will always be of form (x-xi), hence term(1)
         // is always equal to 1, while term(0) will be set depending on c
-        term.set(1, static_cast<T>(1));
+        term.set(1, static_cast<F>(1));
 
         // initial value of temp: 1 
-        temp.set(0, static_cast<T>(1));
+        temp.set(0, static_cast<F>(1));
         // initial value of sum: a(0,0)
         sum.set(0, a.at(0));
         
@@ -173,7 +170,7 @@ void math::PolynomialInterpolationGeneric<T>::generateCurve(size_t degree) throw
             #pragma omp parallel for ordered default(none) shared(a, x, c)
             for ( size_t i=0; i<(N-1-c); ++i )
             {
-                T el = (a.at(i+1) - a.at(i)) / (x.at(i+c+1) - x.at(i));
+                const F el = (a.at(i+1) - a.at(i)) / (x.at(i+c+1) - x.at(i));
 
                 // It is important that this update is performed in the right order!
                 #pragma omp ordered

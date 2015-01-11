@@ -36,9 +36,9 @@ limitations under the License.
 namespace math
 {
 
-// Some compilers may require advanced declaration
+// Some compilers may require forward declaration
 // of the templated base class:
-template<class T> class CurveFittingGenericAb;
+template <typename F> class CurveFittingGenericAb;
 
 
 /**
@@ -48,32 +48,26 @@ template<class T> class CurveFittingGenericAb;
  * The class is abstract and cannot be instantiated. More specialized algorithms
  * are implemented by its derived classes.
  */
-template<class T>
-class PolynomialFittingGenericAb : public CurveFittingGenericAb<T>
+template <typename F>
+class PolynomialFittingGenericAb : public CurveFittingGenericAb<F>
 {
 
 protected:
     // Curve fitting polynomial
-    PolynomialGeneric<T> poly;
+    PolynomialGeneric<F> poly;
 
 public:
     // get a copy of the best fitting polynomial
-    PolynomialGeneric<T> getPolynomial() const throw (CurveFittingException);
+    PolynomialGeneric<F> getPolynomial() const throw (CurveFittingException);
     // inherited as an abstract function from the base class, value of the polynomial at the given abscissa
-    T valueAt(const T& x, bool strict=true) const throw (CurveFittingException);
+    F valueAt(const F& x, bool strict=true) const throw (CurveFittingException);
 
     //generateCurve() remains a pure virtual method and must be implemented by derived classes
 };
 
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
 }  // namespace math
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
 #include "curve_fit/PolynomialFittingGenericAb.cpp"
 
 #endif // _MATH_POLYNOMIALFITTINGGENERICAB_HPP_

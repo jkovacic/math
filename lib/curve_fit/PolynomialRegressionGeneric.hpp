@@ -39,9 +39,9 @@ limitations under the License.
 namespace math
 {
 
-// Some compilers may require advanced declaration
+// Some compilers may require forward declaration
 // of the templated base class:
-template<class T> class PolynomialFittingGenericAb;
+template <typename F> class PolynomialFittingGenericAb;
 
 
 /**
@@ -52,8 +52,8 @@ template<class T> class PolynomialFittingGenericAb;
  * polynomial of the desired degree that best fits to the points and whose
  * sum of square deviations is minimized.
  */
-template<class T>
-class PolynomialRegressionGeneric : public PolynomialFittingGenericAb<T>
+template <typename F>
+class PolynomialRegressionGeneric : public PolynomialFittingGenericAb<F>
 {
 
 public:
@@ -71,17 +71,10 @@ typedef PolynomialRegressionGeneric<float>       FPolynomialRegression;
 typedef PolynomialRegressionGeneric<double>      PolynomialRegression;
 typedef PolynomialRegressionGeneric<long double> LDPolynomialRegression;
 
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
 }  // namespace math
 
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
-
 #include "curve_fit/PolynomialRegressionGeneric.cpp"
 
 #endif  // _MATH_POLYNOMIALREGRESSIONGENERIC_HPP_

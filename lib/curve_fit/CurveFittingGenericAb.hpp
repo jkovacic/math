@@ -45,7 +45,7 @@ namespace math
  * The class is abstract and cannot be instantiated. More specialized algorithms
  * are implemented by its derived classes.
  */
-template<class T>
+template <typename F>
 class CurveFittingGenericAb
 {
 
@@ -55,8 +55,8 @@ protected:
      */
     struct CPoint
     {
-        T p_x;          // abscissa
-        T p_y;          // ordinate
+        F p_x;          // abscissa
+        F p_y;          // ordinate
         // required by sort algorithms:
         bool operator<(const CPoint& p) const;
     };
@@ -85,13 +85,13 @@ protected:
 
 public:
     // assignment operator (only applicable for variables of the same type)
-    virtual CurveFittingGenericAb<T>& operator=(const CurveFittingGenericAb<T>& orig) throw (CurveFittingException);
+    virtual CurveFittingGenericAb<F>& operator=(const CurveFittingGenericAb<F>& orig) throw (CurveFittingException);
     // copies points from 'porig' to this (applicable for all types derived from this one)
-    CurveFittingGenericAb<T>& copy(const CurveFittingGenericAb<T>* porig) throw (CurveFittingException);
+    CurveFittingGenericAb<F>& copy(const CurveFittingGenericAb<F>* porig) throw (CurveFittingException);
 
     // enter a point
     // Note: the function is virtual as derived classes may perform a sort of input control
-    virtual CurveFittingGenericAb<T>& enterPoint(const T& x, const T& y) throw (CurveFittingException);
+    virtual CurveFittingGenericAb<F>& enterPoint(const F& x, const F& y) throw (CurveFittingException);
 
     // Number of points entered
     size_t nrPoints() const;
@@ -100,28 +100,22 @@ public:
     bool curveReady() const;
 
     // The lowest and highest abscissa value of all entered points
-    T lowerBound() const throw (CurveFittingException);
-    T upperBound() const throw (CurveFittingException);
+    F lowerBound() const throw (CurveFittingException);
+    F upperBound() const throw (CurveFittingException);
 
     // generate a curve that fits entered points best
     virtual void generateCurve(size_t degree) throw (CurveFittingException) = 0;
 
     // value of the curve at the given abscissa
-    virtual T valueAt(const T& x, bool strict=true) const throw (CurveFittingException) = 0;
+    virtual F valueAt(const F& x, bool strict=true) const throw (CurveFittingException) = 0;
 
     // Destructor
     virtual ~CurveFittingGenericAb();
 };
 
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
 }  // namespace math
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
 #include "curve_fit/CurveFittingGenericAb.cpp"
 
 #endif // _MATH_CURVEFITTINGGENERICAB_HPP_

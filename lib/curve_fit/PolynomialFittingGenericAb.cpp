@@ -22,12 +22,9 @@ limitations under the License.
  * Implementation of the class PolynomialFittingGenericAb. This is an abstract 
  * class with implemented some functionality, common to all classes
  * that perform polynomial interpolation, regression, etc.
- *
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
-// Deliberately there is no #include "PolynomialFittingGenericAb.hpp"
+// no #include "PolynomialFittingGenericAb.hpp" !!!
 #include "polynomial/PolynomialGeneric.hpp"
 
 /**
@@ -35,8 +32,8 @@ limitations under the License.
  * 
  * @throw CurveFittingException if the polynomial has not been generated yet 
  */
-template<class T>
-math::PolynomialGeneric<T> math::PolynomialFittingGenericAb<T>::getPolynomial() const throw (math::CurveFittingException)
+template <typename F>
+math::PolynomialGeneric<F> math::PolynomialFittingGenericAb<F>::getPolynomial() const throw (math::CurveFittingException)
 {
     if ( false==this->curveGenerated )
     {
@@ -58,8 +55,8 @@ math::PolynomialGeneric<T> math::PolynomialFittingGenericAb<T>::getPolynomial() 
  * 
  * @throw CurveFittingException if the polynomial has not been generated yet or 'x' is out of definition range bounds
  */
-template<class T>
-T math::PolynomialFittingGenericAb<T>::valueAt(const T& x, bool strict) const throw (math::CurveFittingException)
+template <typename F>
+F math::PolynomialFittingGenericAb<F>::valueAt(const F& x, bool strict) const throw (math::CurveFittingException)
 {
     // the curve must be already generated
     if ( false==this->curveGenerated )

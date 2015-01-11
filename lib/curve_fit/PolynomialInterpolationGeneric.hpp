@@ -38,9 +38,9 @@ limitations under the License.
 namespace math
 {
 
-// Some compilers may require advanced declaration
+// Some compilers may require forward declaration
 // of the templated base class:
-template<class T> class PolynomialFittingGenericAb;
+template <typename F> class PolynomialFittingGenericAb;
 
 
 /**
@@ -49,8 +49,8 @@ template<class T> class PolynomialFittingGenericAb;
  * The algorithm takes N+1 points and calculates a N-degree polynomial exactly
  * fitting all input points.
  */
-template<class T>
-class PolynomialInterpolationGeneric : public PolynomialFittingGenericAb<T>
+template <typename F>
+class PolynomialInterpolationGeneric : public PolynomialFittingGenericAb<F>
 {
 public:
     // Constructor
@@ -66,17 +66,10 @@ typedef PolynomialInterpolationGeneric<float>       FPolynomialInterpolation;
 typedef PolynomialInterpolationGeneric<double>      PolynomialInterpolation;
 typedef PolynomialInterpolationGeneric<long double> LDPolynomialInterpolation;
 
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
 }  // namespace math
 
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
-
 #include "curve_fit/PolynomialInterpolationGeneric.cpp"
 
 #endif // _MATH_POLYNOMIALINTERPOLATIONGENERIC_HPP_
