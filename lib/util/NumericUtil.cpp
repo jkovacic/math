@@ -209,7 +209,7 @@ short int math::NumericUtil::sign(const T& num)
 
 
 /**
- * Rounds a real number (of type T) to the nearest integer (of type I).
+ * Rounds a real number (of type F) to the nearest integer (of type I).
  * 
  * @note An attempt to convert a negative 'n' to an unsigned type will
  *       return 0.
@@ -220,12 +220,12 @@ short int math::NumericUtil::sign(const T& num)
  * 
  * @return 'n' rounded to the nearest integer
  */
-template <class T, class I>
-inline I math::NumericUtil::intRound(const T& n)
+template <typename F, typename I>
+inline I math::NumericUtil::intRound(const F& n)
 {
     // if attempting to cast a negative 'n' to an unsigned type,
     // return 0 immediately:
-    if ( n < static_cast<T>(0) && 
+    if ( n < static_cast<F>(0) && 
          static_cast<I>(-1) > static_cast<I>(0) )
     {
         return static_cast<I>(0);
@@ -235,14 +235,14 @@ inline I math::NumericUtil::intRound(const T& n)
      * 0.5 is added to a positive 'n' or subtracted from a negative 'n'.
      * Casting to I will then cut off the fractional part.
      */
-    return ( n >= static_cast<T>(0) ? 
-             static_cast<I>(n + static_cast<T>(1)/static_cast<T>(2) ) : 
-             static_cast<I>(n - static_cast<T>(1)/static_cast<T>(2) ) );
+    return ( n >= static_cast<F>(0) ? 
+             static_cast<I>(n + static_cast<F>(1)/static_cast<F>(2) ) : 
+             static_cast<I>(n - static_cast<F>(1)/static_cast<F>(2) ) );
 }
 
 
 /**
- * Rounds the real value (of type T) 'n' downwards, returning the
+ * Rounds the real value (of type F) 'n' downwards, returning the
  * largest integer value (of type I) that is not greater than 'n'.
  * 
  * @note An attempt to convert a negative 'n' to an unsigned type will
@@ -254,15 +254,15 @@ inline I math::NumericUtil::intRound(const T& n)
  * 
  * @return floor(n) casted to I
  */
-template <class T, class I>
-inline I math::NumericUtil::intFloor(const T& n)
+template <typename F, typename I>
+inline I math::NumericUtil::intFloor(const F& n)
 {
-    return math::NumericUtil::intRound<T, I>(std::floor(n));
+    return math::NumericUtil::intRound<F, I>(std::floor(n));
 }
 
 
 /**
- * Rounds the real value (of type T) 'n' upwards, returning the
+ * Rounds the real value (of type F) 'n' upwards, returning the
  * largest integer value (of type I) that is not less than 'n'.
  * 
  * @note An attempt to convert a negative 'n' to an unsigned type will
@@ -274,8 +274,8 @@ inline I math::NumericUtil::intFloor(const T& n)
  * 
  * @return ceil(n) casted to I
  */
-template <class T, class I>
-inline I math::NumericUtil::intCeil(const T& n)
+template <typename F, typename I>
+inline I math::NumericUtil::intCeil(const F& n)
 {
-    return math::NumericUtil::intRound<T, I>(std::ceil(n));
+    return math::NumericUtil::intRound<F, I>(std::ceil(n));
 }

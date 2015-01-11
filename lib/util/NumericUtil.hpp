@@ -61,14 +61,14 @@ namespace NumericUtil
     short int sign(const T& num);
 
     // round from a floating type T to an integer type I 
-    template <class T, class I>
-    I intRound(const T& n);
+    template <typename F, typename I>
+    I intRound(const F& n);
 
-    template <class T, class I>
-    I intFloor(const T& n);
+    template <typename F, typename I>
+    I intFloor(const F& n);
 
-    template <class T, class I>
-    I intCeil(const T& n);
+    template <typename F, typename I>
+    I intCeil(const F& n);
 
 }  // namespace NumericUtil 
 
