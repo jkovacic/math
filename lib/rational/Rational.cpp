@@ -24,7 +24,7 @@ limitations under the License.
 
 
 #include "rational/Rational.hpp"
-#include "int_util/IntFactorization.hpp"
+#include "int_util/IntFactorizationGeneric.hpp"
 #include "util/NumericUtil.hpp"
 #include "exception/RationalException.hpp"
 
@@ -699,7 +699,8 @@ void math::Rational::__reduce()
     // finally obtain the greatest common divisor...
     // Note: since neither 'absNum' nor 'denom' cannot be zero (handled before),
     // IntFactorization::gcd will never throw an exception
-    const unsigned long int gcd = math::IntFactorization::greatestCommonDivisor(absNum, denom);
+    const unsigned long int gcd = 
+        math::IntFactorization::greatestCommonDivisor<unsigned long int>(absNum, denom);
 
     // ... and divide both members by it.
     // if both num (handled a few lines above)and denom (not permitted when setting)

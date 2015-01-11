@@ -44,6 +44,7 @@ struct IntFactorizationException : public IMathException
     enum err_codes {
         OUT_OF_RANGE,       /// result is out of integer range
         INVALID_INPUT,      /// operation does not make any sense with this input argument
+        NEGATIVE_ARG,       /// negative input argument is not allowed
         OUT_OF_MEMORY       /// (allocation of string's memory failed
     };
 

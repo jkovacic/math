@@ -26,7 +26,7 @@ limitations under the License.
 #include <map>
 #include <set>
 
-#include "IntFactorization.h"
+#include "IntFactorizationGeneric.h"
 #include "IntFactorizationException.h"
 
 
@@ -84,10 +84,10 @@ void intFactorizationTest()
          */
         for ( unsigned int i=0; i<NF; ++i )
         {
-            map<unsigned long int, unsigned int> f;
+            map<unsigned long int, unsigned long int> f;
             IntFactorization::factor(nf[i], f);
             cout << nf[i] << " = ";
-            for ( map<unsigned long int, unsigned int>::iterator it=f.begin();
+            for ( map<unsigned long int, unsigned long int>::iterator it=f.begin();
                   it!=f.end(); ++it )
             {
                 if ( it!=f.begin() )

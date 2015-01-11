@@ -53,6 +53,9 @@ void math::IntFactorizationException::what(std::ostream& str) const
         case INVALID_INPUT:
             str << "Operation not defined for this input argument.";
             break;
+        case NEGATIVE_ARG :
+            str << "Negative input arguments are not allowed.";
+            break;
         case OUT_OF_MEMORY:
             str << "Allocation of memory failed.";
             break;

@@ -23,11 +23,73 @@ limitations under the License.
  * prime number utilities.
  */
 
-#include "IntFactorization.hpp"
+// no #include "IntFactorizationGeneric.hpp" !!!
 #include "exception/IntFactorizationException.hpp"
 
-#include <climits>
+#include <limits>
 #include <new>
+
+// a namespace with "private" functions and classes
+namespace math {  namespace IntFactorization {  namespace __private
+{
+
+/*
+ * A set of functions and clases that check whether an integer is negative.
+ * An integer value can only be negative if its type is signed. This could be
+ * quickly check by comparing (I)(-1) and (I)(0) however, if I is an unsigned type,
+ * a compiler would raise a warning that "comparison of unsigned expression < 0 is 
+ * always false". One work around this would be partial specialization. As C++ does
+ * allow partial specialization of templated functions, this work around using an
+ * additional templated static class has been introduced.
+ */    
+
+template <typename I, bool isSigned>
+struct __checkSignImpl
+{
+    /*
+     * A "general" implementation of the class when isSigned equals 'true'
+     */
+    static void check(const I& n) throw (math::IntFactorizationException)
+    {
+        // As I is a signed type, 'n' must be compared to 0:
+        if ( n < static_cast<I>(0) )
+        {
+            throw math::IntFactorizationException(math::IntFactorizationException::NEGATIVE_ARG);
+        }
+    }    
+};
+
+// Partial specialization of __checkSignImpl for isSigned = false
+template <typename I>
+struct __checkSignImpl<I, false>
+{
+    /*
+     * A specialization for isSigned == false, i.e. I is an unsigned integer type
+     */
+    static void check(const I& n) throw (math::IntFactorizationException)
+    {
+        // Since I is an unsigned type, 'n' can never be negative 
+        (void) n;
+    }    
+};
+
+
+/*
+ * Checks sign of 'n' and throws an exception if it is negative. 
+ * 
+ * @param n - integer value to check
+ * 
+ * @throw IntFactorizationException if 'n' is negative
+ */
+template <typename I>
+void __checkSign(const I& n) throw (math::IntFactorizationException)
+{
+    // The actual implementation depends on signedness of 'I' and is
+    // implemented in the class __checkSignImpl
+    math::IntFactorization::__private::__checkSignImpl<I, std::numeric_limits<I>::is_signed>::check(n);
+}
+
+}}}  // namespace math::IntFactorization::__private
 
 
 /**
@@ -35,13 +97,14 @@ limitations under the License.
  * 
  * @return whether 'n' is a prime number
  */
-bool math::IntFactorization::isPrime(unsigned long int n)
+template <typename I>
+bool math::IntFactorization::isPrime(const I& n)
 {
     /*
      * 0 is not a natural number and as such cannot be a prime.
      * By convention, 1 is also not a prime.
      */
-    if ( 0==n || 1==n )
+    if ( n<=static_cast<I>(0) || static_cast<I>(1)==n )
     {
         return false;
     }
@@ -51,7 +114,7 @@ bool math::IntFactorization::isPrime(unsigned long int n)
      * As they are a sort of "specific" in comparison to other primes
      * (see below), they will be handled separately.
      */
-    if ( 2==n || 3==n )
+    if ( static_cast<I>(2)==n || static_cast<I>(3)==n )
     {
         return true;
     }
@@ -59,7 +122,7 @@ bool math::IntFactorization::isPrime(unsigned long int n)
     /*
      * Even numbers except 2 (already handled above) cannot be primes
      */
-    if ( 0==n%2 )
+    if ( static_cast<I>(0) == n%static_cast<I>(2) )
     {
         return false;
     }
@@ -79,7 +142,7 @@ bool math::IntFactorization::isPrime(unsigned long int n)
      * This criteria is applied as the first filter to determine whether 'n' is 
      * a candidate for a prime number.
      */
-    const unsigned short int mod6 = n % 6;
+    const unsigned short int mod6 = static_cast<unsigned short int>(n % 6);
     if ( 1!=mod6 && 5!=mod6 )
     {
         return false;
@@ -92,9 +155,9 @@ bool math::IntFactorization::isPrime(unsigned long int n)
      * It also doesn't make sense to check divisibility by divisors 
      * that exceed sqrt(n).
      */
-    for ( unsigned int i=3; i*i<=n; i+=2 )
+    for ( I i=static_cast<I>(3); i*i<=n; i+=static_cast<I>(2) )
     {
-        if ( 0==n%i )
+        if ( static_cast<I>(0) == n%i )
         {
             // not a prime
             return false;
@@ -112,13 +175,18 @@ bool math::IntFactorization::isPrime(unsigned long int n)
  *
  * @return the greatest common divisor of 'first' and 'second'
  * 
- * @throw IntFactorizationException if any of input arguments is zero
+ * @throw IntFactorizationException if any of input arguments is non-positive
  */
-unsigned long int math::IntFactorization::greatestCommonDivisor(
-                    unsigned long int first, 
-                    unsigned long int second ) 
+template <typename I>
+I math::IntFactorization::greatestCommonDivisor(
+                    const I& first, 
+                    const I& second ) 
             throw(math::IntFactorizationException)
 {
+    // sanity check
+    math::IntFactorization::__private::__checkSign<I>(first);
+    math::IntFactorization::__private::__checkSign<I>(second);    
+
     /*
      * The well known Euclidean algorithm is utilized to find the greatest common divisor.
      * It is known to be efficient, more details about it are available, for instance,
@@ -127,17 +195,17 @@ unsigned long int math::IntFactorization::greatestCommonDivisor(
 
     // If any of both arguments is 0, the algorithm would "end up" in an infinite loop
     // or division by zero can occur. In such a case, throw an exception.
-    if ( 0 == first || 0 == second )
+    if ( static_cast<I>(0) == first || static_cast<I>(0) == second )
     {
         throw math::IntFactorizationException(math::IntFactorizationException::INVALID_INPUT);
     }
 
     // Now it is guaranteed to converge towards the GCD (or 1)
-    unsigned long int a = first;
-    unsigned long int b = second;
-    unsigned long int t;
+    I a = first;
+    I b = second;
+    I t;
 
-    while ( 0 != b )
+    while ( static_cast<I>(0) != b )
     {
         t = b;
         b = a % b;
@@ -156,11 +224,12 @@ unsigned long int math::IntFactorization::greatestCommonDivisor(
  *
  * @return the least common multiple of 'first' and 'second'
  * 
- * @throw IntFactorizationException if any of input arguments is zero or if the LCM exceeds the integer range
+ * @throw IntFactorizationException if any of input arguments is non-positive or if the LCM exceeds the I's range
  */
-unsigned long int math::IntFactorization::leastCommonMultiple(
-                    unsigned long int first, 
-                    unsigned long int second) 
+template <typename I>
+I math::IntFactorization::leastCommonMultiple(
+                    const I& first, 
+                    const I& second) 
             throw(math::IntFactorizationException)
 {
     /*
@@ -186,25 +255,23 @@ unsigned long int math::IntFactorization::leastCommonMultiple(
      *   LCM = first * second / GCD 
      */
 
-    // If any of the two input values equals zero, neither GCD
-    // nor LCM doesn't make any sense, throw an exception in this case.
-    if ( 0 == first || 0 == second )
-    {
-        throw math::IntFactorizationException(math::IntFactorizationException::INVALID_INPUT);
-    }
+    // sanity check will be performed by greatestCommonDivisor
 
     // At this point the GCD will be no less than 1, definitely not 0
-    const unsigned long int GCD = math::IntFactorization::greatestCommonDivisor(first, second);
+    const I GCD = math::IntFactorization::greatestCommonDivisor<I>(first, second);
 
-    // so it's safe to divide
-    unsigned long long int retVal = first*second/GCD;
-    // and check the range
-    if ( retVal>ULONG_MAX )
+    // ...so it's safe to divide
+
+    // Note that both 'first' and 'second' are divisible by GCD
+    I temp = first / GCD;
+
+    // make sure that the LCM will not fall out of I's range
+    if ( std::numeric_limits<I>::max()/temp < second )
     {
         throw math::IntFactorizationException(math::IntFactorizationException::OUT_OF_RANGE);
     }
-        
-    return static_cast<unsigned long int>(retVal);
+
+    return temp * second;
 }
 
 /**
@@ -214,25 +281,29 @@ unsigned long int math::IntFactorization::leastCommonMultiple(
  * 
  * @return the first prime number p greater than n 
  * 
- * @throw IntFactorizationException if the next prime is out of integer range
+ * @throw IntFactorizationException if the next prime is out of I's range or 'n' is negative
  */
-unsigned long int math::IntFactorization::nextPrime(unsigned long int n) 
+template <typename I>
+I math::IntFactorization::nextPrime(const I& n) 
             throw(math::IntFactorizationException)
 {
-    unsigned long int retVal = n;
-    
+    // sanity check
+    math::IntFactorization::__private::__checkSign<I>(n);
+
+    I retVal = n;
+
     /*
      * integers <3 are a sort of "specific" in comparison to primes equal or
      * greater than 5 (see below), so they are handled separately.
      */
-    if ( n < 2 )
+    if ( n < static_cast<I>(2) )
     {
-        return 2L;
+        return static_cast<I>(2);
     }
     
-    if ( 2 == n )
+    if ( static_cast<I>(2) == n )
     {
-        return 3L;
+        return static_cast<I>(3);
     }
     
     /*
@@ -244,9 +315,9 @@ unsigned long int math::IntFactorization::nextPrime(unsigned long int n)
      */
     do
     {
-        const unsigned short int mod6 = retVal%6;
+        const unsigned short int mod6 = static_cast<unsigned short int>(retVal%6);
         unsigned short int summand = 0;
-        
+
         switch (mod6)
         {
             case 0:
@@ -271,17 +342,17 @@ unsigned long int math::IntFactorization::nextPrime(unsigned long int n)
                 // should never occur, just in case:
                 summand = 1;
         };
-        
+
         // check of range:
-        if ( UINT_MAX-retVal < summand )
+        if ( std::numeric_limits<I>::max()-retVal < summand )
         {
             // the next candidate would be out of range
             throw math::IntFactorizationException(math::IntFactorizationException::OUT_OF_RANGE);
         }
-        
-        retVal += summand;
+
+        retVal += static_cast<I>(summand);
     }
-    while ( false==math::IntFactorization::isPrime(retVal) );
+    while ( false==math::IntFactorization::isPrime<I>(retVal) );
         
     return retVal;
 }
@@ -292,37 +363,44 @@ unsigned long int math::IntFactorization::nextPrime(unsigned long int n)
  * 
  * @param n - integer input argument whose "square root" will be calculated
  * 
- * @return floor(sqrt(n)) 
+ * @return floor(sqrt(n))
+ * 
+ * @throw IntFactorizationException if 'n' is negative
  */
-unsigned long int math::IntFactorization::intSqrt(unsigned long int n)
+template <typename I>
+I math::IntFactorization::intSqrt(const I& n)
+             throw (math::IntFactorizationException)
 {
+    // sanity check
+    math::IntFactorization::__private::__checkSign<I>(n);
+
     /*
      * Integer square root can be efficiently calculated using the
      * C. Woo's algorithm, described and implemented at:
      * http://medialab.freaknet.org/martin/src/sqrt/
      */
-    unsigned long int res = 0;
-    unsigned long int bit = 1L << (8*sizeof(unsigned long int)-2);
-    unsigned long sq = n;
-    
+    I res = static_cast<I>(0);
+    I bit = static_cast<I>(1) << (static_cast<I>(8) * sizeof(I) - static_cast<I>(2));
+    I sq = n;
+
     while ( bit > sq )
     {
-        bit >>= 2;
+        bit >>= static_cast<I>(2);
     }
-    
-    while ( bit != 0 ) 
+
+    while ( bit != static_cast<I>(0) ) 
     {
         if (sq >= res + bit) 
         {
-            sq -= res + bit;
-            res = (res>>1) + bit;
+            sq -= (res + bit);
+            res = (res>>static_cast<I>(1)) + bit;
         }
         else
         {
-            res >>= 1;
+            res >>= static_cast<I>(1);
         }
         
-        bit >>= 2;
+        bit >>= static_cast<I>(2);
     }
     
     return res;
@@ -334,24 +412,28 @@ unsigned long int math::IntFactorization::intSqrt(unsigned long int n)
  * @param n - an integer value to factorize
  * @param fac - a reference to a map to fill with prime factors and their powers 
  * 
- * @throw IntFactorizationException if allocation of memory fails
+ * @throw IntFactorizationException if allocation of memory fails or 'n' is negative
  */
+template <typename I>
 void math::IntFactorization::factor(
-                    unsigned long int n, 
-                    std::map<unsigned long int, unsigned int>& fac ) 
+                    const I& n, 
+                    std::map<I, I>& fac ) 
             throw(math::IntFactorizationException)
 {
+    // sanity check
+    math::IntFactorization::__private::__checkSign(n);
+
     try
     {
-        unsigned long int comp = n;
-        unsigned long int pf = 2;
+        I comp = n;
+        I pf = static_cast<I>(2);
 
         fac.clear();
 
         // "Specialized" handling of 0 and 1
-        if ( 0==n || 1==n )
+        if ( static_cast<I>(0)==n || static_cast<I>(1)==n )
         {
-            fac.insert(std::pair<unsigned long int, unsigned int>(n, 1) );
+            fac.insert(std::pair<I, I>(n, static_cast<I>(1)) );
             return;
         }
     
@@ -362,19 +444,21 @@ void math::IntFactorization::factor(
          * For each successful division by a prime, update the value for the 
          * prime key and update the "remainder". 
          */
-        for ( pf=2; pf<=comp; pf=math::IntFactorization::nextPrime(pf) )
+        for ( pf = static_cast<I>(2); 
+              pf <= comp; 
+              pf = math::IntFactorization::nextPrime<I>(pf) )
         {
             // Check divisibility by the current prime:
-            if ( 0!=comp%pf )
+            if ( static_cast<I>(0) != comp%pf )
             {
                 continue;
             }
 
             // If it is divisible, create a new map key first: 
-            fac.insert( std::pair<unsigned long int, unsigned int>(pf, 0) );
+            fac.insert( std::pair<I, I>(pf, static_cast<I>(0)) );
             
             // Divide by pf as many times as possible:
-            while ( pf<=comp && 0==comp%pf )
+            while ( pf<=comp && static_cast<I>(0)==comp%pf )
             {
                 // For each successful division, update the key's (pf) value:
                 ++fac[pf];
@@ -397,21 +481,25 @@ void math::IntFactorization::factor(
  * Divisors will be sorted in ascending order.
  * 
  * @param n - an integer whose divisors will be determined
- * @param div - a reference to a seto to fill with integer divisors.
+ * @param div - a reference to a set to fill with integer divisors.
  * 
- * @throw IntFactorizationException if allocation of memory fails
+ * @throw IntFactorizationException if allocation of memory fails or 'n' is negative
  */
+template <typename I>
 void math::IntFactorization::divisors(
-                    unsigned long int n,
-                    std::set<unsigned long>& div ) 
+                    const I& n,
+                    std::set<I>& div ) 
             throw(math::IntFactorizationException)
 {
+    // sanity check
+    math::IntFactorization::__private::__checkSign(n);
+
     try
     {
         div.clear();
 
         // "Specialized" handling of 0 and 1
-        if ( 0==n || 1==n )
+        if ( static_cast<I>(0)==n || static_cast<I>(1)==n )
         {
             div.insert(n);
             return;
@@ -422,16 +510,16 @@ void math::IntFactorization::divisors(
          * 'n' by it. If 'n' is divisible by 'i', insert 'i' and 'n/i'
          * into the set.
          */
-        for ( unsigned long int i=1; i*i<=n; ++i )
+        for ( I i=static_cast<I>(1); i*i<=n; ++i )
         {
             // Check divisibility by 'i':
-            if ( 0==n%i )
+            if ( static_cast<I>(0) == n%i )
             {
                 // If successful, insert 'i' into the set:
                 div.insert(i);
                 // If 'i' is a perfect sqrt of 'n', do not insert it once again:
-                const unsigned long int ni = n/i;
-                if ( i!=ni )
+                const I ni = n/i;
+                if ( i != ni )
                 {
                     // If it is not a perfect square root, also insert 'n/i':
                     div.insert(ni);
@@ -441,7 +529,7 @@ void math::IntFactorization::divisors(
         
         // Note that the set automatically sorts elements in ascending order
     }
-    catch ( std::bad_alloc& ba )
+    catch ( const std::bad_alloc& ba )
     {
         throw math::IntFactorizationException(math::IntFactorizationException::OUT_OF_MEMORY);
     }

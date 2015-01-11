@@ -29,6 +29,6 @@ limitations under the License.
 #ifndef _MATH_INTFACTORIZATION_H_
 #define _MATH_INTFACTORIZATION_H_
 
-#include "int_util/IntFactorization.hpp"
+#include "int_util/IntFactorizationGeneric.hpp"
 
 #endif  /*  _MATH_INTFACTORIZATION_H_  */

@@ -19,15 +19,15 @@ limitations under the License.
  * @author Jernej Kovacic
  * 
  * An internal header file, it should not be included directly.
- * @headername{IntFactorization.h}
+ * @headername{IntFactorizationGeneric.h}
  *
  * Declaration of the namespace IntFactorization with
  * functions for factorization of integers and some 
  * prime number utilities.
  */
 
-#ifndef _MATH_INTFACTORIZATION_HPP_
-#define	_MATH_INTFACTORIZATION_HPP_
+#ifndef _MATH_INTFACTORIZATIONGENERIC_HPP_
+#define	_MATH_INTFACTORIZATIONGENERIC_HPP_
 
 #include "exception/IntFactorizationException.hpp"
 
@@ -40,45 +40,65 @@ namespace math
 /**
  * @brief A separate namespace with some integer factorization functions for prime
  * factorization, calculation of the least common multiple, greatest common divisor, etc.
+ * 
+ * @note 'I' is expected to be an integral integer type, preferably unsigned. In
+ *       any other case the behaviour of functions from this namespace is
+ *       unpredictable.
  */
 
 namespace IntFactorization
 {    
 
-    bool isPrime(unsigned long int n);
-    
+    template <typename I>
+    bool isPrime(const I& n);
+
+
     // greatest common divisor
-    unsigned long int greatestCommonDivisor(
-                        unsigned long int first, 
-                        unsigned long int second ) 
+    template <typename I>
+    I greatestCommonDivisor(
+                        const I& first, 
+                        const I& second ) 
                     throw(IntFactorizationException);
-    
+
+
     // least common multiple
-    unsigned long int leastCommonMultiple(
-                        unsigned long int first, 
-                        unsigned long int second ) 
+    template <typename I>
+    I leastCommonMultiple(
+                        const I& first, 
+                        const I& second ) 
                     throw(IntFactorizationException);
-    
-    unsigned long int nextPrime(unsigned long int n) 
+
+
+    template <typename I>
+    I nextPrime(const I& n) 
                     throw(IntFactorizationException);
-    
+
+
     // the largest integer not exceeding sqrt(n)
-    unsigned long int intSqrt(unsigned long int n);
-    
+    template <typename I>
+    I intSqrt(const I& n) throw(IntFactorizationException);
+ 
+
     // prime factorization
+    template <typename I>
     void factor(
-                unsigned long int n, 
-                std::map<unsigned long int, unsigned int>& fac ) 
+                const I& n, 
+                std::map<I, I>& fac ) 
             throw(IntFactorizationException);
-    
+
+
     // list of all divisors of 'n'
+    template <typename I>
     void divisors(
-                unsigned long int n,
-                std::set<unsigned long int>& div )
+                const I& n,
+                std::set<I>& div )
             throw(IntFactorizationException);
 
 }  // namespace IntFactorization
 
 }  // namespace math
 
-#endif	// _MATH_INTFACTORIZATION_HPP_
+// DEFINITION
+#include "int_util/IntFactorizationGeneric.cpp"
+
+#endif	// _MATH_INTFACTORIZATIONGENERIC_HPP_
