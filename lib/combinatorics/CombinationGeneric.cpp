@@ -20,12 +20,9 @@ limitations under the License.
  * 
  * Implementation of the class CombinationGeneric that gradually lists
  * all combinations of a sequence of objects.
- * 
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
-// deliberately there is no #include "CombinationGeneric.hpp" !
+// no #include "CombinationGeneric.hpp" !!!
 #include <new>
 #include <cstddef>
 
@@ -40,7 +37,7 @@ limitations under the License.
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -71,7 +68,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw 
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -102,7 +99,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el) throw (m
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -133,7 +130,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el) throw (ma
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -168,7 +165,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (
  * 
  * @throw CombinatoricsException if input arguments are invalid or if allocation of memory fails
  */
-template<class T>
+template <class T>
 math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, size_t len) throw (math::CombinatoricsException)
 {
     try
@@ -197,7 +194,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, size_t len) th
 /*
  * Initialization of class's internal data to initial values
  */
-template<class T>
+template <class T>
 void math::CombinationGeneric<T>::__init()
 {
     this->N_size = this->elems.size();
@@ -209,7 +206,7 @@ void math::CombinationGeneric<T>::__init()
 /**
  * @return size of a subset (k)
  */
-template<class T>
+template <class T>
 size_t math::CombinationGeneric<T>::getK() const
 {
     return this->K;
@@ -226,7 +223,7 @@ size_t math::CombinationGeneric<T>::getK() const
  * 
  * @throw CombinatoricsException if input argument is invalid or if allocation of memory fails
  */
-template<class T>
+template <class T>
 void math::CombinationGeneric<T>::setK(size_t k) throw (math::CombinatoricsException)
 {
     try
@@ -280,7 +277,7 @@ void math::CombinationGeneric<T>::setK(size_t k) throw (math::CombinatoricsExcep
  * 
  * @throw CombinatoriscException if n is too large or if allocation of memory fails
  */
-template<class T>
+template <class T>
 void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, size_t n) throw (math::CombinatoricsException)
 {
     try
@@ -380,7 +377,7 @@ void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, size_t n) t
 /**
  * @return whether more combinations are available to retrieve
  */
-template<class T>
+template <class T>
 bool math::CombinationGeneric<T>::hasNext() const
 {
     return this->moreCombinations;
@@ -389,7 +386,7 @@ bool math::CombinationGeneric<T>::hasNext() const
 /**
  * Destructor
  */
-template<class T>
+template <class T>
 math::CombinationGeneric<T>::~CombinationGeneric()
 {
     // probably vector's destructors would clean this automatically...

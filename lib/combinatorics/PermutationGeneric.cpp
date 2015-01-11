@@ -20,12 +20,9 @@ limitations under the License.
  * 
  * Implementation of the class PermutationGeneric that gradually lists
  * all permutations of a sequence of objects.
- * 
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
-// deliberately there is no #include "PermutationGeneric.hpp" !
+// no #include "PermutationGeneric.hpp" !!!
 #include <new>
 #include <cstddef>
 #include <algorithm>
@@ -41,7 +38,7 @@ limitations under the License.
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::PermutationGeneric<T>::PermutationGeneric(const std::vector<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -72,7 +69,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::vector<T>& el) throw 
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::PermutationGeneric<T>::PermutationGeneric(const std::list<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -103,7 +100,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::list<T>& el) throw (m
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::PermutationGeneric<T>::PermutationGeneric(const std::set<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -134,7 +131,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::set<T>& el) throw (ma
  * 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
-template<class T>
+template <class T>
 math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (math::CombinatoricsException)
 {
     try
@@ -169,7 +166,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (
  * 
  * @throw CombinatoricsException if input arguments are invalid or if allocation of memory fails
  */
-template<class T>
+template <class T>
 math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) throw (math::CombinatoricsException)
 {
     try
@@ -200,7 +197,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) th
  * 
  * @throw CombinatoricsException if allocation of memory fails
  */
-template<class T>
+template <class T>
 void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
 {
     try
@@ -241,7 +238,7 @@ void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
  * 
  * @throw CombinatoricsException if 'n' is invalid or if allocation of memory fails
  */
-template<class T>
+template <class T>
 void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, size_t n) throw (math::CombinatoricsException)
 {
     /*
@@ -370,7 +367,7 @@ void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, size_t n) 
 /**
  * @return whether more permutations are available to retrieve
  */
-template<class T>
+template <class T>
 bool math::PermutationGeneric<T>::hasNext() const
 {
     return this->morePermutations;
@@ -379,7 +376,7 @@ bool math::PermutationGeneric<T>::hasNext() const
 /**
  * Destructor
  */
-template<class T>
+template <class T>
 math::PermutationGeneric<T>::~PermutationGeneric()
 {
     // probably vector's destructors would clean this automatically...

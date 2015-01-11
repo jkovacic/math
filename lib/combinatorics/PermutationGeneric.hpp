@@ -50,7 +50,7 @@ namespace math
  * i.e. once a certain permutation has been retrieved, it cannot be retrieved again
  * unless the class is reinstantiated. 
  */
-template<class T>
+template <class T>
 class PermutationGeneric
 {
 private:
@@ -92,16 +92,9 @@ public:
     virtual ~PermutationGeneric();
 };
 
-// Definition could be included into the namespace declaraion, but it
-// would cause conflicts with some extra included stdlib header files.
-
 }  // namespace math
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
 #include "combinatorics/PermutationGeneric.cpp"
 
 

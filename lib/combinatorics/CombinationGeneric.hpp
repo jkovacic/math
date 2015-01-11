@@ -52,7 +52,7 @@ namespace math
  * be retrieved again unless the class is reinstantiated or setK() is called which also
  * resets its internal states.
  */
-template<class T>
+template <class T>
 class CombinationGeneric
 {
 
@@ -98,16 +98,9 @@ public:
     
 };
 
-// Definition could be included into the namespace declaraion, but it
-// would cause conflicts with some extra included stdlib header files.
-
 }  // namespace math
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
 #include "combinatorics/CombinationGeneric.cpp"
 
 #endif	// _MATH_COMBINATIONGENERIC_HPP_
