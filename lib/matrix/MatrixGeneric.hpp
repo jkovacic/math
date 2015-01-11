@@ -46,33 +46,33 @@ namespace math
 // but arithmetic operations (e.g. inversion of a square matrix) may return
 // incorrect results. This is true for unsigned types as well.
 
-// Advance declaration of the class is necessary...
-template<class T> class MatrixGeneric;
+// Forward declaration of the class is necessary...
+template <class T> class MatrixGeneric;
 
 // to declare the class's friend functions:
-template<class T>
+template <class T>
 MatrixGeneric<T> operator+(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
 
-template<class T>
+template <class T>
 MatrixGeneric<T> operator-(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
 
-template<class T>
+template <class T>
 MatrixGeneric<T> operator*(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
 
-template<class T>
+template <class T>
 MatrixGeneric<T> operator*(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
 
-template<class T>
+template <class T>
 MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
 
 namespace __matrixprivate
 {
     
-template<class T>
+template <class T>
 void __matconj(const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw (MatrixException);
 
 // overloaded "specialization" complex<T>:
-template<class T>
+template <class T>
 void __matconj(const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw (MatrixException);
 
 }  // namespace __matrixprivate
@@ -177,15 +177,9 @@ typedef MatrixGeneric<float>       FMatrix;
 typedef MatrixGeneric<double>      Matrix;
 typedef MatrixGeneric<long double> LDMatrix;
 
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
 } // namespace math
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
 #include "matrix/MatrixGeneric.cpp"
 
 #endif	// _MATH_MATRIXGENERIC_HPP_

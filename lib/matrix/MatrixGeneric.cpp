@@ -20,9 +20,6 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * Implementation of the class MatriGeneric.
- *
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
 
@@ -54,7 +51,7 @@ limitations under the License.
  * @throw MatrixException when allocation of memory fails or in case of incorrect
  *        input parameters (both must be at least 1)
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::MatrixException)
 {
     // Matrix must contain at least 1 row and at least 1 column
@@ -83,7 +80,7 @@ math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::M
         // Memory allocation failed
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
-} // MatrixGeneric::MatrixGeneric(int, int)
+}
 
 
 /**
@@ -95,7 +92,7 @@ math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::M
  *
  * @throw MatrixException when allocation of memory fails
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
     _copyElems(orig);
@@ -129,13 +126,13 @@ void math::MatrixGeneric<T>::_copyElems(const math::MatrixGeneric<T>& orig) thro
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
-}  // MatrixGeneric::copyElems(const MatrixGeneric&)
+}
 
 
 /**
  * @return number of rows
  */
-template<class T>
+template <class T>
 size_t math::MatrixGeneric<T>::nrRows() const
 {
     return this->rows;
@@ -145,7 +142,7 @@ size_t math::MatrixGeneric<T>::nrRows() const
 /**
  * @return number of columns
  */
-template<class T>
+template <class T>
 size_t math::MatrixGeneric<T>::nrColumns() const
 {
     return this->cols;
@@ -162,7 +159,7 @@ size_t math::MatrixGeneric<T>::nrColumns() const
  *
  * @throw MatrixException if input parameters are out of range
  */
-template<class T>
+template <class T>
 T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::MatrixException)
 {
     // Check of input parameters
@@ -173,7 +170,7 @@ T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::Matr
     }
 
     return this->elems.at(_pos(row, column));
-}  // MatrixGeneric::get
+}
 
 
 /**
@@ -188,7 +185,7 @@ T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::Matr
  *
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
-template<class T>
+template <class T>
 T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixException)
 {
     // Check if input parameters are within the matrix's range
@@ -213,7 +210,7 @@ T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixExce
  *
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
-template<class T>
+template <class T>
 const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math::MatrixException)
 {
     /*
@@ -246,7 +243,7 @@ const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math
  *
  * @throw MatrixException if input parameters are out of range
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(size_t row, size_t column, const T& element) throw (math::MatrixException)
 {
     // Check of input parameters
@@ -258,7 +255,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(size_t row, size_t column, c
     this->elems.at(_pos(row, column)) = element;
 
     return *this;
-}  // MatrixGeneric::set
+}
 
 
 /**
@@ -268,7 +265,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(size_t row, size_t column, c
  *
  * @throw MatrixException if attempting to access an element out of allocated range
  */
-template<class T>
+template <class T>
 void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::MatrixException)
 {
 
@@ -291,7 +288,7 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
         str << std::endl;
     } // for r
 
-}  // MatrixGeneric::display
+}
 
 
 /**
@@ -303,7 +300,7 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
  *
  * @throw MatrixException if memory allocation fails
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
     // Nothing to do, if attempting to assign itself
@@ -328,7 +325,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGen
  *
  * @throw MatrixException if dimensions do not match
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGeneric<T>& m) throw(math::MatrixException)
 {
     // Check if dimensions of both matrices match
@@ -354,7 +351,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
  *
  * @throw MatrixException if dimensions do not match
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGeneric<T>& matrix) throw(math::MatrixException)
 {
     // Check if dimensions of both matrices match
@@ -377,7 +374,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
  *
  * @throw MatrixException if memory allocation fails
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::MatrixException)
 {
     // There are no requirements about dimensions and no input check is necessary
@@ -405,7 +402,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
  *
  * @throw MatrixException if dimensions do not match or if allocation of memory fails
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
     // for a definition of matrix multiplication, see operator*
@@ -435,7 +432,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGe
  *
  * @return reference to itself
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
 {
     // Multiply each element by the 'scalar'
@@ -452,7 +449,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
  *
  * @throw MatrixException if matrix does not contain enough elements
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::MatrixException)
 {
     // If dimension of this is (n,m), dimension of its transposed matrix is (m,n)
@@ -499,7 +496,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
  *
  * @throw MatrixException if not enough memory to perform the operation
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::MatrixException)
 {
     // TODO: find a memory efficient method for a general matrix!!
@@ -510,8 +507,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     // If dimension of this is (n,m), dimension of its transposed matrix is (m,n)
     // T(r,c) = this(c,r)
 
-	// Until a better algorithm is implemented
-	// just use the general transpose method
+    // Until a better algorithm is implemented
+    // just use the general transpose method
     math::MatrixGeneric<T> temp = this->transpose();
 
     // update the vector of elements:
@@ -554,7 +551,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixE
  *
  * @throw MatrixException if attempting to remove the nonexistent row
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (math::MatrixException)
 {
     // Check of input parameters.
@@ -588,7 +585,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (m
  *
  * @throw MatrixException if attempting to remove the nonexistent column
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
 {
     // Checking of input parameters. The matrix must contain at least 2 columns
@@ -630,7 +627,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw
   *
   * @throw MatrixException if invalid rowNr or if reallocation fails
   */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T& el) throw (math::MatrixException)
 {
     // a valid rowNr value is between 0 and rows (incl.)
@@ -677,7 +674,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T&
   *
   * @throw MatrixException if invalid colNr or if reallocation fails
   */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
 {
     // A valid colNr is between 0 and cols (incl.)
@@ -724,7 +721,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
 /**
  * Destructor
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T>::~MatrixGeneric()
 {
     // Vector's destructors would probably clean up this automatically.
@@ -748,7 +745,7 @@ math::MatrixGeneric<T>::~MatrixGeneric()
  *
  * @throw MatrixException if dimensions do not match
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
 {
     // Check of dimensions. Numbers of rows and columns must match
@@ -779,7 +776,7 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
  *
  * @throw MatrixException if dimensions do not match
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
 {
     // Check dimensions of both matrices. They must have the same number of rows and columns
@@ -813,7 +810,7 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const m
  *
  * @throw MatrixException if dimensions do not match
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
 {
     // Check if dimensions match (this.cols must be equal to matrix.rows)
@@ -876,7 +873,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
  *
  * @throw MatrixException if allocation of memory fails
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T& sc) throw (math::MatrixException)
 {
     // The operation is possible on matrices with any dimension
@@ -903,7 +900,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
  *
  * @throw MatrixException if allocation of memory fails
  */
-template<class T>
+template <class T>
 math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
     MatrixGeneric<T> retVal = m * sc;

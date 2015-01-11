@@ -39,9 +39,9 @@ limitations under the License.
 namespace math
 {
 
-// Some compilers may require advanced declaration
+// Some compilers may require forward declaration
 // of the templated base class:
-template<class T> class MatrixGeneric;
+template <class T> class MatrixGeneric;
 
 
 /**
@@ -52,7 +52,7 @@ template<class T> class MatrixGeneric;
  * Additional functionalities, e.g. determinant, inverse matrix etc., are implemented.
  * Eigen values and vectors are not implemented yet.
  */
-template<class T>
+template <class T>
 class SqMatrixGeneric : public MatrixGeneric<T>
 {
 
@@ -94,16 +94,9 @@ typedef SqMatrixGeneric<float>       FSqMatrix;
 typedef SqMatrixGeneric<double>      SqMatrix;
 typedef SqMatrixGeneric<long double> LDSqMatrix;
 
-
-// Definition could be included into the namespace declaration, but it
-// would cause conflicts with some extra included stdlib header files.
 } // namespace math
 
 // DEFINITION
-
-// This is a templated class, so its definition must follow its declaration.
-// When building, THIS file must be compiled.
-// Alternatively the definition can be included into this file.
 #include "matrix/SqMatrixGeneric.cpp"
 
 #endif	// _MATH_SQMATRIXGENERIC_HPP_

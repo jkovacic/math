@@ -49,7 +49,7 @@ limitations under the License.
  * 
  * @throw LinearEquationSolverException if a unique solution cannot be found for any reason
  */
-template<class T>
+template <class T>
 void math::LinearEquationSolver::solve(
           const math::SqMatrixGeneric<T>& coef,
           const math::MatrixGeneric<T>& term,
