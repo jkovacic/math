@@ -30,6 +30,9 @@ limitations under the License.
 #ifndef _MATH_INTEXPONENTIATORGENERIC_HPP_
 #define _MATH_INTEXPONENTIATORGENERIC_HPP_
 
+#include "exception/IntFactorizationException.hpp"
+
+
 namespace math
 {
 
@@ -40,8 +43,8 @@ namespace math
 namespace IntExponentiator
 {
     // Efficient calculation of base^n:
-    template <class T>
-    T power(const T& base, size_t n);
+    template <class T, typename I>
+    T power(const T& base, const I& n) throw (IntFactorizationException);
 
 }  // namespace IntExponentiator
 

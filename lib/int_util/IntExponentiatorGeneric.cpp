@@ -25,8 +25,13 @@ limitations under the License.
 
 
 // No #include "IntExponentiatorGeneric.hpp" !!!
+#include "int_util/IntUtilGeneric.hpp"
+#include "exception/IntFactorizationException.hpp"
+
 #include "matrix/SqMatrixGeneric.hpp"
 #include "polynomial/PolynomialGeneric.hpp"
+
+#include <cstddef>
 
 
 /*
@@ -95,15 +100,26 @@ namespace IntExponentiator
  * Complexity of the algorithm is O(log2 n).
  *
  * @note T must have implemented operator*=
+ * @note I is expected to represent an integral integer type otherwise the
+ *       behaviour of the function might be unpredictable.
  *
  * @param base - base of the exponentiation
- * @param n - exponent (a positive integer number)
+ * @param n - exponent (a non-negative integer number)
  *
  * @return base^n
+ * 
+ * @throw IntFactorizationException if 'n' is negative
  */
-template<class T>
-T math::IntExponentiator::power(const T& base, size_t n)
+template<class T, typename I>
+T math::IntExponentiator::power(const T& base, const I& n)
+                          throw (math::IntFactorizationException)
 {
+    // only non negative exponents are supported:
+    if ( true == math::IntUtil::isNegative<I>(n) )
+    {
+        throw math::IntFactorizationException(math::IntFactorizationException::NEGATIVE_ARG);
+    }
+
     /*
      * "Exponentiation by squaring" algorithm will be applied.
      *
@@ -127,7 +143,7 @@ T math::IntExponentiator::power(const T& base, size_t n)
      */
 
     // Note: it is safe to use bitwise operators for arithmetic operations
-    // on unsigned int values as they do not depend on endianess:
+    // on int values as they do not depend on endianess:
     // http://stackoverflow.com/questions/7184789/does-bit-shift-depends-on-endianness
 
     T retVal = math::IntExponentiator::__private::__getUnit(base);
@@ -135,11 +151,11 @@ T math::IntExponentiator::power(const T& base, size_t n)
 
     // Obtain coefficients ai from the exponent's binary form.
     // Note: "i>>=1" is a bitwise equivalent bitwise equivalent of "i/=2"
-    for ( size_t i=n; i>0; i>>=1 )
+    for ( I i=n; i>0; i>>=1 )
     {
         // Check the coefficient ai (no need to multiply retVal by 1 if ai is 0)
         // Note: "i&1" is a bitwise equivalent of "i%2"
-        if ( 0!=(i & static_cast<size_t>(1) ) )
+        if ( 0!=(i & static_cast<I>(1) ) )
         {
             retVal *= factor;
         }
