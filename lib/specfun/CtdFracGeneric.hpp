@@ -24,8 +24,8 @@ limitations under the License.
  * evaluate continued fractions.
  */
 
-#ifndef _MATH_CTDFRAC_HPP_
-#define _MATH_CTDFRAC_HPP_
+#ifndef _MATH_CTDFRACGENERIC_HPP_
+#define _MATH_CTDFRACGENERIC_HPP_
 
 
 #include <cstddef>
@@ -137,4 +137,4 @@ T ctdFrac(
 // DEFINITION
 #include "specfun/CtdFracGeneric.cpp"
 
-#endif  // _MATH_CTDFRAC_HPP_
+#endif  // _MATH_CTDFRACGENERIC_HPP_

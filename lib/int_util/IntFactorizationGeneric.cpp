@@ -24,55 +24,15 @@ limitations under the License.
  */
 
 // no #include "IntFactorizationGeneric.hpp" !!!
+#include "int_util/IntUtilGeneric.hpp"
 #include "exception/IntFactorizationException.hpp"
 
 #include <limits>
 #include <new>
 
-// a namespace with "private" functions and classes
+// a namespace with "private" functions
 namespace math {  namespace IntFactorization {  namespace __private
 {
-
-/*
- * A set of functions and clases that check whether an integer is negative.
- * An integer value can only be negative if its type is signed. This could be
- * quickly check by comparing (I)(-1) and (I)(0) however, if I is an unsigned type,
- * a compiler would raise a warning that "comparison of unsigned expression < 0 is 
- * always false". One work around this would be partial specialization. As C++ does
- * allow partial specialization of templated functions, this work around using an
- * additional templated static class has been introduced.
- */    
-
-template <typename I, bool isSigned>
-struct __checkSignImpl
-{
-    /*
-     * A "general" implementation of the class when isSigned equals 'true'
-     */
-    static void check(const I& n) throw (math::IntFactorizationException)
-    {
-        // As I is a signed type, 'n' must be compared to 0:
-        if ( n < static_cast<I>(0) )
-        {
-            throw math::IntFactorizationException(math::IntFactorizationException::NEGATIVE_ARG);
-        }
-    }    
-};
-
-// Partial specialization of __checkSignImpl for isSigned = false
-template <typename I>
-struct __checkSignImpl<I, false>
-{
-    /*
-     * A specialization for isSigned == false, i.e. I is an unsigned integer type
-     */
-    static void check(const I& n) throw (math::IntFactorizationException)
-    {
-        // Since I is an unsigned type, 'n' can never be negative 
-        (void) n;
-    }    
-};
-
 
 /*
  * Checks sign of 'n' and throws an exception if it is negative. 
@@ -86,7 +46,10 @@ void __checkSign(const I& n) throw (math::IntFactorizationException)
 {
     // The actual implementation depends on signedness of 'I' and is
     // implemented in the class __checkSignImpl
-    math::IntFactorization::__private::__checkSignImpl<I, std::numeric_limits<I>::is_signed>::check(n);
+    if ( true == math::IntUtil::isNegative<I>(n) )
+    {
+        throw math::IntFactorizationException(math::IntFactorizationException::NEGATIVE_ARG);
+    }
 }
 
 }}}  // namespace math::IntFactorization::__private
