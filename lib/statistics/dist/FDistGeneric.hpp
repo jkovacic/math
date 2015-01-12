@@ -48,37 +48,37 @@ namespace math
 namespace FDist
 {
 
-    template <class T>
-    T pdf(
-          const T& x,
-          const T& d1,
-          const T& d2
+    template <typename F>
+    F pdf(
+          const F& x,
+          const F& d1,
+          const F& d2
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T probInt(
-          const T& a,
-          const T& b,
-          const T& d1,
-          const T& d2
+    template <typename F>
+    F probInt(
+          const F& a,
+          const F& b,
+          const F& d1,
+          const F& d2
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T prob(
-          const T& x,
-          const T& d1,
-          const T& d2,
+    template <typename F>
+    F prob(
+          const F& x,
+          const F& d1,
+          const F& d2,
           bool lowerTail = true
        ) throw (StatisticsException);
 
 
-    template <class T>
-    T quant(
-          const T& p,
-          const T& d1,
-          const T& d2,
+    template <typename F>
+    F quant(
+          const F& p,
+          const F& d1,
+          const F& d2,
           bool lowerTail = true
         ) throw (math::StatisticsException);
 

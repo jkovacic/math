@@ -61,15 +61,15 @@ namespace math {  namespace StudentDist {  namespace __private
  *
  * @throw StatisticsException if 'sigma' or 'df' is not valid.
  */
-template <class T>
-void __checkParams(const T& sigma, const T& df) throw (math::StatisticsException)
+template <typename F>
+void __checkParams(const F& sigma, const F& df) throw (math::StatisticsException)
 {
-    if ( sigma < math::NumericUtil::getEPS<T>() )
+    if ( sigma < math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_STDEV);
     }
 
-    if ( df < math::NumericUtil::getEPS<T>() )
+    if ( df < math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_DF);
     }
@@ -94,12 +94,12 @@ void __checkParams(const T& sigma, const T& df) throw (math::StatisticsException
  *
  * @throw StatisticsException if 'n' or 'sigma' is invalid
  */
-template <class T>
-T math::StudentDist::getT(
-        const T& x,
+template <typename F>
+F math::StudentDist::getT(
+        const F& x,
         size_t n,
-        const T& mu,
-        const T& s
+        const F& mu,
+        const F& s
       ) throw (math::StatisticsException)
 {
     /*
@@ -111,9 +111,9 @@ T math::StudentDist::getT(
      */
 
     // sanity check
-    math::StudentDist::__private::__checkParams<T>(s, static_cast<T>(n));
+    math::StudentDist::__private::__checkParams<F>(s, static_cast<F>(n));
 
-    return (x-mu) * std::sqrt(static_cast<T>(n)) / s;
+    return (x-mu) * std::sqrt(static_cast<F>(n)) / s;
 }
 
 
@@ -131,12 +131,12 @@ T math::StudentDist::getT(
  *
  * @throw StatisticsException if 'n' or 'sigma' is invalid
  */
-template <class T>
-T math::StudentDist::getX(
-        const T& t,
+template <typename F>
+F math::StudentDist::getX(
+        const F& t,
         size_t n,
-        const T& mu,
-        const T& s
+        const F& mu,
+        const F& s
       ) throw (math::StatisticsException)
 {
     /*
@@ -148,9 +148,9 @@ T math::StudentDist::getX(
      */
 
     // sanity check
-    math::StudentDist::__private::__checkParams<T>(s, static_cast<T>(n));
+    math::StudentDist::__private::__checkParams<F>(s, static_cast<F>(n));
 
-    return mu + t * s / std::sqrt(static_cast<T>(n));
+    return mu + t * s / std::sqrt(static_cast<F>(n));
 }
 
 
@@ -167,16 +167,16 @@ T math::StudentDist::getX(
  *
  * @throw StatisticsException if 'df' or 'sigma' is invalid
  */
-template <class T>
-T math::StudentDist::pdf(
-        const T& x,
-        const T& df,
-        const T& mu,
-        const T& sigma
+template <typename F>
+F math::StudentDist::pdf(
+        const F& x,
+        const F& df,
+        const F& mu,
+        const F& sigma
       ) throw (math::StatisticsException)
 {
     // sanity check
-    math::StudentDist::__private::__checkParams<T>(sigma, df);
+    math::StudentDist::__private::__checkParams<F>(sigma, df);
 
     /*
      *                                                                        df+1
@@ -187,18 +187,18 @@ T math::StudentDist::pdf(
      *                                       +-                         -+
      */
 
-    T pdf = static_cast<T>(-1);
+    F pdf = static_cast<F>(-1);
 
     try
     {
-        const T t = (x - mu) / sigma;
+        const F t = (x - mu) / sigma;
 
-        pdf = math::SpecFun::gamma<T>((df + static_cast<T>(1)) / static_cast<T>(2)) *
-              static_cast<T>(MATH_CONST_SQRT_INV_PI) /
-              ( math::SpecFun::gamma<T>(df / static_cast<T>(2)) *
+        pdf = math::SpecFun::gamma<F>((df + static_cast<F>(1)) / static_cast<F>(2)) *
+              static_cast<F>(MATH_CONST_SQRT_INV_PI) /
+              ( math::SpecFun::gamma<F>(df / static_cast<F>(2)) *
                 std::sqrt(df) * sigma );
 
-        pdf *= std::pow(static_cast<T>(1) + t*t/df, -(df + static_cast<T>(1)) / static_cast<T>(2));
+        pdf *= std::pow(static_cast<F>(1) + t*t/df, -(df + static_cast<F>(1)) / static_cast<F>(2));
     }
     catch ( const math::SpecFunException& sfex )
     {
@@ -227,13 +227,13 @@ T math::StudentDist::pdf(
  *
  * @throw StatisticsException if 'df' or 'sigma' is invalid
  */
-template <class T>
-T math::StudentDist::probInt(
-        const T& a,
-        const T& b,
-        const T& df,
-        const T& mu,
-        const T& sigma
+template <typename F>
+F math::StudentDist::probInt(
+        const F& a,
+        const F& b,
+        const F& df,
+        const F& mu,
+        const F& sigma
       ) throw (math::StatisticsException)
 {
     /*
@@ -245,13 +245,13 @@ T math::StudentDist::probInt(
      */
 
     // sanity check
-    math::StudentDist::__private::__checkParams<T>(sigma, df);
+    math::StudentDist::__private::__checkParams<F>(sigma, df);
     
-    const T from = std::min(a, b);
-    const T to = std::max(a, b);
+    const F from = std::min(a, b);
+    const F to = std::max(a, b);
 
-    return math::StudentDist::prob<T>(to, df, true, mu, sigma) -
-           math::StudentDist::prob<T>(from, df, true, mu, sigma);
+    return math::StudentDist::prob<F>(to, df, true, mu, sigma) -
+           math::StudentDist::prob<F>(from, df, true, mu, sigma);
 }
 
 
@@ -269,13 +269,13 @@ T math::StudentDist::probInt(
  *
  * @throw StatisticsException if 'df' or 'sigma' is invalid
  */
-template <class T>
-T math::StudentDist::prob(
-        const T& x,
-        const T& df,
+template <typename F>
+F math::StudentDist::prob(
+        const F& x,
+        const F& df,
         bool lowerTail,
-        const T& mu,
-        const T& sigma
+        const F& mu,
+        const F& sigma
       ) throw (math::StatisticsException)
 {
     /*
@@ -320,15 +320,15 @@ T math::StudentDist::prob(
      */
     
     // sanity check
-    math::StudentDist::__private::__checkParams<T>(sigma, df);
+    math::StudentDist::__private::__checkParams<F>(sigma, df);
 
-    T cdf = static_cast<T>(-1);
+    F cdf = static_cast<F>(-1);
 
     try
     {
         // Tolerance for the incomplete beta function
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
         /*
          *            df
@@ -338,15 +338,15 @@ T math::StudentDist::prob(
          *             \  sigma   /
          */
 
-        const T ttemp = (x - mu) / sigma;
+        const F ttemp = (x - mu) / sigma;
 
         // if 'x' is very close to 'mu', the probability is exactly 0.5
-        if ( true == math::NumericUtil::isZero<T>(ttemp) )
+        if ( true == math::NumericUtil::isZero<F>(ttemp) )
         {
-            return static_cast<T>(1) / static_cast<T>(2);
+            return static_cast<F>(1) / static_cast<F>(2);
         }
 
-        const T t = df / ( df + ttemp*ttemp );
+        const F t = df / ( df + ttemp*ttemp );
 
         /*
          * Evaluate:
@@ -355,18 +355,18 @@ T math::StudentDist::prob(
          *    t
          */
         
-        cdf = math::SpecFun::incBetaLowerReg<T>( 
-                df / static_cast<T>(2),
-                static_cast<T>(1) / static_cast<T>(2),
+        cdf = math::SpecFun::incBetaLowerReg<F>(
+                df / static_cast<F>(2),
+                static_cast<F>(1) / static_cast<F>(2),
                 t,
                 TOL );
-        cdf /= static_cast<T>(2);
+        cdf /= static_cast<F>(2);
 
         // Adjust the cdf depending on 'x' (w.r.t. 'mu') and 'lowerTail':
         if ( ( x>mu && true==lowerTail ) ||
              ( x<mu && false==lowerTail ) )
         {
-            cdf = static_cast<T>(1) - cdf;
+            cdf = static_cast<F>(1) - cdf;
         }
     }
     catch ( const math::SpecFunException& sfex )
@@ -396,19 +396,19 @@ T math::StudentDist::prob(
  *
  * @throw StatisticsException if either 'p' or 'df' or 'sigma' is invalid
  */
-template <class T>
-T math::StudentDist::quant(
-        const T& p,
-        const T& df,
+template <typename F>
+F math::StudentDist::quant(
+        const F& p,
+        const F& df,
         bool lowerTail,
-        const T& mu,
-        const T& sigma
+        const F& mu,
+        const F& sigma
       ) throw (math::StatisticsException)
 {
     // sanity check
-    math::StudentDist::__private::__checkParams<T>(sigma, df);
-    if ( p <= math::NumericUtil::getEPS<T>() || 
-         p >= static_cast<T>(1)-math::NumericUtil::getEPS<T>() )
+    math::StudentDist::__private::__checkParams<F>(sigma, df);
+    if ( p <= math::NumericUtil::getEPS<F>() ||
+         p >= static_cast<F>(1)-math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -449,37 +449,37 @@ T math::StudentDist::quant(
      * that are handled separately.
      */
 
-    T x = static_cast<T>(0);
+    F x = static_cast<F>(0);
 
     // separate handling of p==1/2:
-    if ( true==math::NumericUtil::isZero<T>(p-static_cast<T>(1)/static_cast<T>(2)) )
+    if ( true==math::NumericUtil::isZero<F>(p-static_cast<F>(1)/static_cast<F>(2)) )
     {
         return mu;
     }
 
     try
     {
-        const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
+        const F P = (true==lowerTail ? p : static_cast<F>(1)-p);
 
         // consider the p<1/2:
-        const T PP = std::min(P, static_cast<T>(1)-P);
+        const F PP = std::min(P, static_cast<F>(1)-P);
 
         // Tolerance for the inverse incomplete beta function:
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / 
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
         // t = Iinv(df/2, 1/2, 2*p):
-        const T t = math::SpecFun::incBetaLowerRegInv<T>(
-                    df / static_cast<T>(2),
-                    static_cast<T>(1) / static_cast<T>(2),
-                    static_cast<T>(2) * PP,
+        const F t = math::SpecFun::incBetaLowerRegInv<F>(
+                    df / static_cast<F>(2),
+                    static_cast<F>(1) / static_cast<F>(2),
+                    static_cast<F>(2) * PP,
                     TOL );
 
         // From t obtain tt = sqrt(df * (1/t - 1)):
-        const T tt = sigma * std::sqrt(df * (static_cast<T>(1) - t) / t);
+        const F tt = sigma * std::sqrt(df * (static_cast<F>(1) - t) / t);
     
         // And finally add or subtract 'tt' to/from 'mu', depending on the initial 'p':
-        x = ( P > static_cast<T>(1) / static_cast<T>(2) ? mu + tt : mu - tt );        
+        x = ( P > static_cast<F>(1) / static_cast<F>(2) ? mu + tt : mu - tt );
     }
     catch ( const math::SpecFunException& sfex )
     {

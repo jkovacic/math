@@ -47,33 +47,33 @@ namespace math
 namespace ChiSquareDist
 {
 
-    template <class T>
-    T pdf(
-          const T& x,
-          const T& df
+    template <typename F>
+    F pdf(
+          const F& x,
+          const F& df
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T probInt(
-          const T& a,
-          const T& b,
-          const T& df
+    template <typename F>
+    F probInt(
+          const F& a,
+          const F& b,
+          const F& df
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T prob(
-          const T& x,
-          const T& df,
+    template <typename F>
+    F prob(
+          const F& x,
+          const F& df,
           bool lowerTail = true
        ) throw (StatisticsException);
 
 
-    template <class T>
-    T quant(
-          const T& p,
-          const T& df,
+    template <typename F>
+    F quant(
+          const F& p,
+          const F& df,
           bool lowerTail = true
         ) throw (math::StatisticsException);
 

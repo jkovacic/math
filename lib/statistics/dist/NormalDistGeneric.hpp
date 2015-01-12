@@ -49,53 +49,53 @@ namespace math
 namespace NormalDist
 {
 
-    template <class T>
-    T getZ(
-          const T& x,
-          const T& mu = static_cast<T>(0),
-          const T& sigma = static_cast<T>(1)
+    template <typename F>
+    F getZ(
+          const F& x,
+          const F& mu = static_cast<F>(0),
+          const F& sigma = static_cast<F>(1)
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T getX(
-          const T& z,
-          const T& mu = static_cast<T>(0),
-          const T& sigma = static_cast<T>(1)
+    template <typename F>
+    F getX(
+          const F& z,
+          const F& mu = static_cast<F>(0),
+          const F& sigma = static_cast<F>(1)
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T pdf(
-          const T& x,
-          const T& mu = static_cast<T>(0),
-          const T& sigma = static_cast<T>(1)
+    template <typename F>
+    F pdf(
+          const F& x,
+          const F& mu = static_cast<F>(0),
+          const F& sigma = static_cast<F>(1)
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T probInt(
-          const T& a,
-          const T& b,
-          const T& mu = static_cast<T>(0),
-          const T& sigma = static_cast<T>(1)
+    template <typename F>
+    F probInt(
+          const F& a,
+          const F& b,
+          const F& mu = static_cast<F>(0),
+          const F& sigma = static_cast<F>(1)
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T prob(
-          const T& x,
-          const T& mu = static_cast<T>(0),
-          const T& sigma = static_cast<T>(1),
+    template <typename F>
+    F prob(
+          const F& x,
+          const F& mu = static_cast<F>(0),
+          const F& sigma = static_cast<F>(1),
           bool lowerTail = true
         ) throw (StatisticsException);
 
 
-    template <class T>
-    T quant(
-          const T& p,
-          const T& mu = static_cast<T>(0),
-          const T& sigma = static_cast<T>(1),
+    template <typename F>
+    F quant(
+          const F& p,
+          const F& mu = static_cast<F>(0),
+          const F& sigma = static_cast<F>(1),
           bool lowerTail = true
         ) throw (StatisticsException);
 

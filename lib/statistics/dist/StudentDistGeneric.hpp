@@ -51,63 +51,63 @@ namespace math
 namespace StudentDist
 {
 
-    template <class T>
-    T getT(
-        const T& x,
+    template <typename F>
+    F getT(
+        const F& x,
         size_t n = 1,
-        const T& mu = static_cast<T>(0),
-        const T& s = static_cast<T>(1)
+        const F& mu = static_cast<F>(0),
+        const F& s = static_cast<F>(1)
       ) throw (StatisticsException);
 
 
-    template <class T>
-    T getX(
-        const T& t,
+    template <typename F>
+    F getX(
+        const F& t,
         size_t n = 1,
-        const T& mu = static_cast<T>(0),
-        const T& s = static_cast<T>(1)
+        const F& mu = static_cast<F>(0),
+        const F& s = static_cast<F>(1)
       ) throw (StatisticsException);
 
 
 
-    template <class T>
-    T pdf(
-        const T& x,
-        const T& df,
-        const T& mu = static_cast<T>(0),
-        const T& sigma = static_cast<T>(1)
+    template <typename F>
+    F pdf(
+        const F& x,
+        const F& df,
+        const F& mu = static_cast<F>(0),
+        const F& sigma = static_cast<F>(1)
       ) throw (StatisticsException);
 
 
-    template <class T>
-    T probInt(
-        const T& a,
-        const T& b,
-        const T& df,
-        const T& mu = static_cast<T>(0),
-        const T& sigma = static_cast<T>(1)
+    template <typename F>
+    F probInt(
+        const F& a,
+        const F& b,
+        const F& df,
+        const F& mu = static_cast<F>(0),
+        const F& sigma = static_cast<F>(1)
       ) throw (StatisticsException);
 
 
 
-    template <class T>
-    T prob(
-        const T& x,
-        const T& df,
+    template <typename F>
+    F prob(
+        const F& x,
+        const F& df,
         bool lowerTail = true,
-        const T& mu = static_cast<T>(0),
-        const T& sigma = static_cast<T>(1)
+        const F& mu = static_cast<F>(0),
+        const F& sigma = static_cast<F>(1)
       ) throw (StatisticsException);
 
 
 
-    template <class T>
-    T quant(
-        const T& p,
-        const T& df,
+    template <typename F>
+    F quant(
+        const F& p,
+        const F& df,
         bool lowerTail = true,
-        const T& mu = static_cast<T>(0),
-        const T& sigma = static_cast<T>(1)
+        const F& mu = static_cast<F>(0),
+        const F& sigma = static_cast<F>(1)
       ) throw (StatisticsException);
 
 }  // namespace StudentDist

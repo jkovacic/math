@@ -54,15 +54,15 @@ namespace math {  namespace ChiSquareDist {  namespace __private
  *
  * @throw StatisticsException if any argument is invalid.
  */
-template <class T>
-void __checkParams(const T& x, const T& df) throw (math::StatisticsException)
+template <typename F>
+void __checkParams(const F& x, const F& df) throw (math::StatisticsException)
 {
-    if ( x < static_cast<T>(0) )
+    if ( x < static_cast<F>(0) )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
     }
 
-    if (df < math::NumericUtil::getEPS<T>() )
+    if (df < math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_DF);
     }
@@ -83,10 +83,10 @@ void __checkParams(const T& x, const T& df) throw (math::StatisticsException)
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::ChiSquareDist::pdf(
-      const T& x,
-      const T& df
+template <typename F>
+F math::ChiSquareDist::pdf(
+      const F& x,
+      const F& df
     ) throw (math::StatisticsException)
 {
     /*
@@ -99,11 +99,11 @@ T math::ChiSquareDist::pdf(
      */
 
     // sanity check:
-    math::ChiSquareDist::__private::__checkParams<T>(x, df);
+    math::ChiSquareDist::__private::__checkParams<F>(x, df);
 
-    const T df2 = df / static_cast<T>(2);
-    return std::pow(static_cast<T>(2), -df2) * std::pow(x, df2 - static_cast<T>(1) ) *
-           std::exp(-x / static_cast<T>(2)) / math::SpecFun::gamma<T>(df2);
+    const F df2 = df / static_cast<F>(2);
+    return std::pow(static_cast<F>(2), -df2) * std::pow(x, df2 - static_cast<F>(1) ) *
+           std::exp(-x / static_cast<F>(2)) / math::SpecFun::gamma<F>(df2);
 }
 
 
@@ -124,11 +124,11 @@ T math::ChiSquareDist::pdf(
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::ChiSquareDist::probInt(
-      const T& a,
-      const T& b,
-      const T& df
+template <typename F>
+F math::ChiSquareDist::probInt(
+      const F& a,
+      const F& b,
+      const F& df
     ) throw (math::StatisticsException)
 {
     /*
@@ -141,11 +141,11 @@ T math::ChiSquareDist::probInt(
 
     // Sanity check will be performed by prob()
 
-    const T from = std::min(a, b);
-    const T to = std::max(a, b);
+    const F from = std::min(a, b);
+    const F to = std::max(a, b);
 
-    return math::ChiSquareDist::prob<T>(to, df, true) -
-           math::ChiSquareDist::prob<T>(from, df, true);
+    return math::ChiSquareDist::prob<F>(to, df, true) -
+           math::ChiSquareDist::prob<F>(from, df, true);
 }
 
 
@@ -161,10 +161,10 @@ T math::ChiSquareDist::probInt(
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::ChiSquareDist::prob(
-      const T& x,
-      const T& df,
+template <typename F>
+F math::ChiSquareDist::prob(
+      const F& x,
+      const F& df,
       bool lowerTail
     ) throw (math::StatisticsException)
 {
@@ -185,20 +185,20 @@ T math::ChiSquareDist::prob(
      */
 
     // sanity check
-    math::ChiSquareDist::__private::__checkParams<T>(x, df);
+    math::ChiSquareDist::__private::__checkParams<F>(x, df);
 
     try
     {
         // Tolerance for the algorithm that evaluates the incomplete gamma function:
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
 
-        const T cdf = math::SpecFun::incGammaLowerReg<T>(
-              df / static_cast<T>(2), x / static_cast<T>(2), TOL);
+        const F cdf = math::SpecFun::incGammaLowerReg<F>(
+              df / static_cast<F>(2), x / static_cast<F>(2), TOL);
 
         // the return value depends on 'lowerTail':
-        return ( true==lowerTail ? cdf : static_cast<T>(1)-cdf );
+        return ( true==lowerTail ? cdf : static_cast<F>(1)-cdf );
     }
     catch ( const math::SpecFunException& sfex )
     {
@@ -222,17 +222,17 @@ T math::ChiSquareDist::prob(
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::ChiSquareDist::quant(
-      const T& p,
-      const T& df,
+template <typename F>
+F math::ChiSquareDist::quant(
+      const F& p,
+      const F& df,
       bool lowerTail
     ) throw (math::StatisticsException)
 {
     // sanity check
-    math::ChiSquareDist::__private::__checkParams<T>(static_cast<T>(1), df);
-    if ( p <= math::NumericUtil::getEPS<T>() ||
-         p >= static_cast<T>(1) - math::NumericUtil::getEPS<T>() )
+    math::ChiSquareDist::__private::__checkParams<F>(static_cast<F>(1), df);
+    if ( p <= math::NumericUtil::getEPS<F>() ||
+         p >= static_cast<F>(1) - math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -258,14 +258,14 @@ T math::ChiSquareDist::quant(
     try
     {
         // The actual probability in the expressions above depends on 'lowerTail':
-        const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
+        const F P = (true==lowerTail ? p : static_cast<F>(1)-p);
 
         // Tolerance for the algorithm that evaluates pInv():)
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
-        return math::SpecFun::incGammaLowerRegInv<T>(df / static_cast<T>(2), P, TOL) *
-               static_cast<T>(2);
+        return math::SpecFun::incGammaLowerRegInv<F>(df / static_cast<F>(2), P, TOL) *
+               static_cast<F>(2);
     }
     catch ( const math::SpecFunException& sfex )
     {

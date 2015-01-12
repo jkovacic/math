@@ -55,10 +55,10 @@ namespace math {  namespace NormalDist {  namespace __private
  *
  * @throw StatisticsException if 'sigma' is not valid.
  */
-template <class T>
-void __checkSigma(const T& sigma) throw (math::StatisticsException)
+template <typename F>
+void __checkSigma(const F& sigma) throw (math::StatisticsException)
 {
-    if ( sigma < math::NumericUtil::getEPS<T>() )
+    if ( sigma < math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_STDEV);
     }
@@ -81,11 +81,11 @@ void __checkSigma(const T& sigma) throw (math::StatisticsException)
  *
  * @throw StatisticsException if the standard deviation is invalid
  */
-template <class T>
-T math::NormalDist::getZ(
-          const T& x,
-          const T& mu,
-          const T& sigma
+template <typename F>
+F math::NormalDist::getZ(
+          const F& x,
+          const F& mu,
+          const F& sigma
         ) throw (math::StatisticsException)
 {
     /*
@@ -96,7 +96,7 @@ T math::NormalDist::getZ(
      */
 
     // sanity check:
-    math::NormalDist::__private::__checkSigma<T>(sigma);
+    math::NormalDist::__private::__checkSigma<F>(sigma);
 
     return (x - mu) / sigma;
 }
@@ -115,11 +115,11 @@ T math::NormalDist::getZ(
  *
  * @throw StatisticsException if the standard deviation is invalid
  */
-template <class T>
-T math::NormalDist::getX(
-          const T& z,
-          const T& mu,
-          const T& sigma
+template <typename F>
+F math::NormalDist::getX(
+          const F& z,
+          const F& mu,
+          const F& sigma
         ) throw (math::StatisticsException)
 {
     /*
@@ -127,7 +127,7 @@ T math::NormalDist::getX(
      */
 
     // sanity check:
-	math::NormalDist::__private::__checkSigma<T>(sigma);
+	math::NormalDist::__private::__checkSigma<F>(sigma);
 
     return mu + z * sigma;
 }
@@ -145,11 +145,11 @@ T math::NormalDist::getX(
  *
  * @throw StatisticsException if the standard deviation is invalid
  */
-template <class T>
-T math::NormalDist::pdf(
-      const T& x,
-      const T& mu,
-      const T& sigma
+template <typename F>
+F math::NormalDist::pdf(
+      const F& x,
+      const F& mu,
+      const F& sigma
     ) throw (math::StatisticsException)
 {
     /*
@@ -168,11 +168,11 @@ T math::NormalDist::pdf(
      */
     
     // sanity check:
-    math::NormalDist::__private::__checkSigma<T>(sigma);
+    math::NormalDist::__private::__checkSigma<F>(sigma);
 
-    const T z = (x - mu) / sigma;
-    return static_cast<T>(MATH_CONST_SQRT_INV_2_PI) *
-           std::exp( -z*z / static_cast<T>(2) ) / sigma;
+    const F z = (x - mu) / sigma;
+    return static_cast<F>(MATH_CONST_SQRT_INV_2_PI) *
+           std::exp( -z*z / static_cast<F>(2) ) / sigma;
 }
 
 
@@ -194,12 +194,12 @@ T math::NormalDist::pdf(
  *
  * @throw StatisticsException if the standard deviation is invalid
  */
-template <class T>
-T math::NormalDist::probInt(
-      const T& a,
-      const T& b,
-      const T& mu,
-      const T& sigma
+template <typename F>
+F math::NormalDist::probInt(
+      const F& a,
+      const F& b,
+      const F& mu,
+      const F& sigma
     ) throw (math::StatisticsException)
 {
     /*
@@ -211,13 +211,13 @@ T math::NormalDist::probInt(
      */
 
     // sanity check:
-    math::NormalDist::__private::__checkSigma<T>(sigma);
+    math::NormalDist::__private::__checkSigma<F>(sigma);
 
-    const T from = std::min(a, b);
-    const T to = std::max(a, b);
+    const F from = std::min(a, b);
+    const F to = std::max(a, b);
 
-    return math::NormalDist::prob<T>(to, mu, sigma, true) -
-           math::NormalDist::prob<T>(from, mu, sigma, true);
+    return math::NormalDist::prob<F>(to, mu, sigma, true) -
+           math::NormalDist::prob<F>(from, mu, sigma, true);
 }
 
 
@@ -234,11 +234,11 @@ T math::NormalDist::probInt(
  *
  * @throw StatisticsException if the standard deviation is invalid
  */
-template <class T>
-T math::NormalDist::prob(
-      const T& x,
-      const T& mu,
-      const T& sigma,
+template <typename F>
+F math::NormalDist::prob(
+      const F& x,
+      const F& mu,
+      const F& sigma,
       bool lowerTail
     ) throw (math::StatisticsException)
 {
@@ -278,11 +278,11 @@ T math::NormalDist::prob(
      */
 
     // sanity check
-    math::NormalDist::__private::__checkSigma<T>(sigma);
+    math::NormalDist::__private::__checkSigma<F>(sigma);
 
     // Tolerance for the last Taylor series term
-    const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                  static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+    const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                  static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
     /*
      *            x - mu            sqrt(2) * (x - mu)
@@ -290,7 +290,7 @@ T math::NormalDist::prob(
      *        sigma * sqrt(2)            2 * sigma
      */
 
-    const T z = static_cast<T>(MATH_CONST_SQRT_INV_2) * ( x - mu ) / sigma;
+    const F z = static_cast<F>(MATH_CONST_SQRT_INV_2) * ( x - mu ) / sigma;
 
     /*
      * Calculate the return value:
@@ -298,10 +298,10 @@ T math::NormalDist::prob(
      *   cdf = 0.5 * (1 + erf(z)) = 0.5 * erfc(-z)
      */
 
-    const T cdf = math::SpecFun::erfc<T>(-z, TOL) / static_cast<T>(2);
+    const F cdf = math::SpecFun::erfc<F>(-z, TOL) / static_cast<F>(2);
 
     // the return value depends on 'lowerTail':
-    return ( true==lowerTail ? cdf : static_cast<T>(1)-cdf );
+    return ( true==lowerTail ? cdf : static_cast<F>(1)-cdf );
 }
 
 
@@ -320,18 +320,18 @@ T math::NormalDist::prob(
  *
  * @throw StatisticsException if either 'sigma' or 'p' is invalid
  */
-template <class T>
-T math::NormalDist::quant(
-      const T& p,
-      const T& mu,
-      const T& sigma,
+template <typename F>
+F math::NormalDist::quant(
+      const F& p,
+      const F& mu,
+      const F& sigma,
       bool lowerTail
     ) throw (math::StatisticsException)
 {
     // sanity check
-    math::NormalDist::__private::__checkSigma<T>(sigma);
-    if ( p <= math::NumericUtil::getEPS<T>() || 
-         p >= static_cast<T>(1)-math::NumericUtil::getEPS<T>() )
+    math::NormalDist::__private::__checkSigma<F>(sigma);
+    if ( p <= math::NumericUtil::getEPS<F>() ||
+         p >= static_cast<F>(1)-math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -355,14 +355,14 @@ T math::NormalDist::quant(
     try
     {
         // The actual probability in the expressions above depends on 'lowerTail':
-        const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
+        const F P = (true==lowerTail ? p : static_cast<F>(1)-p);
 
         // Tolerance for the algorithm that evaluates erfcInv():)
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) / 
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
-        return mu - math::SpecFun::erfcInv<T>(static_cast<T>(2) * P, TOL) * 
-                    sigma * static_cast<T>(MATH_CONST_SQRT_2);
+        return mu - math::SpecFun::erfcInv<F>(static_cast<F>(2) * P, TOL) *
+                    sigma * static_cast<F>(MATH_CONST_SQRT_2);
     }
     catch ( const math::SpecFunException& sfex )
     {

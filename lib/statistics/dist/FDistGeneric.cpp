@@ -55,16 +55,16 @@ namespace math {  namespace FDist {  namespace __private
  *
  * @throw StatisticsException if any argument is invalid.
  */
-template <class T>
-void __checkParams(const T& x, const T& d1, const T& d2) throw (math::StatisticsException)
+template <typename F>
+void __checkParams(const F& x, const F& d1, const F& d2) throw (math::StatisticsException)
 {
-    if ( x < static_cast<T>(0) )
+    if ( x < static_cast<F>(0) )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
     }
 
-    if ( d1 <= math::NumericUtil::getEPS<T>() ||
-         d2 <= math::NumericUtil::getEPS<T>() )
+    if ( d1 <= math::NumericUtil::getEPS<F>() ||
+         d2 <= math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_DF);
     }
@@ -86,11 +86,11 @@ void __checkParams(const T& x, const T& d1, const T& d2) throw (math::Statistics
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::FDist::pdf(
-      const T& x,
-      const T& d1,
-      const T& d2
+template <typename F>
+F math::FDist::pdf(
+      const F& x,
+      const F& d1,
+      const F& d2
     ) throw (math::StatisticsException)
 {
     /*
@@ -109,13 +109,13 @@ T math::FDist::pdf(
      */
 
     // sanity check:
-    math::FDist::__private::__checkParams<T>(x, d1, d2);
+    math::FDist::__private::__checkParams<F>(x, d1, d2);
 
-    T pdf = static_cast<T>(0);
+    F pdf = static_cast<F>(0);
 
     try
     {
-        if ( true == math::NumericUtil::isZero<T>(x) )
+        if ( true == math::NumericUtil::isZero<F>(x) )
         {
             /*
              * x ~= 0 :
@@ -137,19 +137,19 @@ T math::FDist::pdf(
              * which is not defined (blows up towards +infinity).
              */
 
-            if ( d1 <= static_cast<T>(2) )
+            if ( d1 <= static_cast<F>(2) )
             {
                 throw math::StatisticsException(math::StatisticsException::UNDEFINED);
             }
             else
             {
-                pdf = static_cast<T>(0);
+                pdf = static_cast<F>(0);
             }
         }
         else
         {
             pdf = std::sqrt(std::pow(d1*x, d1) * std::pow(d2, d2) / std::pow(d1*x+d2, d1+d2) ) /
-                  ( x * math::SpecFun::beta(d1/static_cast<T>(2), d2/static_cast<T>(2)) );
+                  ( x * math::SpecFun::beta(d1/static_cast<F>(2), d2/static_cast<F>(2)) );
         }
     }
     catch ( const math::SpecFunException& sfex )
@@ -179,12 +179,12 @@ T math::FDist::pdf(
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::FDist::probInt(
-      const T& a,
-      const T& b,
-      const T& d1,
-      const T& d2
+template <typename F>
+F math::FDist::probInt(
+      const F& a,
+      const F& b,
+      const F& d1,
+      const F& d2
     ) throw (math::StatisticsException)
 {
     /*
@@ -197,11 +197,11 @@ T math::FDist::probInt(
 
     // Sanity check will be performed by prob()
 
-    const T from = std::min(a, b);
-    const T to = std::max(a, b);
+    const F from = std::min(a, b);
+    const F to = std::max(a, b);
 
-    return math::FDist::prob<T>(to, d1, d2, true) -
-           math::FDist::prob<T>(from, d1, d2, true);
+    return math::FDist::prob<F>(to, d1, d2, true) -
+           math::FDist::prob<F>(from, d1, d2, true);
 }
 
 
@@ -218,11 +218,11 @@ T math::FDist::probInt(
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::FDist::prob(
-      const T& x,
-      const T& d1,
-      const T& d2,
+template <typename F>
+F math::FDist::prob(
+      const F& x,
+      const F& d1,
+      const F& d2,
       bool lowerTail
     ) throw (math::StatisticsException)
 {
@@ -248,22 +248,22 @@ T math::FDist::prob(
      */
 
     // sanity check
-    math::FDist::__private::__checkParams<T>(x, d1, d2);
+    math::FDist::__private::__checkParams<F>(x, d1, d2);
 
     try
     {
         // Tolerance for the algorithm that evaluates the incomplete gamma function:
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
 
-        const T F = d1 * x / (d1 * x + d2);
+        const F f = d1 * x / (d1 * x + d2);
 
-        const T cdf = math::SpecFun::incBetaLowerReg<T>(
-              d1 / static_cast<T>(2), d2 / static_cast<T>(2), F, TOL );
+        const F cdf = math::SpecFun::incBetaLowerReg<F>(
+              d1 / static_cast<F>(2), d2 / static_cast<F>(2), f, TOL );
 
         // the return value depends on 'lowerTail':
-        return ( true==lowerTail ? cdf : static_cast<T>(1)-cdf );
+        return ( true==lowerTail ? cdf : static_cast<F>(1)-cdf );
     }
     catch ( const math::SpecFunException& sfex )
     {
@@ -288,18 +288,18 @@ T math::FDist::prob(
  *
  * @throw StatisticsException if any argument is invalid
  */
-template <class T>
-T math::FDist::quant(
-      const T& p,
-      const T& d1,
-      const T& d2,
+template <typename F>
+F math::FDist::quant(
+      const F& p,
+      const F& d1,
+      const F& d2,
       bool lowerTail
     ) throw (math::StatisticsException)
 {
     // sanity check
-    math::FDist::__private::__checkParams<T>(static_cast<T>(1), d1, d2);
-    if ( p <= math::NumericUtil::getEPS<T>() ||
-         p >= static_cast<T>(1) - math::NumericUtil::getEPS<T>() )
+    math::FDist::__private::__checkParams<F>(static_cast<F>(1), d1, d2);
+    if ( p <= math::NumericUtil::getEPS<F>() ||
+         p >= static_cast<F>(1) - math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -331,19 +331,19 @@ T math::FDist::quant(
     try
     {
         // The actual probability in the expressions above depends on 'lowerTail':
-        const T P = (true==lowerTail ? p : static_cast<T>(1)-p);
+        const F P = (true==lowerTail ? p : static_cast<F>(1)-p);
 
         // Tolerance for the algorithm that evaluates iInv():
-        const T TOL = static_cast<T>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<T>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
+                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
 
-        const T F = math::SpecFun::incBetaLowerRegInv<T>(
-                                            d1 / static_cast<T>(2),
-                                            d2 / static_cast<T>(2),
+        const F f = math::SpecFun::incBetaLowerRegInv<F>(
+                                            d1 / static_cast<F>(2),
+                                            d2 / static_cast<F>(2),
                                             P,
                                             TOL );
 
-        return F * d2 / ( d1 * (static_cast<T>(1) - F) );
+        return f * d2 / ( d1 * (static_cast<F>(1) - f) );
     }
     catch ( const math::SpecFunException& sfex )
     {
