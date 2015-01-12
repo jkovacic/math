@@ -37,7 +37,7 @@ limitations under the License.
 #include "exception/StatisticsException.hpp"
 
 
-// Implemntation of "private" functions
+// Implementation of "private" functions
 namespace math
 {
 
@@ -56,19 +56,19 @@ namespace __private
  * 
  * @return element with the highest absolute value among the first 'Nmax' elements of 'x'
  */
-template <class T>
-T __getShift(const std::vector<T>& x, size_t Nmax = 5)
+template <typename F>
+F __getShift(const std::vector<F>& x, size_t Nmax = 5)
 {
-    T retVal = x.at(0);
-    T absRetVal = ( retVal<static_cast<T>(0) ? -retVal : retVal );
+    F retVal = x.at(0);
+    F absRetVal = ( retVal<static_cast<F>(0) ? -retVal : retVal );
     const size_t N = std::min<size_t>(x.size(), Nmax);
     size_t cntr = 1;
-    typename std::vector<T>::const_iterator it = x.begin() + cntr;
+    typename std::vector<F>::const_iterator it = x.begin() + cntr;
     
     for ( ; cntr<N; ++it, ++cntr )
     {
-        const T el = *it;
-        const T absx = ( el<static_cast<T>(0) ? -el : el );
+        const F el = *it;
+        const F absx = ( el<static_cast<F>(0) ? -el : el );
 
         if ( absx > absRetVal )
         {
@@ -92,8 +92,8 @@ T __getShift(const std::vector<T>& x, size_t Nmax = 5)
  *
  * @throw StatisticsException if 'x' is empty
  */
-template <class T>
-T __minmax(const std::vector<T>& x, bool min) throw(math::StatisticsException)
+template <typename F>
+F __minmax(const std::vector<F>& x, bool min) throw(math::StatisticsException)
 {
     const size_t N = x.size();
 
@@ -104,7 +104,7 @@ T __minmax(const std::vector<T>& x, bool min) throw(math::StatisticsException)
     }
 
     // the first element is the first candidate for the extreme value...
-    T retVal = x.at(0);
+    F retVal = x.at(0);
 
     // Coarse grained parallelism:
     #pragma omp parallel num_threads(ompIdeal(N)) \
@@ -116,9 +116,9 @@ T __minmax(const std::vector<T>& x, bool min) throw(math::StatisticsException)
         const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = elems_per_thread * thnr;
 
-        typename std::vector<T>::const_iterator it = x.begin() + istart;
+        typename std::vector<F>::const_iterator it = x.begin() + istart;
         // the first value of the block is the first candidate for the local extreme
-        T temp = *it;
+        F temp = *it;
 
         for ( size_t cntr=0; 
               cntr<elems_per_thread && it!=x.end(); 
@@ -152,10 +152,10 @@ T __minmax(const std::vector<T>& x, bool min) throw(math::StatisticsException)
  *
  * @throw StatisticsException if 'x' is empty
  */
-template <class T>
-T math::SampleStat::min(const std::vector<T>& x) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::min(const std::vector<F>& x) throw(math::StatisticsException)
 {
-    return math::SampleStat::__private::__minmax<T>(x, true);
+    return math::SampleStat::__private::__minmax<F>(x, true);
 }
 
 
@@ -166,10 +166,10 @@ T math::SampleStat::min(const std::vector<T>& x) throw(math::StatisticsException
  *
  * @throw StatisticsException if 'x' is empty
  */
-template <class T>
-T math::SampleStat::max(const std::vector<T>& x) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::max(const std::vector<F>& x) throw(math::StatisticsException)
 {
-    return math::SampleStat::__private::__minmax<T>(x, false);
+    return math::SampleStat::__private::__minmax<F>(x, false);
 }
 
 
@@ -178,14 +178,14 @@ T math::SampleStat::max(const std::vector<T>& x) throw(math::StatisticsException
  *
  * @return sum of all sample values
  */
-template <class T>
-T math::SampleStat::sum(const std::vector<T>& x)
+template <typename F>
+F math::SampleStat::sum(const std::vector<F>& x)
 {
     const size_t N = x.size();
 
     if ( 0 == N )
     {
-        return static_cast<T>(0);
+        return static_cast<F>(0);
     }
 
     /*
@@ -197,7 +197,7 @@ T math::SampleStat::sum(const std::vector<T>& x)
     /*
      * Each thread calculates the sum of its block
      */
-    T sum = static_cast<T>(0);
+    F sum = static_cast<F>(0);
     #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(x) \
@@ -213,8 +213,8 @@ T math::SampleStat::sum(const std::vector<T>& x)
         const size_t istart = samples_per_thread * thrnr;
 
         // Calculate the sum of the assigned block...
-        T partsum = static_cast<T>(0);
-        typename std::vector<T>::const_iterator it = x.begin() + istart;
+        F partsum = static_cast<F>(0);
+        typename std::vector<F>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
               cntr<samples_per_thread && it!=x.end(); 
               ++it, ++cntr )
@@ -239,8 +239,8 @@ T math::SampleStat::sum(const std::vector<T>& x)
  *
  * @throw StatisticsException if 'x' is empty
  */
-template <class T>
-T math::SampleStat::mean(const std::vector<T>& x) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::mean(const std::vector<F>& x) throw(math::StatisticsException)
 {
     /*
      * Arithmetical mean is calculated as:
@@ -262,7 +262,7 @@ T math::SampleStat::mean(const std::vector<T>& x) throw(math::StatisticsExceptio
         throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
-    return math::SampleStat::sum<T>(x) / static_cast<T>(N);
+    return math::SampleStat::sum<F>(x) / static_cast<F>(N);
 }
 
 
@@ -279,8 +279,8 @@ T math::SampleStat::mean(const std::vector<T>& x) throw(math::StatisticsExceptio
  *
  * @throw StatisticsException if 'x' is empty or if 'df_sub' exceeds sample's size
  */
-template <class T>
-T math::SampleStat::var(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::var(const std::vector<F>& x, size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * The best known algorithm to calculate a variance is:
@@ -332,10 +332,10 @@ T math::SampleStat::var(const std::vector<T>& x, size_t df_sub) throw(math::Stat
     }
 
     // Let K be equal to the first element:
-    const T K = math::SampleStat::__private::__getShift<T>(x);
+    const F K = math::SampleStat::__private::__getShift<F>(x);
 
-    T sum  = static_cast<T>(0);
-    T sum2 = static_cast<T>(0);
+    F sum  = static_cast<F>(0);
+    F sum2 = static_cast<F>(0);
 
     /*
      * Coarse grained parallelism will be applied, i.e. each thread will be
@@ -358,14 +358,14 @@ T math::SampleStat::var(const std::vector<T>& x, size_t df_sub) throw(math::Stat
         const size_t istart = samples_per_thread * thrnr;
 
         // Calculate both sums of the assigned block...
-        T partsum  = static_cast<T>(0);
-        T partsum2 = static_cast<T>(0);
-        typename std::vector<T>::const_iterator it = x.begin() + istart;
+        F partsum  = static_cast<F>(0);
+        F partsum2 = static_cast<F>(0);
+        typename std::vector<F>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
               cntr<samples_per_thread && it!=x.end(); 
               ++it, ++cntr )
         {
-            const T diff = *it - K;
+            const F diff = *it - K;
             partsum  += diff;
             partsum2 += diff * diff;
         }
@@ -375,7 +375,7 @@ T math::SampleStat::var(const std::vector<T>& x, size_t df_sub) throw(math::Stat
         sum2 += partsum2;
     }
 
-    return (sum2 - (sum*sum)/static_cast<T>(N)) / static_cast<T>(N - df_sub);
+    return (sum2 - (sum*sum)/static_cast<F>(N)) / static_cast<F>(N - df_sub);
 }
 
 
@@ -391,10 +391,10 @@ T math::SampleStat::var(const std::vector<T>& x, size_t df_sub) throw(math::Stat
  *
  * @throw StatisticsException if the sample is empty or too small
  */
-template <class T>
-T math::SampleStat::var(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::var(const std::vector<F>& x, bool sample) throw(math::StatisticsException)
 {
-    return math::SampleStat::var<T>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::var<F>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -410,10 +410,10 @@ T math::SampleStat::var(const std::vector<T>& x, bool sample) throw(math::Statis
  *
  * @throw StatisticsException if the sample is empty or too small
  */
-template <class T>
-T math::SampleStat::stdev(const std::vector<T>& x, bool sample) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::stdev(const std::vector<F>& x, bool sample) throw(math::StatisticsException)
 {
-    return math::SampleStat::stdev<T>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::stdev<F>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -430,8 +430,8 @@ T math::SampleStat::stdev(const std::vector<T>& x, bool sample) throw(math::Stat
  *
  * @throw StatisticsException if 'x' is empty or 'df_sub' exceeds sample's size
  */
-template <class T>
-T math::SampleStat::stdev(const std::vector<T>& x, size_t df_sub) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::stdev(const std::vector<F>& x, size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Standard deviation is calculated as square root
@@ -450,7 +450,7 @@ T math::SampleStat::stdev(const std::vector<T>& x, size_t df_sub) throw(math::St
     throw math::StatisticsException(math::StatisticsException::UNSUPPORTED_TYPE);
 
     // will never execute, but some compilers may produce a warning if nothing is returned
-    return static_cast<T>(0);
+    return static_cast<F>(0);
 }
 
 
@@ -509,8 +509,8 @@ _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(long double)
  *
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or 'df_sub' exceeds single sample's size
  */
-template <class T>
-T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Covariance of two equally sized samples (X1 and X2) can be
@@ -568,12 +568,12 @@ T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, size
     }
 
     // K's are equal to the first elements of both samples
-    const T K1 = math::SampleStat::__private::__getShift<T>(x1);
-    const T K2 = math::SampleStat::__private::__getShift<T>(x2);
+    const F K1 = math::SampleStat::__private::__getShift<F>(x1);
+    const F K2 = math::SampleStat::__private::__getShift<F>(x2);
 
-    T sum  = static_cast<T>(0);
-    T sum1 = static_cast<T>(0);
-    T sum2 = static_cast<T>(0);
+    F sum  = static_cast<F>(0);
+    F sum1 = static_cast<F>(0);
+    F sum2 = static_cast<F>(0);
 
     /*
      * Coarse grained parallelism will be applied, i.e. each thread will be
@@ -596,16 +596,16 @@ T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, size
         const size_t istart = samples_per_thread * thrnr;
 
         // Calculate both sums of the assigned block...
-        T partsum  = static_cast<T>(0);
-        T partsum1 = static_cast<T>(0);
-        T partsum2 = static_cast<T>(0);
-        typename std::vector<T>::const_iterator it1 = x1.begin() + istart;
-        typename std::vector<T>::const_iterator it2 = x2.begin() + istart;
+        F partsum  = static_cast<F>(0);
+        F partsum1 = static_cast<F>(0);
+        F partsum2 = static_cast<F>(0);
+        typename std::vector<F>::const_iterator it1 = x1.begin() + istart;
+        typename std::vector<F>::const_iterator it2 = x2.begin() + istart;
         for ( size_t cntr = 0;
               cntr<samples_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
         {
-            const T d1 = *it1 - K1;
-            const T d2 = *it2 - K2;
+            const F d1 = *it1 - K1;
+            const F d2 = *it2 - K2;
             partsum  += d1 * d2;
             partsum1 += d1;
             partsum2 += d2;
@@ -617,7 +617,7 @@ T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, size
         sum2 += partsum2;
     }
 
-    return (sum - (sum1*sum2)/static_cast<T>(N1)) / static_cast<T>(N1 - df_sub);
+    return (sum - (sum1*sum2)/static_cast<F>(N1)) / static_cast<F>(N1 - df_sub);
 }
 
 
@@ -636,10 +636,10 @@ T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, size
  *
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
-template <class T>
-T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, bool sample) throw(math::StatisticsException)
 {
-    return math::SampleStat::cov<T>( x1, x2, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::cov<F>( x1, x2, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -656,8 +656,8 @@ T math::SampleStat::cov(const std::vector<T>& x1, const std::vector<T>& x2, bool
  *
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
-template <class T>
-T math::SampleStat::cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::cor(const std::vector<F>& x1, const std::vector<F>& x2) throw(math::StatisticsException)
 {
     /*
      * Correlation can be calculated as:
@@ -672,8 +672,8 @@ T math::SampleStat::cor(const std::vector<T>& x1, const std::vector<T>& x2) thro
 
     // Apply the population covariance and standard deviations to
     // allow smaller samples (at least one element each):
-    return math::SampleStat::cov<T>(x1, x2, false) / 
-           ( math::SampleStat::stdev<T>(x1, false) * math::SampleStat::stdev<T>(x2, false) );
+    return math::SampleStat::cov<F>(x1, x2, false) /
+           ( math::SampleStat::stdev<F>(x1, false) * math::SampleStat::stdev<F>(x2, false) );
 }
 
 
@@ -689,8 +689,8 @@ T math::SampleStat::cor(const std::vector<T>& x1, const std::vector<T>& x2) thro
  *
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
-template <class T>
-T math::SampleStat::r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(math::StatisticsException)
+template <typename F>
+F math::SampleStat::r2(const std::vector<F>& x1, const std::vector<F>& x2) throw(math::StatisticsException)
 {
     /*
      * R squared can be calculated by squaring the samples' correlation:
@@ -709,8 +709,8 @@ T math::SampleStat::r2(const std::vector<T>& x1, const std::vector<T>& x2) throw
     // Additionally apply population covariance and variances
     // to allow smaller samples (at least one element each).
 
-    const T cv = math::SampleStat::cov<T>(x1, x2, false);
+    const F cv = math::SampleStat::cov<F>(x1, x2, false);
 
     return (cv * cv) / 
-           ( math::SampleStat::var<T>(x1, false) * math::SampleStat::var<T>(x2, false) );
+           ( math::SampleStat::var<F>(x1, false) * math::SampleStat::var<F>(x2, false) );
 }

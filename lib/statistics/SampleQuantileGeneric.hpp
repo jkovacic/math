@@ -78,54 +78,54 @@ struct EQntlType
  *
  * The class creates its own copy of the sample vector.
  */
-template <class T>
+template <typename F>
 class SampleQuantileGeneric
 {
 
 private:
-    std::vector<T> m_v;
+    std::vector<F> m_v;
     size_t m_N;
 
 public:
     // Constructor
-    SampleQuantileGeneric(const std::vector<T>& sample) throw (StatisticsException);
+    SampleQuantileGeneric(const std::vector<F>& sample) throw (StatisticsException);
 
     // Methods to obtain quantiles of the sample:
     size_t sampleSize() const;
 
-    T quantile(
+    F quantile(
            size_t num,
            size_t den, 
            EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
-    T qntl(
-           const T& p,
+    F qntl(
+           const F& p,
            EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
-    T median() const;
+    F median() const;
 
-    T quartile(
+    F quartile(
            size_t q,
            EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
-    T iqr(EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
+    F iqr(EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
 
-    T min() const;
+    F min() const;
 
-    T max() const;
+    F max() const;
 
     bool isOutlier(
-           const T& val,
-           const T& iqrs = static_cast<T>(STAT_OUTLIER_IQRS_NUM) / static_cast<T>(STAT_OUTLIER_IQRS_DEN), 
+           const F& val,
+           const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
         )  const;
 
     void outliers(
-           std::set<T>& outl,
-           const T& iqrs = static_cast<T>(STAT_OUTLIER_IQRS_NUM) / static_cast<T>(STAT_OUTLIER_IQRS_DEN), 
+           std::set<F>& outl,
+           const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
          ) const throw (StatisticsException );
 
@@ -134,7 +134,7 @@ public:
 
 private:
     // internally used functions:
-    T linIntrp(const T& h) const;
+    F linIntrp(const F& h) const;
 
 };  // class SampleQuantileGeneric
 

@@ -46,41 +46,41 @@ namespace math
 namespace SampleStat
 {
 
-    template <class T>
-    T min(const std::vector<T>& x) throw(StatisticsException);
+    template <typename F>
+    F min(const std::vector<F>& x) throw(StatisticsException);
 
-    template <class T>
-    T max(const std::vector<T>& x) throw(StatisticsException);
+    template <typename F>
+    F max(const std::vector<F>& x) throw(StatisticsException);
 
-    template <class T>
-    T sum(const std::vector<T>& x);
+    template <typename F>
+    F sum(const std::vector<F>& x);
 
-    template <class T>
-    T mean(const std::vector<T>& x) throw(StatisticsException);
+    template <typename F>
+    F mean(const std::vector<F>& x) throw(StatisticsException);
 
-    template <class T>
-    T var(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
+    template <typename F>
+    F var(const std::vector<F>& x, bool sample=true) throw(StatisticsException);
 
-    template <class T>
-    T var(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
+    template <typename F>
+    F var(const std::vector<F>& x, size_t df_sub) throw(StatisticsException);
 
-    template <class T>
-    T stdev(const std::vector<T>& x, bool sample=true) throw(StatisticsException);
+    template <typename F>
+    F stdev(const std::vector<F>& x, bool sample=true) throw(StatisticsException);
 
-    template <class T>
-    T stdev(const std::vector<T>& x, size_t df_sub) throw(StatisticsException);
+    template <typename F>
+    F stdev(const std::vector<F>& x, size_t df_sub) throw(StatisticsException);
 
-    template <class T>
-    T cov(const std::vector<T>& x1, const std::vector<T>& x2, size_t df_sub) throw(StatisticsException);
+    template <typename F>
+    F cov(const std::vector<F>& x1, const std::vector<F>& x2, size_t df_sub) throw(StatisticsException);
 
-    template <class T>
-    T cov(const std::vector<T>& x1, const std::vector<T>& x2, bool sample=true) throw(StatisticsException);
+    template <typename F>
+    F cov(const std::vector<F>& x1, const std::vector<F>& x2, bool sample=true) throw(StatisticsException);
 
-    template <class T>
-    T cor(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
+    template <typename F>
+    F cor(const std::vector<F>& x1, const std::vector<F>& x2) throw(StatisticsException);
 
-    template <class T>
-    T r2(const std::vector<T>& x1, const std::vector<T>& x2) throw(StatisticsException);
+    template <typename F>
+    F r2(const std::vector<F>& x1, const std::vector<F>& x2) throw(StatisticsException);
 
 }  // namespace SampleStat
 

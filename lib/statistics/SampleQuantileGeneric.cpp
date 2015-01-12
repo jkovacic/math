@@ -48,8 +48,8 @@ limitations under the License.
  *
  * @throw StatisticsException if 'sample' is empty or allocation of memory for its copy failed
  */
-template <class T>
-math::SampleQuantileGeneric<T>::SampleQuantileGeneric(const std::vector<T>& sample) throw(math::StatisticsException)
+template <typename F>
+math::SampleQuantileGeneric<F>::SampleQuantileGeneric(const std::vector<F>& sample) throw(math::StatisticsException)
 {
     try
     {
@@ -75,8 +75,8 @@ math::SampleQuantileGeneric<T>::SampleQuantileGeneric(const std::vector<T>& samp
 /**
  * @return size of the sample
  */
-template <class T>
-size_t math::SampleQuantileGeneric<T>::sampleSize() const
+template <typename F>
+size_t math::SampleQuantileGeneric<F>::sampleSize() const
 {
     return this->m_N;
 }
@@ -99,15 +99,15 @@ size_t math::SampleQuantileGeneric<T>::sampleSize() const
  *
  * @throw StatisticsException if any input argument is invalid
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlType::type method) const throw(math::StatisticsException)
+template <typename F>
+F math::SampleQuantileGeneric<F>::quantile(size_t num, size_t den, math::EQntlType::type method) const throw(math::StatisticsException)
 {
     if ( 0==num || den<2 || num>=den )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
 
-    return this->qntl( static_cast<T>(num) / static_cast<T>(den), method);
+    return this->qntl( static_cast<F>(num) / static_cast<F>(den), method);
 }
 
 
@@ -120,12 +120,12 @@ T math::SampleQuantileGeneric<T>::quantile(size_t num, size_t den, math::EQntlTy
  *
  * @return estimated quantile as a function of 'h'
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::linIntrp(const T& h) const
+template <typename F>
+F math::SampleQuantileGeneric<F>::linIntrp(const F& h) const
 {
     // "rename" the vector as it is referred in statistical publications:
-    const std::vector<T>& x = this->m_v;
-    const T hf = std::floor(h);
+    const std::vector<F>& x = this->m_v;
+    const F hf = std::floor(h);
 
     /*
      * if floor(h) is referred as 'hf', the quantile is estimated as:
@@ -141,9 +141,9 @@ T math::SampleQuantileGeneric<T>::linIntrp(const T& h) const
      *   qp = x[hf-1] + (h - hf) * (x[hf] - x[hf-1])
      */
 
-    return ( x.at(math::NumericUtil::intRound<T, size_t>(hf) - 1) + 
-            (h - hf) * (x.at(math::NumericUtil::intRound<T, size_t>(hf)) - 
-             x.at(math::NumericUtil::intRound<T, size_t>(hf) - 1)) );
+    return ( x.at(math::NumericUtil::intRound<F, size_t>(hf) - 1) +
+            (h - hf) * (x.at(math::NumericUtil::intRound<F, size_t>(hf)) -
+             x.at(math::NumericUtil::intRound<F, size_t>(hf) - 1)) );
 }
 
 
@@ -163,29 +163,29 @@ T math::SampleQuantileGeneric<T>::linIntrp(const T& h) const
  *
  * @throw StatisticsException if any input argument is invalid
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method) const throw(math::StatisticsException)
+template <typename F>
+F math::SampleQuantileGeneric<F>::qntl(const F& p, math::EQntlType::type method) const throw(math::StatisticsException)
 {
-    T retVal;
+    F retVal;
 
     // Use references to "rename" the variables into names,
     // typically used in statistical publications.
     const size_t& N = this->m_N;
-    const std::vector<T>& x = this->m_v;
+    const std::vector<F>& x = this->m_v;
 
     // N casted to T, used often in nonint expressions
-    const T NT = static_cast<T>(N);
+    const F NT = static_cast<F>(N);
 
-    if ( p<static_cast<T>(0) || p>static_cast<T>(1) )
+    if ( p<static_cast<F>(0) || p>static_cast<F>(1) )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
 
     // Frequently used numerical constants:
-    const T ONE = static_cast<T>(1);
-    const T TWO = static_cast<T>(2);
-    const T HALF = ONE / TWO;
-    const T QUARTER = ONE / static_cast<T>(4);
+    const F ONE = static_cast<F>(1);
+    const F TWO = static_cast<F>(2);
+    const F HALF = ONE / TWO;
+    const F QUARTER = ONE / static_cast<F>(4);
 
     /*
      * Implementation of all methods described in:
@@ -201,14 +201,14 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::SAS3 :
     {
         // Inverse of empirical distribution function
-        if ( true == math::NumericUtil::isZero<T>(p) )
+        if ( true == math::NumericUtil::isZero<F>(p) )
         {
             retVal = x.at(0);
         }
         else
         {
-            const T h = NT * p + HALF;
-            retVal = x.at(math::NumericUtil::intCeil<T, size_t>(h-HALF) - 1);
+            const F h = NT * p + HALF;
+            retVal = x.at(math::NumericUtil::intCeil<F, size_t>(h-HALF) - 1);
         }
 
         break;
@@ -219,19 +219,19 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     {
         // Inverse of empirical distribution function
         // with averaging at discontinuities
-        if ( true == math::NumericUtil::isZero<T>(p) )
+        if ( true == math::NumericUtil::isZero<F>(p) )
         {
             retVal = x.at(0);
         }
-        else if ( true == math::NumericUtil::isZero<T>(ONE-p) )
+        else if ( true == math::NumericUtil::isZero<F>(ONE-p) )
         {
             retVal = x.at(N - 1);
         }
         else
         {
-            const T h = NT * p + HALF;
-            retVal = ( x.at(math::NumericUtil::intCeil<T, size_t>(h-HALF) - 1) + 
-                       x.at(math::NumericUtil::intFloor<T, size_t>(h+HALF) - 1) ) * HALF;
+            const F h = NT * p + HALF;
+            retVal = ( x.at(math::NumericUtil::intCeil<F, size_t>(h-HALF) - 1) +
+                       x.at(math::NumericUtil::intFloor<F, size_t>(h+HALF) - 1) ) * HALF;
         }
 
         break;
@@ -247,9 +247,9 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
         }
         else
         {
-            const T h = NT * p;
-            const T frac = h - std::floor(h);
-            size_t idx = math::NumericUtil::intFloor<T, size_t>(h);
+            const F h = NT * p;
+            const F frac = h - std::floor(h);
+            size_t idx = math::NumericUtil::intFloor<F, size_t>(h);
 
             /*
              * The index is h, rounded to the nearest integer.
@@ -257,7 +257,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
              * assuming one-based indexing.
              */
 
-            if ( true == math::NumericUtil::isZero<T>(frac-HALF) )
+            if ( true == math::NumericUtil::isZero<F>(frac-HALF) )
             {
                 // in this case round to the nearest even (divisible by 2) integer idx
                 if ( 0 != idx%2 )
@@ -282,11 +282,11 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::SCIPY_0_1 :
     {
         // Linear interpolation of the empirical distribution function
-        if ( p < static_cast<T>(1)/NT )
+        if ( p < static_cast<F>(1)/NT )
         {
             retVal = x.at(0);
         }
-        else if ( true == math::NumericUtil::isZero<T>(ONE-p) )
+        else if ( true == math::NumericUtil::isZero<F>(ONE-p) )
         {
             retVal = x.at(N-1);
         }
@@ -347,7 +347,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     {
         // Linear interpolation of the modes for the order statistics for
         // the uniform distribution on [0,1]
-        if ( true == math::NumericUtil::isZero<T>(ONE-p) )
+        if ( true == math::NumericUtil::isZero<F>(ONE-p) )
         {
             retVal = x.at(N-1);
         }
@@ -362,7 +362,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::R8 :
     case math::EQntlType::SCIPY_13_13 :
     {
-        const T third = ONE / static_cast<T>(3);
+        const F third = ONE / static_cast<F>(3);
 
         // Linear interpolation of the approximate medians for order statistics
         if ( p < (TWO * third) / (NT+third) )
@@ -384,8 +384,8 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     case math::EQntlType::R9 :
     case math::EQntlType::SCIPY_38_38 :
     {
-        const T F_3_8 = static_cast<T>(3) / static_cast<T>(8);
-        const T F_5_8 = static_cast<T>(5) / static_cast<T>(8);
+        const F F_3_8 = static_cast<F>(3) / static_cast<F>(8);
+        const F F_5_8 = static_cast<F>(5) / static_cast<F>(8);
 
         // The resulting quantile estimates are approximately unbiased for the
         // expected order statistics if x is normally distributed
@@ -409,7 +409,7 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
     {
         // If h were rounded, this would give the order statistic with the least
         // expected square deviation relative to p
-        if ( p < (static_cast<T>(3) / TWO) / (NT + TWO) )
+        if ( p < (static_cast<F>(3) / TWO) / (NT + TWO) )
         {
             retVal = x.at(0);
         }
@@ -451,18 +451,18 @@ T math::SampleQuantileGeneric<T>::qntl(const T& p, math::EQntlType::type method)
  *
  * @return median of the sample
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::median() const
+template <typename F>
+F math::SampleQuantileGeneric<F>::median() const
 {
-    T retVal;
+    F retVal;
     const size_t& N = this->m_N;
-    const std::vector<T>& x = this->m_v;
+    const std::vector<F>& x = this->m_v;
 
     if ( 0 == N % 2 )
     {
         // even number of elements
     	size_t h = N / 2;
-        retVal = (x.at(h-1) + x.at(h)) / static_cast<T>(2);
+        retVal = (x.at(h-1) + x.at(h)) / static_cast<F>(2);
     }
     else
     {
@@ -484,10 +484,10 @@ T math::SampleQuantileGeneric<T>::median() const
  *
  * @throw StatisticsException  if any input argument is invalid
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::quartile(size_t q, math::EQntlType::type method) const throw(math::StatisticsException)
+template <typename F>
+F math::SampleQuantileGeneric<F>::quartile(size_t q, math::EQntlType::type method) const throw(math::StatisticsException)
 {
-	T retVal;
+	F retVal;
 
     if ( 0 == q )
     {
@@ -515,8 +515,8 @@ T math::SampleQuantileGeneric<T>::quartile(size_t q, math::EQntlType::type metho
  *
  * @return sample's interquartile range (difference between the 3rd and the 1st quartile)
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::iqr(math::EQntlType::type method) const
+template <typename F>
+F math::SampleQuantileGeneric<F>::iqr(math::EQntlType::type method) const
 {
     return ( this->quartile(3, method) - this->quartile(1, method) );
 }
@@ -525,8 +525,8 @@ T math::SampleQuantileGeneric<T>::iqr(math::EQntlType::type method) const
 /**
  * @return minimum value of the sample
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::min() const
+template <typename F>
+F math::SampleQuantileGeneric<F>::min() const
 {
     // Note that this->m_v is already sorted in ascending order
     return this->m_v.at(0);
@@ -536,8 +536,8 @@ T math::SampleQuantileGeneric<T>::min() const
 /**
  * @return maximum value of the sample
  */
-template <class T>
-T math::SampleQuantileGeneric<T>::max() const
+template <typename F>
+F math::SampleQuantileGeneric<F>::max() const
 {
     // Note that this->m_v is already sorted in ascending order
     return this->m_v.at(this->m_N-1);
@@ -545,7 +545,7 @@ T math::SampleQuantileGeneric<T>::max() const
 
 
 /**
- * Test if a value is outlier regarding the sample.
+ * Test if a value is an outlier regarding the sample.
  * 
  * An element is an outlier if it lies either below the first quartile - iqrs * IQR
  * or above the third quartile + iqrs * IQR.
@@ -563,15 +563,15 @@ T math::SampleQuantileGeneric<T>::max() const
  * 
  * @return a logical value indicating whether 'val' is an outlier or not 
  */
-template <class T>
-bool math::SampleQuantileGeneric<T>::isOutlier(
-                const T& val,
-                const T& iqrs, 
+template <typename F>
+bool math::SampleQuantileGeneric<F>::isOutlier(
+                const F& val,
+                const F& iqrs,
                 math::EQntlType::type method) const
 {
-    const T q1 = this->quartile(1, method);
-    const T q3 = this->quartile(3, method);
-    const T diff = q3 - q1;   // IQR
+    const F q1 = this->quartile(1, method);
+    const F q3 = this->quartile(3, method);
+    const F diff = q3 - q1;   // IQR
 
     return ( ( val < (q1-iqrs * diff) ) ||
              ( val > (q3+iqrs * diff) ) );
@@ -593,20 +593,20 @@ bool math::SampleQuantileGeneric<T>::isOutlier(
  * 
  * @throw StatisticsException if allocation of memory fails
  */
-template <class T>
-void math::SampleQuantileGeneric<T>::outliers(
-                std::set<T>& outl, 
-                const T& iqrs, 
+template <typename F>
+void math::SampleQuantileGeneric<F>::outliers(
+                std::set<F>& outl,
+                const F& iqrs,
                 math::EQntlType::type method) const
             throw (math::StatisticsException)
 {
     try
     {
-        const T q1 = this->quartile(1, method);
-        const T q3 = this->quartile(3, method);
-        const T diff = q3 - q1;   // IQR
-        const T lowerBound = q1 - iqrs * diff;
-        const T upperBound = q3 + iqrs * diff;
+        const F q1 = this->quartile(1, method);
+        const F q3 = this->quartile(3, method);
+        const F diff = q3 - q1;   // IQR
+        const F lowerBound = q1 - iqrs * diff;
+        const F upperBound = q3 + iqrs * diff;
 
         /*
          * Vector this->m_v is already sorted in ascending order. That said,
@@ -616,7 +616,7 @@ void math::SampleQuantileGeneric<T>::outliers(
          * the upper bound. 
          */
 
-        typename std::vector<T>::const_iterator it;
+        typename std::vector<F>::const_iterator it;
         for ( it=this->m_v.begin(); 
               it!=this->m_v.end() && *it<lowerBound;
               ++it )
@@ -624,7 +624,7 @@ void math::SampleQuantileGeneric<T>::outliers(
             outl.insert(*it);
         }
 
-        typename std::vector<T>::const_reverse_iterator rit;
+        typename std::vector<F>::const_reverse_iterator rit;
         for ( rit = this->m_v.rbegin();
               rit!=this->m_v.rend() && *rit>upperBound;
               ++rit )
@@ -642,8 +642,8 @@ void math::SampleQuantileGeneric<T>::outliers(
 /**
  * Destructor
  */
-template<class T>
-math::SampleQuantileGeneric<T>::~SampleQuantileGeneric()
+template<typename F>
+math::SampleQuantileGeneric<F>::~SampleQuantileGeneric()
 {
     // Vector's destructors would probably clean up this automatically.
     // Anyway let us clear the vector, just to be aware of allocated resources.
