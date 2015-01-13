@@ -24,9 +24,9 @@ limitations under the License.
  * for calculation of factorials, binomial coefficients, etc.
  */
 
-#ifndef _MATH_INTCOMBINATORICS_H_
-#define _MATH_INTCOMBINATORICS_H_
+#ifndef _MATH_INTCOMBINATORICSGENERIC_H_
+#define _MATH_INTCOMBINATORICSGENERIC_H_
 
-#include "combinatorics/IntCombinatorics.hpp"
+#include "combinatorics/IntCombinatoricsGeneric.hpp"
 
-#endif  /*  _MATH_INTCOMBINATORICS_H_  */
+#endif  /*  _MATH_INTCOMBINATORICSGENERIC_H_  */

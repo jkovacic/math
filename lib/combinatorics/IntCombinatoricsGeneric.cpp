@@ -22,11 +22,36 @@ limitations under the License.
  * functions for calculation of factorials, binomial coefficients, etc.
  */
 
-#include "IntCombinatorics.hpp"
+// no #include "IntCombinatorics.hpp" !!!
+#include "int_util/IntUtilGeneric.hpp"
 #include "exception/CombinatoricsException.hpp"
 
-#include <climits>
+#include <limits>
 #include <algorithm>
+
+
+// A namespace with "private" functions
+namespace math {  namespace IntCombinatorics {  namespace __private
+{
+
+/*
+ * Checks sign of 'n' and throws an exception if it is negative. 
+ * 
+ * @param n - integer value to check
+ * 
+ * @throw CombinatoricsException if 'n' is negative
+ */
+template <typename I>
+void __checkSign(const I& n) throw (math::CombinatoricsException)
+{
+    if ( true == math::IntUtil::isNegative<I>(n) )
+    {
+        throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
+    }
+}
+
+}}}  // namespace math::IntCombinatorics::__private
+
 
 
 /**                                  -
@@ -43,49 +68,57 @@ limitations under the License.
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::fallingFactorial(
-                            unsigned long long int N, 
-                            unsigned long long int K ) 
+template <typename I>
+I math::IntCombinatorics::fallingFactorial(
+                            const I& N, 
+                            const I& K ) 
                         throw(math::CombinatoricsException)
 {
+    // sanity check
+    math::IntCombinatorics::__private::__checkSign<I>(N);
+    math::IntCombinatorics::__private::__checkSign<I>(K);
+
     /*
      *  k
      *  -
      * n   =  n * (n-1) * (n-2) * ... * (n-k+1)
      */
-    
-    if ( K>N )
+
+    if ( K > N )
     {
         throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
     }
-    
-    if ( 0LL==K )
+
+    if ( static_cast<I>(0) == K )
     {
         // TODO is this a definition or an exception should be thrown?
-        return 1LL;
+        return static_cast<I>(1);
     }
-    
-    unsigned long long int retVal = 1LL;
-    
+
+    I fallFact = static_cast<I>(1);
+
     /*
      * If reaching this point, K is always greater than 1 (K==0 is handled above)
-     * so N-K+1 can never exceed N (and thus ULLONG_MAX).
+     * so N-K+1 can never exceed N (and thus max. I).
      * 
      * Since K cannot be greater than N, the loop will terminate before
      * i reaches 0 and an integer overflow is not possible.
      */
-    for ( unsigned long long int i=N; i>=N-K+1; --i )
+    const I IMAX = std::numeric_limits<I>::max();
+
+    for ( I i=N; i>=N-K+static_cast<I>(1); --i )
     {
-        if ( ULLONG_MAX/retVal < i )
+        if ( IMAX/fallFact < i )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
         }
-        
-        retVal *= i;
+
+        fallFact *= i;
     }
-    
-    return retVal;
+
+    return fallFact;
 }
+
 
 /**
  * Calculates the rising factorial power:
@@ -100,36 +133,42 @@ unsigned long long int math::IntCombinatorics::fallingFactorial(
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::risingFactorial( 
-                            unsigned long long int N, 
-                            unsigned long long int K ) 
+template <typename I>
+I math::IntCombinatorics::risingFactorial( 
+                            const I& N, 
+                            const I& K ) 
                         throw(math::CombinatoricsException)
-{   
-    if ( 0LL == N )
+{
+    // sanity check
+    math::IntCombinatorics::__private::__checkSign<I>(N);
+    math::IntCombinatorics::__private::__checkSign<I>(K);
+
+    if ( static_cast<I>(0) == N )
     {
         throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
     }
-    
-    if ( 0LL==K )
+
+    if ( static_cast<I>(0) == K )
     {
         // TODO is this a definition or an exception should be thrown?
-        return 1LL;
+        return static_cast<I>(1);
     }
-    
+
     /*
      * Make sure, N-1+k does not cause an integer overflow.
      * 
-     * N-1+K must be less or equal to ULLONG_MAX:
-     *   N-1+K <= ULLONG_MAX  ==>  K <= ULLONG_MAX-N+1 
+     * N-1+K must be less or equal to I_MAX:
+     *   N-1+K <= I_MAX  ==>  K <= I_MAX-N+1 
      */
-    if ( K>(ULLONG_MAX-N+1) )
+    if ( K > (std::numeric_limits<I>::max() - N + static_cast<I>(1)) )
     {
         throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
     }
-    
+
     // The algorithm is already implemented by fallingFactorial
-    return math::IntCombinatorics::fallingFactorial(N-1+K, K);
+    return math::IntCombinatorics::fallingFactorial<I>(N-static_cast<I>(1)+K, K);
 }
+
 
 /**
  * Calculates the factorial of N:
@@ -149,11 +188,16 @@ unsigned long long int math::IntCombinatorics::risingFactorial(
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::factorial(
-                            unsigned long long int N, 
-                            unsigned long long int from ) 
+template <typename I>
+I math::IntCombinatorics::factorial(
+                            const I& N, 
+                            const I& from ) 
                         throw(math::CombinatoricsException)
 {
+    // sanity check
+    math::IntCombinatorics::__private::__checkSign<I>(N);
+    math::IntCombinatorics::__private::__checkSign<I>(from);
+
     /*
      * Factorial of a positive integer 'n' is defined as:
      * 
@@ -171,24 +215,25 @@ unsigned long long int math::IntCombinatorics::factorial(
 
     // By convention, 0! = 1
     // 'from' is ignored in this case
-    if ( 0LL == N )
+    if ( static_cast<I>(0) == N )
     {
-        return 1LL;
+        return static_cast<I>(1);
     }
 
-    if ( 0LL==from || from>N )
+    if ( static_cast<I>(0)==from || from>N )
     {
         throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
     }
-    
+
     /*
      * The algorithm is actually already implemented by fallingFactorial.
      * 
      * 'from' is always greater than 0 and less than or equal to N.
      * This means, N-from+1 cannot be out of integer range.
      */
-    return math::IntCombinatorics::fallingFactorial(N, N-from+1);
+    return math::IntCombinatorics::fallingFactorial<I>(N, N-from+static_cast<I>(1));
 }
+
 
 /**
  * Calculates a general multifactorial:
@@ -213,38 +258,46 @@ unsigned long long int math::IntCombinatorics::factorial(
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::multiFactorial(
-                            unsigned long long int N, 
-                            unsigned int K ) 
+template <typename I>
+I math::IntCombinatorics::multiFactorial(
+                            const I& N, 
+                            const I& K ) 
                         throw(math::CombinatoricsException)
 {    
-    if ( N<K )
+    // sanity check
+    math::IntCombinatorics::__private::__checkSign<I>(N);
+    math::IntCombinatorics::__private::__checkSign<I>(K);
+
+    if ( N < K )
     {
         // TODO check definition of multifactorial
-        return 1LL;
+        return static_cast<I>(1);
     }
-    
-    unsigned long long int retVal = 1LL;
-    
+
+    I multiFact = static_cast<I>(1);
+
     /*
      * Iterative implementation of the definition above.
      * 
      * 'i' is always greater than or equal to 0, so an integer overflow
      * cannot occur.
      */
-    for ( unsigned long long int i=N; i>=K; i-=K )
+    const I IMAX = std::numeric_limits<I>::max();
+
+    for ( I i=N; i>=K; i-=K )
     {
-        if ( ULLONG_MAX/retVal < i )
+        if ( IMAX/multiFact < i )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
-        
-        retVal *= i;
+
+        multiFact *= i;
     }
-    
-    return retVal;
+
+    return multiFact;
 }
-    
+
+
 /**
  * calculates a double factorial:
  * 
@@ -258,14 +311,18 @@ unsigned long long int math::IntCombinatorics::multiFactorial(
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
-unsigned long long int math::IntCombinatorics::doubleFactorial(
-                            unsigned long long int N) 
+template <typename I>
+I math::IntCombinatorics::doubleFactorial(
+                            const I& N) 
                         throw(math::CombinatoricsException)
 {
+    // sanity check is performed by multiFactorial())
+
     // double factorial is a multi factorial with K=2
-    return math::IntCombinatorics::multiFactorial(N, 2);
+    return math::IntCombinatorics::multiFactorial<I>(N, static_cast<I>(2));
 }
-    
+
+
 /**
  * Calculates a binomial coefficient:
  * 
@@ -282,26 +339,31 @@ unsigned long long int math::IntCombinatorics::doubleFactorial(
  * 
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */ 
-unsigned long long int math::IntCombinatorics::binom(
-                            unsigned long long int N, 
-                            unsigned long long int K ) 
+template <typename I>
+I math::IntCombinatorics::binom(
+                            const I& N, 
+                            const I& K ) 
                         throw(math::CombinatoricsException)
-{    
-    if ( 0LL == N )
+{
+    // sanity check
+    math::IntCombinatorics::__private::__checkSign<I>(N);
+    math::IntCombinatorics::__private::__checkSign<I>(K);
+
+    if ( static_cast<I>(0) == N )
     {
-        return 0LL;
+        return static_cast<I>(0);
     }
-    
-    if ( 0LL==K || N==K )
+
+    if ( static_cast<I>(0)==K || N==K )
     {
-        return 1LL;
+        return static_cast<I>(1);
     }
-    
-    if ( K>N )
+
+    if ( K > N )
     {
-        return 0LL;
+        return static_cast<I>(0);
     }
-    
+
     /*
      * One possible algorithm to compute the binomial coefficient could be
      * the Pascal's triangle, however this method is memory inefficient.
@@ -335,27 +397,29 @@ unsigned long long int math::IntCombinatorics::binom(
      * product is also divisible by 'r' and no integer division truncation occurs. 
      */
 
-    unsigned long long int retVal = 1LL;
-    
+    I bn = static_cast<I>(1);
+
     /*
      * Since binomial(n,k) == binomial(n,(n-k)), it is sensible to
      * to choose min(k, n-k) and thus reduce the number of multiplications.
      */
-    const unsigned long long int k = std::min(K, N-K); 
-    
-    // Since k is min (K, N-K), it can never be equal to ULLONG_MAX,
+    const I k = std::min(K, N-K); 
+
+    // Since k is min (K, N-K), it can never be equal to I_MAX,
     // so the integer overflow of 'i' is not possible.
-    for ( unsigned long long int i=1; i<=k; ++i )
+    const I IMAX = std::numeric_limits<I>::max();
+
+    for ( I i=static_cast<I>(1); i<=k; ++i )
     {
-        const unsigned long long int factor = N-k+i; 
-        if ( ULLONG_MAX/retVal < factor )
+        const I factor = N - k + i; 
+        if ( IMAX/bn < factor )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::OUT_OF_RANGE);
         }
-        
-        retVal *= factor;
-        retVal /= i;
+
+        bn *= factor;
+        bn /= i;
     }
-    
-    return retVal;
+
+    return bn;
 }

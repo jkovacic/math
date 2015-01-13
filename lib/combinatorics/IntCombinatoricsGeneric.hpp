@@ -19,14 +19,14 @@ limitations under the License.
  * @author Jernej Kovacic
  * 
  * An internal header file, it should not be included directly.
- * @headername{IntCombinatorics.h}
+ * @headername{IntCombinatoricsGeneric.h}
  *
  * Declaration of the namespace IntCombinatorics with functions 
  * for calculation of factorials, binomial coefficients, etc.
  */
 
-#ifndef _MATH_INTCOMBINATORICS_HPP_
-#define	_MATH_INTCOMBINATORICS_HPP_
+#ifndef _MATH_INTCOMBINATORICSGENERIC_HPP_
+#define	_MATH_INTCOMBINATORICSGENERIC_HPP_
 
 #include "exception/CombinatoricsException.hpp"
 
@@ -36,47 +36,59 @@ namespace math
 /**
  * @brief A namespace with some combinatorics related functions for calculation of
  *        various factorials, binomial coefficients, etc.
+ * 
+ * @note 'I' is expected to be an integral integer type, preferably unsigned. In
+ *       any other case the behaviour of functions from this namespace is
+ *       unpredictable.
  */
 namespace IntCombinatorics
 {
 
     // factorial: N! or from * (from+1) * ... * N:
-    unsigned long long int factorial(
-                            unsigned long long int N, 
-                            unsigned long long int from=1LL ) 
-                        throw(CombinatoricsException);
+    template <typename I>
+    I factorial(
+            const I& N, 
+            const I& from = static_cast<I>(1) ) 
+          throw(CombinatoricsException);
     
     // falling factorial power: N * (N-1) * ... * (N-K+1):
-    unsigned long long int fallingFactorial(
-                            unsigned long long int N, 
-                            unsigned long long int K ) 
-                        throw(CombinatoricsException);
+    template <typename I>
+    I fallingFactorial(
+            const I& N, 
+            const I& K ) 
+          throw(CombinatoricsException);
     
     // rising factorial power: N * (N+1) * ... * (N+K-1):
-    unsigned long long int risingFactorial(
-                            unsigned long long int N, 
-                            unsigned long long int K ) 
-                        throw(CombinatoricsException);
+    template <typename I>
+    I risingFactorial(
+            const I& N, 
+            const I& K ) 
+          throw(CombinatoricsException);
     
     // multifactorial: N * (N-K) * (N-2*K) * ... :
-    unsigned long long int multiFactorial(
-                            unsigned long long int N, 
-                            unsigned int K ) 
-                        throw(CombinatoricsException);
+    template <typename I>
+    I multiFactorial(
+            const I& N, 
+            const I& K ) 
+          throw(CombinatoricsException);
     
     // double factorial: N * (N-2) * (N-4) * ... :
-    unsigned long long int doubleFactorial( unsigned long long int N ) 
-                        throw(CombinatoricsException);
+    template <typename I>
+    I doubleFactorial( const I& N ) throw(CombinatoricsException);
     
     // binomial coefficient:
-    unsigned long long int binom(
-                            unsigned long long int N, 
-                            unsigned long long int K ) 
-                        throw(CombinatoricsException);
+    template <typename I>
+    I binom(
+            const I& N, 
+            const I& K ) 
+          throw(CombinatoricsException);
 
 }  // namespace IntCombinatorics
 
 }  // namespace math
 
 
-#endif	// _MATH_INTCOMBINATORICS_HPP_
+// DEFINITION
+#include "combinatorics/IntCombinatoricsGeneric.cpp"
+
+#endif	// _MATH_INTCOMBINATORICSGENERIC_HPP_

@@ -141,6 +141,7 @@ DEP_PERMUTATION =$(LIBCOMBDIR)PermutationGeneric $(DEP_MTCOPY)
 DEP_INTUTIL = $(LIBINTUTILDIR)IntUtilGeneric
 DEP_INTFACT = $(LIBINTUTILDIR)IntFactorizationGeneric $(DEP_INTUTIL)
 DEP_INTEXP = $(LIBINTUTILDIR)IntExponentiatorGeneric $(DEP_INTUTIL)
+DEP_INTCOMB = $(LIBCOMBDIR)IntCombinatoricsGeneric $(DEP_INTUTIL)
 
 DEP_RAT = $(DEP_INTFACT)
 
@@ -187,7 +188,7 @@ TEST_LINEQ_OBJDEP = LinearEquationSolverException
 TEST_CURVEFIT_OBJDEP = CurveFittingException
 TEST_INTEXP_OBJDEP = Rational MatrixException QuaternionException RationalException PolynomialException
 TEST_INTFACTOR_OBJDEP = IntFactorizationException
-TEST_INTCOMB_OBJDEP = IntCombinatorics CombinatoricsException
+TEST_INTCOMB_OBJDEP = CombinatoricsException
 TEST_SPECFUN_OBJDEP = SpecFunException
 TEST_COMB_OBJDEP = CombinatoricsException
 TEST_CALC_OBJDEP = FunctionException CalculusException
@@ -211,7 +212,7 @@ TEST_LINEQ_GENDEP = $(DEP_MATRIX) $(DEP_SQMATRIX) $(DEP_LINEQ)
 TEST_CURVEFIT_GENDEP = $(DEP_POLYREG) $(DEP_POLYINT)
 TEST_INTEXP_GENDEP = $(DEP_INTEXP) $(DEP_SQMATRIX) $(DEP_QUATERNION) $(DEP_POLYNOMIAL)
 TEST_INTFACTOR_GENDEP = $(DEP_INTFACT)
-TEST_INTCOMB_GENDEP = 
+TEST_INTCOMB_GENDEP = $(DEP_INTCOMB) 
 TEST_SPECFUN_GENDEP = $(DEP_SPECFUN)
 TEST_COMB_GENDEP = $(DEP_PERMUTATION) $(DEP_COMBINATION)
 TEST_CALC_GENDEP = $(DEP_IFUNCTION) $(DEP_INTEG) $(DEP_DIFF)
@@ -388,10 +389,6 @@ $(OBJDIR)SpecFunException$(OBJSUFFIX) : $(LIBEXCPDIR)SpecFunException.cpp
 # Build rules for nontemplated classes
 $(OBJDIR)Rational$(OBJSUFFIX) : $(LIBRATIONALDIR)Rational.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
-
-$(OBJDIR)IntCombinatorics$(OBJSUFFIX) : $(LIBCOMBDIR)IntCombinatorics.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
-
 
 
 # Build rules for test modules
