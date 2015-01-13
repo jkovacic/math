@@ -100,9 +100,13 @@ size_t math::SampleQuantileGeneric<F>::sampleSize() const
  * @throw StatisticsException if any input argument is invalid
  */
 template <typename F>
-F math::SampleQuantileGeneric<F>::quantile(size_t num, size_t den, math::EQntlType::type method) const throw(math::StatisticsException)
+F math::SampleQuantileGeneric<F>::quantile(
+                    unsigned long long int num, 
+                    unsigned long long int den, 
+                    math::EQntlType::type method ) 
+                const throw(math::StatisticsException)
 {
-    if ( 0==num || den<2 || num>=den )
+    if ( 0ULL==num || den<2ULL || num>=den )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -485,9 +489,12 @@ F math::SampleQuantileGeneric<F>::median() const
  * @throw StatisticsException  if any input argument is invalid
  */
 template <typename F>
-F math::SampleQuantileGeneric<F>::quartile(size_t q, math::EQntlType::type method) const throw(math::StatisticsException)
+F math::SampleQuantileGeneric<F>::quartile(
+            unsigned short int q, 
+            math::EQntlType::type method) 
+        const throw(math::StatisticsException)
 {
-	F retVal;
+    F retVal;
 
     if ( 0 == q )
     {

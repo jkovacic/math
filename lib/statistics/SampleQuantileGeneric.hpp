@@ -94,8 +94,8 @@ public:
     size_t sampleSize() const;
 
     F quantile(
-           size_t num,
-           size_t den, 
+           unsigned long long int num,
+           unsigned long long int den, 
            EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
@@ -107,7 +107,7 @@ public:
     F median() const;
 
     F quartile(
-           size_t q,
+           unsigned short int q,
            EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
