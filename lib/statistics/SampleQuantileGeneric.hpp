@@ -93,9 +93,10 @@ public:
     // Methods to obtain quantiles of the sample:
     size_t sampleSize() const;
 
+    template <typename I>
     F quantile(
-           unsigned long long int num,
-           unsigned long long int den, 
+           const I& num,
+           const I& den, 
            EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 

@@ -37,6 +37,7 @@ limitations under the License.
 
 #include "util/mtcopy.hpp"
 #include "exception/StatisticsException.hpp"
+#include "int_util/IntUtilGeneric.hpp"
 #include "util/NumericUtil.hpp"
 
 
@@ -99,14 +100,17 @@ size_t math::SampleQuantileGeneric<F>::sampleSize() const
  *
  * @throw StatisticsException if any input argument is invalid
  */
-template <typename F>
+template <typename F> template <typename I>
 F math::SampleQuantileGeneric<F>::quantile(
-                    unsigned long long int num, 
-                    unsigned long long int den, 
+                    const I& num, 
+                    const I& den, 
                     math::EQntlType::type method ) 
                 const throw(math::StatisticsException)
 {
-    if ( 0ULL==num || den<2ULL || num>=den )
+    if ( true == math::IntUtil::isNegative<I>(num) ||
+         true == math::IntUtil::isNegative<I>(den) ||
+         static_cast<I>(0) == num || 
+         den < static_cast<I>(2) || num >= den )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_PROBABILTY);
     }
@@ -506,7 +510,7 @@ F math::SampleQuantileGeneric<F>::quartile(
     }
     else if ( q>=1 && q<=3 )
     {
-        retVal = this->quantile(q, 4, method);
+        retVal = this->quantile<short int>(q, 4, method);
     }
     else
     {
