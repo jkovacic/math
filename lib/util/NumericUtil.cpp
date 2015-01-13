@@ -226,11 +226,11 @@ inline I math::NumericUtil::intRound(const F& n)
     // if attempting to cast a negative 'n' to an unsigned type,
     // return 0 immediately:
     if ( n < static_cast<F>(0) && 
-         static_cast<I>(-1) > static_cast<I>(0) )
+         false == std::numeric_limits<I>::is_signed )
     {
         return static_cast<I>(0);
     }
-    
+
     /*
      * 0.5 is added to a positive 'n' or subtracted from a negative 'n'.
      * Casting to I will then cut off the fractional part.
