@@ -33,8 +33,6 @@ limitations under the License.
 #define _MATH_STUDENTDISTGENERIC_HPP_
 
 
-#include <cstddef>
-
 #include "exception/StatisticsException.hpp"
 
 
@@ -51,19 +49,19 @@ namespace math
 namespace StudentDist
 {
 
-    template <typename F>
+    template <typename F, typename I>
     F getT(
         const F& x,
-        size_t n = 1,
+        const I& n = static_cast<I>(1),
         const F& mu = static_cast<F>(0),
         const F& s = static_cast<F>(1)
       ) throw (StatisticsException);
 
 
-    template <typename F>
+    template <typename F, typename I>
     F getX(
         const F& t,
-        size_t n = 1,
+        const I& n = static_cast<I>(1),
         const F& mu = static_cast<F>(0),
         const F& s = static_cast<F>(1)
       ) throw (StatisticsException);

@@ -33,7 +33,6 @@ limitations under the License.
 
 
 // no #include "StudentDistGeneric.hpp" !!!
-#include <cstddef>
 #include <cmath>
 #include <algorithm>
 
@@ -94,10 +93,10 @@ void __checkParams(const F& sigma, const F& df) throw (math::StatisticsException
  *
  * @throw StatisticsException if 'n' or 'sigma' is invalid
  */
-template <typename F>
+template <typename F, typename I>
 F math::StudentDist::getT(
         const F& x,
-        size_t n,
+        const I& n,
         const F& mu,
         const F& s
       ) throw (math::StatisticsException)
@@ -131,10 +130,10 @@ F math::StudentDist::getT(
  *
  * @throw StatisticsException if 'n' or 'sigma' is invalid
  */
-template <typename F>
+template <typename F, typename I>
 F math::StudentDist::getX(
         const F& t,
-        size_t n,
+        const I& n,
         const F& mu,
         const F& s
       ) throw (math::StatisticsException)
