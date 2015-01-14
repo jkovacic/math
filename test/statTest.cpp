@@ -20,7 +20,7 @@ limitations under the License.
  *
  * A test module to test functionality in statistics related classes 
  * and namespaces (SampleStat, NormalDist, StudentDist, ChiSquareDist,
- * FDist, SampleQuantileGeneric)
+ * FDist, ContUniformDist, SampleQuantileGeneric)
  */
 
 
@@ -37,6 +37,7 @@ limitations under the License.
 #include "StudentDistGeneric.h"
 #include "ChiSquareDistGeneric.h"
 #include "FDistGeneric.h"
+#include "ContUniformDistGeneric.h"
 #include "StatisticsException.h"
 
 using namespace std;
@@ -328,8 +329,64 @@ void statisticsTest()
 
 
         /*
-         * R code to perform basic unit test of quantiles:
+         * R code to test continuous uniform related functions:
+         *
+           dunif(0, min=1, max=3)
+           [1] 0
+           dunif(2, min=1, max=3)
+           [1] 0.5
+           dunif(4.5, min=1, max=3)
+           [1] 0
 
+           punif(0, min=1, max=3)
+           [1] 0
+           punif(1.5, min=1, max=3)
+           [1] 0.25
+           punif(3.5, min=1, max=3)
+           [1] 1
+           punif(-2, min=1, max=3, lower.tail=FALSE)
+           [1] 1
+           punif(2.7, min=1, max=3, lower.tail=FALSE)
+           [1] 0.15
+           punif(4, min=1, max=3, lower.tail=FALSE)
+           [1] 0
+
+           punif(1.4, min=1, max=3) - punif(0.25, min=1, max=3)
+           [1] 0.2
+           punif(3.7, min=1, max=3) - punif(1.9, min=1, max=3)
+           [1] 0.55
+
+           qunif(0.42, min=1, max=3)
+           [1] 1.84
+           qunif(0.57, min=1, max=3)
+           [1] 2.14
+           qunif(0.34, min=1, max=3, lower.tail=FALSE)
+           [1] 2.32
+           qunif(0.81, min=1, max=3, lower.tail=FALSE)
+           [1] 1.38
+         */
+
+         cout << "U(1,3): pdf at x=0:   " << ContUniformDist::pdf(0.0, 1.0, 3.0) << " (expected: 0)" << endl;
+         cout << "U(1,3): pdf at x=2:   " << ContUniformDist::pdf(2.0, 1.0, 3.0) << " (expected: 0.5)" << endl;
+         cout << "U(1,3): pdf at x=4.5: " << ContUniformDist::pdf(4.5, 1.0, 3.0) << " (expected: 0)" << endl;
+         cout << "U(1,3): P(X<0):   " << ContUniformDist::prob(0.0, 1.0, 3.0) << " (expected: 0)" << endl;
+         cout << "U(1,3): P(X<1.5): " << ContUniformDist::prob(1.5, 1.0, 3.0) << " (expected: 0.25)" << endl;
+         cout << "U(1,3): P(X<3.5): " << ContUniformDist::prob(3.5, 1.0, 3.0) << " (expected: 1)" << endl;
+         cout << "U(1,3): P(X>-2):  " << ContUniformDist::prob(-2.0, 1.0, 3.0, false) << " (expected: 1)" << endl;
+         cout << "U(1,3): P(X>2.7): " << ContUniformDist::prob(2.7, 1.0, 3.0, false) << " (expected: 0.15)" << endl;
+         cout << "U(1,3): P(X>4):   " << ContUniformDist::prob(4.0, 1.0, 3.0, false) << " (expected: 0)" << endl;
+         cout << "U(1,3): P(0.25<X<1.4): " << ContUniformDist::probInt(0.25, 1.4, 1.0, 3.0) << " (expected: 0.2)" << endl;
+         cout << "U(1,3): P(1.9<X<3.7):  " << ContUniformDist::probInt(3.7, 1.9, 1.0, 3.0) << " (expected: 0.55)" << endl;
+         cout << "U(1,3): q(p>0.42): " << ContUniformDist::quant(0.42, 1.0, 3.0) << " (expected: 1.84)" << endl;
+         cout << "U(1,3): q(p>0.57): " << ContUniformDist::quant(0.57, 1.0, 3.0) << " (expected: 2.14)" << endl;
+         cout << "U(1,3): q(p<0.34): " << ContUniformDist::quant(0.34, 1.0, 3.0, false) << " (expected: 2.32)" << endl;
+         cout << "U(1,3): q(p<0.81): " << ContUniformDist::quant(0.81, 1.0, 3.0, false) << " (expected: 1.38)" << endl;
+         cout << endl;
+
+
+        /*
+         * R code to perform basic unit test of quantiles:
+         *
            data(mtcars)
            median(mtcars$mpg)
            [1] 19.2
