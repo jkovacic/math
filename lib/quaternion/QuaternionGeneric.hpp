@@ -35,7 +35,7 @@ limitations under the License.
 namespace math
 {
 
-// Advance declaration of the class is necessary...
+// Forward declaration of the class is necessary...
 template <typename F> class QuaternionGeneric;
 
 // to declare its friend functions:
