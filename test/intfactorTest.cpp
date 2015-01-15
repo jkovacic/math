@@ -43,7 +43,7 @@ void intFactorizationTest()
     {
         // Find integer square roots of the following numbers:
         const unsigned int NS = 3;
-        unsigned long int s[NS] = { 12, 100, 37423 };
+        int s[NS] = { 12, 100, 37423 };
 
         // Expected results: 3, 10 and 193
         for ( unsigned int i=0; i<NS; ++i )

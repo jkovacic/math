@@ -118,7 +118,15 @@ bool math::IntFactorization::isPrime(const I& n)
      * It also doesn't make sense to check divisibility by divisors 
      * that exceed sqrt(n).
      */
-    for ( I i=static_cast<I>(3); i*i<=n; i+=static_cast<I>(2) )
+
+    // Integer sqrt(n) can be obtained quite efficiently.
+    // Additionally it prevents any possibility of integer overflow
+    // (theoretically possible for large 'n' if "i*i<=n" is used
+    // as the for loop's condition)
+
+    const I sqn = math::IntFactorization::intSqrt<I>(n);
+
+    for ( I i=static_cast<I>(3); i<=sqn; i+=static_cast<I>(2) )
     {
         if ( static_cast<I>(0) == n%i )
         {
@@ -346,6 +354,9 @@ I math::IntFactorization::intSqrt(const I& n)
     I bit = static_cast<I>(1) << (static_cast<I>(8) * sizeof(I) - static_cast<I>(2));
     I sq = n;
 
+    // Even if 'I' represents an unsigned type, 'bit' will never be
+    // negative because its MSB will not be set.
+
     while ( bit > sq )
     {
         bit >>= static_cast<I>(2);
@@ -473,7 +484,10 @@ void math::IntFactorization::divisors(
          * 'n' by it. If 'n' is divisible by 'i', insert 'i' and 'n/i'
          * into the set.
          */
-        for ( I i=static_cast<I>(1); i*i<=n; ++i )
+
+        const I sqn = math::IntFactorization::intSqrt<I>(n);
+
+        for ( I i=static_cast<I>(1); i<=sqn; ++i )
         {
             // Check divisibility by 'i':
             if ( static_cast<I>(0) == n%i )
