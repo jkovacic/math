@@ -47,26 +47,29 @@ void math::RationalException::what(std::ostream& str) const
 {
     switch (this->error)
     {
-        case ZERO_DENOMINATOR:
+        case ZERO_DENOMINATOR :
             str << "Zero denominator is forbidden.";
             break;
-        case UNINVERTIBLE:
+        case UNINVERTIBLE :
             str << "Uninvertible fraction.";
             break;
-        case DIVIDE_BY_ZERO:
+        case DIVIDE_BY_ZERO :
             str << "Attempt of division by zero.";
             break;
-        case INT_OVERFLOW:
+        case INT_OVERFLOW :
             str << "Operation caused an integer overflow.";
             break;
-        case INVALID_INPUT:
+        case INVALID_INPUT :
             str << "Invalid input argument.";
             break;
-        case INPUT_OUT_OF_RANGE:
+        case INPUT_OUT_OF_RANGE :
             str << "Input argument out of range.";
             break;
-        case OUT_OF_MEMORY:
+        case OUT_OF_MEMORY :
             str << "Allocation of memory failed.";
+            break;
+        case UNSIGNED :
+            str << "Operation is not possible for unsigned types.";
             break;
         default:
             // Should not occur but handle it anyway.

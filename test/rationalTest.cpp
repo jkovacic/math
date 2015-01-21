@@ -24,7 +24,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "Rational.h"
+#include "RationalGeneric.h"
 #include "RationalException.h"
 
 
@@ -111,7 +111,7 @@ void rationalTest()
 
        // Test 'automatic' (via constructor) conversion
        // int -> Rational (a -> a/1)
-        c = a + 2;
+        c = a + Rational(2L);
         // should output "-5/2 + 2 = -1/2"
         cout << a << " + " << 2 << " = " << c << endl;
         // if other Rational operators are defined OK,

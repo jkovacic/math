@@ -40,6 +40,9 @@ namespace IntUtil
     template <typename I>
     bool isNegative(const I& n);
 
+    template <typename I>
+    I absolute(const I& n);
+
 }  // namespace IntUtil
 
 }  // namespace math

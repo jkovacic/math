@@ -24,9 +24,9 @@ limitations under the License.
  * i.e. reduced fractions of two integers.
  */
 
-#ifndef _MATH_RATIONAL_H_
-#define _MATH_RATIONAL_H_
+#ifndef _MATH_RATIONALGENERIC_H_
+#define _MATH_RATIONALGENERIC_H_
 
-#include "rational/Rational.hpp"
+#include "rational/RationalGeneric.hpp"
 
-#endif  /*  _MATH_RATIONAL_H_  */
+#endif  /*  _MATH_RATIONALGENERIC_H_  */

@@ -27,7 +27,7 @@ limitations under the License.
 #include "IntExponentiatorGeneric.h"
 #include "SqMatrixGeneric.h"
 #include "QuaternionGeneric.h"
-#include "Rational.h"
+#include "RationalGeneric.h"
 #include "PolynomialGeneric.h"
 #include "MatrixException.h"
 #include "QuaternionException.h"

@@ -27,7 +27,7 @@ limitations under the License.
 
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
-#include "Rational.h"
+#include "RationalGeneric.h"
 
 #include "MatrixException.h"
 #include "RationalException.h"

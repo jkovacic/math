@@ -48,7 +48,8 @@ struct RationalException : public IMathException
         INT_OVERFLOW,       /// integer overflow
         INVALID_INPUT,      /// invalid input argument
         INPUT_OUT_OF_RANGE, /// string input out of integer's boundaries
-        OUT_OF_MEMORY       /// (re)allocation of string's memory failed
+        OUT_OF_MEMORY,      /// (re)allocation of string's memory failed
+        UNSIGNED,           /// operation impossible for unsigned type
     };
 
     err_codes error;    /// type of an error

@@ -89,3 +89,16 @@ bool math::IntUtil::isNegative(const I& n)
     return 
       math::IntUtil::__private::__CheckSign<I, std::numeric_limits<I>::is_signed>::isNeg(n);
 }
+
+
+/*
+ * A simple integer implementation of abs
+ *
+ * @param n
+ * @return absolute value of 'n'
+ */
+template <typename I>
+inline I math::IntUtil::absolute(const I& n)
+{
+    return ( false==math::IntUtil::isNegative<I>(n) ? n : -n );
+}
