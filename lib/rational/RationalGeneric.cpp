@@ -459,27 +459,36 @@ I math::RationalGeneric<I>::getDenominator() const
  */
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::set(
-            I numerator, 
-            I denominator) 
+            const I& numerator, 
+            const I& denominator) 
         throw(math::RationalException)
 {
+    /*
+     * Some internal methods may call this function, passing
+     * input arguments as references to rational's members.
+     * To prevent a confusion in such cases, both input arguments
+     * are copied to local variables.
+     */
+    const I local_num = numerator;
+    const I local_den = denominator;
+
     // Check for zero denominator
-    if ( static_cast<I>(0) == denominator )
+    if ( static_cast<I>(0) == local_den )
     {
         // this is forbidden so throw an exception
         throw math::RationalException(math::RationalException::ZERO_DENOMINATOR);
     }
 
     // denominator will always be positive:
-    if ( true == math::IntUtil::isNegative<I>(denominator) )
+    if ( true == math::IntUtil::isNegative<I>(local_den) )
     {
-        this->denom = -denominator;
-        this->num = -numerator;
+        this->denom = -local_den;
+        this->num = -local_num;
     }
     else
     {
-        this->denom = denominator;
-        this->num = numerator;
+        this->denom = local_den;
+        this->num = local_num;
     }
 
     // reduce the fraction

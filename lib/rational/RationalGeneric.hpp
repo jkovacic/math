@@ -136,8 +136,8 @@ public:
 
     // Assigns fraction's numerator and denominator and simplifies the fraction
     RationalGeneric<I>& set(
-            I numerator = static_cast<I>(0), 
-            I denominator = static_cast<I>(1) ) 
+            const I& numerator = static_cast<I>(0), 
+            const I& denominator = static_cast<I>(1) ) 
         throw(RationalException);
 
     // Parses the fraction from its decimal representation
