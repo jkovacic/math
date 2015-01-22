@@ -66,10 +66,10 @@ int main(int argc, const char* argv[])
 
     cout << endl << "M A T R I X   T E S T" << endl << endl;
     matrixTest();
-#if 0  // TODO this test is removed until an INTEGER_OVERFLOW issue is resolved
+
     cout << endl << "R A T I O N A L   M A T R I X   T E S T" << endl << endl;
     rationalMatrixTest();
-#endif
+
     cout << endl << "L I N E A R   E Q U A T I O N   S O L V E R   T E S T" << endl << endl;
     lineqSolverTest();
 

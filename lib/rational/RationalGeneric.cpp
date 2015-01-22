@@ -312,14 +312,35 @@ I __auxProd(
     }
 
     /*
-     * This rather complicated will properly ensure that
+     * Special handling of b == -1
+     * In this case Imin/b would would result in -Imin which
+     * is just out of I's range!
+     * In this case just return -a, provided that a does
+     * not equal -Imin as well.
+     */
+    if ( true == math::IntUtil::isNegative<I>(b) &&
+         static_cast<I>(-1) == b )
+    {
+        if ( std::numeric_limits<I>::min() == a )
+        {
+            throw math::RationalException(math::RationalException::INT_OVERFLOW);
+        }
+
+        return -a;
+    }
+
+    /*
+     * This rather complicated set of checks will properly ensure that
      * 
      *   MIN_I <= (a * b) <= MAX_I
      */
+    const I Amin = std::numeric_limits<I>::min() / b;
+    const I Amax = std::numeric_limits<I>::max() / b;
+
     if ( ( b > static_cast<I>(0) && 
-           ( a < std::numeric_limits<I>::min()/b || a > std::numeric_limits<I>::max()/b ) ) ||
+           ( a < Amin || a > Amax ) ) ||
          ( b < static_cast<I>(0) && 
-           ( a > std::numeric_limits<I>::min()/b || a < std::numeric_limits<I>::max()/b ) ) )
+           ( a > Amin || a < Amax ) ) )
     {
         throw math::RationalException(math::RationalException::INT_OVERFLOW);
     }
