@@ -191,6 +191,11 @@ public:
 
 private:
 
+    // tries to assign a rational from long long int arguments:
+    void __setLL( long long int numerator,
+                  long long int denominator ) 
+            throw (RationalException);
+
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
     void __reduce();
 

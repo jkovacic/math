@@ -52,8 +52,7 @@ namespace math {  namespace RationalNS {  namespace __private
  *
  * @throw RationalException if absolute value of 'str' exceeds I's range
  */
-template <typename I>
-I __str2ll(const std::string& str) throw (math::RationalException)
+long long int __str2ll(const std::string& str) throw (math::RationalException)
 {
     // sanity check already performed by the caller function
 
@@ -76,13 +75,7 @@ I __str2ll(const std::string& str) throw (math::RationalException)
     long long int buf = 0LL;
     std::sscanf(str.c_str(), "%lld", &buf);
 
-    if ( buf < static_cast<long long int>(std::numeric_limits<I>::min()) || 
-         buf > static_cast<long long int>(std::numeric_limits<I>::max()) )
-    {
-        throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
-    }
-
-    return static_cast<I>(buf);
+    return buf;
 }
 
 
@@ -96,13 +89,12 @@ I __str2ll(const std::string& str) throw (math::RationalException)
  *
  * @throw RationalException if the result exceeds unsigned I's range
  */
-template <typename I>
-I __pow10(size_t n) throw (math::RationalException)
+ long long int __pow10(size_t n) throw (math::RationalException)
 {
 
 #define POW10_BASE            ( 10ULL )
     // simply multiply 10 by itself n times
-    unsigned long long int temp = 1LL;
+    unsigned long long int temp = 1ULL;
     const unsigned long long int MAX_FACTOR = ULLONG_MAX / POW10_BASE;
 
     for ( size_t i=0; i<n; ++i )
@@ -116,12 +108,12 @@ I __pow10(size_t n) throw (math::RationalException)
         temp *= POW10_BASE;
     }
 
-    if ( temp > static_cast<unsigned long long int>( std::numeric_limits<I>::max() ) )
+    if ( temp > static_cast<unsigned long long int>( LLONG_MAX ) )
     {
         throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
     }
  
-    return static_cast<I>(temp);
+    return static_cast<long long int>(temp);
 #undef POW10_BASE
 }
 
@@ -225,21 +217,22 @@ short int __sign(const I& num1, const I& den1, const I& num2, const I& den2)
  *
  * @throw RationalException in case of an integer overflow
  */
-template <typename I, bool add>
-I __auxSum(
+template <typename I>
+long long int __auxSum(
             const I& num1, 
             const I& denom2, 
             const I& num2, 
-            const I& denom1 ) 
+            const I& denom1,
+            bool add ) 
         throw (math::RationalException)
 {
     // All intermediate results are long long int values:
 
     // Check for possible long long int overflow at both products:
-    if ( ( num1 >= static_cast<I>(0) && 
-           static_cast<long long int>(num1) > LLONG_MAX/static_cast<long long int>(denom2) ) ||
-         ( num1 < static_cast<I>(0)  && 
-           static_cast<long long int>(num1) < LLONG_MIN/static_cast<long long int>(denom2) ) )
+    if ( ( num1 >= 0LL && 
+           num1 > LLONG_MAX/static_cast<long long int>(denom2) ) ||
+         ( num1 < 0LL  && 
+           num1 < LLONG_MIN/static_cast<long long int>(denom2) ) )
     {
         throw math::RationalException(math::RationalException::INT_OVERFLOW);
     }
@@ -247,10 +240,10 @@ I __auxSum(
     const long long int term1 = 
         static_cast<long long int>(num1) * static_cast<long long int>(denom2);
 
-    if ( ( num2 >= static_cast<I>(0) && 
-           static_cast<long long int>(num2) > LLONG_MAX/static_cast<long long int>(denom1) ) ||
-         ( num2 < static_cast<I>(0)  && 
-           static_cast<long long int>(num2) < LLONG_MIN/static_cast<long long int>(denom1) ) )
+    if ( ( num2 >= 0LL && 
+           num2 > LLONG_MAX/static_cast<long long int>(denom1) ) ||
+         ( num2 < 0LL  && 
+           num2 < LLONG_MIN/static_cast<long long int>(denom1) ) )
     {
         throw math::RationalException(math::RationalException::INT_OVERFLOW);
     }
@@ -277,14 +270,7 @@ I __auxSum(
     
     const long long int res = ( true==add ? term1 + term2 : term1 - term2 );
 
-    // check if 'sum' is within I's range
-    if ( res > std::numeric_limits<I>::max() || res < std::numeric_limits<I>::min() )
-    {
-        throw math::RationalException(math::RationalException::INT_OVERFLOW);
-    }
-
-    // finally cast the result to I:
-    return static_cast<I>(res);
+    return res;
 }
 
 
@@ -300,7 +286,7 @@ I __auxSum(
  * @throw RationalException in case of an integer overflow
  */
 template <typename I>
-I __auxProd(
+long long int __auxProd(
             const I& a, 
             const I& b) 
         throw (math::RationalException)
@@ -308,7 +294,7 @@ I __auxProd(
     // if any factor equals 0, the product will also be 0:
     if ( static_cast<I>(0)==a || static_cast<I>(0)==b)
     {
-        return static_cast<I>(0);
+        return 0LL;
     }
 
     /*
@@ -316,12 +302,12 @@ I __auxProd(
      * In this case Imin/b would would result in -Imin which
      * is just out of I's range!
      * In this case just return -a, provided that a does
-     * not equal -Imin as well.
+     * not equal Imin as well.
      */
     if ( true == math::IntUtil::isNegative<I>(b) &&
          static_cast<I>(-1) == b )
     {
-        if ( std::numeric_limits<I>::min() == a )
+        if ( LLONG_MIN == a )
         {
             throw math::RationalException(math::RationalException::INT_OVERFLOW);
         }
@@ -334,8 +320,8 @@ I __auxProd(
      * 
      *   MIN_I <= (a * b) <= MAX_I
      */
-    const I Amin = std::numeric_limits<I>::min() / b;
-    const I Amax = std::numeric_limits<I>::max() / b;
+    const long long int Amin = LLONG_MIN / b;
+    const long long int Amax = LLONG_MAX / b;
 
     if ( ( b > static_cast<I>(0) && 
            ( a < Amin || a > Amax ) ) ||
@@ -345,7 +331,7 @@ I __auxProd(
         throw math::RationalException(math::RationalException::INT_OVERFLOW);
     }
 
-    return ( a * b );
+    return static_cast<long long int>(a) * static_cast<long long int>(b);
 }
 
 }}}  // namespace math::RationalNS::__private
@@ -613,8 +599,8 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
          */
         long long int num1 = 0LL;
         long long int num2 = 0LL;
-        unsigned long long int den1 = 1ULL;
-        unsigned long long int den2 = 0ULL;
+        long long int den1 = 1LL;
+        long long int den2 = 0LL;
 
         if ( 0 == repSeqLen )
         {
@@ -629,8 +615,8 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
                 buf.erase(decPoint, 1);
             }
 
-            num1 = math::RationalNS::__private::__str2ll<long long int>(buf);
-            den1 = ( LEN==decPoint ? 1 : math::RationalNS::__private::__pow10<unsigned long long int>(LEN-decPoint-1) );
+            num1 = math::RationalNS::__private::__str2ll(buf);
+            den1 = ( LEN==decPoint ? 1 : math::RationalNS::__private::__pow10(LEN-decPoint-1) );
         }
         else
         {
@@ -657,12 +643,12 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
              *                   9990
              */
             buf.erase(decPoint, 1);
-            num1 = math::RationalNS::__private::__str2ll<long long int>(buf);
+            num1 = math::RationalNS::__private::__str2ll(buf);
             buf.erase(LEN-1-repSeqLen, repSeqLen);
-            num2 = math::RationalNS::__private::__str2ll<long long int>(buf);
+            num2 = math::RationalNS::__private::__str2ll(buf);
 
-            den1 = math::RationalNS::__private::__pow10<unsigned long long int>(LEN-1-decPoint);
-            den2 = math::RationalNS::__private::__pow10<unsigned long long int>(LEN-1-decPoint-repSeqLen);
+            den1 = math::RationalNS::__private::__pow10(LEN-1-decPoint);
+            den2 = math::RationalNS::__private::__pow10(LEN-1-decPoint-repSeqLen);
         }
 
         /*
@@ -674,17 +660,14 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
          * exceed ranges of (unsigned) long long.
          */
         const long long int dnum = num1 - num2;
-        const unsigned long long int dden = den1 - den2;
+        const long long int dden = den1 - den2;
 
-        if ( ( dnum < 0LL && false==std::numeric_limits<I>::is_signed ) ||
-                dnum < std::numeric_limits<I>::min() ||
-                dnum > std::numeric_limits<I>::max() ||
-                dden > std::numeric_limits<I>::max() )
+        if ( dnum < 0LL && false==std::numeric_limits<I>::is_signed ) 
         {
             throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
         }
 
-        this->set(static_cast<I>(dnum), static_cast<I>(dden));
+        this->__setLL(dnum, dden);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -692,6 +675,59 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
     }
 
     return *this;
+}
+
+
+/**
+ * Tries to assign a rational from long long int input arguments.
+ * Both arguments are reduced and if they both are within the I's range,
+ * the rational is assigned.
+ * 
+ * @param numerator - desired rational's numerator
+ * @param denominator - desired rational's denominator
+ * 
+ * @throw Rational exception if any argument is invalid or out of I's range
+ *        after reduction
+ */
+template <typename I>
+void math::RationalGeneric<I>::__setLL(
+        long long int numerator,
+        long long int denominator )
+        throw (math::RationalException)
+{
+    // Zero denominator is not valid:
+    if ( 0LL == denominator )
+    {
+        throw math::RationalException(math::RationalException::ZERO_DENOMINATOR);
+    }
+
+    // Special handling of numerator==0
+    if ( 0LL == numerator )
+    {
+        this->set(static_cast<I>(0), static_cast<I>(1));
+        return;
+    }
+
+    // Obtain both arguments' greatest common divisor...
+   const long long int gcd = math::IntFactorization::greatestCommonDivisor<long long int>(
+                math::IntUtil::absolute<long long int>(numerator),
+                math::IntUtil::absolute<long long int>(denominator) );
+
+   // ... divide both arguments by it...   
+   const long long int numRed = numerator / gcd;
+   const long long int denRed = denominator / gcd;
+
+   // ... check if both reduced arguments are within the I's range...
+   if ( numRed < std::numeric_limits<I>::min() || 
+        numRed > std::numeric_limits<I>::max() ||
+        denRed < std::numeric_limits<I>::min() || 
+        denRed > std::numeric_limits<I>::max() )
+   {
+       throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
+   }
+
+   // ... and set the rational to casted values of both reduced arguments.
+   this->set(static_cast<I>(numRed), static_cast<I>(denRed));
 }
 
 
@@ -782,7 +818,7 @@ bool math::RationalGeneric<I>::isNegative() const
 {
     // the denominator is always positive (see set), so it is enough
     // to check if the numerator is less than 0
-    return ( this->num < static_cast<I>(0) );
+    return ( math::IntUtil::isNegative<I>(this->num) );
 }
 
 
@@ -873,24 +909,16 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator+=(
     // See definition of fraction addition in operator+()
     // Result will be assigned to itself so use set
 
-    I numerator;
-    I denominator;
+    const long long int numerator = 
+            math::RationalNS::__private::__auxSum<I>(
+                this->num, frac.denom, frac.num, this->denom, true);
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxSum<I, true>(
-                this->num, frac.denom, frac.num, this->denom);
-        denominator = math::RationalNS::__private::__auxProd<I>(
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(
                 this->denom, frac.denom);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // int overflow is the only possible exception
-        throw ex;
-    }
 
-    set(numerator, denominator);
-    // set will reduce the result
+    this->__setLL(numerator, denominator);
+    // __setLL will reduce the result
 
     return *this;
 }
@@ -911,24 +939,15 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator-=(
     // See definition of fraction subtraction in operator-
     // Result will be assigned to itself so use set().
 
-    I numerator;
-    I denominator;
+    const long long int numerator = 
+            math::RationalNS::__private::__auxSum<I>(
+                this->num, frac.denom, frac.num, this->denom, false);
+ 
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(this->denom, frac.denom);
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxSum<I, false>(
-                this->num, frac.denom, frac.num, this->denom);
-        denominator = math::RationalNS::__private::__auxProd<I>(
-                this->denom, frac.denom);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // int overflow is the only possible exception
-        throw ex;
-    }
-
-    this->set(numerator, denominator);
-    // set will reduce the result
+    this->__setLL(numerator, denominator);
+    // __setLL will reduce the result
 
     return *this;
 }
@@ -950,21 +969,13 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator*=(
     // See definition of fraction multiplication in operator*.
     // Result will be assigned to itself so use set().
 
-    I numerator;
-    I denominator;
+    const long long numerator = 
+            math::RationalNS::__private::__auxProd<I>(this->num, frac.num);
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxProd<I>(this->num, frac.num);
-        denominator = math::RationalNS::__private::__auxProd<I>(this->denom, frac.denom);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // int overflow is the only possible exception
-        throw ex;
-    }
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(this->denom, frac.denom);
 
-    this->set(numerator, denominator);
+    this->__setLL(numerator, denominator);
 
     return *this;
 }
@@ -994,21 +1005,14 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator/=(
     }
 
     // Result will be assigned to itself so use set()
-    I numerator;
-    I denominator;
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxProd<I>(this->num, frac.denom);
-        denominator = math::RationalNS::__private::__auxProd<I>(this->denom, frac.num);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // int overflow is the only possible exception
-        throw ex;
-    }
+    const long long int numerator = 
+            math::RationalNS::__private::__auxProd<I>(this->num, frac.denom);
 
-    this->set(numerator, denominator);
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(this->denom, frac.num);
+
+    this->__setLL(numerator, denominator);
 
     return *this;
 }
@@ -1125,29 +1129,19 @@ math::RationalGeneric<I> math::operator+(
     //  --- + --- = -----------
     //   b     d       b * d
 
-    // both fractions are valid which always results in a valid sum, so
-    // no check is necessary. Integer overflow is possible but it is
-    // not checked right now.
-
     // Just construct an unreduced fraction as shown above:
-    I numerator;
-    I denominator;
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxSum<I, true>(
-                f1.num, f2.denom, f2.num, f1.denom);
-        denominator = math::RationalNS::__private::__auxProd<I>(
-                f1.denom, f2.denom);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // int overflow is the only possible exception
-        throw ex;
-    }
+    const long long int numerator = 
+            math::RationalNS::__private::__auxSum<I>(
+                f1.num, f2.denom, f2.num, f1.denom, true);
 
-    return math::RationalGeneric<I>(numerator, denominator);
-    // the constructor will reduce the result
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, denominator);
+
+    return retVal;
 }
 
 
@@ -1171,26 +1165,17 @@ math::RationalGeneric<I> math::operator-(
     //  --- - --- = -----------
     //   b     d       b * d
 
-    // both fractions are valid which always results in a valid difference, so
-    // no check is necessary.
+    const long long int numerator = 
+            math::RationalNS::__private::__auxSum<I>(
+                f1.num, f2.denom, f2.num, f1.denom, false);
 
-    I numerator;
-    I denominator;
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxSum<I, true>(
-                f1.num, f2.denom, -f2.num, f1.denom);
-        denominator = math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // int overflow is the only possible exception
-        throw ex;
-    }
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, denominator);
 
-    return math::RationalGeneric<I>(numerator, denominator);
-    // constructor will automatically reduce the result
+    return retVal;
 
     // NOTE: it would also be possible to multiply frac by -1 and add it to this
     // (using operator+) but it would require a bit more operations.
@@ -1218,25 +1203,16 @@ math::RationalGeneric<I> math::operator*(
     //  --- * --- = ---------
     //   b     d      b * d
 
-    // Multiplication of two valid fractions always results in a valid
-    // fraction, so no need for further checks.
+    const long long int numerator = 
+            math::RationalNS::__private::__auxProd<I>(f1.num, f2.num);
 
-    I numerator;
-    I denominator;
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxProd<I>(f1.num, f2.num);
-        denominator = math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // The only possible exception is int overflow
-        throw ex;
-    }
-
-    return math::RationalGeneric<I>(numerator, denominator);
-    // constructor will reduce the result
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, denominator);
+    
+    return retVal;
 }
 
 
@@ -1269,21 +1245,16 @@ math::RationalGeneric<I> math::operator/(
         throw math::RationalException(RationalException::DIVIDE_BY_ZERO);
     }
 
-    I numerator;
-    I denominator;
+    const long long int numerator = 
+            math::RationalNS::__private::__auxProd<I>(f1.num, f2.denom);
 
-    try
-    {
-        numerator = math::RationalNS::__private::__auxProd<I>(f1.num, f2.denom);
-        denominator = math::RationalNS::__private::__auxProd<I>(f2.num, f1.denom);
-    }
-    catch ( math::RationalException& ex )
-    {
-        // int overflow is the only possible exception
-        throw ex;
-    }
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(f2.num, f1.denom);
 
-    return math::RationalGeneric<I>(numerator, denominator);
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, denominator);
+
+    return retVal;
 }
 
 
