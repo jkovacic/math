@@ -307,7 +307,7 @@ long long int __auxProd(
     if ( true == math::IntUtil::isNegative<I>(b) &&
          static_cast<I>(-1) == b )
     {
-        if ( LLONG_MIN == a )
+        if ( std::numeric_limits<long long int>::min() == a )
         {
             throw math::RationalException(math::RationalException::INT_OVERFLOW);
         }
