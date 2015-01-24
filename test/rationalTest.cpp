@@ -156,6 +156,20 @@ void rationalTest()
             cout << "a == b";
         }
         cout << endl;
+
+        // Test of overloaded comparison operators
+        cout << a << " == 3 : " << (a==3L ? "TRUE" : "FALSE") << endl;
+        cout << "2 == " << b << " : " << (2L==b ? "TRUE" : "FALSE") << endl;
+        cout << a << " != 1 : " << (a!=1L ? "TRUE" : "FALSE") << endl;
+        cout << "-2 != " << b << " : " << (-2L!=b ? "TRUE" : "FALSE") << endl;
+        cout << a << " > 1 : " << (a>1L ? "TRUE" : "FALSE") << endl;
+        cout << "3 > " << b << " : " << (3L>b ? "TRUE" : "FALSE") << endl;
+        cout << a << " >= 2 : " << (a>=2L ? "TRUE" : "FALSE") << endl;
+        cout << "5 >= " << b << " : " << (5L>=b ? "TRUE" : "FALSE") << endl;
+        cout << a << " < 6 : " << (a<6L ? "TRUE" : "FALSE") << endl;
+        cout << "-2 < " << b << " : " << (-2L<b ? "TRUE" : "FALSE") << endl;
+        cout << a << " <= 4 : " << (a<=4L ? "TRUE" : "FALSE") << endl;
+        cout << "3 <= " << b << " : " << (3L<=b ? "TRUE" : "FALSE") << endl;
     }  // try
     catch ( const RationalException& ex )
     {

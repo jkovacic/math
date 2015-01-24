@@ -64,25 +64,61 @@ RationalGeneric<I> operator/(const RationalGeneric<I>& f1, const RationalGeneric
 template <typename I>
 bool operator==(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2);
 
+template <typename I>
+bool operator==(const RationalGeneric<I>& f, const I& i);
+
+template <typename I>
+bool operator==(const I& i, const RationalGeneric<I>& f);
+
 // - returns true if fractions' values are not equal
 template <typename I>
 bool operator!=(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2);
+
+template <typename I>
+bool operator!=(const RationalGeneric<I>& f, const I& i);
+
+template <typename I>
+bool operator!=(const I& i, const RationalGeneric<I>& f);
 
 // - returns true if strictly less than fraction
 template <typename I>
 bool operator<(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2);
 
+template <typename I>
+bool operator<(const RationalGeneric<I>& f, const I& i);
+
+template <typename I>
+bool operator<(const I& i, const RationalGeneric<I>& f);
+
 // - returns true if less than or equal to fraction
 template <typename I>
 bool operator<=(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2);
+
+template <typename I>
+bool operator<=(const RationalGeneric<I>& f, const I& i);
+
+template <typename I>
+bool operator<=(const I& i, const RationalGeneric<I>& f);
 
 // - returns true if strictly greater than fraction
 template <typename I>
 bool operator>(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2);
 
+template <typename I>
+bool operator>(const RationalGeneric<I>& f, const I& i);
+
+template <typename I>
+bool operator>(const I& i, const RationalGeneric<I>& f);
+
 // - returns true if greater than or equal to fraction
 template <typename I>
 bool operator>=(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2);
+
+template <typename I>
+bool operator>=(const RationalGeneric<I>& f, const I& i);
+
+template <typename I>
+bool operator>=(const I& i, const RationalGeneric<I>& f);
 
 template <typename I>
 std::ostream& operator<<(std::ostream& output, const RationalGeneric<I>& fraction);
@@ -224,25 +260,73 @@ private:
             const RationalGeneric<I>& f1,
             const RationalGeneric<I>& f2 );
 
+    friend bool (math::operator== <>) (
+            const RationalGeneric<I>& f,
+            const I& i );
+
+    friend bool (math::operator== <>) (
+            const I& i,
+            const RationalGeneric<I>& f);
+
     friend bool (math::operator!= <>) (
             const RationalGeneric<I>& f1, 
             const RationalGeneric<I>& f2 );
+
+    friend bool (math::operator!= <>) (
+            const RationalGeneric<I>& f,
+            const I& i );
+
+    friend bool (math::operator!= <>) (
+            const I& i,
+            const RationalGeneric<I>& f );
 
     friend bool (math::operator< <>) (
             const RationalGeneric<I>& f1, 
             const RationalGeneric<I>& f2 );
 
+    friend bool (math::operator< <>) (
+            const RationalGeneric<I>& f,
+            const I& i );
+
+    friend bool (math::operator< <>) (
+            const I& i,
+            const RationalGeneric<I>& f );
+
     friend bool (math::operator<= <>) (
             const RationalGeneric<I>& f1, 
             const RationalGeneric<I>& f2 );
+
+    friend bool (math::operator<= <>) (
+            const RationalGeneric<I>& f,
+            const I& i );
+
+    friend bool (math::operator<= <>) (
+            const I& i,
+            const RationalGeneric<I>& f);
 
     friend bool (math::operator> <>) (
             const RationalGeneric<I>& f1, 
             const RationalGeneric<I>& f2 );
 
+    friend bool (math::operator> <>) (
+            const RationalGeneric<I>& f,
+            const I& i );
+
+    friend bool (math::operator> <>) (
+            const I& i,
+            const RationalGeneric<I>& f );
+
     friend bool (math::operator>= <>) (
             const RationalGeneric<I>& f1, 
             const RationalGeneric<I>& f2 );
+
+    friend bool (math::operator>= <>) (
+            const RationalGeneric<I>& f,
+            const I& i );
+
+    friend bool (math::operator>= <>) (
+            const I& i,
+            const RationalGeneric<I>& f );
 
 };
 

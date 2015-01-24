@@ -1277,6 +1277,44 @@ bool math::operator==(
 
 
 /**
+ * Comparison operator 'equal' (==) for comparison of a rational and
+ * an integer
+ *
+ * @param f - rational number to be compared
+ * @param i - integer number to be compared to 'f'
+ *
+ * @return true if both numbers are equal, false otherwise
+ */
+template <typename I>
+bool math::operator==(
+            const math::RationalGeneric<I>& f,
+            const I& i )
+{
+    return ( 0 == math::RationalNS::__private::__sign<I>(
+                  f.num, f.denom, i, static_cast<I>(1)) );
+}
+
+
+/**
+ * Comparison operator 'equal' (==) for comparison of and integer
+ * and a rational
+ *
+ * @param i - integer number to be compared to 'f'
+ * @param f - rational number to be compared
+ *
+ * @return true if both numbers are equal, false otherwise
+ */
+template <typename I>
+bool math::operator==(
+            const I& i,
+            const math::RationalGeneric<I>& f )
+{
+    return ( 0 == math::RationalNS::__private::__sign<I>(
+                  i, static_cast<I>(1), f.num, f.denom) );
+}
+
+
+/**
  * Comparison operator 'not equal' (!=)
  *
  * @param f1 - the first rational number to be compared
@@ -1291,6 +1329,44 @@ bool math::operator!=(
 {
     return ( 0 != math::RationalNS::__private::__sign<I>(
                   f1.num, f1.denom, f2.num, f2.denom) );
+}
+
+
+/**
+ * Comparison operator 'not equal' (!=) for comparison of
+ * a rational and an integer
+ *
+ * @param f - rational number to be compared
+ * @param i - integer number to be compared to 'f'
+ *
+ * @return true, if numbers are not equal, false if they are equal
+ */
+template <typename I>
+bool math::operator!=(
+            const math::RationalGeneric<I>& f,
+            const I& i )
+{
+    return ( 0 != math::RationalNS::__private::__sign<I>(
+                  f.num, f.denom, i, static_cast<I>(1)) );
+}
+
+
+/**
+ * Comparison operator 'not equal' (!=) for comparison of
+ * an integer and a rational
+ *
+ * @param i - integer number to be compared to 'f'
+ * @param f - rational number to be compared
+ *
+ * @return true, if numbers are not equal, false if they are equal
+ */
+template <typename I>
+bool math::operator!=(
+            const I& i,
+            const math::RationalGeneric<I>& f )
+{
+    return ( 0 != math::RationalNS::__private::__sign<I>(
+                  i, static_cast<I>(1), f.num, f.denom) );
 }
 
 
@@ -1313,6 +1389,44 @@ bool math::operator>(
 
 
 /**
+ * Comparison operator 'greater than' (>) for comparison of
+ * a rational and an integer
+ *
+ * @param f - rational number to be compared
+ * @param i - integer number to be compared to 'f'
+ *
+ * @return 'true' if f>i, 'false' otherwise
+ */
+template <typename I>
+bool math::operator>(
+            const math::RationalGeneric<I>& f,
+            const I& i )
+{
+    return ( 0 < math::RationalNS::__private::__sign<I>(
+                 f.num, f.denom, i, static_cast<I>(1)) );
+}
+
+
+/**
+ * Comparison operator 'greater than' (>) for comparison of
+ * an integer and a rational
+ *
+ * @param i - integer number to be compared to 'f'
+ * @param f - rational number to be compared
+ *
+ * @return 'true' if i>f, 'false' otherwise
+ */
+template <typename I>
+bool math::operator>(
+            const I& i,
+            const math::RationalGeneric<I>& f )
+{
+    return ( 0 < math::RationalNS::__private::__sign<I>(
+                 i, static_cast<I>(1), f.num, f.denom) );
+}
+
+
+/**
  * Comparison operator 'greater or equal' (>=)
  *
  * @param f1 - the first rational number to be compared
@@ -1327,6 +1441,44 @@ bool math::operator>=(
 {
     return ( 0 <= math::RationalNS::__private::__sign<I>(
                   f1.num, f1.denom, f2.num, f2.denom) );
+}
+
+
+/**
+ * Comparison operator 'greater or equal' (>=) for comparison of
+ * a rational and an integer
+ *
+ * @param f - rational number to be compared
+ * @param i - integer number to be compared to 'f'
+ *
+ * @return 'true' if f>=i, 'false' otherwise
+ */
+template <typename I>
+bool math::operator>=(
+            const math::RationalGeneric<I>& f,
+            const I& i )
+{
+    return ( 0 <= math::RationalNS::__private::__sign<I>(
+                  f.num, f.denom, i, static_cast<I>(1)) );
+}
+
+
+/**
+ * Comparison operator 'greater or equal' (>=) for comparison of
+ * an integer and a rational
+ *
+ * @param i - integer number to be compared to 'f'
+ * @param f - rational number to be compared
+ *
+ * @return 'true' if i>=f, 'false' otherwise
+ */
+template <typename I>
+bool math::operator>=(
+            const I& i,
+            const math::RationalGeneric<I>& f)
+{
+    return ( 0 <= math::RationalNS::__private::__sign<I>(
+                  i, static_cast<I>(1), f.num, f.denom) );
 }
 
 
@@ -1349,6 +1501,43 @@ bool math::operator<(
 
 
 /**
+ * Comparison operator 'less than' (<) for comparison of
+ * a rational and an integer
+ *
+ * @param f - rational number to be compared
+ * @param i - integer number to be compared to 'f'
+ *
+ * @return 'true' if f<i, 'false' otherwise
+ */
+template <typename I>
+bool math::operator<(
+            const math::RationalGeneric<I>& f,
+            const I& i )
+{
+    return ( 0 > math::RationalNS::__private::__sign<I>(
+                 f.num, f.denom, i, static_cast<I>(1)) );
+}
+
+
+/**
+ * Comparison operator 'less than' (<) for comparison of
+ * an integer and a rational
+ *
+ * @param i - integer number to be compared to 'f'
+ * @param f - rational number to be compared
+ *
+ * @return 'true' if i<f, 'false' otherwise
+ */
+template <typename I>
+bool math::operator<(
+            const I& i,
+            const math::RationalGeneric<I>& f )
+{
+    return ( 0 > math::RationalNS::__private::__sign<I>(
+                 i, static_cast<I>(1), f.num, f.denom ) );
+}
+
+/**
  * Comparison operator 'less or equal' (<=)
  *
  * @param f1 - the first rational number to be compared
@@ -1363,6 +1552,44 @@ bool math::operator<=(
 {
     return ( 0 >= math::RationalNS::__private::__sign<I>(
                   f1.num, f1.denom, f2.num, f2.denom) );
+}
+
+
+/**
+ * Comparison operator 'less or equal' (<=) for comparison of
+ * a rational and an integer
+ *
+ * @param f - rational number to be compared
+ * @param i - integer number to be compared to 'f'
+ *
+ * @return - 'true' if f<=i, 'false' otherwise
+ */
+template <typename I>
+bool math::operator<=(
+            const math::RationalGeneric<I>& f,
+            const I& i )
+{
+    return ( 0 >= math::RationalNS::__private::__sign<I>(
+                  f.num, f.denom, i, static_cast<I>(1)) );
+}
+
+
+/**
+ * Comparison operator 'less or equal' (<=) for comparison of
+ * an integer and a rational
+ *
+ * @param i - integer number to be compared to 'f'
+ * @param f - rational number to be compared
+ *
+ * @return - 'true' if i<=f, 'false' otherwise
+ */
+template <typename I>
+bool math::operator<=(
+            const I& i,
+            const math::RationalGeneric<I>& f )
+{
+    return ( 0 >= math::RationalNS::__private::__sign<I>(
+                  i, static_cast<I>(1), f.num, f.denom) );
 }
 
 
