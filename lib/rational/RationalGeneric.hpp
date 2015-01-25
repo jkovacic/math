@@ -51,13 +51,37 @@ template <typename I>
 RationalGeneric<I> operator+(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2) throw(RationalException);
 
 template <typename I>
+RationalGeneric<I> operator+(const RationalGeneric<I>& f, const I& i) throw(RationalException);
+
+template <typename I>
+RationalGeneric<I> operator+(const I& i, const RationalGeneric<I>& f) throw(RationalException);
+
+template <typename I>
 RationalGeneric<I> operator-(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2) throw(RationalException);
+
+template <typename I>
+RationalGeneric<I> operator-(const RationalGeneric<I>& f, const I& i) throw(RationalException);
+
+template <typename I>
+RationalGeneric<I> operator-(const I& i, const RationalGeneric<I>& f) throw(RationalException);
 
 template <typename I>
 RationalGeneric<I> operator*(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2) throw(RationalException);
 
 template <typename I>
+RationalGeneric<I> operator*(const RationalGeneric<I>& f, const I& i) throw(RationalException);
+
+template <typename I>
+RationalGeneric<I> operator*(const I& i, const RationalGeneric<I>& f) throw(RationalException);
+
+template <typename I>
 RationalGeneric<I> operator/(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2) throw(RationalException);
+
+template <typename I>
+RationalGeneric<I> operator/(const RationalGeneric<I>& f, const I& i) throw(RationalException);
+
+template <typename I>
+RationalGeneric<I> operator/(const I& i, const RationalGeneric<I>& f) throw(RationalException);
 
 // Comparison operators:
 // - returns true if fractions' values are equal
@@ -235,10 +259,20 @@ private:
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)
     void __reduce();
 
-    // Friend functions that implement operators:
+    // Friend functions that implement arithmetic operators:
     friend RationalGeneric<I> (math::operator+ <>) (
             const RationalGeneric<I>& f1, 
             const RationalGeneric<I>& f2 ) 
+        throw(RationalException);
+
+    friend RationalGeneric<I> (math::operator+ <>) (
+            const RationalGeneric<I>& f, 
+            const I& i ) 
+        throw(RationalException);
+
+    friend RationalGeneric<I> (math::operator+ <>) (
+            const I& i, 
+            const RationalGeneric<I>& f ) 
         throw(RationalException);
 
     friend RationalGeneric<I> (math::operator- <>) (
@@ -246,9 +280,29 @@ private:
             const RationalGeneric<I>& f2 ) 
         throw(RationalException);
 
+    friend RationalGeneric<I> (math::operator- <>) (
+            const RationalGeneric<I>& f,
+            const I& i ) 
+        throw(RationalException);
+
+    friend RationalGeneric<I> (math::operator- <>) (
+            const I& i,
+            const RationalGeneric<I>& f ) 
+        throw(RationalException);
+
     friend RationalGeneric<I> (math::operator* <>) (
             const RationalGeneric<I>& f1,
             const RationalGeneric<I>& f2 ) 
+        throw(RationalException);
+
+    friend RationalGeneric<I> (math::operator* <>) (
+            const RationalGeneric<I>& f,
+            const I& i ) 
+        throw(RationalException);
+
+    friend RationalGeneric<I> (math::operator* <>) (
+            const I& i,
+            const RationalGeneric<I>& f ) 
         throw(RationalException);
 
     friend RationalGeneric<I> (math::operator/ <>) (
@@ -256,10 +310,21 @@ private:
             const RationalGeneric<I>& f2 ) 
         throw(RationalException);
 
+    friend RationalGeneric<I> (math::operator/ <>) (
+            const RationalGeneric<I>& f, 
+            const I& i ) 
+        throw(RationalException);
+
+    friend RationalGeneric<I> (math::operator/ <>) (
+            const I& i, 
+            const RationalGeneric<I>& f ) 
+        throw(RationalException);
+
     friend bool (math::operator== <>) (
             const RationalGeneric<I>& f1,
             const RationalGeneric<I>& f2 );
 
+    // Friend functions that implement comparison operators:
     friend bool (math::operator== <>) (
             const RationalGeneric<I>& f,
             const I& i );

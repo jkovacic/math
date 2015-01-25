@@ -1116,6 +1116,8 @@ std::ostream& math::operator<<(
  * @param f2 - addend
  *
  * @return f1 + f2
+ * 
+ * @throw RationalException if an integer overflow occurs
  */
 template <typename I>
 math::RationalGeneric<I> math::operator+(
@@ -1146,18 +1148,76 @@ math::RationalGeneric<I> math::operator+(
 
 
 /**
+ * Binary addition operator (+) for addition of a rational
+ * and an integer
+ *
+ * @param f - augend (a rational)
+ * @param i - addend (an integer)
+ *
+ * @return f + i
+ * 
+ * @throw RationalException if an integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator+(
+            const math::RationalGeneric<I>& f,
+            const I& i )
+        throw (RationalException)
+{
+    const long long int numerator =
+            math::RationalNS::__private::__auxSum<I>(
+                f.num, static_cast<I>(1), i, f.denom, true );
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+
+    return retVal;
+}
+
+
+/**
+ * Binary addition operator (+) for addition of an integer
+ * and a rational
+ *
+ * @param i - augend (an integer)
+ * @param f - addend (a rational)
+ *
+ * @return i + f
+ * 
+ * @throw RationalException if an integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator+(
+            const I& i,
+            const math::RationalGeneric<I>& f )
+        throw (RationalException)
+{
+    const long long int numerator =
+            math::RationalNS::__private::__auxSum<I>(
+                i, f.denom, f.num, static_cast<I>(1), true );
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+
+    return retVal;
+}
+
+
+/**
  * Binary subtraction operator (-) for subtraction of two rational numbers
  *
  * @param f1 - minuend
  * @param f2 - subtrahend
  *
  * @return f1 - f2
+ * 
+ * @throw RationalException if an integer overflow occurs
  */
 template <typename I>
 math::RationalGeneric<I> math::operator-(
             const math::RationalGeneric<I>& f1, 
             const math::RationalGeneric<I>& f2 ) 
-        throw(math::RationalException)
+        throw (math::RationalException)
 {
     // Unreduced difference of two fractions:
     //
@@ -1183,6 +1243,62 @@ math::RationalGeneric<I> math::operator-(
 
 
 /**
+ * Binary subtraction operator (-) for subtraction of an integer
+ *  from a two rational
+ *
+ * @param f - minuend (a rational)
+ * @param i - subtrahend (an integer)
+ *
+ * @return f - i
+ * 
+ * @throw RationalException if an integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator-(
+            const math::RationalGeneric<I>& f, 
+            const I& i ) 
+        throw (math::RationalException)
+{
+    const long long int numerator = 
+            math::RationalNS::__private::__auxSum<I>(
+                f.num, static_cast<I>(1), i, f.denom, false);
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+
+    return retVal;
+}
+
+
+/**
+ * Binary subtraction operator (-) for subtraction of a rational
+ *  from an integer
+ *
+ * @param i - minuend (an integer)
+ * @param f - subtrahend (a rational)
+ *
+ * @return i - f
+ * 
+ * @throw RationalException if an integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator-(
+            const I& i, 
+            const math::RationalGeneric<I>& f ) 
+        throw (math::RationalException)
+{
+    const long long int numerator = 
+            math::RationalNS::__private::__auxSum<I>(
+                i, f.denom, f.num, static_cast<I>(1), false);
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+
+    return retVal;
+}
+
+
+/**
  * Binary multiplication operator (*) for multiplication of two
  * rational numbers.
  *
@@ -1190,6 +1306,8 @@ math::RationalGeneric<I> math::operator-(
  * @param f2 - multiplier
  *
  * @return f1 * f2
+ * 
+ * @throw RationalException if an integer overflow occurs
  */
 template <typename I>
 math::RationalGeneric<I> math::operator*(
@@ -1217,6 +1335,60 @@ math::RationalGeneric<I> math::operator*(
 
 
 /**
+ * Binary multiplication operator (*) for multiplication of a
+ * rational by an integer
+ *
+ * @param f - multiplicand (a rational)
+ * @param i - multiplier (an integer)
+ *
+ * @return f * i
+ * 
+ * @throw RationalException if an integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator*(
+            const math::RationalGeneric<I>& f, 
+            const I& i) 
+        throw (math::RationalException)
+{
+    const long long int numerator = 
+            math::RationalNS::__private::__auxProd<I>(f.num, i);
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+
+    return retVal;
+}
+
+
+/**
+ * Binary multiplication operator (*) for multiplication of an
+ * integer by a rational
+ *
+ * @param i - multiplicand (an integer)
+ * @param f - multiplier (a rational)
+ *
+ * @return i * f
+ * 
+ * @throw RationalException if an integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator*(
+            const I& i, 
+            const math::RationalGeneric<I>& f ) 
+        throw (math::RationalException)
+{
+    const long long int numerator = 
+            math::RationalNS::__private::__auxProd<I>(f.num, i);
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+
+    return retVal;
+}
+
+
+/**
  * Binary division operator (/) for division of two rational numbers.
  * Division by zero is not permitted and will throw an exception.
  *
@@ -1225,7 +1397,8 @@ math::RationalGeneric<I> math::operator*(
  *
  * @return f1 / f2
  *
- * @throw RationalException when attempting to divide by zero
+ * @throw RationalException when attempting to divide by zero or an
+ *        integer overflow occurs
  */
 template <typename I>
 math::RationalGeneric<I> math::operator/(
@@ -1253,6 +1426,76 @@ math::RationalGeneric<I> math::operator/(
 
     math::RationalGeneric<I> retVal;
     retVal.__setLL(numerator, denominator);
+
+    return retVal;
+}
+
+
+/**
+ * Binary division operator (/) for division of a rational
+ * by an integer.
+ * Division by zero is not permitted and will throw an exception.
+ *
+ * @param f - dividend (a rational)
+ * @param i - divisor (an integer)
+ *
+ * @return f / i
+ *
+ * @throw RationalException when attempting to divide by zero or an
+ *        integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator/(
+            const math::RationalGeneric<I>& f, 
+            const I& i ) 
+        throw (math::RationalException)
+{
+    // Check if 'i' equals 0
+    if ( static_cast<I>(0) == i )
+    {
+        throw math::RationalException(RationalException::DIVIDE_BY_ZERO);
+    }
+
+    const long long int denominator = 
+            math::RationalNS::__private::__auxProd<I>(i, f.denom);
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(static_cast<long long int>(f.num), denominator);
+
+    return retVal;
+}
+
+
+/**
+ * Binary division operator (/) for division of an integer
+ * by a rational.
+ * Division by zero is not permitted and will throw an exception.
+ *
+ * @param i - dividend (an integer)
+ * @param f - divisor (a rational)
+ *
+ * @return i / f
+ *
+ * @throw RationalException when attempting to divide by zero or an
+ *        integer overflow occurs
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator/(
+            const I& i, 
+            const math::RationalGeneric<I>& f ) 
+        throw (math::RationalException)
+{
+    // Check if f's numerator equals 0
+    if ( true == f.isZero() )
+    {
+        throw math::RationalException(RationalException::DIVIDE_BY_ZERO);
+    }
+
+    const long long int numerator = 
+            math::RationalNS::__private::__auxProd<I>(i, f.denom);
+
+    math::RationalGeneric<I> retVal;
+    retVal.__setLL(numerator, static_cast<long long int>(f.num));
 
     return retVal;
 }

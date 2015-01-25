@@ -109,13 +109,15 @@ void rationalTest()
                 " isPositive: " << c.isPositive() <<
                 " isNegative: " << c.isNegative() << endl;
 
-       // Test 'automatic' (via constructor) conversion
-       // int -> Rational (a -> a/1)
-        c = a + Rational(2L);
-        // should output "-5/2 + 2 = -1/2"
-        cout << a << " + " << 2 << " = " << c << endl;
-        // if other Rational operators are defined OK,
-        // 'hybrid' operations with integers should work as well
+        // Test of overloaded arithmetic operators:
+        cout << a << " + 2 = " << a + 2L << endl;
+        cout << "5 + (" << a << ") = " << 5L + a << endl;
+        cout << a << " - 3 = " << a - 3L << endl;
+        cout << "1 - (" << a << ") = " << 1L - a << endl;
+        cout << a << " * (-4) = " << a * (-4L) << endl;
+        cout << "2 * (" << a << ") = " << 2L * a << endl;
+        cout << a << " / 8 = " << a / 8L << endl;
+        cout << "10 / (" << a << ") = " << 10L / a << endl;
 
         // Test operators == and !=
         c = a;
