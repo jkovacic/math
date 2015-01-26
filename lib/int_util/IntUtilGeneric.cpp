@@ -100,5 +100,21 @@ bool math::IntUtil::isNegative(const I& n)
 template <typename I>
 inline I math::IntUtil::absolute(const I& n)
 {
-    return ( false==math::IntUtil::isNegative<I>(n) ? n : -n );
+    const bool neg = math::IntUtil::isNegative<I>(n);
+
+    // TODO find better handling of this case!!!
+    /*
+     * If 'I' represents a signed type and 'n' equals I_MIN,
+     * the function should return -I_MIN. However, in such a case,
+     * I_MAX is typically less than -I_MIN  (I_MAX = I_MIN - 1) which
+     * would result in an integer overflow (and possibly a core dump).
+     * If this situation occurs, the function will return I_MAX.
+     * Not really the correct handling but until a better solution is proposed...
+     */
+    if ( true==neg && std::numeric_limits<I>::min()==n )
+    {
+        return std::numeric_limits<I>::max();
+    }
+
+    return ( false==neg ? n : -n );
 }
