@@ -704,30 +704,44 @@ void math::RationalGeneric<I>::__setLL(
     // Special handling of numerator==0
     if ( 0LL == numerator )
     {
-        this->set(static_cast<I>(0), static_cast<I>(1));
+        this->num = static_cast<I>(0);
+        this->denom = static_cast<I>(1);
         return;
     }
 
+    
     // Obtain both arguments' greatest common divisor...
-   const long long int gcd = math::IntFactorization::greatestCommonDivisor<long long int>(
+    const long long int gcd = math::IntFactorization::greatestCommonDivisor<long long int>(
                 math::IntUtil::absolute<long long int>(numerator),
                 math::IntUtil::absolute<long long int>(denominator) );
 
-   // ... divide both arguments by it...   
-   const long long int numRed = numerator / gcd;
-   const long long int denRed = denominator / gcd;
+    // ... divide both arguments by it...   
+    const long long int numRed = numerator / gcd;
+    const long long int denRed = denominator / gcd;
 
-   // ... check if both reduced arguments are within the I's range...
-   if ( numRed < std::numeric_limits<I>::min() || 
-        numRed > std::numeric_limits<I>::max() ||
-        denRed < std::numeric_limits<I>::min() || 
-        denRed > std::numeric_limits<I>::max() )
-   {
-       throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
-   }
+    // ... check if both reduced arguments are within the I's range...
+    if ( numRed < std::numeric_limits<I>::min() || 
+         numRed > std::numeric_limits<I>::max() ||
+         denRed < std::numeric_limits<I>::min() || 
+         denRed > std::numeric_limits<I>::max() )
+    {
+        throw math::RationalException(math::RationalException::INPUT_OUT_OF_RANGE);
+    }
 
-   // ... and set the rational to casted values of both reduced arguments.
-   this->set(static_cast<I>(numRed), static_cast<I>(denRed));
+    // ... and set the rational to casted values of both reduced arguments.
+
+    // Note that both terms are already reduced so they are assigned directly
+    // to 'this'. Denominator's sign must be positive.
+    if ( denRed < 0LL )
+    {
+        this->num = -static_cast<I>(numRed);
+        this->denom = -static_cast<I>(denRed);
+    }
+    else
+    {
+        this->num = static_cast<I>(numRed);
+        this->denom = static_cast<I>(denRed);
+    }
 }
 
 
