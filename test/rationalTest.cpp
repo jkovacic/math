@@ -172,6 +172,12 @@ void rationalTest()
         cout << "-2 < " << b << " : " << (-2L<b ? "TRUE" : "FALSE") << endl;
         cout << a << " <= 4 : " << (a<=4L ? "TRUE" : "FALSE") << endl;
         cout << "3 <= " << b << " : " << (3L<=b ? "TRUE" : "FALSE") << endl;
+
+        // Test of overloaded compound assignment operators:
+        cout << a << " + 3 = ";   a += 3;  cout << a << endl;
+        cout << a << " - 1 = ";   a -= 1;  cout << a << endl;
+        cout << a << " * 5 = ";   a *= 5;  cout << a << endl;
+        cout << a << " / 2 = ";   a /= 2;  cout << a << endl;
     }  // try
     catch ( const RationalException& ex )
     {
