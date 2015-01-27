@@ -63,7 +63,20 @@ template <class T>
 MatrixGeneric<T> operator*(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
 
 template <class T>
-MatrixGeneric<T> operator* (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
+MatrixGeneric<T> operator*(const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
+
+template <class T>
+MatrixGeneric<T> operator+(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+
+template <class T>
+MatrixGeneric<T> operator+(const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
+
+template <class T>
+MatrixGeneric<T> operator-(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+
+template <class T>
+MatrixGeneric<T> operator-(const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
+
 
 namespace __matrixprivate
 {
@@ -144,6 +157,8 @@ public:
     MatrixGeneric<T>& operator-= (const MatrixGeneric<T>& m) throw (MatrixException);
     virtual MatrixGeneric<T>& operator*= (const MatrixGeneric<T>&m ) throw (MatrixException);
     MatrixGeneric<T>& operator*= (const T& scalar);
+    MatrixGeneric<T>& operator+= (const T& scalar);
+    MatrixGeneric<T>& operator-= (const T& scalar);
     MatrixGeneric<T> operator- () const throw (MatrixException);
 
     // Transpose the matrix
@@ -166,7 +181,11 @@ public:
     friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
+    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator+ <>) (const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator- <>) (const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
     friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw(MatrixException);
     friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw(MatrixException);
 };

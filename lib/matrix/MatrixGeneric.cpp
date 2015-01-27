@@ -114,7 +114,7 @@ void math::MatrixGeneric<T>::_copyElems(const math::MatrixGeneric<T>& orig) thro
     {
         this->rows = orig.rows;
         this->cols = orig.cols;
-        math::mtcopy(orig.elems, this->elems);
+        math::mtcopy<T>(orig.elems, this->elems);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -335,7 +335,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
     }
 
     // For a definition of matrix addition, see operator+
-    math::mtvectadd(this->elems, m.elems, this->elems, true);
+    math::mtvectadd<T>(this->elems, m.elems, this->elems, true);
 
     return *this;
 }
@@ -361,7 +361,41 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
     }
 
     // For a definition of matrix subtraction, see operator-
-    math::mtvectadd(this->elems, matrix.elems, this->elems, false);
+    math::mtvectadd<T>(this->elems, matrix.elems, this->elems, false);
+
+    return *this;
+}
+
+
+/**
+ * Compund addition operator (+=) that adds each matrix's element
+ * by a scalar and assigns the sum to itself.
+ *
+ * @param scalar
+ *
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+=(const T& scalar)
+{
+    math::mtvectscalaradd<T>(this->elems, scalar, this->elems, true, true);
+
+    return *this;
+}
+
+
+/**
+ * Compound subtraction operator (+=) that subtracts each matrix's element
+ * by a scalar and assigns the difference to itself.
+ *
+ * @param scalar
+ *
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-=(const T& scalar)
+{
+    math::mtvectscalaradd<T>(this->elems, scalar, this->elems, false, true);
 
     return *this;
 }
@@ -384,7 +418,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::Mat
     // N(r,c) = -this(r,c)
     math::MatrixGeneric<T> temp(this->rows, this->cols);
 
-    math::mtvectmult(this->elems, static_cast<T>(-1), temp.elems);
+    math::mtvectmult<T>(this->elems, static_cast<T>(-1), temp.elems);
 
     return temp;
 }
@@ -436,7 +470,7 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
 {
     // Multiply each element by the 'scalar'
-    math::mtvectmult(this->elems, scalar, this->elems);
+    math::mtvectmult<T>(this->elems, scalar, this->elems);
 
     return *this;
 }
@@ -512,7 +546,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     math::MatrixGeneric<T> temp = this->transpose();
 
     // update the vector of elements:
-    math::mtcopy(temp.elems, this->elems);
+    math::mtcopy<T>(temp.elems, this->elems);
 
     // and swap matrix's dimensions:
     std::swap( this->rows, this->cols );
@@ -759,7 +793,7 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
     // S(r,c) = m1(r,c) + m2(r,c)
     math::MatrixGeneric<T> temp(m1.rows, m2.cols);
 
-    math::mtvectadd(m1.elems, m2.elems, temp.elems, true);
+    math::mtvectadd<T>(m1.elems, m2.elems, temp.elems, true);
 
     return temp;
 }
@@ -789,7 +823,7 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const m
     // D(r,c) = m1(r,c) - m2(r,c)
     math::MatrixGeneric<T> temp(m1.rows, m2.cols);
 
-    math::mtvectadd(m1.elems, m2.elems, temp.elems, false);
+    math::mtvectadd<T>(m1.elems, m2.elems, temp.elems, false);
 
     return temp;
 }
@@ -883,7 +917,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
     // P(r,c) = scalar * m(r,c)
     math::MatrixGeneric<T> retVal(m.rows, m.cols);
 
-    math::mtvectmult(m.elems, sc, retVal.elems);
+    math::mtvectmult<T>(m.elems, sc, retVal.elems);
 
     return retVal;
 }
@@ -904,6 +938,102 @@ template <class T>
 math::MatrixGeneric<T> math::operator*(const T& sc, const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
     MatrixGeneric<T> retVal = m * sc;
+    return retVal;
+}
+
+
+/**
+ * Adds each element of the matrix 'm' by the scalar 'sc'
+ *
+ * @param m - augend (a matrix)
+ * @param sc - addend (a scalar)
+ *
+ * @return matrix 'res' where res(i,j) = m(i.j) + sc for each valid 'i' and 'j'
+ *
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::operator+(
+            const math::MatrixGeneric<T>& m,
+            const T& sc)
+        throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+
+    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, true, true);
+
+    return retVal;
+}
+
+
+/**
+ * Adds each element of the matrix 'm' by the scalar 'sc'
+ *
+ * @param sc - addend (a scalar)
+ * @param m - augend (a matrix)
+ *
+ * @return matrix 'res' where res(i,j) = sc + m(i.j) for each valid 'i' and 'j'
+ *
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::operator+(
+            const T& sc,
+            const math::MatrixGeneric<T>& m)
+        throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+
+    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, true, false);
+
+    return retVal;
+}
+
+
+/**
+ * Subtracts each element of the matrix 'm' by the scalar 'sc'
+ *
+ * @param m - minuend (a matrix)
+ * @param sc - subtrahend (a scalar)
+ *
+ * @return matrix 'res' where res(i,j) = m(i.j) - sc for each valid 'i' and 'j'
+ *
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::operator-(
+            const math::MatrixGeneric<T>& m,
+            const T& sc)
+        throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+
+    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, false, true);
+
+    return retVal;
+}
+
+
+/**
+ * Subtracts the scalar 'sc' by each element of the matrix 'm'
+ *
+ * @param sc - minuend (a scalar)
+ * @param m - subtrahend (a matrix)
+ *
+ * @return matrix 'res' where res(i,j) = sc - m(i.j) for each valid 'i' and 'j'
+ *
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::operator -(
+            const T& sc,
+            const math::MatrixGeneric<T>& m)
+        throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+
+    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, false, false);
+
     return retVal;
 }
 

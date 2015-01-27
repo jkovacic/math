@@ -50,6 +50,15 @@ void mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T
 template <class T>
 void mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>& dest);
 
+
+template <class T>
+void mtvectscalaradd(
+        const std::vector<T>& v1,
+        const T& scalar,
+        std::vector<T>& dest,
+        bool add = true,
+        bool vectFirst = true );
+
 }  // namespace math
 
 // DEFINITION

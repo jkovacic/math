@@ -114,7 +114,7 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
  * it will not be resized.
  *
  * @param v1 - vector whose elements will be multiplied by the scalar
- * @param scalar -scalar to multiply each vector's element
+ * @param scalar - scalar to multiply each vector's element
  * @param dest - reference of a vector where products will be written to
  */
 template <class T>
@@ -158,6 +158,114 @@ void math::mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>&
                 // if 'v1' is actually the same vector as 'dest',
                 // rather perform *= operation
             	*destit *= scalar;
+            }
+        }  // for
+    }  // omp parallel
+}
+
+
+/**
+ * Adds or subtracts (depending on 'add') each vector's element by a scalar
+ * and stores the results into 'dest'.
+ *
+ * If dest's preallocated size is smaller than N, it will be resized to N.
+ * If its size is larger than or same as N, it will not be resized.
+ *
+ * Combinations of 'add' and 'vectFirst':
+ *
+ * - add == true, vectFirst == true:
+ *        dest[i] = v1[i] + scalar
+ * - add == false, vectFirst == true:
+ *        dest[i] = v1[i] - scalar
+ *
+ * - add == true, vectFirst == false:
+ *        dest[i] = scalar + v1[i]
+ *
+ * - add == false, vectFirst == false:
+ *        dest[i] = scalar - v1[i]
+ *
+ * @param v1 - vector whose elements will be added/subtracted to/from scalar
+ * @param scalar - scalar to be added/subtracted to/from the vector
+ * @param dest - reference of a vector where sums/differences will be written to
+ * @param add - if 'true', addition will be performed, subtraction if 'false' (default: true)
+ * @param vectFirst - if 'true', the first element of the desired operation is the vector's element,otherwise the scalar (default: true)
+ */
+template <class T>
+void math::mtvectscalaradd(
+        const std::vector<T>& v1,
+        const T& scalar,
+        std::vector<T>& dest,
+        bool add,
+        bool vectFirst )
+{
+    const size_t N = v1.size();
+
+    // Only resize if 'dest' is too small
+    if ( dest.size() < N )
+    {
+        dest.resize(N);
+    }
+
+    // Coarse grained parallelism, if OpenMP is enabled
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(dest, v1, scalar, add, vectFirst)
+    {
+        // Depending on the number of available threads,
+        // determine the ideal nr. of samples per thread,
+        // and start and sample of a block that each thread will copy.
+        const size_t thrnr = omp_get_thread_num();
+        const size_t nthreads = omp_get_num_threads();
+
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thrnr;
+        const size_t iend = std::min(istart + elems_per_thread, N);
+
+        typename std::vector<T>::const_iterator srcit = v1.begin() + istart;
+        typename std::vector<T>::iterator destit = dest.begin() + istart;
+        for ( size_t i = istart;
+              i<iend && srcit!=v1.end() && destit!=dest.end();
+              ++srcit, ++destit, ++i)
+        {
+            if ( &v1 != &dest || false == vectFirst )
+            {
+                if ( true == vectFirst )
+                {
+                	if ( true == add )
+                    {
+                        *destit = *srcit + scalar;
+                    }
+                    else
+                    {
+                        *destit = *srcit - scalar;
+                	}
+                }
+                else
+                {
+                    // vectFirst == false
+                    if ( true == add )
+                    {
+                        *destit = scalar + *srcit;
+                    }
+                    else
+                    {
+                        *destit = scalar - *srcit;
+                    }
+                }
+            }
+            else
+            {
+                // if 'v1' is actually the same vector as 'dest',
+                // rather use compound assignment operators.
+                // Note that 'vectFirst' can only equal true.
+               	if ( true == add )
+               	{
+               	    *destit += scalar;
+               	}
+               	else
+               	{
+               	    *destit -= scalar;
+               	}
             }
         }  // for
     }  // omp parallel

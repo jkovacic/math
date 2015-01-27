@@ -61,14 +61,51 @@ void rationalMatrixTest()
         inv.display();
         cout << endl;
 
-        // finally check the matrix += operator
+        // check the matrix += operator
         a += inv;
-        cout << "a + inv:" << endl;
+        cout << "a += inv:" << endl;
         a.display();
         cout << endl;
 
         inv *= a;
-        cout << "deteminant of inv * (a+inv): " << inv.determinant() << endl;
+        cout << "deteminant of inv * (a+inv): " << inv.determinant() << endl << endl;
+
+        // test of overloaded matrix operators:
+        Rational r(3, 4);
+        MatrixGeneric<Rational> b;
+
+        b = a + r;
+        cout << "a + " << r << " : " << endl;
+        b.display();
+        cout << endl;
+
+        b = r + a;
+        cout << r << " + a : " << endl;
+        b.display();
+        cout << endl;
+
+        b = a - r;
+        cout << "a - " << r << " : " << endl;
+        b.display();
+        cout << endl;
+
+        b = r - a;
+        cout << r << " - a : " << endl;
+        b.display();
+        cout << endl;
+
+        r.set(1, 2);
+        b = a;
+        b += r;
+        cout << "a + " << r << " : " << endl;
+        b.display();
+        cout << endl;
+
+        b = a;
+        b -= r;
+        cout << "a - " << r << " : " << endl;
+        b.display();
+        cout << endl;
     }
     catch ( const RationalException& rex )
     {
