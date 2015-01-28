@@ -32,6 +32,7 @@ limitations under the License.
 #include <algorithm>
 
 // no #include "MatrixGeneric.hpp" !!!
+#include "util/NumericUtil.hpp"
 #include "exception/MatrixException.hpp"
 #include "util/mtcopy.hpp"
 #include "util/mtvectop.hpp"
@@ -471,6 +472,34 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
 {
     // Multiply each element by the 'scalar'
     math::mtvectmult<T>(this->elems, scalar, this->elems);
+
+    return *this;
+}
+
+
+/**
+ * Compound division operator (/=) that divides each element
+ * of the matrix by 'scalar'and assigns the quotient to itself.
+ *
+ * @param scalar - dividend that divides each element of 'this'
+ *
+ * @return reference to itself
+ *
+ * @throw MatrixException if attempting todivide by 0 or allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator/=(const T& scalar) throw (math::MatrixException)
+{
+    // Division by zero is not permitted:
+    if ( true == math::NumericUtil::isZero<T>(scalar) )
+    {
+        throw math::MatrixException(math::MatrixException::FORBIDDEN);
+    }
+
+    const T f = static_cast<T>(1) / scalar;
+
+    // Multiply each element of 'this' by 1/scalar:
+    math::mtvectmult(this->elems, f, this->elems);
 
     return *this;
 }
@@ -1025,7 +1054,7 @@ math::MatrixGeneric<T> math::operator-(
  * @throw MatrixException if allocation of memory fails
  */
 template <class T>
-math::MatrixGeneric<T> math::operator -(
+math::MatrixGeneric<T> math::operator-(
             const T& sc,
             const math::MatrixGeneric<T>& m)
         throw (math::MatrixException)
@@ -1033,6 +1062,38 @@ math::MatrixGeneric<T> math::operator -(
     math::MatrixGeneric<T> retVal(m.rows, m.cols);
 
     math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, false, false);
+
+    return retVal;
+}
+
+
+/**
+ * Divides each matrix's element by a scalar.
+ *
+ * @param m - divisor (a matrix)
+ * @param sc - dividend (a scalar)
+ *
+ * @return m / sc
+ *
+ * @throw MAtrixException if attempting to divide by 0 or allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::operator/(
+            const math::MatrixGeneric<T>& m,
+            const T& sc)
+throw (math::MatrixException)
+{
+    // Division by zero is not permitted:
+    if ( true == math::NumericUtil::isZero<T>(sc) )
+    {
+        throw math::MatrixException(math::MatrixException::FORBIDDEN);
+    }
+
+    const T f = static_cast<T>(1) / sc;
+    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+
+    // Multiply all m's elements by 1/sc:
+    math::mtvectmult(m.elems, f, retVal.elems);
 
     return retVal;
 }

@@ -106,6 +106,17 @@ void rationalMatrixTest()
         cout << "a - " << r << " : " << endl;
         b.display();
         cout << endl;
+
+        // Test of division operators:
+        b = a / r;
+        cout << " a / (" << r << ") : " << endl;
+        b.display();
+        cout << endl;
+
+        b /= r;
+        cout << "a / (" << r << ")^2 : " << endl;
+        b.display();
+        cout << endl;
     }
     catch ( const RationalException& rex )
     {
