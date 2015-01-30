@@ -481,11 +481,11 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
  * Compound division operator (/=) that divides each element
  * of the matrix by 'scalar'and assigns the quotient to itself.
  *
- * @param scalar - dividend that divides each element of 'this'
+ * @param scalar - divisor that divides each element of 'this'
  *
  * @return reference to itself
  *
- * @throw MatrixException if attempting todivide by 0 or allocation of memory fails
+ * @throw MatrixException if attempting to divide by 0 or allocation of memory fails
  */
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator/=(const T& scalar) throw (math::MatrixException)
@@ -500,6 +500,61 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator/=(const T& scalar) thro
 
     // Multiply each element of 'this' by 1/scalar:
     math::mtvectmult(this->elems, f, this->elems);
+
+    return *this;
+}
+
+
+/**
+ * Element wise multiplication of 'this' by the given matrix.
+ * Both matrices must have the same dimension (equal number of rows and columns)
+ *
+ * @param m - matrix to be element wise multiplied by this one
+ *
+ * @return reference to this
+ *
+ * @throw MatrixException if dimensions do not match
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::ewMult(const math::MatrixGeneric<T>& m) throw (math::MatrixException)
+{
+    // Check if dimensions of both matrices match
+    if ( this->rows != m.rows || this->cols != m.cols )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    math::mtvectewmult<T>(this->elems, m.elems, this->elems, true);
+
+    return *this;
+}
+
+
+/**
+ * Element wise division of 'this' by the given matrix.
+ * Both matrices must have the same dimension (equal number of rows and columns)
+ *
+ * @param m - matrix to be element wise multiplied by this one
+ *
+ * @return reference to this
+ *
+ * @throw MatrixException if dimensions do not match or any m's element equals 0
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::ewDiv(const math::MatrixGeneric<T>& m) throw (math::MatrixException)
+{
+    // Check if dimensions of both matrices match
+    if ( this->rows != m.rows || this->cols != m.cols )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    const bool succ = math::mtvectewmult<T>(this->elems, m.elems, this->elems, false);
+
+    if ( false == succ )
+    {
+        throw math::MatrixException(math::MatrixException::FORBIDDEN);
+    }
 
     return *this;
 }
@@ -1070,8 +1125,8 @@ math::MatrixGeneric<T> math::operator-(
 /**
  * Divides each matrix's element by a scalar.
  *
- * @param m - divisor (a matrix)
- * @param sc - dividend (a scalar)
+ * @param m - dividend (a matrix)
+ * @param sc - divisor (a scalar)
  *
  * @return m / sc
  *
@@ -1094,6 +1149,75 @@ throw (math::MatrixException)
 
     // Multiply all m's elements by 1/sc:
     math::mtvectmult(m.elems, f, retVal.elems);
+
+    return retVal;
+}
+
+
+/**
+ * Matrix element wise multiplication, equivalent to
+ * Matlab's operator .*
+ *
+ * @param m1 - multiplicand matrix
+ * @param m2 - multiplier matrix
+ *
+ * @return m1 .* m2
+ *
+ * @throw MatrixException if matrices'dimensions are not the same
+ */
+template <class T>
+math::MatrixGeneric<T> math::matEwMult(
+            const math::MatrixGeneric<T>& m1,
+            const math::MatrixGeneric<T>& m2)
+        throw (math::MatrixException)
+{
+    // Check of dimensions. Numbers of rows and columns must match
+    // otherwise element wise multiplication is not possible
+    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    MatrixGeneric<T> retVal(m1.rows, m1.cols);
+
+    math::mtvectewmult<T>(m1.elems, m2.elems, retVal.elems, true);
+
+    return retVal;
+}
+
+
+/**
+ * Matrix element wise division, equivalent to
+ * Matlab's operator ./
+ *
+ * @param m1 - dividend matrix
+ * @param m2 - divisor matrix
+ *
+ * @return m1 ./ m2
+ *
+ * @throw MatrixException if matrices'dimensions are not the same or any divisor's element equals 0
+ */
+template <class T>
+math::MatrixGeneric<T> math::matEwDiv(
+            const math::MatrixGeneric<T>& m1,
+            const math::MatrixGeneric<T>& m2)
+        throw (math::MatrixException)
+{
+    // Check of dimensions. Numbers of rows and columns must match
+    // otherwise element wise division is not possible
+    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
+
+    MatrixGeneric<T> retVal(m1.rows, m1.cols);
+
+    const bool succ = math::mtvectewmult<T>(m1.elems, m2.elems, retVal.elems, false);
+
+    if ( false == succ )
+    {
+        throw math::MatrixException(math::MatrixException::FORBIDDEN);
+    }
 
     return retVal;
 }

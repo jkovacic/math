@@ -117,6 +117,29 @@ void rationalMatrixTest()
         cout << "a / (" << r << ")^2 : " << endl;
         b.display();
         cout << endl;
+
+        // Test of element wise multiplication and division
+        b = matEwMult(a, (a+r));
+        cout << "a .* (a+"<< r << ") : " << endl;
+        b.display();
+        cout << endl;
+
+        b = a;
+        b.ewMult(a);
+        cout << " a .* a : " << endl;
+        b.display();
+        cout << endl;
+
+        b = matEwDiv((a-r), a);
+        cout << "(a-" << r << ") ./ a : " << endl;
+        b.display();
+        cout << endl;
+
+        b = a - r;
+        b.ewDiv(a+r);
+        cout << "(a-" << r << ") ./ (a+" << r << ") : " << endl;
+        b.display();
+        cout << endl;
     }
     catch ( const RationalException& rex )
     {

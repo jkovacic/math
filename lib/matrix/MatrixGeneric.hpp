@@ -80,6 +80,12 @@ MatrixGeneric<T> operator-(const T& sc, const MatrixGeneric<T>& m) throw(MatrixE
 template <class T>
 MatrixGeneric<T> operator/(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
 
+template <class T>
+MatrixGeneric<T> matEwMult(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+
+template <class T>
+MatrixGeneric<T> matEwDiv(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+
 
 namespace __matrixprivate
 {
@@ -165,6 +171,9 @@ public:
     MatrixGeneric<T>& operator/= (const T& scalar) throw (MatrixException);
     MatrixGeneric<T> operator- () const throw (MatrixException);
 
+    MatrixGeneric<T>& ewMult(const MatrixGeneric<T>& m) throw (MatrixException);
+    MatrixGeneric<T>& ewDiv(const MatrixGeneric<T>& m) throw (MatrixException);
+
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
     virtual MatrixGeneric<T>& transposed() throw (MatrixException);
@@ -191,6 +200,8 @@ public:
     friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator- <>) (const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator/ <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+    friend MatrixGeneric<T> (math::matEwMult <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+    friend MatrixGeneric<T> (math::matEwDiv <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw(MatrixException);
     friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw(MatrixException);
 };

@@ -59,7 +59,16 @@ void mtvectscalaradd(
         bool add = true,
         bool vectFirst = true );
 
+
+template <class T>
+bool mtvectewmult(
+        const std::vector<T>& v1,
+        const std::vector<T>& v2,
+        std::vector<T>& dest,
+        bool mult = true );
+
 }  // namespace math
+
 
 // DEFINITION
 #include "util/mtvectop.cpp"
