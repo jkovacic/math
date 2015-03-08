@@ -61,7 +61,7 @@ LIBSPECFUNDIR = $(LIBDIR)specfun/
 LIBOMPDIR = $(LIBDIR)omp/
 LIBSTATDISTDIR = $(LIBSTATDIR)dist/
 
-# Directory with unit testing files
+# Directory with smoke testing files
 TESTDIR = test/
 
 # Directory with settings file(s)
@@ -295,7 +295,7 @@ LIBINCFLAG = $(INCLUDEFLAG)$(INCLIB)
 APPINCFLAG = $(INCLUDEFLAG)$(APPINCDIR)
 
 # Optional compiler flags
-CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas $(LIBINCFLAG)
+CPPFLAGS = -Wall -Wextra -Wno-unknown-pragmas -Werror $(LIBINCFLAG)
 
 # Optional preprocessor macros
 MACROS =
