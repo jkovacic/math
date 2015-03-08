@@ -409,26 +409,6 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const F& sc)
 
 
 /**
- * Unary negation operator (-)
- *
- * @return -this
-*/
-template <typename F>
-math::QuaternionGeneric<F> math::QuaternionGeneric<F>::operator-() const
-{
-    /*
-        Negation of a quaternion is trivial: just negate each component.
-    */
-
-    return math::QuaternionGeneric<F>(
-            -this->quat_o,
-            -this->quat_i,
-            -this->quat_j,
-            -this->quat_k );
-}
-
-
-/**
  * Conjugation of the quaternion.
  *
  * @return conjugation of this
@@ -902,6 +882,44 @@ math::QuaternionGeneric<F> math::operator*(const F& scalar, const math::Quaterni
         If this is not a case, implement a specialization.
     */
     return (q * scalar);
+}
+
+
+/**
+ * Unary operator '+', returns a copy of the input argument 'q'.
+ * 
+ * @note Usage of this operator should be avoided
+ * 
+ * @param q - quaternion to be copied
+ * 
+ * @return copy of 'q'
+ */
+template <typename F>
+math::QuaternionGeneric<F> math::operator+(const math::QuaternionGeneric<F>& q)
+{
+    return q;
+}
+
+
+/**
+ * Unary negation operator (-)
+ *
+ * @param q - quaternion to be negated
+ * 
+ * @return -q
+*/
+template <typename F>
+math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q)
+{
+    /*
+        Negation of a quaternion is trivial: just negate each component.
+    */
+
+    return math::QuaternionGeneric<F>(
+            -q.quat_o,
+            -q.quat_i,
+            -q.quat_j,
+            -q.quat_k );
 }
 
 

@@ -66,6 +66,12 @@ QuaternionGeneric<F> operator-(const F& scalar, const QuaternionGeneric<F>& q);
 template <typename F>
 QuaternionGeneric<F> operator*(const F& scalar, const QuaternionGeneric<F>& q);
 
+template <typename F>
+QuaternionGeneric<F> operator+(const QuaternionGeneric<F>& q);
+
+template <typename F>
+QuaternionGeneric<F> operator-(const QuaternionGeneric<F>& q);
+
 // and its friend << operator:
 template <typename F>
 std::ostream& operator<<(std::ostream& output, const QuaternionGeneric<F>& q);
@@ -146,7 +152,6 @@ public:
     QuaternionGeneric<F>& operator*=(const F& scalar);
     QuaternionGeneric<F>& operator+=(const F& scalar);
     QuaternionGeneric<F>& operator-=(const F& scalar);
-    QuaternionGeneric<F> operator-() const;
 
     // Conjugate the quaternion:
     QuaternionGeneric<F> conj() const;
@@ -172,6 +177,8 @@ public:
     friend QuaternionGeneric<F> (math::operator* <>) (const F& scalar, const QuaternionGeneric<F>& q);
     friend QuaternionGeneric<F> (math::operator+ <>) (const F& scalar, const QuaternionGeneric<F>& q);
     friend QuaternionGeneric<F> (math::operator- <>) (const F& scalar, const QuaternionGeneric<F>& q);
+    friend QuaternionGeneric<F> (math::operator+ <>) (const QuaternionGeneric<F>& q);
+    friend QuaternionGeneric<F> (math::operator- <>) (const QuaternionGeneric<F>& q);
 
     // a friend function to overload the operator << (used by std::cout and std::cerr)
     friend std::ostream& (math::operator<< <>) (std::ostream& output, const QuaternionGeneric<F>& q);

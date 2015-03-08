@@ -66,7 +66,7 @@ void matrixTest()
         cout << endl;
 
         // and scalar * matrix:
-        res = f * 0.5f;
+        res = +f * 0.5f;
         cout << "f multiplied by 0.5" << endl;
         res.display();
         cout << endl;

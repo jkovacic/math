@@ -46,6 +46,13 @@ template <typename I> class RationalGeneric;
 template <typename I>
 std::ostream& operator<<(std::ostream& output, const RationalGeneric<I>& fraction);
 
+// ... unary operators...
+template <typename I>
+RationalGeneric<I> operator+(const RationalGeneric<I>& f);
+
+template <typename I>
+RationalGeneric<I> operator-(const RationalGeneric<I>& f) throw(RationalException);
+
 // ...and binary operators as friend functions:
 template <typename I>
 RationalGeneric<I> operator+(const RationalGeneric<I>& f1, const RationalGeneric<I>& f2) throw(RationalException);
@@ -246,8 +253,6 @@ public:
     RationalGeneric<I>& operator*=(const RationalGeneric<I>& fraction) throw(RationalException);
     RationalGeneric<I>& operator/=(const RationalGeneric<I>& fraction) throw(RationalException);
 
-    // Unary operator -
-    RationalGeneric<I> operator-() const throw(RationalException);
 
 private:
 
@@ -260,6 +265,14 @@ private:
     void __reduce();
 
     // Friend functions that implement arithmetic operators:
+
+    friend RationalGeneric<I> (math::operator+ <>) (
+            const RationalGeneric<I>& f );
+
+    friend RationalGeneric<I> (math::operator- <>) (
+            const RationalGeneric<I>& f )
+        throw(RationalException);
+
     friend RationalGeneric<I> (math::operator+ <>) (
             const RationalGeneric<I>& f1, 
             const RationalGeneric<I>& f2 ) 

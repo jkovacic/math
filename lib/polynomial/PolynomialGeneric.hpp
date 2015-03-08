@@ -45,6 +45,12 @@ template <typename F> class PolynomialGeneric;
 
 // to declare the class's friend functions:
 template <typename F>
+PolynomialGeneric<F> operator+(const PolynomialGeneric<F>& p) throw(PolynomialException);
+
+template <typename F>
+PolynomialGeneric<F> operator-(const PolynomialGeneric<F>& p) throw(PolynomialException);
+
+template <typename F>
 PolynomialGeneric<F> operator+(const PolynomialGeneric<F>& p1, const PolynomialGeneric<F>& p2) throw(PolynomialException);
 
 template <typename F>
@@ -176,7 +182,6 @@ public:
     PolynomialGeneric<F>& operator*=(const PolynomialGeneric<F>& poly) throw (PolynomialException);
     PolynomialGeneric<F>& operator/=(const PolynomialGeneric<F>& poly) throw (PolynomialException);
     PolynomialGeneric<F>& operator%=(const PolynomialGeneric<F>& poly) throw (PolynomialException);
-    PolynomialGeneric<F> operator-() const throw (PolynomialException);
     PolynomialGeneric<F>& operator+=(const F& sc);
     PolynomialGeneric<F>& operator-=(const F& sc);
     PolynomialGeneric<F>& operator*=(const F& sc);
@@ -188,6 +193,8 @@ public:
 
 
     // operators in separate functions declared as friend functions
+    friend PolynomialGeneric<F> (math::operator+ <>) (const PolynomialGeneric<F>& p) throw(PolynomialException);
+    friend PolynomialGeneric<F> (math::operator- <>) (const PolynomialGeneric<F>& p) throw(PolynomialException);
     friend PolynomialGeneric<F> (math::operator+ <>) (const PolynomialGeneric<F>& p1, const PolynomialGeneric<F>& p2) throw(PolynomialException);
     friend PolynomialGeneric<F> (math::operator- <>) (const PolynomialGeneric<F>& p1, const PolynomialGeneric<F>& p2) throw(PolynomialException);
     friend PolynomialGeneric<F> (math::operator* <>) (const PolynomialGeneric<F>& p1, const PolynomialGeneric<F>& p2) throw(PolynomialException);

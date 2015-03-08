@@ -23,7 +23,7 @@ limitations under the License.
  */
 
 
-// no #include "rational/Rational.hpp" !!
+// no #include "rational/RationalGeneric.hpp" !!
 #include "int_util/IntUtilGeneric.hpp"
 #include "int_util/IntFactorizationGeneric.hpp"
 #include "util/NumericUtil.hpp"
@@ -1032,30 +1032,6 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator/=(
 }
 
 
-/**
- * Unary negation operator (-)
- *
- * @return -this
- * 
- * @throw RationalExcpetion if I is an unsigned type
- */
-template <typename I>
-math::RationalGeneric<I> math::RationalGeneric<I>::operator-() const
-                         throw (math::RationalException)
-{
-    // check if I is an unsigned type
-    if ( this->num != static_cast<I>(0) && 
-         false == math::IntUtil::isNegative<I>(-1) )
-    {
-        throw math::RationalException(math::RationalException::UNSIGNED);
-    }
-
-    // One (doesn't matter which) member of the fraction must be negated.
-    // Let it be the numerator
-    return math::RationalGeneric<I>(-this->num, this->denom);
-}
-
-
 /*
  * An auxiliary function that reduces the fraction:
  * divides the numerator and denominator by their greatest common divisor
@@ -1120,6 +1096,48 @@ std::ostream& math::operator<<(
     output << frac.num << '/' << frac.denom;
     // and return reference of the stream
     return output;
+}
+
+
+/**
+ * Unary operator '+', returns a copy of the input argument 'f'.
+ * 
+ * @note Usage of this operator should be avoided
+ * 
+ * @param f - rational number to be copied
+ * 
+ * @return copy of 'f'
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator+(const math::RationalGeneric<I>& f)
+{
+   return f; 
+}
+
+
+/**
+ * Unary negation operator (-)
+ *
+ * @param f - rational number to be negated
+ * 
+ * @return -f
+ * 
+ * @throw RationalExcpetion if I is an unsigned type
+ */
+template <typename I>
+math::RationalGeneric<I> math::operator-(const math::RationalGeneric<I>& f)
+                         throw (math::RationalException)
+{
+    // check if I is an unsigned type
+    if ( f.num != static_cast<I>(0) && 
+         false == math::IntUtil::isNegative<I>(-1) )
+    {
+        throw math::RationalException(math::RationalException::UNSIGNED);
+    }
+
+    // One (doesn't matter which) member of the fraction must be negated.
+    // Let it be the numerator
+    return math::RationalGeneric<I>(-f.num, f.denom);
 }
 
 

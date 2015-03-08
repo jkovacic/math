@@ -51,6 +51,12 @@ template <class T> class MatrixGeneric;
 
 // to declare the class's friend functions:
 template <class T>
+MatrixGeneric<T> operator+(const MatrixGeneric<T>& m) throw(MatrixException);
+
+template <class T>
+MatrixGeneric<T> operator-(const MatrixGeneric<T>& m) throw(MatrixException);
+
+template <class T>
 MatrixGeneric<T> operator+(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
 
 template <class T>
@@ -169,7 +175,6 @@ public:
     MatrixGeneric<T>& operator+= (const T& scalar);
     MatrixGeneric<T>& operator-= (const T& scalar);
     MatrixGeneric<T>& operator/= (const T& scalar) throw (MatrixException);
-    MatrixGeneric<T> operator- () const throw (MatrixException);
 
     MatrixGeneric<T>& ewMult(const MatrixGeneric<T>& m) throw (MatrixException);
     MatrixGeneric<T>& ewDiv(const MatrixGeneric<T>& m) throw (MatrixException);
@@ -190,6 +195,8 @@ public:
 
 
     // Declaration of friend functions
+    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);

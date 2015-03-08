@@ -134,7 +134,7 @@ void polynomialTest()
         ptemp /= q;
         // Expected: "1 -1*x -2*x^2 +2*x^3"
         cout << "p / q = " << ptemp << endl;
-        ptemp = p;
+        ptemp = +p;
         ptemp %= q;
         // Expected: "-4"
         cout << "p mod q = " << ptemp << endl;

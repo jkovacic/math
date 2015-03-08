@@ -403,29 +403,6 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-=(const T& scalar)
 
 
 /**
- * Unary negation operator (-)
- *
- * @return -this
- *
- * @throw MatrixException if memory allocation fails
- */
-template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::operator-() const throw(math::MatrixException)
-{
-    // There are no requirements about dimensions and no input check is necessary
-
-    // Each element of the resulting matrix is a negated value of the element
-    // at the same position:
-    // N(r,c) = -this(r,c)
-    math::MatrixGeneric<T> temp(this->rows, this->cols);
-
-    math::mtvectmult<T>(this->elems, static_cast<T>(-1), temp.elems);
-
-    return temp;
-}
-
-
-/**
  * Multiplication operator (*=) that multiplies a matrix by this one and assigns
  * the product to itself.
  * Number of columns of 'this' must be the same as number of rows of 'm',
@@ -850,6 +827,49 @@ math::MatrixGeneric<T>::~MatrixGeneric()
     // There are no other resources to release.
 }
 
+
+
+/**
+ * Unary operator '+', returns a copy of the input argument 'f'.
+ * 
+ * @note Usage of this operator should be avoided
+ * 
+ * @param m - matrix to be copied
+ * 
+ * @return copy of 'm'
+ * 
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m) throw(math::MatrixException)
+{
+    return m;
+}
+
+
+/**
+ * Unary negation operator (-)
+ *
+ * @param m - matrix to be negated
+ * 
+ * @return -m
+ *
+ * @throw MatrixException if memory allocation fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m) throw(math::MatrixException)
+{
+    // There are no requirements about dimensions and no check of input arguments is necessary
+
+    // Each element of the resulting matrix is a negated value of the element
+    // at the same position:
+    // N(r,c) = -m(r,c)
+    math::MatrixGeneric<T> temp(m.rows, m.cols);
+
+    math::mtvectmult<T>(m.elems, static_cast<T>(-1), temp.elems);
+
+    return temp;
+}
 
 
 /**

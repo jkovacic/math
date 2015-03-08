@@ -1013,45 +1013,6 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator-=(const F& sc)
 
 
 /**
- * Unary negation operator (-)
- *
- * @return -this
- *
- * @throw PolynomialException if allocation of memory fails
- */
-template <typename F>
-math::PolynomialGeneric<F> math::PolynomialGeneric<F>::operator-() const throw (math::PolynomialException)
-{
-    /*
-        Definition of polynomial negation is similar to negation of vectors/matrices:
-
-                                   Np
-                                 -----
-                                 \            i
-                        -p(x) =  |     -pi * x
-                                 /
-                                 -----
-                                  i=0
-    */
-    try
-    {
-        math::PolynomialGeneric<F> retVal(*this);
-
-        // Just negate each coefficient:
-
-        math::mtvectmult(this->coef, static_cast<F>(-1), retVal.coef);
-
-        // no need to reduce
-        return retVal;
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
-    }
-}
-
-
-/**
  * Multiplication operator (*=) that multiplies two polynomials and assigns the product to itself.
  *
  * @note Polynomials can be of different degrees.
@@ -1286,6 +1247,63 @@ math::PolynomialGeneric<F>::~PolynomialGeneric()
 }
 
 
+
+/**
+ * Unary operator '+', returns a copy of the input argument 'f'.
+ * 
+ * @note Usage of this operator should be avoided
+ * 
+ * @param p - polynomial to be copied
+ * 
+ * @return copy of 'p'
+ * 
+ * @throw PolynomialException if allocation of memory fails
+ */
+template <typename F>
+math::PolynomialGeneric<F> math::operator+(math::PolynomialGeneric<F>& p) throw (math::PolynomialException)
+{
+    return p;
+}
+
+
+/**
+ * Unary negation operator (-)
+ *
+ * @param p - polynomial to be negated
+ * 
+ * @return -p
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template <typename F>
+math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p) throw (math::PolynomialException)
+{
+    /*
+        Definition of polynomial negation is similar to negation of vectors/matrices:
+
+                                   Np
+                                 -----
+                                 \            i
+                        -p(x) =   >     -pi * x
+                                 /
+                                 -----
+                                  i=0
+    */
+    try
+    {
+        math::PolynomialGeneric<F> retVal(p);
+
+        // Just negate each coefficient:
+        math::mtvectmult(p.coef, static_cast<F>(-1), retVal.coef);
+
+        // no need to reduce
+        return retVal;
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
+    }
+}
 
 
 /**

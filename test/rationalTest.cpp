@@ -78,7 +78,7 @@ void rationalTest()
         // Test of operators
         a.set(1,3);
         b.set(1,2);
-        c = a + b;
+        c = +a + b;
         // should output sth. like "1/3 + 1/2 = 5/6 = 0.833333"
         cout << a << " + " << b << " = " << c << " = " << c.toFloat() << endl;
 
