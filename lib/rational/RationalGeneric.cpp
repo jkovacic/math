@@ -19,7 +19,7 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class Rational
+ * Implementation of the class RationalGeneric
  */
 
 
@@ -763,35 +763,13 @@ void math::RationalGeneric<I>::display(
 
 
 /**
- * @return fraction's value converted to float
+ * @return fraction's value converted to the specified numeric type F
  */
-template <typename I>
-float math::RationalGeneric<I>::toFloat() const
+template <typename I> template <typename F>
+F math::RationalGeneric<I>::toNum() const
 {
-    return ( static_cast<float>(this->num) / 
-             static_cast<float>(this->denom) );
-}
-
-
-/**
- * @return fraction's value converted to double
- */
-template <typename I>
-double math::RationalGeneric<I>::toDouble() const
-{
-    return ( static_cast<double>(this->num) / 
-             static_cast<double>(this->denom) );
-}
-
-
-/**
- * @return fraction's value converted to long double
- */
-template <typename I>
-long double math::RationalGeneric<I>::toLongDouble() const
-{
-    return ( static_cast<long double>(this->num) / 
-             static_cast<long double>(this->denom) );
+    return ( static_cast<F>(this->num) / 
+             static_cast<F>(this->denom) );
 }
 
 

@@ -22,8 +22,8 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{RationalGeneric.h}
  *
- * Declaration of the class Rational, representing mathematical rational numbers,
- * i.e. reduced fractions of two integers.
+ * Declaration of the class RationalGeneric, representing mathematical
+ * rational numbers, i.e. reduced fractions of two integers.
  */
 
 #ifndef _MATH_RATIONALGENERIC_HPP_
@@ -218,14 +218,9 @@ public:
             const I& factor = static_cast<I>(1), 
             std::ostream& str = std::cout) const;
     
-    // Converts the fraction into its float value
-    float toFloat() const;
-
-    // Converts the fraction into its double value
-    double toDouble() const;
-
-    // Converts the fraction into its long double value
-    long double toLongDouble() const;
+    // Converts the fraction into the specified numeric type
+    template <typename F>
+    F toNum() const;
 
     // Returns true if the fraction equals 0
     bool isZero() const;

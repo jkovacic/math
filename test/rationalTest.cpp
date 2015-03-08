@@ -80,13 +80,13 @@ void rationalTest()
         b.set(1,2);
         c = +a + b;
         // should output sth. like "1/3 + 1/2 = 5/6 = 0.833333"
-        cout << a << " + " << b << " = " << c << " = " << c.toFloat() << endl;
+        cout << a << " + " << b << " = " << c << " = " << c.toNum<float>() << endl;
 
         b += a;
         a.set(1,4);
         c = b - a;
         // should output sth. like "5/6 - 1/4 = 7/12 = 0.5833333"
-        cout << b << " - " << a << " = " << c << " = " << c.toDouble() << endl;
+        cout << b << " - " << a << " = " << c << " = " << c.toNum<double>() << endl;
         a -= c;  //  -1/3
         c = a * b; // 1/24
         // should output "-1/3 * 5/6 = -5/18"
