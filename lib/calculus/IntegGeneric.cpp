@@ -111,7 +111,7 @@ F __rectangle(
                  i < iend;
                  ++i, xi += h )
             {
-                tempSum += f.func( xi );
+                tempSum += f( xi );
             }
 
             // update 'sum' in a thread safe manner
@@ -197,7 +197,7 @@ F __closedNewtonCotes(
                   i < iend;
                   ++i, xi += h )
             {
-                tempSum += coef[i%degree] * f.func(xi);
+                tempSum += coef[i%degree] * f(xi);
             }
 
             // update sum in a thread safe manner
@@ -205,7 +205,7 @@ F __closedNewtonCotes(
         }  // omp parallel
 
         // finally add the remaining two points (at 'a' and 'b'):
-        sum += bCoef * ( f.func(a) + f.func(b) );
+        sum += bCoef * ( f(a) + f(b) );
 
         return sum * hCoef *  h;
     }  // try

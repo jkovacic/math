@@ -36,19 +36,20 @@ namespace math
  * be numerically processed by calculus algorithms.
  *
  * You must derive a class from this one and implement the
- * pure virtual function
+ * pure virtual function operator():
  *
- *   T func(const T& x) const throw(FunctionException)
+ *   T operator()(const T& x) const throw(FunctionException)
  *
  *  that returns function's value for the given input argument 'x'.
  *  The function is expected to throw FuncException::UNDEFINED
  *  if the value is not defined for the given input argument 'x'.
  *
  *  The instance of the derived class is then passed to numerical
- *  algorithms that call the function 'func' where applicable.
+ *  algorithms that call the "function call" operator() where
+ *  applicable.
  *
- *  @note 'func' should not be stateful, its return value should only
- *  depend on 'x'.
+ *  @note The operator() should not be stateful, in other words,
+ *  its return value should only depend on 'x'.
  *
  *  It is possible to parameterize the class by introducing additional
  *  properties that can be set via setter methods.
@@ -60,8 +61,8 @@ class IFunctionGeneric
 public:
 
     /**
-     * An interface for the function to be numerically integrated.
-     * This is a pure virtual function and must be implemented
+     * An interface for the function that implements the "function call"
+     * operator (). This is a pure virtual function and must be implemented
      * in the derived class.
      *
      * The function should not be stateful, i.e. its output should
@@ -73,7 +74,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined at given 'x'
      */
-    virtual T func(const T& x) const throw(FunctionException) = 0;
+    virtual T operator()(const T& x) const throw(FunctionException) = 0;
 
     virtual ~IFunctionGeneric();
 };  // class IFunctionGeneric

@@ -103,7 +103,7 @@ F __newtonCommon(
         }
 
         F x = x0;
-        F fx = f.func(x);
+        F fx = f(x);
 
         // start of the actual Newton - Raphson method
         for ( size_t iter = Nmax;
@@ -111,7 +111,7 @@ F __newtonCommon(
               --iter )
         {
             const F dx = ( true == diffFunc ?
-                      diff.func(x) :
+                      diff(x) :
                       math::Diff::diff<F>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
 
             if ( true == math::NumericUtil::isZero<F>(dx) )
@@ -122,7 +122,7 @@ F __newtonCommon(
 
             // Update 'x':
             x -= fx / dx;
-            fx = f.func(x);
+            fx = f(x);
         }  // for iter
 
         // Has the algorithm converged to any root?
@@ -214,7 +214,7 @@ F __halleyCommon(
 
         // Evaluate 'f' at the initial point
         F x = x0;
-        F fx = f.func(x);
+        F fx = f(x);
 
         // start of the actual Halley's method
         for ( size_t iter = Nmax;
@@ -223,11 +223,11 @@ F __halleyCommon(
         {
             // Evaluate both derivatives at 'x':
             const F dx = ( true == diffFunc ?
-                     d.func(x) :
+                     d(x) :
                      math::Diff::diff<F>(f, x, h, ROOTFIND_DEFAULT_DIFF_METHOD) );
 
             const F d2x = ( true== diffFunc ?
-                     d2.func(x) :
+                     d2(x) :
                      math::Diff::diff2<F>(f, x, h) );
 
             // check the first derivative to prevent possible division by zero
@@ -266,7 +266,7 @@ F __halleyCommon(
 
             // Finally update x
             x -= fx / (dx * term);
-            fx = f.func(x);
+            fx = f(x);
         } // for iter
 
         // Has the algorithm converged to any root?
@@ -352,8 +352,8 @@ F math::RootFind::bisection(
 
         a = std::min(from, to);
         b = std::max(from, to);
-        fa = f.func(a);
-        fb = f.func(b);
+        fa = f(a);
+        fb = f(b);
         sa = math::NumericUtil::sign<F>(fa);
         sb = math::NumericUtil::sign<F>(fb);
 
@@ -379,7 +379,7 @@ F math::RootFind::bisection(
         while ( false == math::NumericUtil::isZero<F>(b-a, EPSX) )
         {
             c = (a+b) / static_cast<F>(2);
-            fc = f.func(c);
+            fc = f(c);
             sc = math::NumericUtil::sign<F>(fc);
 
             // Maybe c is a root?
@@ -479,8 +479,8 @@ F math::RootFind::regulaFalsi(
 
         a = std::min(from, to);
         b = std::max(from, to);
-        fa = f.func(a);
-        fb = f.func(b);
+        fa = f(a);
+        fb = f(b);
         sa = math::NumericUtil::sign<F>(fa);
         sb = math::NumericUtil::sign<F>(fb);
 
@@ -506,7 +506,7 @@ F math::RootFind::regulaFalsi(
         while ( false == math::NumericUtil::isZero<F>(b-a, EPSX) )
         {
             c = a - fa * (b-a) / (fb-fa);
-            fc = f.func(c);
+            fc = f(c);
             sc = math::NumericUtil::sign<F>(fc);
 
             // Maybe c is a root?
@@ -602,8 +602,8 @@ F math::RootFind::secant(
 
         F xo = r0;
         F xn = r1;
-        F fo = f.func(xo);
-        F fn = f.func(xn);
+        F fo = f(xo);
+        F fn = f(xn);
 
         // Maybe xo is already a root?
         if ( true == math::NumericUtil::isZero<F>(fo, EPSY) )
@@ -627,7 +627,7 @@ F math::RootFind::secant(
             xo = xn;
             fo = fn;
             xn = c;
-            fn = f.func(xn);
+            fn = f(xn);
         }  // for iter
 
         // Finally check whether the algorithm has converged to any root

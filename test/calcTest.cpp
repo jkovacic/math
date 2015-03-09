@@ -43,7 +43,7 @@ class CFunc : public IFunction
 public:
     double ke, kl, n;
 
-    double func(const double& x) const throw(FunctionException)
+    double operator()(const double& x) const throw(FunctionException)
     {
         return ke * std::exp(-(x-3)*(x-3)) + kl * x + n;
     }

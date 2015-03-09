@@ -66,7 +66,7 @@ F __forwardDiff(
      *
      */
 
-    return (f.func(x+h) - f.func(x)) / h;
+    return (f(x+h) - f(x)) / h;
 }
 
 
@@ -97,7 +97,7 @@ F __backwardDiff(
      *
      */
 
-    return (f.func(x) - f.func(x-h)) / h;
+    return (f(x) - f(x-h)) / h;
 }
 
 
@@ -128,7 +128,7 @@ F __centralDiff(
      *
      */
 
-    return (f.func(x+h) - f.func(x-h)) / ( static_cast<F>(2) * h );
+    return (f(x+h) - f(x-h)) / ( static_cast<F>(2) * h );
 }
 
 
@@ -159,10 +159,10 @@ F __5pointDiff(
      *
      */
 
-    return ( -f.func(x + static_cast<F>(2) * h) +
-              static_cast<F>(8) * f.func(x+h) -
-              static_cast<F>(8) * f.func(x-h) +
-              f.func(x - static_cast<F>(2) * h) ) /
+    return ( -f(x + static_cast<F>(2) * h) +
+              static_cast<F>(8) * f(x+h) -
+              static_cast<F>(8) * f(x-h) +
+              f(x - static_cast<F>(2) * h) ) /
            (static_cast<F>(12) * h);
 }
 
@@ -284,7 +284,7 @@ F math::Diff::diff2(
     
     try
     {
-        return ( f.func(x+h) - static_cast<F>(2) * f.func(x) + f.func(x-h) ) / h2;
+        return ( f(x+h) - static_cast<F>(2) * f(x) + f(x-h) ) / h2;
     }
     catch ( const math::FunctionException& fex )
     {
