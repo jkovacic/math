@@ -33,7 +33,6 @@ limitations under the License.
 #include <vector>
 #include <cstddef>
 #include <new>
-#include <stdexcept>
 #include <limits>
 #include <algorithm>
 
@@ -138,10 +137,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const F* carray, size_t n) throw (
         // Memory allocation failed
         throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
     }
-    catch ( const std::out_of_range& oor )
-    {
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_RANGE);
-    }
+
 }
 
 
@@ -365,10 +361,10 @@ template <typename F>
 size_t math::PolynomialGeneric<F>::degree() const
 {
     /*
-        If the polynomial: c0 + c1*x + c2*x^2 + ... + cn*x^n
-        is reduced then the size of its 'coef' vector
-        is  n+1 elements (0 to n), one more than the actual degree (n).
-    */
+     * If the polynomial: c0 + c1*x + c2*x^2 + ... + cn*x^n
+     * is reduced then the size of its 'coef' vector
+     * is  n+1 elements (0 to n), one more than the actual degree (n).
+     */
     return this->coef.size() - 1;
 }
 
@@ -470,11 +466,11 @@ template <typename F>
 math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(size_t pos, const F& c) throw (math::PolynomialException)
 {
     /*
-        If 'pos' exceeds the polynomial's degree, the appropriate number of zero-coefficients
-        will be inserted between the highest coef and 'pos'.
-        If 'c' equals zero, this does not make any sense as reduce would revert the
-        polynomial back into its original state.
-    */
+     * If 'pos' exceeds the polynomial's degree, the appropriate number of zero-coefficients
+     * will be inserted between the highest coef and 'pos'.
+     * If 'c' equals zero, this does not make any sense as reduce would revert the
+     * polynomial back into its original state.
+     */
     if ( pos >= this->coef.size() )
     {
         if ( false==math::NumericUtil::isZero<F>(c) )
@@ -491,9 +487,9 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(size_t pos, const F&
     else
     {
         /*
-            If 'pos' is less or equal than the polynomial's degree,
-            it is safe to access the desired coefficient directly:
-        */
+         * If 'pos' is less or equal than the polynomial's degree,
+         * it is safe to access the desired coefficient directly:
+         */
         this->coef.at(pos) = c;
 
         // it is possible that coef(N) is set to zero....
@@ -533,11 +529,11 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(size_t pos, const
         if (pos>=N )
         {
             /*
-                ... the appropriate number of coefficients will be inserted.
-
-                However, if 'c' equals zero, reduce would revert the polynomial
-                into its original state.
-            */
+             * ... the appropriate number of coefficients will be inserted.
+             *
+             * However, if 'c' equals zero, reduce would revert the polynomial
+             * into its original state.
+             */
             if ( true==math::NumericUtil::isZero<F>(c) )
             {
                 // no need to insert a zero as the top coefficient as reduce() would remove it
@@ -592,9 +588,9 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove(size_t pos)
     this->coef.erase(this->coef.begin() + pos);
 
     /*
-     It is possible that the highest order coefficient is removed and an
-     unreduced polynomial remains:
-    */
+     * It is possible that the highest order coefficient is removed and an
+     * unreduced polynomial remains:
+     */
     this->__reduce();
 
     return *this;
@@ -612,15 +608,15 @@ template <typename F>
 F math::PolynomialGeneric<F>::value(const F& x) const
 {
     /*
-        Horner's method (explained at: http://en.wikipedia.org/wiki/Horner%27s_method)
-        is known to be computationally more efficient than calculating powers of x:
-
-        p(x) = cn*x^n + ... + c2*x^2 + c1*x + c0
-
-        can be rewritten into:
-
-        p(x) = ((((cn*x + c[n-1])*x + ... + c3)*x + c2)*x + c1)*x + c0
-    */
+     * Horner's method (explained at: http://en.wikipedia.org/wiki/Horner%27s_method)
+     * is known to be computationally more efficient than calculating powers of x:
+     *
+     * p(x) = cn*x^n + ... + c2*x^2 + c1*x + c0
+     *
+     * can be rewritten into:
+     *
+     * p(x) = ((((cn*x + c[n-1])*x + ... + c3)*x + c2)*x + c1)*x + c0
+     */
 
     size_t i = this->coef.size() - 1;
     F retVal = this->coef.at(i);
@@ -659,9 +655,9 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math
     if ( 1==N )
     {
         /*
-            Handling of a zero degree polynomial ( p(x) = c )
-            Its derivative is 0.
-        */
+         * Handling of a zero degree polynomial ( p(x) = c )
+         * Its derivative is 0.
+         */
         retVal.coef.at(0) = static_cast<F>(0);
         return retVal;
     }
@@ -1191,25 +1187,25 @@ template <typename F>
 void math::PolynomialGeneric<F>::display(char arg, std::ostream& str) const
 {
     /*
-        Primarily the method was introduced for brief unit testing purposes
-        and not much effort was invested into a visually "nice" output
-    */
+     * Primarily the method was introduced for brief unit testing purposes
+     * and not much effort was invested into a visually "nice" output
+     */
 
     // Display coefficients with powers of the variable in ascending order:
     for ( size_t i=0; i < this->coef.size(); ++i )
     {
         /*
-            A space will be displayed between terms to better distinguish them.
-            The first (lowest order) term is an exception.
-        */
+         * A space will be displayed between terms to better distinguish them.
+         * The first (lowest order) term is an exception.
+         */
         if ( i>0 )
         {
             str << ' ';
             
             /*
-              Display signs of all coefficients except of the first one
-              (if it is positive).
-            */
+             * Display signs of all coefficients except of the first one
+             * (if it is positive).
+             */
             str << std::showpos;
         }
 
@@ -1260,7 +1256,7 @@ math::PolynomialGeneric<F>::~PolynomialGeneric()
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator+(math::PolynomialGeneric<F>& p) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p) throw (math::PolynomialException)
 {
     return p;
 }
@@ -1279,16 +1275,16 @@ template <typename F>
 math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p) throw (math::PolynomialException)
 {
     /*
-        Definition of polynomial negation is similar to negation of vectors/matrices:
-
-                                   Np
-                                 -----
-                                 \            i
-                        -p(x) =   >     -pi * x
-                                 /
-                                 -----
-                                  i=0
-    */
+     * Definition of polynomial negation is similar to negation of vectors/matrices:
+     *
+     *                            Np
+     *                           -----
+     *                           \            i
+     *                  -p(x) =   >    -pi * x
+     *                           /
+     *                           -----
+     *                            i=0
+     */
     try
     {
         math::PolynomialGeneric<F> retVal(p);
@@ -1328,18 +1324,18 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
         const size_t Np2 = p2.coef.size();
 
         /*
-            Addition of polynomials is similar to addition of vectors/matrices:
-
-                                   N
-                                 -----
-                                 \                   i
-                  p(x) + q(x) =  |      (pi + qi) * x
-                                 /
-                                 -----
-                                  i=0
-
-            where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
-        */
+         * Addition of polynomials is similar to addition of vectors/matrices:
+         *
+         *                         N
+         *                       -----
+         *                       \                   i
+         *        p(x) + q(x) =   >     (pi + qi) * x
+         *                       /
+         *                       -----
+         *                        i=0
+         *
+         * where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
+         */
         const size_t nmax = std::max(Np1, Np2);
 
         math::PolynomialGeneric<F> retVal(true, nmax);
@@ -1348,9 +1344,9 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
         retVal.coef.at(nmax-1) = static_cast<F>(0);
 
         /*
-            Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
-            consider its i^th coefficient as 0 (already set above)
-        */
+         * Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
+         * consider its i^th coefficient as 0 (already set above)
+         */
 
 
         // Coarse grained parallelism:
@@ -1413,18 +1409,18 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
         const size_t Np2 = p2.coef.size();
 
         /*
-            Subtraction of polynomials is similar to subtraction of vectors/matrices:
-
-                                   N
-                                 -----
-                                 \                  i
-                  p(x) - q(x) =  |     (pi - qi) * x
-                                 /
-                                 -----
-                                  i=0
-
-            where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
-        */
+         * Subtraction of polynomials is similar to subtraction of vectors/matrices:
+         *
+         *                         N
+         *                       -----
+         *                       \                  i
+         *        p(x) - q(x) =   >    (pi - qi) * x
+         *                       /
+         *                       -----
+         *                        i=0
+         *
+         * where N = max(Np, Nq) and pi=0 if i>Np and qi=0 if i>Nq
+         */
 
         const size_t nmax = std::max(Np1, Np2);
 
@@ -1434,9 +1430,9 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
         retVal.coef.at(nmax-1) = static_cast<F>(0);
 
         /*
-            Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
-            consider its ith coefficient as 0 (already set above)
-        */
+         * Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
+         * consider its ith coefficient as 0 (already set above)
+         */
 
         // Coarse grained parallelism
         #pragma omp parallel num_threads(ompIdeal(nmax)) \
@@ -1494,31 +1490,31 @@ template <typename F>
 math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2) throw (math::PolynomialException)
 {
     /*
-        As explained at http://www.mathworks.com/help/matlab/ref/conv.html, multiplication of
-        polynomials is equivalent to convolution of vectors.
-
-        If Np is size of p(x) and Nq is size of q(x), the product's size will be:
-          N = Np + Nq - 1.
-
-        Coefficients of prod(x) = p(x) * q(x), rewritten for the library's order of coefficients,
-        can be calculated as follows:
-
-                         N
-                       ------
-                       \
-            prod(k) =  |      p(i) * q(k-i)          (k = 0 .. N-1)
-                       /
-                       ------
-                        i=0
-
-        where prod(i), p(i) and q(i) denote the i^th coefficient of prod, p or q, respectively.
-
-        Where index is out of any polynomial's coefficients' range, consider its coefficient as zero.
-
-        For a unit test, function conv() can be used in Matlab or GNU Octave.
-        Note that both programs take polynomial's coefficients in the opposite order as this library!
-
-    */
+     * As explained at http://www.mathworks.com/help/matlab/ref/conv.html, multiplication of
+     * polynomials is equivalent to convolution of vectors.
+     *
+     * If Np is size of p(x) and Nq is size of q(x), the product's size will be:
+     *   N = Np + Nq - 1.
+     *
+     * Coefficients of prod(x) = p(x) * q(x), rewritten for the library's order of coefficients,
+     * can be calculated as follows:
+     *
+     *                   N
+     *                 -----
+     *                 \
+     *      prod(k) =   >     p(i) * q(k-i)          (k = 0 .. N-1)
+     *                 /
+     *                 -----
+     *                  i=0
+     *
+     * where prod(i), p(i) and q(i) denote the i^th coefficient of prod, p or q, respectively.
+     *
+     * Where index is out of any polynomial's coefficients' range, consider its coefficient as zero.
+     *
+     * For a unit test, function conv() can be used in Matlab or GNU Octave.
+     * Note that both programs take polynomial's coefficients in the opposite order as this library!
+     *
+     */
 
     try
     {
@@ -1526,9 +1522,9 @@ math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& p1,
         const size_t Np2 = p2.coef.size();
 
         /*
-            At polynomial multiplication it is possible that product's number of coefficients exceeds
-            the maximum allowed vector's size. For that reason, this check is performed.
-        */
+         * At polynomial multiplication it is possible that product's number of coefficients exceeds
+         * the maximum allowed vector's size. For that reason, this check is performed.
+         */
         if ( Np2>(p1.coef.max_size()-Np1 + 1) )
         {
             throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
@@ -1678,17 +1674,17 @@ template <typename F>
 math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& poly, const F& sc) throw (math::PolynomialException)
 {
     /*
-        Multiplication of a polynomial by a scalar is trivial:
-        Each coefficient is multiplied by the scalar.
-
-                          Np
-                         -----
-                         \               i
-            p(x) * sc =  |    sc * pi * x
-                         /
-                         -----
-                          i=0
-    */
+     * Multiplication of a polynomial by a scalar is trivial:
+     * Each coefficient is multiplied by the scalar.
+     *
+     *                    Np
+     *                   -----
+     *                   \               i
+     *      p(x) * sc =   >   sc * pi * x
+     *                   /
+     *                   -----
+     *                    i=0
+     */
 
     math::PolynomialGeneric<F> retVal(poly);
 
