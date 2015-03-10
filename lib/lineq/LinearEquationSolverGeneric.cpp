@@ -78,9 +78,11 @@ void math::LinearEquationSolver::solve(
         math::SqMatrixGeneric<T> temp(coef);
         sol = term;
 
-        // Try to convert the 'temp' into an identity matrix
-        // by appropriately adding multiples of other lines to each line
-        // (incl. lines of 'retVal')
+        /*
+         * Try to convert the 'temp' into an identity matrix
+         * by appropriately adding multiples of other lines to each line
+         * (incl. lines of 'retVal')
+         */
 
         /*
          * The first part of the algorithm will (try to) ensure there are
@@ -165,11 +167,15 @@ void math::LinearEquationSolver::solve(
             }  // for r
         }  // for i
 
-        // Set the diag elements of 'temp' and 'retVal' to 1 by dividing the
-        // whole row by temp(r,r). Columns smaller than 'r' are already equal to 0.
+        /*
+         * Set the diag elements of 'temp' and 'retVal' to 1 by dividing the
+         * whole row by temp(r,r). Columns smaller than 'r' are already equal to 0.
+         */
 
-        // Normalizing of each row is independent from other rows so it is
-        // perfectly safe to parallelize the task by rows.
+        /*
+         * Normalizing of each row is independent from other rows so it is
+         * perfectly safe to parallelize the task by rows.
+         */
         #pragma omp parallel for default(none) shared(temp, sol)
         for ( size_t r=0; r<N; ++r )
         {
@@ -186,20 +192,24 @@ void math::LinearEquationSolver::solve(
             }
         }
 
-        // Now the lower triangle (below diag excl.) is 0, the diagonal consists of 1,
-        // The upper triangle (above the diag) must be set to 0 as well.
-
-        // Column 'c' of each row (for r<c) will be set to 0
-        // by adding the appropriate multiple of c.th row
-
-        // Parallelization of this for loop is not possible due to race conditions.
+        /*
+         * Now the lower triangle (below diag excl.) is 0, the diagonal consists of 1,
+         * The upper triangle (above the diag) must be set to 0 as well.
+         *
+         * Column 'c' of each row (for r<c) will be set to 0
+         * by adding the appropriate multiple of c.th row
+         *
+         * Parallelization of this for loop is not possible due to race conditions.
+         */
         for ( size_t c=1; c<N; ++c )
         {
             // The current row to apply the operation described above
 
-            // It is possible to parallelize this for loop because a row 'c' (not included
-            // into the for loop) will be added independently to each "parallelized" row
-            // 'r' (between 0 and c-1 incl.), thus no race condition is possible.
+            /*
+             * It is possible to parallelize this for loop because a row 'c' (not included
+             * into the for loop) will be added independently to each "parallelized" row
+             * 'r' (between 0 and c-1 incl.), thus no race condition is possible.
+             */
             #pragma omp parallel for \
                         default(none) \
                         shared(temp, sol, c) \
@@ -209,9 +219,11 @@ void math::LinearEquationSolver::solve(
                 // Nothing to do if temp(r,c) already equals 0
                 if ( false == math::NumericUtil::isZero<T>(temp.at(r, c)) )
                 {
-                	// To set temp(r,c) to 0 it is a good idea to add the c.th row to it.
-                    // temp(c,i); i<c are already 0 (i.e. will not affect anything left of temp(i,c)
-                    // and temp(c,c) is already 1.
+                    /*
+                     * To set temp(r,c) to 0 it is a good idea to add the c.th row to it.
+                     * temp(c,i); i<c are already 0 (i.e. will not affect anything left of temp(i,c)
+                     * and temp(c,c) is already 1.
+                     */
 
                     const T el = temp.get(r, c);
 
