@@ -253,9 +253,9 @@ template <typename F>
 void math::QuaternionGeneric<F>::display(std::ostream& str) const
 {
     /*
-        Primarily the method was introduced for brief unit testing purposes
-        and not much effort was invested into a visually "nice" output
-    */
+     * Primarily the method was introduced for brief unit testing purposes
+     * and not much effort was invested into a visually "nice" output
+     */
 
     // start with an opening bracket:
     str << '(';
@@ -371,11 +371,11 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const math::Q
     // For a definition of quaternion multiplication, see operator*
 
     /*
-        Any method would require storing components' values in 4 variables. Just performing
-        a general quaternion multiplication (by operator*) and instantiation of a temporary
-        variable consumes the same amount of memory. Additionally it improves maintainability
-        and reduces the risk of typing errors.
-    */
+     * Any method would require storing components' values in 4 variables. Just performing
+     * a general quaternion multiplication (by operator*) and instantiation of a temporary
+     * variable consumes the same amount of memory. Additionally it improves maintainability
+     * and reduces the risk of typing errors.
+     */
 
     const math::QuaternionGeneric<F> p( *this * q );
 
@@ -417,14 +417,14 @@ template <typename F>
 math::QuaternionGeneric<F> math::QuaternionGeneric<F>::conj() const
 {
     /*
-        From the definition of quaternion conjugation:
-        q* = 0.5 * (q + i*q*i + j*q*j + k*q*k)
-        one can quickly derive the following simplified formula:
-        (a + b*i + c*j + d*k)* = (a - b*i - c*j -d*k)
-
-        In other words, the "scalar" part remains unmodified, the other three
-        "vector" components are negated.
-    */
+     * From the definition of quaternion conjugation:
+     *   q* = 0.5 * (q + i*q*i + j*q*j + k*q*k)
+     * one can quickly derive the following simplified formula:
+     *   (a + b*i + c*j + d*k)* = (a - b*i - c*j -d*k)
+     *
+     * In other words, the "scalar" part remains unmodified, the other three
+     * "vector" components are negated.
+     */
 
     return math::QuaternionGeneric<F>(
              this->quat_o,
@@ -468,24 +468,24 @@ template <typename F>
 F math::QuaternionGeneric<F>::norm() const throw (math::QuaternionException)
 {
     /*
-        Norm of a quaternion is defined as:
-
-        ||q|| = sqrt( q*conj(q) ) = sqrt( conj(q)*q )
-
-        From the definition of quaternion multiplication,
-        one can quickly derive the following simplified formula:
-
-        ||(a+b*i+c*j+d*k)|| = sqrt(a*a + b*b + c*c + d*d)
-    */
+     * Norm of a quaternion is defined as:
+     *
+     *   ||q|| = sqrt( q*conj(q) ) = sqrt( conj(q)*q )
+     *
+     * From the definition of quaternion multiplication,
+     * one can quickly derive the following simplified formula:
+     *
+     *   ||(a+b*i+c*j+d*k)|| = sqrt(a*a + b*b + c*c + d*d)
+     */
 
     /*
-        This operation is only supported for T=float, T=double or T=long double.
-        Specialized implementation is provided below for these three types.
-
-        For any other type, the operation is (probably) not supported
-        as sqrt may not be defined for the type. In such a case throw an
-        exception immediately.
-    */
+     * This operation is only supported for T=float, T=double or T=long double.
+     * Specialized implementation is provided below for these three types.
+     *
+     * For any other type, the operation is (probably) not supported
+     * as sqrt may not be defined for the type. In such a case throw an
+     * exception immediately.
+     */
 
     throw math::QuaternionException(math::QuaternionException::UNSUPPORTED_TYPE);
 
@@ -495,12 +495,12 @@ F math::QuaternionGeneric<F>::norm() const throw (math::QuaternionException)
 
 
 /*
-    Specialization of norm() for float, double and long double.
-    All three specializations are very similar and only differ in types of the
-    output value and internal variables.
-    For easier maintainability, the specialization will be implemented
-    only once using a parameterized #define.
-*/
+ * Specialization of norm() for float, double and long double.
+ * All three specializations are very similar and only differ in types of the
+ * output value and internal variables.
+ * For easier maintainability, the specialization will be implemented
+ * only once using a parameterized #define.
+ */
 
 #define _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(FD) \
 template<> \
@@ -535,36 +535,36 @@ template <typename F>
 math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math::QuaternionException)
 {
     /*
-        A unit quaternion is the quaternion, divided by its norm:
-
-        U(q) = q / ||q||
-
-        Its norm is equal to 1.
-
-        A unit quaternion for the zero quaternion (norm=0) cannot be calculated.
-    */
+     * A unit quaternion is the quaternion, divided by its norm:
+     *
+     *   U(q) = q / ||q||
+     *
+     * Its norm is equal to 1.
+     *
+     * A unit quaternion for the zero quaternion (norm=0) cannot be calculated.
+     */
 
     /*
-        This operation is only supported for T=float, T=double or T=long double
-        Specialized implementation is provided below for these three types.
-
-        For any other type, the operation is (probably) not supported
-        as norm may not be defined for the type. In such a case throw an
-        exception immediately.
-    */
+     * This operation is only supported for T=float, T=double or T=long double
+     * Specialized implementation is provided below for these three types.
+     *
+     * For any other type, the operation is (probably) not supported
+     * as norm may not be defined for the type. In such a case throw an
+     * exception immediately.
+     */
     throw math::QuaternionException(math::QuaternionException::UNSUPPORTED_TYPE);
 
-    // will never execute, but some compilers may produce a warning if nothing is returned
+    // will never execute, but some compilers may report a warning if nothing is returned
     return math::QuaternionGeneric<F>();
 }
 
 /*
-    Specialization of unit() for float, double and long double.
-    All three specializations are very similar and only differ in types of the
-    output value and internal variables.
-    For easier maintainability, the specialization will be implemented
-    only once using a parameterized #define.
-*/
+ * Specialization of unit() for float, double and long double.
+ * All three specializations are very similar and only differ in types of the
+ * output value and internal variables.
+ * For easier maintainability, the specialization will be implemented
+ * only once using a parameterized #define.
+ */
 
 
 #define _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(FD) \
@@ -611,20 +611,20 @@ template <typename F>
 math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw (math::QuaternionException)
 {
     /*
-        q^(-1) is a reciprocal quaternion of q if the following condition is satisfied;
-
-            q * q^(-1) = q^(-1) * q = 1
-
-        Reciprocal of q is defined as:
-
-            q^(-1) = q* / ||q||^2
-
-        The following formula can be derived from it:
-
-                                      a - b*i - c*j - d*k
-            (a+b*i+c*j+d*k)^(-1) = -------------------------
-                                     a^2 + b^2 + c^2 + d^2
-    */
+     * q^(-1) is a reciprocal quaternion of q if the following condition is satisfied;
+     *
+     *   q * q^(-1) = q^(-1) * q = 1
+     *
+     * Reciprocal of q is defined as:
+     *
+     *   q^(-1) = q* / ||q||^2
+     *
+     * The following formula can be derived from it:
+     *
+     *                            a - b*i - c*j - d*k
+     *   (a+b*i+c*j+d*k)^(-1) = -------------------------
+     *                            a^2 + b^2 + c^2 + d^2
+     */
 
     const F nsq = __sqsum();
 
@@ -655,10 +655,10 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator+(const math::QuaternionGeneric<F>& q1, const math::QuaternionGeneric<F>& q2)
 {
     /*
-        Addition of quaternions is trivial:
-        (a1 + b1*i + c1*j + d1*k) + (a2 + b2*i + c2*j + d2*k) =
-        = ( (a1+a2) + (b1+b2)*i + (c1+c2)*j + (d1+d2)*k )
-    */
+     * Addition of quaternions is trivial:
+     *   (a1 + b1*i + c1*j + d1*k) + (a2 + b2*i + c2*j + d2*k) =
+     *    = ( (a1+a2) + (b1+b2)*i + (c1+c2)*j + (d1+d2)*k )
+     */
 
     return math::QuaternionGeneric<F>(
             q1.quat_o + q2.quat_o,
@@ -680,10 +680,10 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q1, const math::QuaternionGeneric<F>& q2)
 {
     /*
-        Subtraction of quaternions is trivial:
-        (a1 + b1*i + c1*j + d1*k) - (a2 + b2*i + c2*j + d2*k) =
-        = ( (a1-a2) + (b1-b2)*i + (c1-c2)*j + (d1-d2)*k )
-    */
+     * Subtraction of quaternions is trivial:
+     *   (a1 + b1*i + c1*j + d1*k) - (a2 + b2*i + c2*j + d2*k) =
+     *    = ( (a1-a2) + (b1-b2)*i + (c1-c2)*j + (d1-d2)*k )
+     */
 
     return math::QuaternionGeneric<F>(
     		q1.quat_o - q2.quat_o,
@@ -707,21 +707,21 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator*(const math::QuaternionGeneric<F>& q1, const math::QuaternionGeneric<F>& q2)
 {
     /*
-        From the following definitions:
-          i*i = j*j = k*k = -1,
-          i*j = k, j*i = -k, j*k = i, k*j = -i, k*i = j and i*k = -j,
-        the following formula can be quickly derived:
-
-        (a1 + b1*i + c1*j + d1*k) * (a2 + b2*i + c2*j + d2*k) =
-        =  (a1*a2 - b1*b2 - c1*c2 - d1*d2)     +
-        +  (a1*b2 + b1*a2 + c1*d2 - d1*c2) * i +
-        +  (a1*c2 - b1*d2 + c1*a2 + d1*b2) * j +
-        +  (a1*d2 + b1*c2 - c1*b2 + d1*a2) * k
-
-        Note: The following script for GNU Octave or Matlab can be used
-        for a quick unit test of the function:
-        http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
-    */
+     * From the following definitions:
+     *   i*i = j*j = k*k = -1,
+     *   i*j = k, j*i = -k, j*k = i, k*j = -i, k*i = j and i*k = -j,
+     * the following formula can be quickly derived:
+     *
+     *   (a1 + b1*i + c1*j + d1*k) * (a2 + b2*i + c2*j + d2*k) =
+     *    =  (a1*a2 - b1*b2 - c1*c2 - d1*d2)     +
+     *    +  (a1*b2 + b1*a2 + c1*d2 - d1*c2) * i +
+     *    +  (a1*c2 - b1*d2 + c1*a2 + d1*b2) * j +
+     *    +  (a1*d2 + b1*c2 - c1*b2 + d1*a2) * k
+     *
+     * Note: The following script for GNU Octave or Matlab can be used
+     *       for a quick unit test of the function:
+     * http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
+     */
 
 	math::QuaternionGeneric<F> retVal;
 
@@ -816,10 +816,10 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator*(const math::QuaternionGeneric<F>& q, const F& sc)
 {
     /*
-        From the definition of quaternion multiplication (see operator*),
-        one can quickly derive the following simplified formula:
-          (a+ b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
-    */
+     * From the definition of quaternion multiplication (see operator*),
+     * one can quickly derive the following simplified formula:
+     *   (a+ b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
+     */
 
     return math::QuaternionGeneric<F>(
             q.quat_o * sc,
@@ -878,9 +878,9 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator*(const F& scalar, const math::QuaternionGeneric<F>& q)
 {
     /*
-        In general, multiplication of a scalar and quaternion is commutative.
-        If this is not a case, implement a specialization.
-    */
+     * In general, multiplication of a scalar and quaternion is commutative.
+     * If this is not a case, implement a specialization.
+     */
     return (q * scalar);
 }
 
@@ -912,8 +912,8 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q)
 {
     /*
-        Negation of a quaternion is trivial: just negate each component.
-    */
+     * Negation of a quaternion is trivial: just negate each component.
+     */
 
     return math::QuaternionGeneric<F>(
             -q.quat_o,
