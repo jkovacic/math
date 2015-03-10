@@ -38,13 +38,15 @@ limitations under the License.
 namespace math
 {
 
-// Templates are used to allow several types (T) of matrix elements.
-// Types must have implemented basic arithmetic operators (+, -, *, /),
-// otherwise build will fail (which is desired). In practice, types as float,
-// double, Rational, Complex make most sense. Integer types may be conditionally
-// acceptable (e.g. if the class is used to represent mathematical graphs, etc.)
-// but arithmetic operations (e.g. inversion of a square matrix) may return
-// incorrect results. This is true for unsigned types as well.
+/**
+ * Templates are used to allow several types (T) of matrix elements.
+ * Types must have implemented basic arithmetic operators (+, -, *, /),
+ * otherwise build will fail (which is desired). In practice, types as float,
+ * double, Rational, Complex make most sense. Integer types may be conditionally
+ * acceptable (e.g. if the class is used to represent mathematical graphs, etc.)
+ * but arithmetic operations (e.g. inversion of a square matrix) may return
+ * incorrect results. This is true for unsigned types as well.
+ */
 
 // Forward declaration of the class is necessary...
 template <class T> class MatrixGeneric;
@@ -117,16 +119,20 @@ protected:
     size_t rows;      /// Number of rows
     size_t cols;      /// Number of columns
 
-    // STL Vector has several advantages over arrays, allocated by new[],
-    // e.g. elements can be accessed via at() which checks for range and throws
-    // an exception when attempting to access sth. outside the allocated range
-    // (e.g. in case of a typing error) which may result in a segmentation fault (crash).
-    // Operations such as inserting or removing of elements are simplified as well.
+    /*
+     * STL Vector has several advantages over arrays, allocated by new[],
+     * e.g. elements can be accessed via at() which checks for range and throws
+     * an exception when attempting to access sth. outside the allocated range
+     * (e.g. in case of a typing error) which may result in a segmentation fault (crash).
+     * Operations such as inserting or removing of elements are simplified as well.
+     */
     std::vector<T> elems;   /// Elements of the matrix
 
-    // Copy elements from one matrix into another. Used at copy constructors,
-    // assignment operators etc. It s also suitable for use in derived  classes,
-    // so it should be 'protected' instead of 'private'
+    /*
+     * Copy elements from one matrix into another. Used at copy constructors,
+     * assignment operators etc. It s also suitable for use in derived  classes,
+     * so it should be 'protected' instead of 'private'
+     */
     void _copyElems(const MatrixGeneric& orig) throw (MatrixException);
 
     /*

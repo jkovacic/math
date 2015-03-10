@@ -215,10 +215,10 @@ template <class T>
 const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math::MatrixException)
 {
     /*
-        Implementation is actually the same as implementation of another at()
-        with non-const signature. A single macro could be used for both
-        implementations, however both functions are short, simple and unlikely
-        to change often.
+     * Implementation is actually the same as implementation of another at()
+     * with non-const signature. A single macro could be used for both
+     * implementations, however both functions are short, simple and unlikely
+     * to change often.
      */
 
     // Check if input parameters are within the matrix's range
@@ -270,13 +270,15 @@ template <class T>
 void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::MatrixException)
 {
 
-    // Elements of each row are separated by tabs.
-    // This does not guarantee that elements of the same column will be
-    // displayed under each other and in case of a long row (its output
-    // is longer than terminal's line width), the overall output may look rather
-    // confusing. However, this is more or less "just" an auxiliary function, mainly used for
-    // testing purposes, and the effort was focused to other functionalities.
-    // Anyway, it would be nice to improve it in future.
+    /*
+     * Elements of each row are separated by tabs.
+     * This does not guarantee that elements of the same column will be
+     * displayed under each other and in case of a long row (its output
+     * is longer than terminal's line width), the overall output may look rather
+     * confusing. However, this is more or less "just" an auxiliary function, mainly used for
+     * testing purposes, and the effort was focused to other functionalities.
+     * Anyway, it would be nice to improve it in future.
+     */
 
     for ( size_t r=0; r<(this->rows); ++r )
     {
@@ -369,7 +371,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
 
 
 /**
- * Compund addition operator (+=) that adds each matrix's element
+ * Compound addition operator (+=) that adds each matrix's element
  * by a scalar and assigns the sum to itself.
  *
  * @param scalar
@@ -419,8 +421,10 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGe
 {
     // for a definition of matrix multiplication, see operator*
 
-    // operator* will perform checking of numbers of rows/columns etc.
-    // and throw an appropriate exception if necessary
+    /*
+     * operator* will perform checking of numbers of rows/columns etc.
+     * and throw an appropriate exception if necessary
+     */
     math::MatrixGeneric<T> temp = *this * m;
 
     try
@@ -594,10 +598,13 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::MatrixException)
 {
-    // TODO: find a memory efficient method for a general matrix!!
-    // Note: as the method is not memory efficient at the moment, the function
-    // is declared as virtual, allowing a more efficient implementation at
-    // SqMatrixGeneric.
+    /*
+     * TODO: find a memory efficient method for a general matrix!!
+     *
+     * Note: as the method is not memory efficient at the moment, the function
+     * is declared as virtual, allowing a more efficient implementation at
+     * SqMatrixGeneric.
+     */
 
     // If dimension of this is (n,m), dimension of its transposed matrix is (m,n)
     // T(r,c) = this(c,r)
@@ -649,18 +656,22 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixE
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (math::MatrixException)
 {
-    // Check of input parameters.
-    // The matrix must contain at least two rows (as the updated matrix must still
-    // contain at least one row), rowNr must be between 0 and rows-1.
+    /*
+     * Check of input arguments.
+     * The matrix must contain at least two rows (as the updated matrix must still
+     * contain at least one row), rowNr must be between 0 and rows-1.
+     */
     if ( rowNr >= this->rows || this->rows <= 1 )
     {
         throw math::MatrixException(MatrixException::OUT_OF_RANGE);
     }
 
-    // Elements of the r^th row are located between r*cols and (r+1)*cols-1.
-    // The first element of the next row is located at (r+1)*cols.
-    // Row elements are contiguous and can be removed with one vector.erase() call.
-    // It will also relocate remaining elements if applicable.
+    /*
+     * Elements of the r^th row are located between r*cols and (r+1)*cols-1.
+     * The first element of the next row is located at (r+1)*cols.
+     * Row elements are contiguous and can be removed with one vector.erase() call.
+     * It will also relocate remaining elements if applicable.
+     */
     this->elems.erase(this->elems.begin()+rowNr*this->cols, this->elems.begin()+(rowNr+1)*this->cols);
 
     // Elements have been removed, update the number of rows
@@ -683,22 +694,26 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (m
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
 {
-    // Checking of input parameters. The matrix must contain at least 2 columns
-    // as the result must still contain at least one. colNr must be
-    // between 0 and cols-1
+    /*
+     * Checking of input argumentss. The matrix must contain at least 2 columns
+     * as the result must still contain at least one. colNr must be
+     * between 0 and cols-1
+     */
     if ( colNr >= this->cols || this->cols <= 1 )
     {
         throw math::MatrixException(MatrixException::OUT_OF_RANGE);
     }
 
-    // Elements of the column are not contiguous so their removal is a bit tricky.
-    // It is best to remove them from the last (the highest row number) till
-    // the first one (row=0). This way the position of the element to be removed
-    // is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
-    // move remaining elements appropriately.
-    //
-    // Note: vector.erase() is by no means thread safe, so the for loop
-    // should not be parallelized!
+    /*
+     * Elements of the column are not contiguous so their removal is a bit tricky.
+     * It is best to remove them from the last (the highest row number) till
+     * the first one (row=0). This way the position of the element to be removed
+     * is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
+     * move remaining elements appropriately.
+     *
+     * Note: vector.erase() is by no means thread safe, so the for loop
+     * should not be parallelized!
+     */
     for ( size_t i=1; i<=this->rows; ++i )
     {
         this->elems.erase(this->elems.begin()+(this->rows-i)*this->cols+colNr);
@@ -787,15 +802,19 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const
 
     try
     {
-        // rows elements will be inserted, however they are not contiguous.
-        // First reserve enough memory for smoother reallocations
+        /*
+         * row elements will be inserted, however they are not contiguous.
+         * First reserve enough memory for smoother reallocations
+         */
         this->elems.reserve( this->rows * (this->cols+1) );
 
-        // Elements will be inserted step by step, with ascending row coordinate.
-        // The position of each such element can be calculated as r*(cols+1)+colNr.
-        //
-        // Note: vector.insert() is by no means thread safe, so the for loop
-        // should not be parallelized!
+        /*
+         * Elements will be inserted step by step, with ascending row coordinate.
+         * The position of each such element can be calculated as r*(cols+1)+colNr.
+         *
+         * Note: vector.insert() is by no means thread safe, so the for loop
+         * should not be parallelized!
+         */
         for ( size_t r = 0; r < this->rows; ++r )
         {
             this->elems.insert(this->elems.begin()+r*(this->cols+1)+colNr, el);
@@ -861,9 +880,11 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m) throw(ma
 {
     // There are no requirements about dimensions and no check of input arguments is necessary
 
-    // Each element of the resulting matrix is a negated value of the element
-    // at the same position:
-    // N(r,c) = -m(r,c)
+    /*
+     * Each element of the resulting matrix is a negated value of the element
+     * at the same position:
+     * N(r,c) = -m(r,c)
+     */
     math::MatrixGeneric<T> temp(m.rows, m.cols);
 
     math::mtvectmult<T>(m.elems, static_cast<T>(-1), temp.elems);
@@ -957,8 +978,10 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    // Multiplication modifies dimensions, so make sure the product will contain
-    // more elements than allowed by vector:
+    /*
+     * Multiplication modifies dimensions, so make sure the product will not
+     * contain more elements than allowed by vector:
+     */
     if ( m2.cols > m1.elems.max_size() / m1.rows )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
@@ -968,13 +991,13 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
      * If dimension of 'm1' is (m,n) and dimension of 'm2' is (n,o), the
      * dimension of the product will be (m,o).
      *
-     *           n-1
-     *          -----
-     *          \
-     * P(r,c) =  >  ( m1(r,i) * m2(i,c) )
-     *          /
-     *          -----
-     *           i=0
+     *             n-1
+     *            -----
+     *            \
+     *   P(r,c) =  >  ( m1(r,i) * m2(i,c) )
+     *            /
+     *            -----
+     *             i=0
      *
      */
 
@@ -1150,7 +1173,7 @@ math::MatrixGeneric<T> math::operator-(
  *
  * @return m / sc
  *
- * @throw MAtrixException if attempting to divide by 0 or allocation of memory fails
+ * @throw MatrixException if attempting to divide by 0 or allocation of memory fails
  */
 template <class T>
 math::MatrixGeneric<T> math::operator/(
@@ -1183,7 +1206,7 @@ throw (math::MatrixException)
  *
  * @return m1 .* m2
  *
- * @throw MatrixException if matrices'dimensions are not the same
+ * @throw MatrixException if matrices' dimensions are not the same
  */
 template <class T>
 math::MatrixGeneric<T> math::matEwMult(
@@ -1215,7 +1238,7 @@ math::MatrixGeneric<T> math::matEwMult(
  *
  * @return m1 ./ m2
  *
- * @throw MatrixException if matrices'dimensions are not the same or any divisor's element equals 0
+ * @throw MatrixException if matrices' dimensions are not the same or any divisor's element equals 0
  */
 template <class T>
 math::MatrixGeneric<T> math::matEwDiv(

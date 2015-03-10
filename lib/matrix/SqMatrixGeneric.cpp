@@ -52,9 +52,11 @@ template <class T>
 math::SqMatrixGeneric<T>::SqMatrixGeneric(size_t dim) throw (math::MatrixException) :
     math::MatrixGeneric<T>(dim, dim)
 {
-    // Square matrices have the same number of rows and columns.
-    // This is specified by the initializer list.
-    // The class has no extra members, so nothing else to do
+    /*
+     * Square matrices have the same number of rows and columns.
+     * This is specified by the initializer list.
+     * The class has no extra members, so nothing else to do
+     */
 }
 
 /**
@@ -71,7 +73,7 @@ template <class T>
 math::SqMatrixGeneric<T>::SqMatrixGeneric(const math::MatrixGeneric<T>& orig) throw(math::MatrixException) :
     math::MatrixGeneric<T>(orig)
 {
-    // check of input parameters
+    // check of input arguments
     if ( orig.nrRows() != orig.nrColumns() )
     {
         throw MatrixException(MatrixException::INVALID_DIMENSION);
@@ -197,9 +199,11 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
     // At the end of the algorithm it will be multiplied by all diagonal elements
     T retVal = static_cast<T>(1);
 
-    // We do not want to modify the matrix, therefore its vector of
-    // elements will be copied into a temporary one where any modifications
-    // are permitted
+    /*
+     * We do not want to modify the matrix, therefore its vector of
+     * elements will be copied into a temporary one where any modifications
+     * are permitted
+     */
     std::vector<T> temp;
     math::mtcopy(this->elems, temp);
     const size_t N = this->rows;  // number of rows (and columns)
@@ -211,17 +215,21 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
      */
     for ( size_t i=0; i<N-1; ++i )
     {
-        // if temp(i,i) equals zero, swap the i^th line with
-        // another one (r; r>i) satisfying temp(r,i)!=0
-        // Each swap multiplies the determinant by -1
+        /*
+         * if temp(i,i) equals zero, swap the i^th line with
+         * another one (r; r>i) satisfying temp(r,i)!=0
+         * Each swap multiplies the determinant by -1
+         */
 
         if ( true == math::NumericUtil::isZero<T>(temp.at(this->_pos(i, i))) )
         {
             size_t r;
 
-            // Line swap will be necessary.
-            // Find the r^th line meeting the criteria above
-            // If not found, the determinant will be 0.
+            /*
+             * Line swap will be necessary.
+             * Find the r^th line meeting the criteria above
+             * If not found, the determinant will be 0.
+             */
 
             for ( r=i+1; r<N; ++r )
             {
@@ -257,12 +265,14 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
             retVal = -retVal;
         } // if temp(i,i) equals 0
 
-        // Now temp(i,i) definitely does not equal 0
-        // all temp(r,i) will be "set" to 0 where r>i.
-
-        // Note that determinant is not changed if
-        // a multiplier of one line (i in this algorithm)
-        // is added to another line (r; r>i)
+        /*
+         * Now temp(i,i) definitely does not equal 0
+         * all temp(r,i) will be "set" to 0 where r>i.
+         *
+         * Note that determinant is not changed if
+         * a multiplier of one line (i in this algorithm)
+         * is added to another line (r; r>i)
+         */
 
         /*
          * Main part of the algorithm. An appropriate multiplier of the i.th row will be
@@ -273,9 +283,11 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
         #pragma omp parallel for default(none) shared(temp, i)
         for ( size_t r=i+1; r<N; ++r )
         {
-            // temp(r,i) will be calculated to 0 immediately.
-            // However, its initial value is necessary to properly
-            // calculate all other elements of the r.th row
+            /*
+             * temp(r,i) will be calculated to 0 immediately.
+             * However, its initial value is necessary to properly
+             * calculate all other elements of the r.th row
+             */
             const T ri = temp.at(this->_pos(r, i));
 
             for ( size_t c=i; c<N; ++c)
@@ -396,9 +408,11 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
     const size_t N = this->rows;       // number of rows (and columns)
     const size_t Ntr = N * (N-1) / 2;  // number of all elements to be transposed
 
-    // Traverse the upper diagonal part of the matrix,
-    // no need to reach the final row and
-    // no need to transpose elements on the diagonal:
+    /*
+     * Traverse the upper diagonal part of the matrix,
+     * no need to reach the final row and
+     * no need to transpose elements on the diagonal:
+     */
 
     /*
      * Notes about parallelization:
@@ -449,9 +463,11 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::Matr
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    // If m's dimensions match, dimensions of this will be preserved.
-    // Just apply the functionality of the parent class.
-    // Also cast the returning reference to SqMatrixGeneric.
+    /*
+     * If m's dimensions match, dimensions of this will be preserved.
+     * Just apply the functionality of the parent class.
+     * Also cast the returning reference to SqMatrixGeneric.
+     */
     return dynamic_cast<SqMatrixGeneric<T>&>(( MatrixGeneric<T>::operator*=(m) ));
 }
 
