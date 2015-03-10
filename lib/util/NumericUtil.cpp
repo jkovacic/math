@@ -36,8 +36,10 @@ limitations under the License.
 template <class T>
 T math::NumericUtil::getEPS()
 {
-    // for int and most other types, eps does not
-	// make any sense, in this case just return 0.
+    /*
+     * for int and most other types, eps does not
+     * make any sense, in this case just return 0.
+     */
 
     return static_cast<T>(0);
 }

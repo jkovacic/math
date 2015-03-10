@@ -43,9 +43,11 @@ namespace math
 namespace NumericUtil
 {
 
-    // Does the value equal zero? Note that in numerical mathematics
-    // (where mostly float or double values are in use), "equals" has a
-    // different meaning than in discrete mathematics (int etc.)
+    /*
+     * Does the value equal zero? Note that in numerical mathematics
+     * (where mostly float or double values are in use), "equals" has a
+     * different meaning than in discrete mathematics (int etc.)
+     */
     template <class T>
     bool isZero(const T& value);
 
