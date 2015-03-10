@@ -60,30 +60,30 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (m
     // TODO check value of degree?
 
     /*
-        Coefficients of the regression polynomial can be calculated as
-        a solution of a system of linear equations:  A*x=b
-
-        A is a square NxN matrix, its coefficients are calculated as follows:
-
-                      n-1      
-                    -------     
-                    \        (r+c)
-           A(r,c) =  |   x(i)
-                    /
-                    -------
-                      i=0
-
-        and
-
-                      n-1
-                    -------
-                    \            r
-           B(r)  =   |  y(i)*x(i)
-                    /
-                    -------
-                      i=0
-
-        where n is the number of points. 
+     * Coefficients of the regression polynomial can be calculated as
+     * a solution of a system of linear equations:  A*x=b
+     *
+     * A is a square NxN matrix, its coefficients are calculated as follows:
+     *
+     *               n-1      
+     *              -----     
+     *              \        (r+c)
+     *     A(r,c) =  >   x(i)
+     *              /
+     *              -----
+     *               i=0
+     *
+     * and
+     *
+     *               n-1
+     *              -----
+     *              \            r
+     *     B(r)  =   >  y(i)*x(i)
+     *              /
+     *              -----
+     *               i=0
+     *
+     * where 'n' denotes the number of points. 
      */
     
     try
@@ -100,9 +100,9 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (m
         math::MatrixGeneric<F> b(N, 1);
         
         /*
-             Instead of calculating all powers of x, all points will be
-             traversed once and the appropriate terms will be added to 
-             matrices' elements
+         * Instead of calculating all powers of x, all points will be
+         * traversed once and the appropriate terms will be added to 
+         * matrices' elements
          */
         for ( typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->points.begin(); it!=this->points.end(); ++it )
         {

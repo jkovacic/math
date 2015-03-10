@@ -271,8 +271,8 @@ bool math::CurveFittingGenericAb<F>::_duplicatePoints() const
     }
 
     /*
-        Just traverse all points (except the last one) and compare its abscissa
-        to the next point's abscissa. This is why the list must be sorted.
+     * Just traverse all points (except the last one) and compare its abscissa
+     * to the next point's abscissa. This is why the list must be sorted.
      */
     bool retVal = false;
     for ( typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=points.begin(); 
@@ -280,10 +280,10 @@ bool math::CurveFittingGenericAb<F>::_duplicatePoints() const
           ++it )
     {
         /*
-            The function also requires a pointer to the next element. As operator+ is not defined
-            for STL list's iterator, another iterator is declared, its initial value is equal to
-            it, then its operator++ (which is defined) is called immediately.
-        */
+         * The function also requires a pointer to the next element. As operator+ is not defined
+         * for STL list's iterator, another iterator is declared, its initial value is equal to
+         * it, then its operator++ (which is defined) is called immediately.
+         */
         typename std::list< typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator next = it;
         ++next;
 

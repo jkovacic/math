@@ -62,47 +62,49 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(size_t degree) throw
     // TODO check value of degree?
 
     /*
-         One possible algorithm would be construction of the so called
-         Vandermonde matrix. However, this method is known as computationally
-         inefficient and prone to significant computation errors when solving a
-         system of linear equations. 
-     
-         Instead, the Newton's interpolation algorithm will be applied, described at: 
-         http://en.wikipedia.org/wiki/Newton_polynomial
-     
-         Procedure of the algorithm:
-         - input: points: (x0,y0), (x1,y1), ..., (xn,yn) 
-         - create a (n+1)x(n+1) matrix a, fill it with zeros
-         - fill the first column of the matrix with y's:
-             a(i,0) = y(i)   for i = 0 .. n
-         - calculate lower diagonal elements as differential quotients:
-     
-                       a(r,c-1) - a(r-1,c-1)     
-             a(r,c) = ------------------------
-                           x(r) - x(r-c)
-       
-              for c = 1..n, r=c..n
-      
-         - when this procedure is completed, the interpolation polynomial
-           is expressed as:
-     
-             p(x) = y(0) + a(1,1)*(x-x(0)) + a(2,2)*(x-x(0))*(x-x(1)) + ... +
-       
-                          n-1
-                         +---+     
-                         |   |
-              + a(n,n) * |   | (x-x(k))      
-                         |   |
-                          k=0
+     * One possible algorithm would be construction of the so called
+     * Vandermonde matrix. However, this method is known as computationally
+     * inefficient and prone to significant computation errors when solving a
+     * system of linear equations. 
+     *
+     * Instead, the Newton's interpolation algorithm will be applied, described at: 
+     * http://en.wikipedia.org/wiki/Newton_polynomial
+     *
+     * Procedure of the algorithm:
+     *  - input: points: (x0,y0), (x1,y1), ..., (xn,yn) 
+     *  - create a (n+1)x(n+1) matrix a, fill it with zeros
+     *  - fill the first column of the matrix with y's:
+     *        a(i,0) = y(i)   for i = 0 .. n
+     *  - calculate lower diagonal elements as differential quotients:
+     *
+     *                a(r,c-1) - a(r-1,c-1)     
+     *      a(r,c) = ------------------------
+     *                    x(r) - x(r-c)
+     *
+     *       for c = 1..n, r=c..n
+     *
+     *  - when this procedure is completed, the interpolation polynomial
+     *    is expressed as:
+     *
+     *       p(x) = y(0) + a(1,1)*(x-x(0)) + a(2,2)*(x-x(0))*(x-x(1)) + ... +
+     * 
+     *                         n-1
+     *                        +---+     
+     *                        |   |
+     *             + a(n,n) * |   | (x-x(k))      
+     *                        |   |
+     *                         k=0
      */
 
     try
     {
-        // As it turns out, the algorithm above can be further optimized.
-        // It is sufficient to use a 1D vector (storing just the current "column") 
-        // instead of a 2D matrix. It is also possible to update polynomials 
-        // concurrently when updating "columns". 
-        
+        /*
+         * As it turns out, the algorithm above can be further optimized.
+         * It is sufficient to use a 1D vector (storing just the current "column") 
+         * instead of a 2D matrix. It is also possible to update polynomials 
+         * concurrently when updating "columns". 
+         */
+
         // number of points
         const size_t N = this->points.size();
 
@@ -118,20 +120,18 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(size_t degree) throw
         a.resize(N);
         x.resize(N);
         
-        // hiding idx from the rest of the function
+
+        // As iterators are the fastest way to access linked list elements,
+        // traverse the list only once and populate appropriate elements of a and b
+        size_t idx = 0;
+        for ( 
+          typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->points.begin();
+          it!=this->points.end(); 
+          ++it, ++idx )
         {
-            // As iterators are the fastest way to access linked list elements,
-            // traverse the list only once and populate appropriate elements of a and b
-            size_t idx = 0;
-            for ( 
-              typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->points.begin();
-              it!=this->points.end(); 
-              ++it, ++idx )
-                {
-                    x.at(idx) = it->p_x;
-                    a.at(idx) = it->p_y;
-                }  // for it
-        }  // hiding idx from the rest of the code
+            x.at(idx) = it->p_x;
+            a.at(idx) = it->p_y;
+        }  // for it
         
         // Polynomials:
         // (x-y0)*(x-y1)*...*(x-yi)
