@@ -191,9 +191,11 @@ short int __sign(const I& num1, const I& den1, const I& num2, const I& den2)
         return ( p1<p2 ? -1 : 1 );
     }
 
-    // If integer overflow has occurred in the comparison above, 
-    // try the last option: convert both fractions to floats and 
-    // compare the values:
+    /*
+     * If integer overflow has occurred in the comparison above, 
+     * try the last option: convert both fractions to floats and 
+     * compare the values:
+     */
     const float diff = static_cast<float>(num1) / static_cast<float>(den2) -
                        static_cast<float>(num2) / static_cast<float>(den2);
 
@@ -367,9 +369,11 @@ math::RationalGeneric<I>::RationalGeneric(
             const I& denominator) 
         throw(math::RationalException)
 {
-    // Just call a function that actually sets both members.
-    // It will throw a RationalException if the denominator
-    // is attempted to be set to 0
+    /*
+     * Just call a function that actually sets both members.
+     * It will throw a RationalException if the denominator
+     * is attempted to be set to 0
+     */
     this->set(numerator, denominator);
 }
 
@@ -390,8 +394,10 @@ math::RationalGeneric<I>::RationalGeneric(
             size_t repSeqLen) 
         throw (math::RationalException)
 {
-    // Just call a function that actually sets both members.
-    // It will throw a RationalException if 'str' is invalid etc.
+    /*
+     * Just call a function that actually sets both members.
+     * It will throw a RationalException if 'str' is invalid etc.
+     */
     this->set(str, repSeqLen);
 }
 
@@ -407,10 +413,12 @@ template <typename I>
 math::RationalGeneric<I>::RationalGeneric(const math::RationalGeneric<I>& orig) : 
                 num(orig.num), denom(orig.denom)
 {
-    // 'num' and 'denom' are already set, nothing more to do here.
-    // It is impossible to pass an invalid input parameter (orig.denom == 0)
-    // so there is no need for any check. All fractions are automatically reduced
-    // so no need to do this explicitly
+    /*
+     * 'num' and 'denom' are already set, nothing more to do here.
+     * It is impossible to pass an invalid input parameter (orig.denom == 0)
+     * so there is no need for any check. All fractions are automatically reduced
+     * so no need to do this explicitly
+     */
 }
 
 
@@ -583,8 +591,10 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
     // the string does represent a decimal number, parse it
     try
     {
-        // Note: if RationalException is thrown by str2ll or pow10, it will not be
-        // caught by this try, instead it will be thrown to the caller.
+        /*
+         * Note: if RationalException is thrown by str2ll or pow10, it will not be
+         * caught by this try, instead it will be thrown to the caller.
+         */
 
         std::string buf = str;
 
@@ -686,7 +696,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
  * @param numerator - desired rational's numerator
  * @param denominator - desired rational's denominator
  * 
- * @throw Rational exception if any argument is invalid or out of I's range
+ * @throw RationalException if any argument is invalid or out of I's range
  *        after reduction
  */
 template <typename I>
@@ -730,8 +740,10 @@ void math::RationalGeneric<I>::__setLL(
 
     // ... and set the rational to casted values of both reduced arguments.
 
-    // Note that both terms are already reduced so they are assigned directly
-    // to 'this'. Denominator's sign must be positive.
+    /*
+     * Note that both terms are already reduced so they are assigned directly
+     * to 'this'. Denominator's sign must be positive.
+     */
     if ( denRed < 0LL )
     {
         this->num = -static_cast<I>(numRed);
@@ -794,8 +806,10 @@ bool math::RationalGeneric<I>::isZero() const
 template <typename I>
 bool math::RationalGeneric<I>::isPositive() const
 {
-    // the denominator is always positive (see set), so it is enough
-    // to check if the numerator is greater than 0
+    /*
+     * The denominator is always positive (see set), so it is
+     * sufficient to check if the numerator is greater than 0
+     */
     return ( this->num > static_cast<I>(0) );
 }
 
@@ -808,8 +822,10 @@ bool math::RationalGeneric<I>::isPositive() const
 template <typename I>
 bool math::RationalGeneric<I>::isNegative() const
 {
-    // the denominator is always positive (see set), so it is enough
-    // to check if the numerator is less than 0
+    /*
+     * the denominator is always positive (see set), so it is
+     * sufficient to check if the numerator is less than 0
+     */
     return ( math::IntUtil::isNegative<I>(this->num) );
 }
 
@@ -832,8 +848,10 @@ math::RationalGeneric<I> math::RationalGeneric<I>::invert() const throw(math::Ra
         throw math::RationalException(math::RationalException::UNINVERTIBLE);
     }
 
-    // inversion will be possible, return a fraction with with exchanged
-    // numerator and denominator
+    /*
+     * inversion will be possible, return a fraction with with exchanged
+     * numerator and denominator
+     */
     return math::RationalGeneric<I>(this->denom, this->num);
 }
 
@@ -872,9 +890,11 @@ template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::operator=(
             const math::RationalGeneric<I>& frac )
 {
-    // The function's behaviour is similar to the copy constructor.
-    // With one exception.
-    // Nothing to do when attempting to assign it to itself.
+    /*
+     * The function's behaviour is similar to the copy constructor.
+     * With one exception.
+     * Nothing to do when attempting to assign it to itself.
+     */
     if ( this != &frac )
     {
         // otherwise copy the num and denom
@@ -1017,28 +1037,36 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator/=(
 template <typename I>
 void math::RationalGeneric<I>::__reduce()
 {
-    // the GCD is not defined when numerator is equal to 0.
-    // In that case just assign denominator to 1
-    // (it can be assigned to any integer value except 0)
+    /*
+     * the GCD is not defined when numerator is equal to 0.
+     * In that case just assign denominator to 1
+     * (it can be assigned to any integer value except 0)
+     */
     if ( static_cast<I>(0) == this->num )
     {
         this->denom = static_cast<I>(1);
         return;
     }
 
-    // The GCD algorithm requires both integers to be positive.
-    // The numerator is allowed to be negative, so get its absolute value.
+    /*
+     * The GCD algorithm requires both integers to be positive.
+     * The numerator is allowed to be negative, so get its absolute value.
+     */
     const I absNum = math::IntUtil::absolute<I>(this->num);
 
-    // finally obtain the greatest common divisor...
-    // Note: since neither 'absNum' nor 'denom' cannot be zero (handled before),
-    // IntFactorization::gcd will never throw an exception
+    /*
+     * Finally obtain the greatest common divisor...
+     * Note: since neither 'absNum' nor 'denom' cannot be zero (handled before),
+     * IntFactorization::gcd will never throw an exception
+     */
     const I gcd = 
         math::IntFactorization::greatestCommonDivisor<I>(absNum, this->denom);
 
-    // ... and divide both members by it.
-    // if both num (handled a few lines above)and denom (not permitted when setting)
-    // are different than 0, the GCD is guaranteed to be a non-zero value
+    /*
+     * ... and divide both members by it.
+     * if both num (handled a few lines above)and denom (not permitted when setting)
+     * are different than 0, the GCD is guaranteed to be a non-zero value
+     */
     this->num /= gcd;
     this->denom /= gcd;
 }
@@ -1113,8 +1141,10 @@ math::RationalGeneric<I> math::operator-(const math::RationalGeneric<I>& f)
         throw math::RationalException(math::RationalException::UNSIGNED);
     }
 
-    // One (doesn't matter which) member of the fraction must be negated.
-    // Let it be the numerator
+    /*
+     * One (doesn't matter which) member of the fraction must be negated.
+     * Let it be the numerator
+     */
     return math::RationalGeneric<I>(-f.num, f.denom);
 }
 
@@ -1135,11 +1165,13 @@ math::RationalGeneric<I> math::operator+(
             const math::RationalGeneric<I>& f2 ) 
         throw (math::RationalException)
 {
-    // Unreduced sum of two fractions:
-    //
-    //   a     c     a*d + c*b
-    //  --- + --- = -----------
-    //   b     d       b * d
+    /*
+     * Unreduced sum of two fractions:
+     *
+     *   a     c     a*d + c*b
+     *  --- + --- = -----------
+     *   b     d       b * d
+     */
 
     // Just construct an unreduced fraction as shown above:
 
@@ -1229,11 +1261,13 @@ math::RationalGeneric<I> math::operator-(
             const math::RationalGeneric<I>& f2 ) 
         throw (math::RationalException)
 {
-    // Unreduced difference of two fractions:
-    //
-    //   a     c     a*d - c*b
-    //  --- - --- = -----------
-    //   b     d       b * d
+    /*
+     * Unreduced difference of two fractions:
+     *
+     *   a     c     a*d - c*b
+     *  --- - --- = -----------
+     *   b     d       b * d
+     */
 
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
@@ -1247,8 +1281,10 @@ math::RationalGeneric<I> math::operator-(
 
     return retVal;
 
-    // NOTE: it would also be possible to multiply frac by -1 and add it to this
-    // (using operator+) but it would require a bit more operations.
+    /*
+     * NOTE: it would also be possible to multiply frac by -1 and add it to this
+     * (using operator+) but it would require a bit more operations.
+     */
 }
 
 
@@ -1325,11 +1361,13 @@ math::RationalGeneric<I> math::operator*(
             const math::RationalGeneric<I>& f2) 
         throw (math::RationalException)
 {
-    // Unreduced product of two fractions:
-    //
-    //   a     c      a * c
-    //  --- * --- = ---------
-    //   b     d      b * d
+    /*
+     * Unreduced product of two fractions:
+     *
+     *   a     c      a * c
+     *  --- * --- = ---------
+     *   b     d      b * d
+     */
 
     const long long int numerator = 
             math::RationalNS::__private::__auxProd<I>(f1.num, f2.num);
@@ -1416,11 +1454,13 @@ math::RationalGeneric<I> math::operator/(
             const math::RationalGeneric<I>& f2 ) 
         throw (math::RationalException)
 {
-    // Unreduced quotient of two fractions:
-    //
-    //   a     c     a     d      a * d
-    //  --- / --- = --- * --- = ---------
-    //   b     d     b     c      b * c
+    /*
+     * Unreduced quotient of two fractions:
+     *
+     *   a     c     a     d      a * d
+     *  --- / --- = --- * --- = ---------
+     *   b     d     b     c      b * c
+     */
 
     // Check if frac's numerator equals 0
     if ( true == f2.isZero() )
@@ -1864,7 +1904,7 @@ namespace NumericUtil
 template <typename I>
 bool isZero(const math::RationalGeneric<I>& value, const math::RationalGeneric<I>& eps)
 {
-    // Rational already contains its own isZero()...
+    // RationalGeneric already contains its own isZero()...
     return value.isZero();
 
     (void) eps;
