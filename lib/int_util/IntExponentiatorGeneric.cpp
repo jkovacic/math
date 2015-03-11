@@ -142,19 +142,25 @@ T math::IntExponentiator::power(const T& base, const I& n)
      * division by 2
      */
 
-    // Note: it is safe to use bitwise operators for arithmetic operations
-    // on int values as they do not depend on endianess:
-    // http://stackoverflow.com/questions/7184789/does-bit-shift-depends-on-endianness
+    /*
+     * Note: it is safe to use bitwise operators for arithmetic operations
+     * on int values as they do not depend on endianess:
+     * http://stackoverflow.com/questions/7184789/does-bit-shift-depends-on-endianness
+     */
 
     T retVal = math::IntExponentiator::__private::__getUnit(base);
     T factor = base;
 
-    // Obtain coefficients ai from the exponent's binary form.
-    // Note: "i>>=1" is a bitwise equivalent bitwise equivalent of "i/=2"
+    /*
+     * Obtain coefficients ai from the exponent's binary form.
+     * Note: "i>>=1" is a bitwise equivalent bitwise equivalent of "i/=2"
+     */
     for ( I i=n; i>0; i>>=1 )
     {
-        // Check the coefficient ai (no need to multiply retVal by 1 if ai is 0)
-        // Note: "i&1" is a bitwise equivalent of "i%2"
+        /*
+         * Check the coefficient ai (no need to multiply retVal by 1 if ai is 0)
+         * Note: "i&1" is a bitwise equivalent of "i%2"
+         */
         if ( 0!=(i & static_cast<I>(1) ) )
         {
             retVal *= factor;

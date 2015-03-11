@@ -33,7 +33,7 @@ namespace math {  namespace IntUtil {  namespace __private
 {
 
 /*
- * A set of clases that check whether an integer is negative.
+ * A set of classes that check whether an integer is negative.
  * 
  * An integer value can only be negative if its type is signed. This could be
  * quickly checked by comparing (I)(-1) and (I)(0), however, if I is an unsigned type,

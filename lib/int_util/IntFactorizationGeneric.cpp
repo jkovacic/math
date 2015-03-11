@@ -44,8 +44,10 @@ namespace math {  namespace IntFactorization {  namespace __private
 template <typename I>
 void __checkSign(const I& n) throw (math::IntFactorizationException)
 {
-    // The actual implementation depends on signedness of 'I' and is
-    // implemented in the class __checkSignImpl
+    /*
+     * The actual implementation depends on signedness of 'I' and is
+     * implemented in the class __checkSignImpl
+     */
     if ( true == math::IntUtil::isNegative<I>(n) )
     {
         throw math::IntFactorizationException(math::IntFactorizationException::NEGATIVE_ARG);
@@ -119,10 +121,12 @@ bool math::IntFactorization::isPrime(const I& n)
      * that exceed sqrt(n).
      */
 
-    // Integer sqrt(n) can be obtained quite efficiently.
-    // Additionally it prevents any possibility of integer overflow
-    // (theoretically possible for large 'n' if "i*i<=n" is used
-    // as the for loop's condition)
+    /*
+     * Integer sqrt(n) can be obtained quite efficiently.
+     * Additionally it prevents any possibility of integer overflow
+     * (theoretically possible for large 'n' if "i*i<=n" is used
+     * as the for loop's condition)
+     */
 
     const I sqn = math::IntFactorization::intSqrt<I>(n);
 
@@ -164,8 +168,10 @@ I math::IntFactorization::greatestCommonDivisor(
      * at http://en.wikipedia.org/wiki/Euclidean_algorithm
      */
 
-    // If any of both arguments is 0, the algorithm would "end up" in an infinite loop
-    // or division by zero can occur. In such a case, throw an exception.
+    /*
+     * If any of both arguments is 0, the algorithm would "end up" in an infinite loop
+     * or division by zero can occur. In such a case, throw an exception.
+     */
     if ( static_cast<I>(0) == first || static_cast<I>(0) == second )
     {
         throw math::IntFactorizationException(math::IntFactorizationException::INVALID_INPUT);
@@ -354,8 +360,10 @@ I math::IntFactorization::intSqrt(const I& n)
     I bit = static_cast<I>(1) << (static_cast<I>(8) * sizeof(I) - static_cast<I>(2));
     I sq = n;
 
-    // Even if 'I' represents an unsigned type, 'bit' will never be
-    // negative because its MSB will not be set.
+    /*
+     * Even if 'I' represents an unsigned type, 'bit' will never be
+     * negative because its MSB will not be set.
+     */
 
     while ( bit > sq )
     {
