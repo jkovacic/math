@@ -39,7 +39,6 @@ limitations under the License.
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
-#include "MatrixGeneric.hpp"
 
 
 /**
