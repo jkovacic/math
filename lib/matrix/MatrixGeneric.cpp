@@ -39,6 +39,7 @@ limitations under the License.
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
+#include "MatrixGeneric.hpp"
 
 
 /**
@@ -176,6 +177,73 @@ T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::Matr
 
 /**
  * Returns a read-write reference to the desired element of the matrix.
+ * 
+ * @note The reference should be used immediately after this call before
+ *       the matrix is destroyed or its internal storage is reallocated.
+ * 
+ * @note This function is deprecated.
+ *
+ * @param row - row number (starting with 0)
+ * @param column - column number (starting with 0)
+ *
+ * @return read-write reference to the element at the desired position
+ *
+ * @throw MatrixException if 'row' and/or 'column' are out of range
+ * 
+ * @deprecated
+ */
+template <class T>
+T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixException)
+{
+    // Check if input arguments are within the matrix's range
+    if ( row >= this->rows || column >= this->cols )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return this->elems.at(_pos(row, column));
+}
+
+
+/**
+ * Returns a read-only (const) reference to the desired element of the matrix.
+ * 
+ * @note The reference should be used immediately after this call before
+ *       the matrix is destroyed or its internal storage is reallocated.
+ * 
+ * @note This function is deprecated
+ *
+ * @param row - row number (starting with 0)
+ * @param column - column number (starting with 0)
+ *
+ * @return read-only reference to the element at the desired position
+ *
+ * @throw MatrixException if 'row' and/or 'column' are out of range
+ * 
+ * @deprecated
+ */
+template <class T>
+const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math::MatrixException)
+{
+    /*
+     * Implementation is actually the same as implementation of another at()
+     * with non-const signature. A single macro could be used for both
+     * implementations, however both functions are short, simple and unlikely
+     * to change often.
+     */
+
+    // Check if input arguments are within the matrix's range
+    if ( row >= this->rows || column >= this->cols )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    return this->elems.at(_pos(row, column));
+}
+
+
+/**
+ * Returns a read-write reference to the desired element of the matrix.
  * @note The reference should be used immediately after this call before
  *       the matrix is destroyed or its internal storage is reallocated.
  *
@@ -187,9 +255,9 @@ T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::Matr
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template <class T>
-T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixException)
+T& math::MatrixGeneric<T>::operator()(size_t row, size_t column) throw(math::MatrixException)
 {
-    // Check if input parameters are within the matrix's range
+    // Check if input arguments are within the matrix's range
     if ( row >= this->rows || column >= this->cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
@@ -212,22 +280,86 @@ T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixExce
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template <class T>
-const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math::MatrixException)
+const T& math::MatrixGeneric<T>::operator()(size_t row, size_t column) const throw(math::MatrixException)
 {
     /*
-     * Implementation is actually the same as implementation of another at()
+     * Implementation is actually the same as implementation of another operator()
      * with non-const signature. A single macro could be used for both
      * implementations, however both functions are short, simple and unlikely
      * to change often.
      */
 
-    // Check if input parameters are within the matrix's range
+    // Check if input arguments are within the matrix's range
     if ( row >= this->rows || column >= this->cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
     return this->elems.at(_pos(row, column));
+}
+
+
+/**
+ * Read-write reference to the element at the desired position,
+ * denoted by a linear index.
+ * 
+ * 'idx' denotes the element of a long column vector, composed by
+ *  consecutive column vectors.
+ * 
+ * If R denotes the number of rows, the function returns
+ *   this(idx/R, idx%R)
+ * 
+ * @param idx - linear index of the desired element
+ * 
+ * @return read-write reference to the element at the linear index 'idx'
+ * 
+ * @throw MatrixException if 'idx' is out of the matrix's range
+ */
+template <class T>
+T& math::MatrixGeneric<T>::operator()(size_t idx) throw(math::MatrixException)
+{
+    // check if 'idx' is within elems' range
+    if ( idx >= this->elems.size() )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    const size_t col = idx / this->rows;
+    const size_t row = idx % this->rows;
+
+    return this->elems.at(_pos(row, col));
+}
+
+
+/**
+ * Read-only reference to the element at the desired position,
+ * denoted by a linear index.
+ * 
+ * 'idx' denotes the element of a long column vector, composed by
+ *  consecutive column vectors.
+ * 
+ * If R denotes the number of rows, the function returns
+ *   this(idx/R, idx%R)
+ * 
+ * @param idx - linear index of the desired element
+ * 
+ * @return read-only reference to the element at the linear index 'idx'
+ * 
+ * @throw MatrixException if 'idx' is out of the matrix's range
+ */
+template <class T>
+const T& math::MatrixGeneric<T>::operator()(size_t idx) const throw(math::MatrixException)
+{
+    // check if 'idx' is within elems' range
+    if ( idx >= this->elems.size() )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    const size_t col = idx / this->rows;
+    const size_t row = idx % this->rows;
+
+    return this->elems.at(_pos(row, col));
 }
 
 

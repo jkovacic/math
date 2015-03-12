@@ -51,6 +51,9 @@ void matrixTest()
         cout << "f:" << endl;
         f.display();
         cout << endl;
+        
+        cout << "f(0,1) = " << f(0, 1) << endl;
+        cout << "f(4)   = " << f(4) << endl << endl;
 
         // Multiplication by a scalar
         FMatrix res(1,1);

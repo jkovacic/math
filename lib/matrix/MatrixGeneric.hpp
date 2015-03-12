@@ -167,7 +167,11 @@ public:
     T get(size_t row, size_t column) const throw (MatrixException);
     T& at(size_t row, size_t column) throw (MatrixException);
     const T& at(size_t row, size_t column) const throw(MatrixException);
-    MatrixGeneric<T>& set(size_t row, size_t column, const T& element) throw (MatrixException);
+    T& operator()(size_t row, size_t column) throw(MatrixException);
+    const T& operator()(size_t row, size_t column) const throw(MatrixException);
+    T& operator()(size_t idx) throw(MatrixException);
+    const T& operator()(size_t idx) const throw(MatrixException);
+    MatrixGeneric<T>& set(size_t row, size_t column, const T& element) throw (MatrixException);  
 
     // Display elements of the matrix
     void display(std::ostream& str = std::cout) const throw (MatrixException);
