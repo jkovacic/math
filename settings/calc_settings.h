@@ -48,6 +48,13 @@ limitations under the License.
 #define INTEG_DEFAULT_METHOD       math::EIntegAlg::SIMPSON
 
 
+/**
+ * Breakpoint for evaluation of improper integrals
+ */
+#define INTEG_IMP_INT_BREAKPOINT_NUM     ( 5 )
+#define INTEG_IMP_INT_BREAKPOINT_DEN     ( 1 )
+
+
 
 /**
  * Default step size for numerical differentiation.

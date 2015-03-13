@@ -678,6 +678,18 @@ Method 3: Int(f(x), 0, 5) = 16.2378
 Method 4: Int(f(x), 0, 5) = 16.2378
 Expected result: 16.23780211731536
 
+fn(x) = 0.39894228040143268 * exp(-x^2/2) :
+Int(fn(x), 1, inf)     = 0.158655 (expected: 0.15865525393145)
+Int(fn(x), 1.3, inf)   = 0.0968005 (expected: 0.09680048458561)
+Int(fn(x), -2, inf)    = 0.97725 (expected: 0.97724986805182)
+Int(fn(x), -1.8, inf)  = 0.96407 (expected: 0.96406968088707)
+Int(fn(x), -inf, -2)   = 0.0227501 (expected: 0.022750131948179)
+Int(fn(x), -inf, -1.7) = 0.0445655 (expected: 0.044565462758543)
+Int(fn(x), -inf, 1)    = 0.841345 (expected: 0.84134474606854)
+Int(fn(x), -inf, 0.5)  = 0.691462 (expected: 0.69146246127401)
+Int(fn(x), -inf, inf)  = 1 (expected: 1.0)
+Int(fn(x), -inf, inf)  = 1 (expected: 1.0)
+
 Numerical differentiation:
 Method 0: f'(4) = 0.485226
 Method 1: f'(4) = 0.484711

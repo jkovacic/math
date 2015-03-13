@@ -58,6 +58,9 @@ void math::CalculusException::what(std::ostream& str) const
         case UNSUPPORTED_ALGORITHM :
             str << "Unsupported algorithm";
             break;
+        case INVALID_BREAKPOINT :
+            str << "Invalid sign of a breakpoint";
+            break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and

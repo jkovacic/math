@@ -49,6 +49,7 @@ struct CalculusException : public IMathException
         NOT_ENOUGH_STEPS,       /// not enough integration steps
         INVALID_STEP,           /// step size negative or too small
         UNSUPPORTED_ALGORITHM,  /// unsupported algorithm
+        INVALID_BREAKPOINT,     /// invalid sign of a breakpoint
     };
 
     err_codes error;     /// Type of an error
