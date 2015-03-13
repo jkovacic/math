@@ -872,8 +872,8 @@ F math::Integ::integImpNegInf(
              * is needed.
              */
 
-        	from = fsub.inv(b);
-        	to = fsub.invNegInf();
+            from = fsub.inv(b);
+            to = fsub.invNegInf();
             math::Integ::__private::__checkSwap<F>(swappped, from, to);
 
             retVal = math::Integ::integ<F>(fsub, from, to, nimp, algorithm);
@@ -1272,7 +1272,7 @@ F math::Integ::integImpPosInfH(
 
             retVal = math::Integ::integH<F>(fsub, from, to, himp, algorithm);
         }
-	    else
+        else
         {
             /*
              * 'a' is negative, the proper integral (between 'a' and 'bp')
