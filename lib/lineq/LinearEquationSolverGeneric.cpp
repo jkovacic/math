@@ -96,7 +96,7 @@ void math::LinearEquationSolver::solve(
         for ( size_t i=0; i<N; ++i )
         {
             // first check if the diagonal element equals 0
-            if ( true == math::NumericUtil::isZero<T>(temp.at(i, i)) )
+            if ( true == math::NumericUtil::isZero<T>(temp(i, i)) )
             {
                 size_t r;
 
@@ -109,7 +109,7 @@ void math::LinearEquationSolver::solve(
                         continue;  // for r
                     }
 
-                    if ( false == math::NumericUtil::isZero<T>(temp.at(r, i)) )
+                    if ( false == math::NumericUtil::isZero<T>(temp(r, i)) )
                     {
                         // found, no need to search further
                         break;  // out of for r
@@ -130,12 +130,12 @@ void math::LinearEquationSolver::solve(
                 {
                     if ( c<N )
                     {
-                        temp.at(i, c) += temp.at(r, c);
+                        temp(i, c) += temp(r, c);
                     }
 
                     if ( c<NT )
                     {
-                        sol.at(i, c) += sol.at(r, c);
+                        sol(i, c) += sol(r, c);
                     }
                 }
 
@@ -147,7 +147,7 @@ void math::LinearEquationSolver::solve(
             for ( size_t r=i+1; r<N; r++ )
             {
                 // Nothing to do if temp(r,i) is already 0.
-                if ( false == math::NumericUtil::isZero<T>(temp.at(r, i)) )
+                if ( false == math::NumericUtil::isZero<T>(temp(r, i)) )
                 {
                     // Subtract a multiple of the i^th row.
                     const T el = temp.get(r, i) / temp.get(i, i);
@@ -155,13 +155,13 @@ void math::LinearEquationSolver::solve(
                     // temp(r,:) = temp(r,:)-el*temp(i,:)
                     for ( size_t c=i; c<N; ++c )
                     {
-                        temp.at(r, c) -= el*temp.at(i, c);
+                        temp(r, c) -= el*temp(i, c);
                     }
 
                     // term(r,:) = term(r,:)-el*term(i,:)
                     for ( size_t c=0; c<NT; ++c )
                     {
-                        sol.at(r, c) -= el * sol.at(i, c);
+                        sol(r, c) -= el * sol(i, c);
                     }
                 }  // if (temp(r,i) != 0
             }  // for r
@@ -183,12 +183,12 @@ void math::LinearEquationSolver::solve(
 
             for ( size_t c=r; c<N; ++c )
             {
-                temp.at(r, c) /= el;
+                temp(r, c) /= el;
             }
 
             for ( size_t c=0; c<NT; ++c )
             {
-                sol.at(r, c) /= el;
+                sol(r, c) /= el;
             }
         }
 
@@ -217,7 +217,7 @@ void math::LinearEquationSolver::solve(
             for ( size_t r=0; r<c; ++r )
             {
                 // Nothing to do if temp(r,c) already equals 0
-                if ( false == math::NumericUtil::isZero<T>(temp.at(r, c)) )
+                if ( false == math::NumericUtil::isZero<T>(temp(r, c)) )
                 {
                     /*
                      * To set temp(r,c) to 0 it is a good idea to add the c.th row to it.
@@ -230,13 +230,13 @@ void math::LinearEquationSolver::solve(
                     // temp(r,:) = temp(r,:) - el*temp(c,:)
                     for ( size_t i=c; i<N; ++i )
                     {
-                        temp.at(r, i) -= el * temp.at(c, i);
+                        temp(r, i) -= el * temp(c, i);
                     }
 
                     // term(r,:) = term(r,:) - el*term(c,:)
                     for ( size_t i=0; i<NT; ++i )
                     {
-                        sol.at(r, i) -= el * sol.at(c, i);
+                        sol(r, i) -= el * sol(c, i);
                     }
                 }  // if temp(r,c) != 0
             }  // for r

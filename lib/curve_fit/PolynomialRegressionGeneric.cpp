@@ -123,7 +123,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (m
                     {
                         continue;  // for r
                     }
-                    a.at(r, i-r) += aterm;
+                    a(r, i-r) += aterm;
                 }  // for r
                 // and update 'aterm' for the next iteration of i
                 aterm *=it->p_x;
@@ -135,7 +135,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (m
                 }
 
                 // update the b's i^th element 
-                b.at(i, 0) += bterm;
+                b(i, 0) += bterm;
                 // and update 'bterm' for the next iteration of i
                 bterm *= it->p_x;
             }  // for i
@@ -148,7 +148,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (m
         // And finally fill the regression polynomial
         for ( size_t i=0; i<N; ++i )
         {
-            this->poly.set(i, x.at(i, 0));
+            this->poly.set(i, x(i, 0));
         }
 
         // the curve can be marked as generated

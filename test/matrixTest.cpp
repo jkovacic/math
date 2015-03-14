@@ -182,7 +182,7 @@ void matrixTest()
         cout << endl;
 
         cout << "Add 0.5 to inv(2, 0):" << endl;
-        inv.at(2, 0) += 0.5f;
+        inv(2, 0) += 0.5f;
         inv.display();
         cout << endl;
 
