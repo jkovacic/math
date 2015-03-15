@@ -33,6 +33,8 @@ limitations under the License.
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
+#include "int_util/IntUtilGeneric.hpp"
+#include "int_util/IntExponentiatorGeneric.hpp"
 
 #include "exception/StatisticsException.hpp"
 
@@ -713,4 +715,121 @@ F math::SampleStat::r2(const std::vector<F>& x1, const std::vector<F>& x2) throw
 
     return (cv * cv) / 
            ( math::SampleStat::var<F>(x1, false) * math::SampleStat::var<F>(x2, false) );
+}
+
+
+/**
+ * Returns the sample's n.th central moment about the mean.
+ *
+ * @param x - vector of sample elements
+ * @param n - order of the moment
+ *
+ * @return sample's n.th central moment about the mean
+ *
+ * @throw StatisticsException if 'n' is negative or 'x' is an empty vector
+ */
+template <typename F, typename I>
+F math::SampleStat::moment(const std::vector<F>& x, const I& n) throw(math::StatisticsException)
+{
+    /*
+     * Central moment about the mean is defined as:
+     *
+     *              N-1
+     *             -----
+     *         1   \     /           \n
+     *   m_n = ---  >    | x[i] - mu |
+     *         N   /     \           /
+     *             -----
+     *              i=0
+     *
+     * More details about the central moment:
+     * https://en.wikipedia.org/wiki/Central_moment
+     * http://mathworld.wolfram.com/CentralMoment.html
+     */
+
+    const size_t NN = x.size();
+
+    // 'n' must be non-negative
+    if ( true == math::IntUtil::isNegative<I>(n) )
+    {
+        throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
+    }
+
+    // 'x' must not be empty
+    if ( NN <= 0 )
+    {
+    	throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
+    }
+
+    /*
+     * Handle some special situations:
+     */
+
+    /*
+     * If n==0, the expression above turns into a sum of ones
+     * (a^0=1), their average equals 1:
+     */
+    if ( 0 == n )
+    {
+        return static_cast<F>(1);
+    }
+
+    /*
+     * If n==1, the sum in the expression above will equal 0
+     * (this is actually a definition of a mean value).
+     */
+    if ( 1 == n )
+    {
+        return static_cast<F>(0);
+    }
+
+    /*
+     * If n==2, the expression above is actually a definition of
+     * variance, without Bessel's correction:
+     */
+    if ( 2 == n )
+    {
+        return math::SampleStat::var<F>(x, false);
+    }
+
+
+    /*
+     * If n>=3, just apply the expression above
+     */
+
+    const F xbar = math::SampleStat::mean<F>(x);
+    F sum = static_cast<F>(0);
+
+    // Coarse grained parallelism
+    #pragma omp parallel num_threads(ompIdeal(NN)) \
+                if(NN>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(x, n) \
+                reduction(+ : sum)
+    {
+        // Depending on the number of available threads,
+        // determine the ideal nr. of samples per thread,
+        // and start and sample of a block that each thread will process.
+        const size_t thrnr = omp_get_thread_num();
+        const size_t nthreads = omp_get_num_threads();
+
+        const size_t samples_per_thread = (NN + nthreads - 1) / nthreads;
+        const size_t istart = samples_per_thread * thrnr;
+
+        F partsum = static_cast<F>(0);
+
+        typename std::vector<F>::const_iterator it = x.begin() + istart;
+        for ( size_t cntr = 0;
+              cntr<samples_per_thread && it!=x.end(); ++it,  ++cntr )
+        {
+            /*
+             * TODO when does it make sense to calculate powers
+             * "manually" and when using the provided function?
+             */
+            partsum += math::IntExponentiator::power((*it - xbar), n);
+        }
+
+        sum += partsum;
+    }  // pragma omp parallel
+
+    return sum / static_cast<F>(NN);
 }

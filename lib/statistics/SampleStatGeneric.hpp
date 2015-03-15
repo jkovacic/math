@@ -82,6 +82,9 @@ namespace SampleStat
     template <typename F>
     F r2(const std::vector<F>& x1, const std::vector<F>& x2) throw(StatisticsException);
 
+    template <typename F, typename I>
+    F moment(const std::vector<F>& x, const I& n) throw(StatisticsException);
+
 }  // namespace SampleStat
 
 }  // namespace math

@@ -98,6 +98,11 @@ void statisticsTest()
 
 
         /*
+         * Please note, that the additional R library 'moments' must be installed
+         * to support some R functions
+         * (e.g. 'moment', 'skewness', 'kurtosis')
+         *
+           library(moments)
            sum(mtcars$mpg)
            [1] 642.9
            mean(mtcars$mpg)
@@ -112,6 +117,8 @@ void statisticsTest()
            n <- length(mtcars$mpg)
            sqrt((n-1)/n) * sd(mtcars$mpg)
            [1] 5.93203
+           > moment(mtcars$mpg, order=4, central=TRUE)
+           [1] 3466.479
          */
 
         cout << "Sum of all elements: " << SampleStat::sum(vmpgs) << " (expected: 642.9)" << endl;
@@ -120,6 +127,7 @@ void statisticsTest()
         cout << "Sample standard deviation: " << SampleStat::stdev(vmpgs) << " (expected: 6.026948)" << endl;
         cout << "Population variance (w/o Bessel's correction): " << SampleStat::var(vmpgs, false) << " (expected: 35.18897)" << endl;
         cout << "Population standard deviation (w/o Bessel's correction): " << SampleStat::stdev(vmpgs, false) << " (expected: 5.93203)" << endl;
+        cout << "4th central moment about the mean: " << SampleStat::moment(vmpgs, 4) << " (expected: 3466.479)" << endl;
 
 
         /*
