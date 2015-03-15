@@ -20,9 +20,6 @@ limitations under the License.
  *
  * Implementation of the class SampleQuantileGeneric that estimates
  * quantiles of a sample.
- *
- * As the class is templated, this file must not be compiled.
- * Instead it must be included after the class declaration in the .h file
  */
 
 
@@ -43,9 +40,9 @@ limitations under the License.
 
 /**
  * Constructor.
- * Creates its own copy of the sample vector.
+ * Creates its own copy of the vector of observations.
  *
- * @param sample - a vector of samples
+ * @param sample - a vector of observations
  *
  * @throw StatisticsException if 'sample' is empty or allocation of memory for its copy failed
  */
@@ -444,12 +441,12 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, math::EQntlType::type method)
 /**
  * Median of the sample.
  *
- * If the sample's number of elements is odd, the middle element
+ * If the number of observations is odd, the middle element
  * is returned:
  *
  *   median = sorted_vector[(N-1)/2]
  *
- * If the sample's number of elements is even, the mean of the middle
+ * If the number of observations is even, the mean of the middle
  * two elements is returned:
  *
  *             sorted_vector[N/2 - 1] + sorted_vector[N/2]
@@ -468,13 +465,13 @@ F math::SampleQuantileGeneric<F>::median() const
 
     if ( 0 == N % 2 )
     {
-        // even number of elements
+        // even number of observations
     	size_t h = N / 2;
         retVal = (x.at(h-1) + x.at(h)) / static_cast<F>(2);
     }
     else
     {
-        // odd number of elements
+        // odd number of observations
         retVal = x.at((N-1) / 2);
     }
 
@@ -534,7 +531,7 @@ F math::SampleQuantileGeneric<F>::iqr(math::EQntlType::type method) const
 
 
 /**
- * @return minimum value of the sample
+ * @return minimum observation of the sample
  */
 template <typename F>
 F math::SampleQuantileGeneric<F>::min() const
@@ -545,7 +542,7 @@ F math::SampleQuantileGeneric<F>::min() const
 
 
 /**
- * @return maximum value of the sample
+ * @return maximum observation of the sample
  */
 template <typename F>
 F math::SampleQuantileGeneric<F>::max() const
@@ -556,9 +553,9 @@ F math::SampleQuantileGeneric<F>::max() const
 
 
 /**
- * Test if a value is an outlier regarding the sample.
+ * Test if an observation is an outlier regarding the sample.
  * 
- * An element is an outlier if it lies either below the first quartile - iqrs * IQR
+ * An observation is an outlier if it lies either below the first quartile - iqrs * IQR
  * or above the third quartile + iqrs * IQR.
  * 
  * The exact value of 'iqrs' can be passed as an argument and is typically
@@ -592,7 +589,7 @@ bool math::SampleQuantileGeneric<F>::isOutlier(
 /**
  * Fills all sample's outliers into the set 'outl'.
  * 
- * An element is an outlier if it lies either below the first quartile - iqrs * IQR
+ * An observation is an outlier if it lies either below the first quartile - iqrs * IQR
  * or above the third quartile + iqrs * IQR.
  * 
  * The exact value of 'iqrs' can be passed as an argument and is typically

@@ -53,10 +53,10 @@ namespace __private
  * Finds an appropriate shift value (necessary to obtain variance or covariance)
  * among the first elements of 'x'.
  * 
- * @param x - vector of samples 
- * @param Nmax - the highest number of elements to check (default: 5)
+ * @param x - vector of observations 
+ * @param Nmax - the highest number of observations to check (default: 5)
  * 
- * @return element with the highest absolute value among the first 'Nmax' elements of 'x'
+ * @return observation with the highest absolute value among the first 'Nmax' elements of 'x'
  */
 template <typename F>
 F __getShift(const std::vector<F>& x, size_t Nmax = 5)
@@ -84,10 +84,10 @@ F __getShift(const std::vector<F>& x, size_t Nmax = 5)
 
 
 /*
- * Finds sample's either minimum or maximum value, depending
+ * Finds sample's either minimum or maximum observation, depending
  * on 'min'.
  *
- * @param x - vector of sample elements
+ * @param x - vector of observations
  * @param min - a logical value indicating whether minimum or maximum value should be returned
  *
  * @return
@@ -105,7 +105,7 @@ F __minmax(const std::vector<F>& x, bool min) throw(math::StatisticsException)
         throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
-    // the first element is the first candidate for the extreme value...
+    // the first observation is the first candidate for the extreme value...
     F retVal = x.at(0);
 
     // Coarse grained parallelism:
@@ -148,9 +148,9 @@ F __minmax(const std::vector<F>& x, bool min) throw(math::StatisticsException)
 
 
 /**
- * @param x - vector of sample elements
+ * @param x - vector of observations
  *
- * @return minimum value of the sample
+ * @return minimum observation of the sample
  *
  * @throw StatisticsException if 'x' is empty
  */
@@ -162,9 +162,9 @@ F math::SampleStat::min(const std::vector<F>& x) throw(math::StatisticsException
 
 
 /**
- * @param x - vector of sample elements
+ * @param x - vector of observations
  *
- * @return maximum value of the sample
+ * @return maximum observation of the sample
  *
  * @throw StatisticsException if 'x' is empty
  */
@@ -176,9 +176,9 @@ F math::SampleStat::max(const std::vector<F>& x) throw(math::StatisticsException
 
 
 /**
- * @param x - vector of sample elements
+ * @param x - vector of observations
  *
- * @return sum of all sample values
+ * @return sum of all observations
  */
 template <typename F>
 F math::SampleStat::sum(const std::vector<F>& x)
@@ -235,7 +235,7 @@ F math::SampleStat::sum(const std::vector<F>& x)
 /**
  * Arithmetical mean (or average) of the sample.
  *
- * @param x - vector of sample elements
+ * @param x - vector of observations
  *
  * @return mean value of the sample
  *
@@ -274,7 +274,7 @@ F math::SampleStat::mean(const std::vector<F>& x) throw(math::StatisticsExceptio
  * positive integer number 'df_sub' as long as it is strictly smaller than
  * the sample size.
  *
- * @param x - vector of sample elements
+ * @param x - vector of observations
  * @param df_sub - generalized Bessel's correction value (typically 1 or 0)
  *
  * @return variance of the sample, depending on the given 'df_sub'
@@ -314,7 +314,7 @@ F math::SampleStat::var(const std::vector<F>& x, size_t df_sub) throw(math::Stat
      *
      * Where K may be an arbitrary value. Typically it is recommended to
      * not equal 0 to avoid the catastrophic cancellation (both terms can be
-     * of very similar values). Typically it can be assigned any element's
+     * of very similar values). Typically it can be assigned any observation's
      * value, ideally close to the sample's mean.
      *
      * For more details, see:
@@ -333,7 +333,7 @@ F math::SampleStat::var(const std::vector<F>& x, size_t df_sub) throw(math::Stat
         throw math::StatisticsException(math::StatisticsException::DF_SUBTRAHEND_TOO_LARGE);
     }
 
-    // Let K be equal to the first element:
+    // Let K be equal to the first observation:
     const F K = math::SampleStat::__private::__getShift<F>(x);
 
     F sum  = static_cast<F>(0);
@@ -386,7 +386,7 @@ F math::SampleStat::var(const std::vector<F>& x, size_t df_sub) throw(math::Stat
  * Calculates either variance of a sample (sum of square deviations from
  * the mean is divided by N-1) or of a population (sum of squares divided by N).
  *
- * @param x - vector of sample elements
+ * @param x - vector of observations
  * @param sample - if 'true', sum of squared deviations is divided by (N-1), otherwise by N
  *
  * @return variance of the sample depending on 'sample'
@@ -405,7 +405,7 @@ F math::SampleStat::var(const std::vector<F>& x, bool sample) throw(math::Statis
  * Calculates either standard deviation of a sample (sum of square deviations from
  * the mean is divided by N-1) or of a population (sum of squares divided by N).
  *
- * @param x - vector of sample elements
+ * @param x - vector of observations
  * @param sample - if 'true', sum of squared deviations is divided by (N-1), otherwise by N
  *
  * @return standard deviation of the sample depending on 'sample'
@@ -425,7 +425,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, bool sample) throw(math::Stat
  * positive integer number 'df_sub' as long as it is strictly smaller than
  * the sample size.
  *
- * @param x - vector of sample elements
+ * @param x - vector of observations
  * @param df_sub - generalized Bessel's correction value (typically 1 or 0)
  *
  * @return standard deviation of the sample, depending on the given 'df_sub'
@@ -451,7 +451,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, size_t df_sub) throw(math::St
 
     throw math::StatisticsException(math::StatisticsException::UNSUPPORTED_TYPE);
 
-    // will never execute, but some compilers may produce a warning if nothing is returned
+    // will never execute, but some compilers may throw a warning if nothing is returned
     return static_cast<F>(0);
 }
 
@@ -503,8 +503,8 @@ _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(long double)
  * positive integer number 'df_sub' as long as it is strictly smaller than
  * a single sample's size.
  *
- * @param x1 - first vector of sample elements
- * @param x2 - second vector of sample elements
+ * @param x1 - first vector of observations
+ * @param x2 - second vector of observations
  * @param df_sub - generalized Bessel's correction value (typically 1 or 0)
  *
  * @return covariance of both samples, depending on the given 'df_sub'
@@ -544,8 +544,8 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, size
      *
      * Where K1 and K2 may be arbitrary values. Typically it is recommended to
      * not equal 0 to avoid the catastrophic cancellation (both terms may be
-     * be of very similar values). Typically they can be assigned any sample
-     * element's value, ideally close to the samples' means.
+     * be of very similar values). Typically they can be assigned any observation's 
+     * value, ideally close to the samples' means.
      *
      * For more details, see:
      * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
@@ -630,8 +630,8 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, size
  * positive integer number 'df_sub' as long as it is strictly smaller than
  * a single sample's size.
  *
- * @param x1 - first vector of sample elements
- * @param x2 - second vector of sample elements
+ * @param x1 - first vector of observations
+ * @param x2 - second vector of observations
  * @param sample - if 'true', sum of squared deviations is divided by (N-1), otherwise by N
  *
  * @return covariance of both samples, depending on 'sample'
@@ -651,8 +651,8 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, bool
  * It equals covariance, divided by the product of
  * both samples' standard deviations.
  *
- * @param x1 - first vector of sample elements
- * @param x2 - second vector of sample elements
+ * @param x1 - first vector of observations
+ * @param x2 - second vector of observations
  *
  * @return correlation of both samples, always between -1 and 1
  *
@@ -673,7 +673,7 @@ F math::SampleStat::cor(const std::vector<F>& x1, const std::vector<F>& x2) thro
      */
 
     // Apply the population covariance and standard deviations to
-    // allow smaller samples (at least one element each):
+    // allow smaller samples (at least one observation each):
     return math::SampleStat::cov<F>(x1, x2, false) /
            ( math::SampleStat::stdev<F>(x1, false) * math::SampleStat::stdev<F>(x2, false) );
 }
@@ -684,8 +684,8 @@ F math::SampleStat::cor(const std::vector<F>& x1, const std::vector<F>& x2) thro
  *
  *     r^2 = cor(X1, X2)^2
  *
- * @param x1 - first vector of sample elements
- * @param x2 - second vector of sample elements
+ * @param x1 - first vector of observations
+ * @param x2 - second vector of observations
  *
  * @return samples' coefficient of determination
  *
@@ -721,7 +721,7 @@ F math::SampleStat::r2(const std::vector<F>& x1, const std::vector<F>& x2) throw
 /**
  * Returns the sample's n.th central moment about the mean.
  *
- * @param x - vector of sample elements
+ * @param x - vector of observations
  * @param n - order of the moment
  *
  * @return sample's n.th central moment about the mean
