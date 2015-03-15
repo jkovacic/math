@@ -25,7 +25,6 @@ limitations under the License.
 
 // No "include "DiffGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
-#include "DiffGeneric.hpp"
 
 
 // Implementation of "private" functions
