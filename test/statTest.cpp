@@ -119,6 +119,8 @@ void statisticsTest()
            [1] 5.93203
            > moment(mtcars$mpg, order=4, central=TRUE)
            [1] 3466.479
+           > moment(mtcars$mpg, order=4, central=FALSE)
+           [1] 262350.3
          */
 
         cout << "Sum of all elements: " << SampleStat::sum(vmpgs) << " (expected: 642.9)" << endl;
@@ -127,7 +129,8 @@ void statisticsTest()
         cout << "Sample standard deviation: " << SampleStat::stdev(vmpgs) << " (expected: 6.026948)" << endl;
         cout << "Population variance (w/o Bessel's correction): " << SampleStat::var(vmpgs, false) << " (expected: 35.18897)" << endl;
         cout << "Population standard deviation (w/o Bessel's correction): " << SampleStat::stdev(vmpgs, false) << " (expected: 5.93203)" << endl;
-        cout << "4th central moment about the mean: " << SampleStat::moment(vmpgs, 4) << " (expected: 3466.479)" << endl;
+        cout << "4th central moment about the mean: " << SampleStat::centralMoment(vmpgs, 4) << " (expected: 3466.479)" << endl;
+        cout << "4th moment about the origin: " << SampleStat::moment(vmpgs, 4) << " (expected: 262350.3)" << endl;
 
 
         /*

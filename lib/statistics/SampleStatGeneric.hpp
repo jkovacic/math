@@ -83,8 +83,10 @@ namespace SampleStat
     F r2(const std::vector<F>& x1, const std::vector<F>& x2) throw(StatisticsException);
 
     template <typename F, typename I>
-    F moment(const std::vector<F>& x, const I& n) throw(StatisticsException);
+    F moment(const std::vector<F>& x, const I& n, const F& about=static_cast<F>(0)) throw(StatisticsException);
 
+    template <typename F, typename I>
+    F centralMoment(const std::vector<F>& x, const I& n) throw(StatisticsException);
 }  // namespace SampleStat
 
 }  // namespace math
