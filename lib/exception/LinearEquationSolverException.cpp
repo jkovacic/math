@@ -53,9 +53,6 @@ void math::LinearEquationSolverException::what(std::ostream& str) const
         case INVALID_DIMENSION:
             str << "Invalid dimensions of input matrices";
             break;
-        case NO_UNIQUE_SOLUTION:
-            str << "Unique solution of the system of linear equations does not exist";
-            break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and

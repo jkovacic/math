@@ -46,7 +46,7 @@ namespace LinearEquationSolver
     
     // Solves a system of linear equations
     template <class T>
-    void solve(
+    bool solve(
               const SqMatrixGeneric<T>& coef,
               const MatrixGeneric<T>& term,
               MatrixGeneric<T>& sol

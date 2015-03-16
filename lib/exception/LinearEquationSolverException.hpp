@@ -43,7 +43,6 @@ struct LinearEquationSolverException : public IMathException
     enum err_codes {
         OUT_OF_MEMORY,              /// Could not allocate enough memory
         INVALID_DIMENSION,          /// Dimension is not valid for the operation
-        NO_UNIQUE_SOLUTION          /// Unique solution of the system of linear equations does not exist
     };
 
     err_codes error;     /// Type of an error

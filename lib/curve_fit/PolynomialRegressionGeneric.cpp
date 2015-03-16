@@ -143,7 +143,14 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (m
 
         // Matrices are filled, solve the system of linear equations
         math::MatrixGeneric<F> x;
-        math::LinearEquationSolver::solve<F>(a, b, x);
+        const bool succ = math::LinearEquationSolver::solve<F>(a, b, x);
+
+        // System of linear equations successfully solved?
+        if ( false == succ )
+        {
+            // Obviously not
+            throw math::CurveFittingException(math::CurveFittingException::CURVE_GENERATION_FAILED);
+        }
 
         // And finally fill the regression polynomial
         for ( size_t i=0; i<N; ++i )

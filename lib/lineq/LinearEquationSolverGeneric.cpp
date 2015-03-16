@@ -47,10 +47,12 @@ limitations under the License.
  * @param term - a matrix with constant terms of the system of linear equations
  * @param sol - a reference to a matrix to be assigned the solution of equations
  * 
- * @throw LinearEquationSolverException if a unique solution cannot be found for any reason
+ * @return a logical value indicating whether a unique solution was found
+ * 
+ * @throw LinearEquationSolverException if dimensions of 'coef' and 'term' are invalid or internal allocation of memory failed
  */
 template <class T>
-void math::LinearEquationSolver::solve(
+bool math::LinearEquationSolver::solve(
           const math::SqMatrixGeneric<T>& coef,
           const math::MatrixGeneric<T>& term,
           math::MatrixGeneric<T>& sol
@@ -119,8 +121,9 @@ void math::LinearEquationSolver::solve(
                 if ( N==r )
                 {
                     // No temp(r,i)!=0 was found, the matrix 'temp' is non-invertible.
-                    // Throw an exception
-                    throw math::LinearEquationSolverException(math::LinearEquationSolverException::NO_UNIQUE_SOLUTION);
+                    // Return false
+
+                    return false;
                 }
 
                 // add the r.th line to the i.th one and thus prevent temp(i,i) from being 0:
@@ -241,6 +244,9 @@ void math::LinearEquationSolver::solve(
                 }  // if temp(r,c) != 0
             }  // for r
         }  // for c
+
+        // A unique solution has been successfully found
+        return true;
 
     }  // try
     catch ( const math::MatrixException& mex )

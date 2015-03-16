@@ -64,9 +64,15 @@ void lineqSolverTest()
          * x  = [-0.6631640-0.3626125i, 0.1630189+1.050566i, -0.2240929+0.6002903i]'
          */
         MatrixGeneric<complex<float> > x;
-        LinearEquationSolver::solve(a, b, x);
-        cout << "Solution:" << endl;
-        x.display();
+        if ( true == LinearEquationSolver::solve(a, b, x) )
+        {
+            cout << "Solution:" << endl;
+            x.display();
+        }
+        else
+        {
+            cerr << "Unique solution does not exist" << endl;
+        }
     }
     catch ( const LinearEquationSolverException& leqex )
     {

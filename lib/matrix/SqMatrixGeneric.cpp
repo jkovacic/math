@@ -372,23 +372,21 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
         // Inverse matrix is a solution (if it exists) of the equation:
         // this * inv = id
         math::SqMatrixGeneric<T> retVal;
-        math::LinearEquationSolver::solve<T>(*this, id, retVal);
+
+        const bool succ = math::LinearEquationSolver::solve<T>(*this, id, retVal);
+
+        // is *this an uninvertible matrix? (determinant()=0):
+        if ( false == succ )
+        {
+            throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
+        }
 
         return retVal;
     }
     catch ( const LinearEquationSolverException& leqex )
     {
-        // is *this an uninvertible matrix? (determinant()=0):
-        if ( math::LinearEquationSolverException::NO_UNIQUE_SOLUTION == leqex.error )
-        {
-            throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
-        }
-        else
-        {
-            // other than a case of non-invertible matrix, exception can only
-            // be thrown if allocation of memory failed.
-            throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
-        }
+        // This exception can only be thrown if allocation of memory failed.
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 }
 
