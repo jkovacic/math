@@ -87,6 +87,13 @@ namespace SampleStat
 
     template <typename F, typename I>
     F centralMoment(const std::vector<F>& x, const I& n) throw(StatisticsException);
+
+    template <typename F>
+    F skewness(const std::vector<F>& x) throw(StatisticsException);
+
+    template <typename F>
+    F kurtosis(const std::vector<F>& x) throw(StatisticsException);
+
 }  // namespace SampleStat
 
 }  // namespace math

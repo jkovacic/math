@@ -121,6 +121,10 @@ void statisticsTest()
            [1] 3466.479
            > moment(mtcars$mpg, order=4, central=FALSE)
            [1] 262350.3
+           > skewness(mtcars$mpg)*((n-1)/n)^(3/2)
+           [1] 0.610655
+           > kurtosis(mtcars$mpg)-3
+           [1] -0.2005332
          */
 
         cout << "Sum of all elements: " << SampleStat::sum(vmpgs) << " (expected: 642.9)" << endl;
@@ -131,6 +135,8 @@ void statisticsTest()
         cout << "Population standard deviation (w/o Bessel's correction): " << SampleStat::stdev(vmpgs, false) << " (expected: 5.93203)" << endl;
         cout << "4th central moment about the mean: " << SampleStat::centralMoment(vmpgs, 4) << " (expected: 3466.479)" << endl;
         cout << "4th moment about the origin: " << SampleStat::moment(vmpgs, 4) << " (expected: 262350.3)" << endl;
+        cout << "Sample skewness: " << SampleStat::skewness(vmpgs) << " (expected: 0.610655)" << endl;
+        cout << "Sample kurtosis: " << SampleStat::kurtosis(vmpgs) << " (expected: -0.2005332)" << endl;
 
 
         /*

@@ -35,6 +35,7 @@ limitations under the License.
 #include "omp/omp_coarse.h"
 #include "int_util/IntUtilGeneric.hpp"
 #include "int_util/IntExponentiatorGeneric.hpp"
+#include "util/NumericUtil.hpp"
 
 #include "exception/StatisticsException.hpp"
 
@@ -896,4 +897,92 @@ F math::SampleStat::centralMoment(const std::vector<F>& x, const I& n) throw(mat
     const F xbar = math::SampleStat::mean<F>(x);
 
     return math::SampleStat::moment<F>(x, n, xbar);
+}
+
+
+/**
+ * Sample skewness
+ *
+ * @param x - vector of observations
+ *
+ * @return skewness of observations in 'x'
+ *
+ * @throw StatisticsExcpetion if 'x' is empty or all observations are equal
+ */
+template <typename F>
+F math::SampleStat::skewness(const std::vector<F>& x) throw(math::StatisticsException)
+{
+    /*
+     * Sample skewness is defined as:
+     *
+     *           m3
+     *    b1 = ------
+     *          sd^3
+     *
+     * where 'm3' denotes the sample's 3rd central moment and
+     * and sd' denotes the sample'sstandard deviation, with Bessel's correction.
+     *
+     * More details:
+     * https://en.wikipedia.org/wiki/Skewness
+     */
+
+    const F m3 = math::SampleStat::centralMoment<F>(x, 3);
+    const F sd = math::SampleStat::stdev<F>(x, true);
+
+    const F sd3 = sd * sd * sd;
+
+    /*
+     * Prevent very unlikely division by zero
+     * (when all observations in 'x' are equal)
+     */
+    if ( true == math::NumericUtil::isZero<F>(sd3) )
+    {
+        throw math::StatisticsException(math::StatisticsException::UNDEFINED);
+    }
+
+    return m3 / sd3;
+}
+
+
+/**
+ * Sample excess kurtosis
+ *
+ * @param x - vector of observations
+ *
+ * @return kurtosis of observations in 'x'
+ *
+ * @throw StatisticsExcpetion if 'x' is empty or all observations are equal
+ */
+template <typename F>
+F math::SampleStat::kurtosis(const std::vector<F>& x) throw(math::StatisticsException)
+{
+    /*
+     * Sample's excess kurtosis is defined as:
+     *
+     *          m4
+     *   g2 = ------ - 3
+     *         m2^2
+     *
+     * where 'm4' denotes the 4th central moment and
+     * 'm2' denotes the 2nd central moment a.k.a.
+     * the sample's variance w/o Bessel's correction.
+     *
+     * More details:
+     * https://en.wikipedia.org/wiki/Kurtosis
+     */
+
+    const F m4 = math::SampleStat::centralMoment<F>(x, 4);
+    const F m2 = math::SampleStat::var<F>(x, false);
+    const F m2_2 = m2 * m2;
+
+    /*
+     * Prevent very unlikely division by zero
+     * (when all observations in 'x' are equal)
+     */
+    if ( true == math::NumericUtil::isZero<F>(m2_2) )
+    {
+        throw math::StatisticsException(math::StatisticsException::UNDEFINED);
+    }
+
+    return m4/m2_2 - static_cast<F>(3);
 }
