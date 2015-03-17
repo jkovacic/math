@@ -192,6 +192,14 @@ F math::SampleStat::sum(const std::vector<F>& x)
     }
 
     /*
+     * Note: the function 'moment' (for n=1 and about=0) could
+     * be used to obtain the sum. However, in a typical application
+     * 'sum' and 'mean' are expected to be called much more frequently
+     * than 'moment', hence an optimized "specialization" is implemented
+     * in this function.
+     */
+
+    /*
      * Coarse grained parallelism will be applied, i.e. each thread will be
      * assigned an (approximately) equally sized contiguous block of data
      * to be processed.
@@ -920,7 +928,7 @@ F math::SampleStat::skewness(const std::vector<F>& x) throw(math::StatisticsExce
      *          sd^3
      *
      * where 'm3' denotes the sample's 3rd central moment and
-     * and sd' denotes the sample'sstandard deviation, with Bessel's correction.
+     * and 'sd' denotes the sample'sstandard deviation, with Bessel's correction.
      *
      * More details:
      * https://en.wikipedia.org/wiki/Skewness
@@ -937,7 +945,8 @@ F math::SampleStat::skewness(const std::vector<F>& x) throw(math::StatisticsExce
      */
     if ( true == math::NumericUtil::isZero<F>(sd3) )
     {
-        throw math::StatisticsException(math::StatisticsException::UNDEFINED);
+        // By convention, skewness equals 0 in such cases
+        return static_cast<F>(0);
     }
 
     return m3 / sd3;
@@ -981,7 +990,8 @@ F math::SampleStat::kurtosis(const std::vector<F>& x) throw(math::StatisticsExce
      */
     if ( true == math::NumericUtil::isZero<F>(m2_2) )
     {
-        throw math::StatisticsException(math::StatisticsException::UNDEFINED);
+        // By convention, kurtosis equals 0 in such cases
+        return static_cast<F>(0);
     }
 
     return m4/m2_2 - static_cast<F>(3);
