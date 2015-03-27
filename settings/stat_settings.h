@@ -58,4 +58,16 @@ limitations under the License.
 #define STAT_OUTLIER_IQRS_DEN                 ( 2 )
 
 
+/**
+ * Default threshold for products n*p and n*(1-p)
+ * to determine whether a binomial distribution can be
+ * approximated as nearly normal.
+ *
+ * The parameter is specified by its numerator and denominator. This ensures
+ * more flexibility for generic (templated) statistical functions.
+ */
+#define STAT_BINOM_DIST_NORMAL_APPROX_NUM     ( 10 )
+#define STAT_BINOM_DIST_NORMAL_APPROX_DEN     ( 1 )
+
+
 #endif  /* _MATH_STAT_SETTINGS_H_ */
