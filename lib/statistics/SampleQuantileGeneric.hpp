@@ -118,6 +118,11 @@ public:
 
     F max() const;
 
+    F elem(
+           size_t n, 
+           bool largest = true
+         ) const throw(StatisticsException);
+
     bool isOutlier(
            const F& val,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),

@@ -553,6 +553,38 @@ F math::SampleQuantileGeneric<F>::max() const
 
 
 /**
+ * Returns sample's n.th largest or smallest element
+ * 
+ * @note 'n' assumes a zero-indexed array
+ * 
+ * @param n - desired index
+ * @param largest - if TRUE, the n.th largest element is returned, otherwise the n.th smallest (default: TRUE)
+ * 
+ * @return sample's n.th largest or smallest element, depending on 'largest'
+ * 
+ * @throw StatisticsException if 'n' is to large
+ */
+template <typename F>
+F math::SampleQuantileGeneric<F>::elem(
+             size_t n, 
+             bool largest
+           ) const throw(math::StatisticsException)
+{
+    if ( n >= this->m_N )
+    {
+        // TODO should INVALID_ARG be thrown instead?
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_TOO_SMALL);
+    }
+
+    // this->m_v is already sorted in ascending order
+
+    const size_t idx = ( false==largest ? n : (this->m_N - 1) - n );
+
+    return this->m_v.at(idx);
+}
+
+
+/**
  * Test if an observation is an outlier regarding the sample.
  * 
  * An observation is an outlier if it lies either below the first quartile - iqrs * IQR
@@ -645,12 +677,12 @@ void math::SampleQuantileGeneric<F>::outliers(
         throw math::StatisticsException(math::StatisticsException::OUT_OF_MEMORY);
     }
 }
-    
-    
+
+
 /**
  * Destructor
  */
-template<typename F>
+template <typename F>
 math::SampleQuantileGeneric<F>::~SampleQuantileGeneric()
 {
     // Vector's destructors would probably clean up this automatically.

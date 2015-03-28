@@ -585,6 +585,31 @@ void statisticsTest()
 
 
         /*
+         * R code to find the n.th largest or smallest element:
+         *
+             data(mtcars);
+
+             min(mtcars$mpg)
+             [1] 10.4
+
+             max(mtcars$mpg)
+             [1] 33.9
+
+             sort(mtcars$mpg, partial=4+1)[4+1]
+             [1] 14.7
+
+             sort(mtcars$mpg, partial=N-4)[N-4]
+             [1] 27.3
+         */
+
+        cout << "Min mpg: " << q.min() << " (expected 10.4)" << endl;
+        cout << "Max mpg: " << q.max() << " (expected 33.9)" << endl;
+        cout << "5th smallest mpg: " << q.elem(5-1, false) << " (expected: 14.7)" << endl;
+        cout << "5th largest mpg:  " << q.elem(5-1) << " (expected: 27.3)" << endl;
+        cout << endl;
+
+
+        /*
          * R code to find outliers:
          *
              q <- quantile(mtcars$mpg, c(0.25, 0.75), name=FALSE)
@@ -598,8 +623,6 @@ void statisticsTest()
              [1] 10.4 27.3 30.4 32.4 33.9
          */
 
-        cout << "Min mpg: " << q.min() << " (expected 10.4)" << endl;
-        cout << "Max mpg: " << q.max() << " (expected 33.9)" << endl;
         typename vector<double>::const_iterator mpgit;
         for ( mpgit=vmpgs.begin(); mpgit!=vmpgs.end(); ++ mpgit )
         {

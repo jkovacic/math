@@ -847,6 +847,9 @@ Exp.:	10.40	13.90	15.3312	17.5344	19.20	21.2125	22.80	30.40	33.90
 
 Min mpg: 10.4 (expected 10.4)
 Max mpg: 33.9 (expected 33.9)
+5th smallest mpg: 14.7 (expected: 14.7)
+5th largest mpg:  27.3 (expected: 27.3)
+
 21 in range [8.05, 30.175]: 0
 21 in range [8.05, 30.175]: 0
 22.8 in range [8.05, 30.175]: 0
