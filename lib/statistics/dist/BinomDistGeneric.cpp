@@ -401,7 +401,7 @@ F math::BinomDist::prob(
         // Handling a situation when k==n
         if ( k == n )
         {
-        	// P(X<=n) = 1
+            // P(X<=n) = 1
             if ( true==lowerTail && true==incl )
             {
                 return static_cast<F>(1);
