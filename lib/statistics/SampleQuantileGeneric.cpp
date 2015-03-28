@@ -555,30 +555,36 @@ F math::SampleQuantileGeneric<F>::max() const
 /**
  * Returns sample's n.th largest or smallest element
  * 
- * @note 'n' assumes a zero-indexed array
+ * @note Index origin depends on 'zerobase'
  * 
  * @param n - desired index
  * @param largest - if TRUE, the n.th largest element is returned, otherwise the n.th smallest (default: TRUE)
+ * @param zerobase - does 'n' denote a zero-based index (default: TRUE)
  * 
  * @return sample's n.th largest or smallest element, depending on 'largest'
  * 
- * @throw StatisticsException if 'n' is to large
+ * @throw StatisticsException if 'n' is invalid
  */
 template <typename F>
 F math::SampleQuantileGeneric<F>::elem(
              size_t n, 
-             bool largest
+             bool largest,
+             bool zerobase
            ) const throw(math::StatisticsException)
 {
-    if ( n >= this->m_N )
+    // sanity check
+    if ( (true==zerobase && n>=this->m_N) ||
+         (false==zerobase && (n<=0 || n>this->m_N) ) )
     {
-        // TODO should INVALID_ARG be thrown instead?
-        throw math::StatisticsException(math::StatisticsException::SAMPLE_TOO_SMALL);
+        throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
     }
+
+    const size_t nn = ( true==zerobase ? n : n-1 );
+
 
     // this->m_v is already sorted in ascending order
 
-    const size_t idx = ( false==largest ? n : (this->m_N - 1) - n );
+    const size_t idx = ( false==largest ? nn : (this->m_N - 1) - nn );
 
     return this->m_v.at(idx);
 }

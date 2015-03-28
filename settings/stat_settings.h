@@ -59,6 +59,12 @@ limitations under the License.
 
 
 /**
+ * 
+ */
+#define STAT_DEFAULT_ZERO_BASE                true
+
+
+/**
  * Default threshold for products n*p and n*(1-p)
  * to determine whether a binomial distribution can be
  * approximated as nearly normal.

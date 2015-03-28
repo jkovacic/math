@@ -120,7 +120,8 @@ public:
 
     F elem(
            size_t n, 
-           bool largest = true
+           bool largest = true,
+           bool zerobase = STAT_DEFAULT_ZERO_BASE
          ) const throw(StatisticsException);
 
     bool isOutlier(
