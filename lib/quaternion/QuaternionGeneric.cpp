@@ -478,50 +478,8 @@ F math::QuaternionGeneric<F>::norm() const throw (math::QuaternionException)
      *   ||(a+b*i+c*j+d*k)|| = sqrt(a*a + b*b + c*c + d*d)
      */
 
-    /*
-     * This operation is only supported for T=float, T=double or T=long double.
-     * Specialized implementation is provided below for these three types.
-     *
-     * For any other type, the operation is (probably) not supported
-     * as sqrt may not be defined for the type. In such a case throw an
-     * exception immediately.
-     */
-
-    throw math::QuaternionException(math::QuaternionException::UNSUPPORTED_TYPE);
-
-    // will never execute, but some compilers may produce a warning if nothing is returned
-    return static_cast<F>(0);
+    return std::sqrt( this->__sqsum() );;
 }
-
-
-/*
- * Specialization of norm() for float, double and long double.
- * All three specializations are very similar and only differ in types of the
- * output value and internal variables.
- * For easier maintainability, the specialization will be implemented
- * only once using a parameterized #define.
- */
-
-#define _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(FD) \
-template<> \
-FD math::QuaternionGeneric<FD>::norm() const throw (math::QuaternionException) \
-{ \
-    return std::sqrt(__sqsum()); \
-}
-// end of #define
-
-// the actual specialization for float:
-_MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(float)
-
-// for double:
-_MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(double)
-
-// and for long double:
-_MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(long double)
-
-// definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM not needed anymore, #undef it
-#undef _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM
-
 
 
 /**
@@ -529,7 +487,7 @@ _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM(long double)
  *
  * @return U(this)
  *
- * @throw QuaternionException if operation is not supported for type T or if 'this' is a zero-quaternion
+ * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
 math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math::QuaternionException)
@@ -544,54 +502,15 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math:
      * A unit quaternion for the zero quaternion (norm=0) cannot be calculated.
      */
 
-    /*
-     * This operation is only supported for T=float, T=double or T=long double
-     * Specialized implementation is provided below for these three types.
-     *
-     * For any other type, the operation is (probably) not supported
-     * as norm may not be defined for the type. In such a case throw an
-     * exception immediately.
-     */
-    throw math::QuaternionException(math::QuaternionException::UNSUPPORTED_TYPE);
+    const F norm = this->norm();
 
-    // will never execute, but some compilers may report a warning if nothing is returned
-    return math::QuaternionGeneric<F>();
+    if ( true == math::NumericUtil::isZero<F>(norm) )
+    {
+        throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
+    }
+
+    return ( *this * (static_cast<F>(1)/norm) );
 }
-
-/*
- * Specialization of unit() for float, double and long double.
- * All three specializations are very similar and only differ in types of the
- * output value and internal variables.
- * For easier maintainability, the specialization will be implemented
- * only once using a parameterized #define.
- */
-
-
-#define _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(FD) \
-template<> \
-math::QuaternionGeneric<FD> math::QuaternionGeneric<FD>::unit() const throw (math::QuaternionException) \
-{ \
-    const FD norm = this->norm(); \
-    if ( true == math::NumericUtil::isZero<FD>(norm) ) \
-    { \
-        throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO); \
-    } \
-    return ( *this * (static_cast<FD>(1)/norm) ); \
-}
-// end of #define
-
-// specialization for float:
-_MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(float)
-
-// for double:
-_MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(double)
-
-// and for long double:
-_MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT(long double)
-
-// definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT not needed anymore, #undef it
-#undef _MATH_QUATERNIONGENERIC_SPECIALIZED_UNIT
-
 
 
 /**

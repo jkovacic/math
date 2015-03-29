@@ -186,14 +186,6 @@ public:
 };   // class QuaternionGeneric
 
 
-// Declaration of specialized methods inside the name space declaration
-// is essential if implemented elsewhere:
-template<> float QuaternionGeneric<float>::norm() const throw (QuaternionException);
-template<> double QuaternionGeneric<double>::norm() const throw (QuaternionException);
-template<> long double QuaternionGeneric<long double>::norm() const throw (QuaternionException);
-template<> QuaternionGeneric<float> QuaternionGeneric<float>::unit() const throw (QuaternionException);
-template<> QuaternionGeneric<double> QuaternionGeneric<double>::unit() const throw (QuaternionException);
-template<> QuaternionGeneric<long double> QuaternionGeneric<long double>::unit() const throw (QuaternionException);
 
 // Quaternions with elements of types float, double and long double
 // make most sense so the following three types are predefined:

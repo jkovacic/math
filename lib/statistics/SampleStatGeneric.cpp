@@ -449,61 +449,9 @@ F math::SampleStat::stdev(const std::vector<F>& x, size_t df_sub) throw(math::St
      * of the variance.
      */
 
-    /*
-     *  This operation is only supported for T=float, T=double or T=long double.
-     *  Specialized implementation is provided below for these three types.
-     *
-     *  For any other type, the operation is (probably) not supported
-     *  as sqrt may not be defined for the type. In such a case throw an
-     *  exception immediately.
-     */
-
-    throw math::StatisticsException(math::StatisticsException::UNSUPPORTED_TYPE);
-
-    // will never execute, but some compilers may throw a warning if nothing is returned
-    return static_cast<F>(0);
+    return std::sqrt( math::SampleStat::var<F>(x, df_sub) );
 }
 
-
-
-/*
- * Specialization of stdev() for float, double and long double.
- * All three specializations are very similar and only differ in types of the
- * returned  value.
- * For easier maintainability, the specialization will be implemented
- * only once using a parameterized #define.
- * 
- * Note: specializations of templated functions must be implemented inside
- *       their corresponding namespace(s).
- */
-namespace math
-{
-
-namespace SampleStat
-{
-
-#define _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(FD) \
-template<> \
-FD stdev(const std::vector<FD>& x, size_t df_sub) throw (math::StatisticsException) \
-{ \
-    return std::sqrt( math::SampleStat::var<FD>(x, df_sub) ); \
-}
-// end of #define
-
-// the actual specialization for float:
-_MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(float)
-
-// for double:
-_MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(double)
-
-// and for long double:
-_MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV(long double)
-
-// definition of _MATH_QUATERNIONGENERIC_SPECIALIZED_NORM not needed anymore, #undef it
-#undef _MATH_SAMPLESTATGENERIC_SPECIALIZED_STDEV
-
-}  // namespace SampleStat
-}  // namespace math
 
 /**
  * Covariance of two equally sized samples.
