@@ -47,7 +47,6 @@ struct StatisticsException : public IMathException
         SAMPLE_EMPTY,                   /// empty sample
         SAMPLE_TOO_SMALL,               /// sample too small
         DF_SUBTRAHEND_TOO_LARGE,        /// DF subtrahend too large
-        UNSUPPORTED_TYPE,               /// operation not supported for this type
         UNEQUAL_SAMPLE_SIZES,           /// samples' sizes are not equal
         OUT_OF_MEMORY,                  /// allocation of memory failed
         INVALID_PROBABILTY,             /// probability is invalid

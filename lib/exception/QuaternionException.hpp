@@ -41,7 +41,6 @@ struct QuaternionException : public IMathException
 {
     /// Enum with possible error codes
     enum err_codes {
-        UNSUPPORTED_TYPE,           /// Operation not supported for this type
         DIVIDE_BY_ZERO              /// Attempt of division by zero
     };
 

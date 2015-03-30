@@ -55,9 +55,6 @@ void math::StatisticsException::what(std::ostream& str) const
         case DF_SUBTRAHEND_TOO_LARGE :
             str << "DF subtrahend exceeds the sample's size.";
             break;
-        case UNSUPPORTED_TYPE :
-            str << "Operation is not supported for the specified type T.";
-            break;
         case UNEQUAL_SAMPLE_SIZES :
             str << "Sample sizes are not equal.";
             break;

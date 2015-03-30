@@ -46,9 +46,6 @@ void math::QuaternionException::what(std::ostream& str) const
 {
     switch (this->error)
     {
-        case UNSUPPORTED_TYPE:
-            str << "The operation is not supported for the specified type T";
-            break;
         case DIVIDE_BY_ZERO:
             str << "Attempt of division by zero.";
             break;
