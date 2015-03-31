@@ -531,6 +531,88 @@ F math::SampleQuantileGeneric<F>::iqr(math::EQntlType::type method) const
 
 
 /**
+ * Empirical cumulative distribution function.
+ * Returns a proportion of all sample's elements that
+ * are less than or equal to 't'.
+ *  
+ * @param t - input value
+ * 
+ * @return empirical cumulative distribution function for 't' 
+ */
+template <typename F>
+F math::SampleQuantileGeneric<F>::ecdf(const F& t) const
+{
+    const size_t WMAX = 5;
+
+    const size_t& N = this->m_N;
+    const std::vector<F>& v = this->m_v;
+
+    // Handling two "corner cases"
+    if ( t < v.at(0) )
+    {
+        return static_cast<F>(0);
+    }
+
+    if ( t > v.at(N-1) )
+    {
+        return static_cast<F>(1);
+    }
+    
+    size_t k = v.at(N / 2);
+    size_t kl, ku;
+
+    // Determine the initial search interval, either the lower or the upper half
+    if ( v.at(k) < t )
+    {
+        kl = k;
+        ku = N - 1;
+    }
+    else
+    {
+        kl = 0;
+        ku = k;
+    }
+
+    /*
+     * Narrow the search interval using the bisection method.
+     * 
+     * Note: as the final index will be further adjusted (and this
+     * operation is very fast), it is not necessary to narrow down the
+     * search interval to the width of 1.
+     */
+    while ( (ku-kl) > WMAX )
+    {
+        k = (ku + kl) / 2;
+
+        if ( v.at(k) < t  )
+        {
+            kl = k;
+        }
+        else
+        {
+            ku = k;
+        }
+    }
+
+    /*
+     * Final adjustment of the index 'kl' that properly handles the
+     * situation when several sample's values are equal to 't'.
+     * As 'kl' is guaranteed to be less than than 't' and already
+     * reasonably close to the final value, it is sensible to iteratively
+     * increment it by 1.
+     */
+    for ( ; kl<N && v.at(kl)<=t; ++kl );
+
+    /*
+     * In zero based indexed arrays, the adjusted 'kl' will
+     * denote the number of elements that are less than or equal to 't'
+     */
+
+    return static_cast<F>(kl) / static_cast<F>(N);
+}
+
+
+/**
  * @return minimum observation of the sample
  */
 template <typename F>

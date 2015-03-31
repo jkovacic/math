@@ -824,6 +824,8 @@ Median: 19.2 (expected: 19.2)
 3rd quartile: 22.8 (expected: 22.800)
 IQR: 7.375 (expected: 7.375)
 63th percentile: 21.212 (expected: 21.212)
+ecdf(25):   0.8125 (expected: 0.8125)
+ecdf(14.5): 0.125 (expected: 0.125)
 
 Test of various quantile methods:
 R1:	10.4	14.3	15.2	17.3	19.2	21	22.8	30.4	33.9

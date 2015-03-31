@@ -519,14 +519,25 @@ void statisticsTest()
            data(mtcars)
            median(mtcars$mpg)
            [1] 19.2
+
            quantile(mtcars$mpg, c(0.25, 0.75))
               25%    75%
            15.425 22.800
+
            IQR(mtcars$mpg)
            [1] 7.375
+
            quantile(mtcars$mpg, 0.63)
               63%
            21.212
+
+         * empirical cumulative distribution function:
+         * 
+           sum(mtcars$mpg <= 25) / length(mtcars$mpg)
+           [1] 0.8125
+
+           sum(mtcars$mpg <= 14.5) / length(mtcars$mpg)
+           [1] 0.125
          */
 
         SampleQuantile q(vmpgs);
@@ -535,6 +546,8 @@ void statisticsTest()
         cout << "3rd quartile: " << q.quantile(3, 4) << " (expected: 22.800)" << endl;
         cout << "IQR: " << q.iqr() << " (expected: 7.375)" << endl;
         cout << "63th percentile: " << q.qntl(0.63) << " (expected: 21.212)" << endl;
+        cout << "ecdf(25):   " << q.ecdf(25.0) << " (expected: 0.8125)" << endl;
+        cout << "ecdf(14.5): " << q.ecdf(14.5) << " (expected: 0.125)" << endl;
 
 
         const double probs[] = { 0.01, 0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.9, 0.99 };

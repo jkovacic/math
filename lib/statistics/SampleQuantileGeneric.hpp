@@ -114,6 +114,8 @@ public:
 
     F iqr(EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
 
+    F ecdf(const F& t) const;
+
     F min() const;
 
     F max() const;
