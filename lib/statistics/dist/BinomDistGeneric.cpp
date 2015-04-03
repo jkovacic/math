@@ -54,7 +54,7 @@ namespace math {  namespace BinomDist {  namespace __private {
 /*
  * Checks validity of given parameters.
  *
- * 'n' and'k' must be non-negative and 'k' must not
+ * 'n' and 'k' must be non-negative and 'k' must not
  * be greater than 'n', 'p' must be between 0 and 1.
  *
  * @param k - number of successes to check
