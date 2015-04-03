@@ -479,7 +479,7 @@ F math::BinomDist::prob(
  * @param smallest - see above (default: true)
  * @param lowerTail - see above (default: true)
  *
- * @return quantile for the given 'prob', depending on 'smallest' and 'lowerTail'. See above for details
+ * @return quantile for the given 'prob', depending on 'smallest' and 'lowerTail'. See above for details.
  *
  * @throw StatisticsException if any argument is invalid
  */
