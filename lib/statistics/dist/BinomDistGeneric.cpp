@@ -302,7 +302,7 @@ F math::BinomDist::probInt(
 /**
  * Binomial distribution's cumulative distribution function (cdf),
  * denoting the probability, that the number of successes is
- * less than (or greater, than, depending on 'lowerTail' and 'incl') 'k'.
+ * less than (or greater than, depending on 'lowerTail' and 'incl') 'k'.
  *
  * Depending on both parameters, the following probability is returned:
  *
