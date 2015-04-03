@@ -254,7 +254,7 @@ F math::BinomDist::pmf(
  *       "rounded" to 0.
  *
  * @param a - lower number of successes
- * @param b - higher number of successes
+ * @param b - upper number of successes
  * @param n - number of trials
  * @param p - success probability (default: 0.5)
  * @param incLower - should the lower limit be included into the probability (default: TRUE)
