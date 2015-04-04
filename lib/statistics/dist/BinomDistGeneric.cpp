@@ -465,7 +465,7 @@ F math::BinomDist::prob(
  * it returns the largest 'k' that satisfies:
  *    sum(i=0, k, pmf(i, n, p)) <= prob
  *
- * If 'lowerTail' equals FALSE and 'smallest equals TRUE,
+ * If 'lowerTail' equals FALSE and 'smallest' equals TRUE,
  * it returns the smallest 'k' that satisfies:
  *    sum(i=k, n, pmf(i, n, p)) <= prob
  *
