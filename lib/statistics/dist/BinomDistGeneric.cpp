@@ -459,19 +459,19 @@ F math::BinomDist::prob(
  *
  * If 'lowerTail' equals TRUE, and 'smallest' equals TRUE,
  * it returns the smallest 'k' that satisfies:
- *    sum(i=0, k, pmf(k, n, p)) >= prob
+ *    sum(i=0, k, pmf(i, n, p)) >= prob
  *
  * If 'lowerTail' equals TRUE and 'smallest' equals FALSE,
  * it returns the largest 'k' that satisfies:
- *    sum(i=0, k, pmf(k, n, p)) <= prob
+ *    sum(i=0, k, pmf(i, n, p)) <= prob
  *
  * If 'lowerTail' equals FALSE and 'smallest equals TRUE,
  * it returns the smallest 'k' that satisfies:
- *    sum(i=k, n, pmf(k, n, p)) <= prob
+ *    sum(i=k, n, pmf(i, n, p)) <= prob
  *
  * If 'lowerTail' equals FALSE and 'smallest' equals FALSE,
  * it returns the largest 'k' that satisfies:
- *    sum(i=k, n, pmf(k, n, p)) >= prob
+ *    sum(i=k, n, pmf(i, n, p)) >= prob
  *
  * @param prob - probability (must be greater than 0 and less than 1)
  * @param n - number of trials
