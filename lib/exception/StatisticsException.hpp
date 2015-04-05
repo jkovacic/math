@@ -56,6 +56,7 @@ struct StatisticsException : public IMathException
         INVALID_ARG,                    /// invalid input argument
         UNDEFINED,                      /// operation is not defined for the given combination of arguments
         OPERATION_FAILED,               /// unable to perform an operation
+        INTEGER_OUT_OF_RANGE,           /// the solution is out of integer range 
     };
 
     err_codes error;    /// type of an error

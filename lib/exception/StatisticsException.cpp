@@ -82,6 +82,9 @@ void math::StatisticsException::what(std::ostream& str) const
         case OPERATION_FAILED :
             str << "Unable to perform an operation.";
             break;
+        case INTEGER_OUT_OF_RANGE :
+            str << "The solution is out of integer range.";
+            break;
 
         default:
             // Should not occur but handle it anyway.

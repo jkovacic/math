@@ -39,6 +39,7 @@ limitations under the License.
 #include "FDistGeneric.h"
 #include "ContUniformDistGeneric.h"
 #include "BinomDistGeneric.h"
+#include "PoissonDistGeneric.h"
 #include "StatisticsException.h"
 
 using namespace std;
@@ -484,35 +485,110 @@ void statisticsTest()
            [1] 7
          */
 
-       cout << "Binom(5, 0.6): pmf at k=2:   " << BinomDist::pmf(2, 5, 0.6) << " (expected: 0.2304)" << endl;
-       cout << "Binom(5, 0.6): exp. value:   " << BinomDist::mean(5, 0.6) << " (expected: 3)" << endl;
-       cout << "Binom(5, 0.6): variance:     " << BinomDist::var(5, 0.6) << " (expected: 1.2)" << endl;
-       cout << "Binom(5, 0.6): std. dev.:    " << BinomDist::stdev(5, 0.6) << " (expected: 1.095445)" << endl;
-       cout << "Binom(20, 0.6): normal approx: " << (BinomDist::normalApprox(20, 0.6) ? "true" : "false") << " (expected: FALSE)" << endl;
-       cout << "Binom(30, 0.6): normal approx: " << (BinomDist::normalApprox(30, 0.6) ? "true" : "false") << " (expected: TRUE)" << endl;
-       cout << "Binom(10, 0.6): P(X<=7):     " << BinomDist::prob(7, 10, 0.6) << " (expected: 0.8327102)" << endl;
-       cout << "Binom(10, 0.6): P(X<7):      " << BinomDist::prob(7, 10, 0.6, false) << " (expected: 0.6177194)" << endl;
-       cout << "Binom(10, 0.6): P(X>=6):     " << BinomDist::prob(6, 10, 0.6, true, false) << " (expected: 0.6331033)" << endl;
-       cout << "Binom(10, 0.6): P(X>6):      " << BinomDist::prob(6, 10, 0.6, false, false) << " (expected: 0.3822806)" << endl;
-       cout << "Binom(10, 0.6): P(X<0):      " << BinomDist::prob(0, 10, 0.6, false) << " (expected: 0)" << endl;
-       cout << "Binom(10, 0.6): P(X<=0):     " << BinomDist::prob(0, 10, 0.6) << " (expected: 0.0001048576)" << endl;
-       cout << "Binom(10, 0.6): P(X>0):      " << BinomDist::prob(0, 10, 0.6, false, false) << " (expected: 0.9998951)" << endl;
-       cout << "Binom(10, 0.6): P(X>=0):     " << BinomDist::prob(0, 10, 0.6, true, false) << " (expected: 1)" << endl;
-       cout << "Binom(10, 0.6): P(X<10):     " << BinomDist::prob(10, 10, 0.6, false) << " (expected: 0.9939534)" << endl;
-       cout << "Binom(10, 0.6): P(X<=10):    " << BinomDist::prob(10, 10, 0.6) << " (expected: 1)" << endl;
-       cout << "Binom(10, 0.6): P(X>10):     " << BinomDist::prob(10, 10, 0.6, false, false) << " (expected: 0)" << endl;
-       cout << "Binom(10, 0.6): P(X>=10):    " << BinomDist::prob(10, 10, 0.6, true, false) << " (expected: 0.006046618)" << endl;
-       cout << "Binom(10, 0.6): P(5<=X<=7):  " << BinomDist::probInt(5, 7, 10, 0.6) << " (expected: 0.6664716)" << endl;
-       cout << "Binom(10, 0.6): P(5<X<=7):   " << BinomDist::probInt(5, 7, 10, 0.6, false) << " (expected: 0.4658135)" << endl;
-       cout << "Binom(10, 0.6): P(4<=X<9):   " << BinomDist::probInt(4, 9, 10, 0.6, true, false) << " ( expected: 0.8988807)" << endl;
-       cout << "Binom(10, 0.6): P(3<X<8):    " << BinomDist::probInt(3, 8, 10, 0.6, false, false) << " (expected: 0.7779484)" << endl;
-       cout << "Binom(10, 0.6): q(p<0.4):    " << BinomDist::quant(0.4, 10, 0.6) << " (expected: 6)" << endl;
-       cout << "Binom(10, 0.6): q(p<=0.15):  " << BinomDist::quant(0.15, 10, 0.6, false) << " (expected: 3)" << endl;
-       cout << "Binom(10, 0.6): q(p>0.3):    " << BinomDist::quant(0.3, 10, 0.6, true, false) << " (expected: 8)" << endl;
-       cout << "Binom(10, 0.6): q(p>=0.3):   " << BinomDist::quant(0.3, 10, 0.6, false, false) << " (expected: 7)" << endl;
-       cout << endl;
+        cout << "Binom(5, 0.6): pmf at k=2:   " << BinomDist::pmf(2, 5, 0.6) << " (expected: 0.2304)" << endl;
+        cout << "Binom(5, 0.6): exp. value:   " << BinomDist::mean(5, 0.6) << " (expected: 3)" << endl;
+        cout << "Binom(5, 0.6): variance:     " << BinomDist::var(5, 0.6) << " (expected: 1.2)" << endl;
+        cout << "Binom(5, 0.6): std. dev.:    " << BinomDist::stdev(5, 0.6) << " (expected: 1.095445)" << endl;
+        cout << "Binom(20, 0.6): normal approx: " << (BinomDist::normalApprox(20, 0.6) ? "true" : "false") << " (expected: FALSE)" << endl;
+        cout << "Binom(30, 0.6): normal approx: " << (BinomDist::normalApprox(30, 0.6) ? "true" : "false") << " (expected: TRUE)" << endl;
+        cout << "Binom(10, 0.6): P(X<=7):     " << BinomDist::prob(7, 10, 0.6) << " (expected: 0.8327102)" << endl;
+        cout << "Binom(10, 0.6): P(X<7):      " << BinomDist::prob(7, 10, 0.6, false) << " (expected: 0.6177194)" << endl;
+        cout << "Binom(10, 0.6): P(X>=6):     " << BinomDist::prob(6, 10, 0.6, true, false) << " (expected: 0.6331033)" << endl;
+        cout << "Binom(10, 0.6): P(X>6):      " << BinomDist::prob(6, 10, 0.6, false, false) << " (expected: 0.3822806)" << endl;
+        cout << "Binom(10, 0.6): P(X<0):      " << BinomDist::prob(0, 10, 0.6, false) << " (expected: 0)" << endl;
+        cout << "Binom(10, 0.6): P(X<=0):     " << BinomDist::prob(0, 10, 0.6) << " (expected: 0.0001048576)" << endl;
+        cout << "Binom(10, 0.6): P(X>0):      " << BinomDist::prob(0, 10, 0.6, false, false) << " (expected: 0.9998951)" << endl;
+        cout << "Binom(10, 0.6): P(X>=0):     " << BinomDist::prob(0, 10, 0.6, true, false) << " (expected: 1)" << endl;
+        cout << "Binom(10, 0.6): P(X<10):     " << BinomDist::prob(10, 10, 0.6, false) << " (expected: 0.9939534)" << endl;
+        cout << "Binom(10, 0.6): P(X<=10):    " << BinomDist::prob(10, 10, 0.6) << " (expected: 1)" << endl;
+        cout << "Binom(10, 0.6): P(X>10):     " << BinomDist::prob(10, 10, 0.6, false, false) << " (expected: 0)" << endl;
+        cout << "Binom(10, 0.6): P(X>=10):    " << BinomDist::prob(10, 10, 0.6, true, false) << " (expected: 0.006046618)" << endl;
+        cout << "Binom(10, 0.6): P(5<=X<=7):  " << BinomDist::probInt(5, 7, 10, 0.6) << " (expected: 0.6664716)" << endl;
+        cout << "Binom(10, 0.6): P(5<X<=7):   " << BinomDist::probInt(5, 7, 10, 0.6, false) << " (expected: 0.4658135)" << endl;
+        cout << "Binom(10, 0.6): P(4<=X<9):   " << BinomDist::probInt(4, 9, 10, 0.6, true, false) << " ( expected: 0.8988807)" << endl;
+        cout << "Binom(10, 0.6): P(3<X<8):    " << BinomDist::probInt(3, 8, 10, 0.6, false, false) << " (expected: 0.7779484)" << endl;
+        cout << "Binom(10, 0.6): q(p<0.4):    " << BinomDist::quant(0.4, 10, 0.6) << " (expected: 6)" << endl;
+        cout << "Binom(10, 0.6): q(p<=0.15):  " << BinomDist::quant(0.15, 10, 0.6, false) << " (expected: 3)" << endl;
+        cout << "Binom(10, 0.6): q(p>0.3):    " << BinomDist::quant(0.3, 10, 0.6, true, false) << " (expected: 8)" << endl;
+        cout << "Binom(10, 0.6): q(p>=0.3):   " << BinomDist::quant(0.3, 10, 0.6, false, false) << " (expected: 7)" << endl;
+        cout << endl;
 
 
+        /*
+         * R code to test Poisson distribution related functions:
+         * 
+           dpois(3, lambda=4)
+           [1] 0.1953668
+
+           ppois(3, lambda=4)
+           [1] 0.4334701
+
+           ppois(5-1, lambda=4)
+           [1] 0.6288369
+
+           ppois(6-1, lambda=4, lower.tail=FALSE)
+           [1] 0.2148696
+
+           ppois(2, lambda=4, lower.tail=FALSE)
+           [1] 0.7618967
+
+           ppois(0, lambda=4)
+           [1] 0.01831564
+         
+           ppois(0-1, lambda=4)
+           [1] 0
+
+           ppois(0-1, lambda=4, lower.tail=FALSE)
+           [1] 1
+
+           ppois(0, lambda=4, lower.tail=FALSE)
+           [1] 0.9816844
+
+           ppois(7, lambda=4) - ppois(5-1, lambda=4)
+           [1] 0.3200294
+
+           ppois(7, lambda=4) - ppois(5, lambda=4)
+           [1] 0.163736
+
+           ppois(7-1, lambda=4) - ppois(5-1, lambda=4)
+           [1] 0.2604891
+
+           ppois(7-1, lambda=4) - ppois(5, lambda=4)
+           [1] 0.1041956
+
+           qpois(0.3, lambda=4)
+           [1] 3
+
+           qpois(0.7, lambda=4) - 1
+           [1] 4
+
+           qpois(0.4, lambda=4, lower.tail=FALSE) + 1
+           [1] 5
+
+           qpois(0.6, lambda=4, lower.tail=FALSE)
+           [1] 3
+         */
+
+        cout << "Poisson(4): pmf at k=3: " << PoissonDist::pmf(3, 4.0) << " (expected: 0.1953668)" << endl;
+        cout << "Poisson(4): P(X<=3):    " << PoissonDist::prob(3, 4.0) << " (expected: 0.4334701)" << endl;
+        cout << "Poisson(4): P(X<5):     " << PoissonDist::prob(5, 4.0, false) << " (expected: 0.6288369)" << endl;
+        cout << "Poisson(4): P(X>=6):    " << PoissonDist::prob(6, 4.0, true, false) << " (expected: 0.2148696)" << endl;
+        cout << "Poisson(4): P(X>2):     " << PoissonDist::prob(2, 4.0, false, false) << " (expected: 0.7618967)" << endl;
+        cout << "Poisson(4): P(X<=0):    " << PoissonDist::prob(0, 4.0) << " (expected: 0.01831564)" << endl;
+        cout << "Poisson(4): P(X<0):     " << PoissonDist::prob(0, 4.0, false) << " (expected: 0)" << endl;
+        cout << "Poisson(4): P(X>=0):    " << PoissonDist::prob(0, 4.0, true, false) << " (expected: 1)" << endl;
+        cout << "Poisson(4): P(X>0):     " << PoissonDist::prob(0, 4.0, false, false) << " (expected: 0.9816844)" << endl;
+        cout << "Poisson(4): P(5<=X<=7): " << PoissonDist::probInt(5, 7, 4.0) << " (expected: 0.3200294)" << endl;
+        cout << "Poisson(4): P(5<X<=7):  " << PoissonDist::probInt(5, 7, 4.0, false) << " (expected: 0.163736)" << endl;
+        cout << "Poisson(4): P(5<=X<7):  " << PoissonDist::probInt(5, 7, 4.0, true, false) << " (expected: 0.2604891)" << endl;
+        cout << "Poisson(4): P(5<X<7):   " << PoissonDist::probInt(5, 7, 4.0, false, false) << " (expected: 0.1041956)" << endl;
+        cout << "Poisson(4): q(p<0.3):   " << PoissonDist::quant<double, int>(0.3, 4.0) << " (expected: 3)" << endl;
+        cout << "Poisson(4): q(p<=0.7):  " << PoissonDist::quant<double, int>(0.7, 4.0, false) << " (expected: 4)" << endl;
+        cout << "Poisson(4): q(p>0.4):   " << PoissonDist::quant<double, int>(0.4, 4.0, true, false) << " (expected: 5)" << endl;
+        cout << "Poisson(4): q(p>0.6):   " << PoissonDist::quant<double, int>(0.6, 4.0, false, false) << " (expected: 3)" << endl;
+        cout << endl;
+
+       
         /*
          * R code to perform basic unit test of quantiles:
          *
