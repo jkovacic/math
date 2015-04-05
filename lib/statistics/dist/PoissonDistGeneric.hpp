@@ -28,10 +28,9 @@ limitations under the License.
  */
 
 #ifndef _MATH_POISSONDISTGENERIC_HPP_
-#define	_MATH_POISSONDISTGENERIC_HPP_
+#define _MATH_POISSONDISTGENERIC_HPP_
 
 
-#include "../settings/stat_settings.h"
 #include "exception/StatisticsException.hpp"
 
 

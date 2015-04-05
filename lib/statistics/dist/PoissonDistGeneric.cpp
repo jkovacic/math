@@ -69,13 +69,13 @@ void __checkParams(const I& k, const F& lambda) throw(math::StatisticsException)
      */
 
     if ( true == math::IntUtil::isNegative<I>(k) ||
-         lambda < static_cast<F>(0) )
+         lambda < math::NumericUtil::getEPS<F>() )
     {
         throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
     }
 }
 
-}}}
+}}}  // namespace math::PoissonDist::__private
 
 
 
@@ -113,7 +113,7 @@ F math::PoissonDist::pmf(
      * beyond the I's range, hence it is more convenient to apply the following
      * relation between factorial and gamma function:
      * 
-     *   k! = gamma(k+1
+     *   k! = gamma(k+1)
      */
 
     return math::IntExponentiator::power<F, I>(lambda, k) *

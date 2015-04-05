@@ -28,7 +28,7 @@ limitations under the License.
 
 
 #ifndef _MATH_POISSONDISTGENERIC_H_
-#define	_MATH_POISSONDISTGENERIC_H_
+#define _MATH_POISSONDISTGENERIC_H_
 
 #include "statistics/dist/PoissonDistGeneric.hpp"
 
