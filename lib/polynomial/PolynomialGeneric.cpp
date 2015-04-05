@@ -112,7 +112,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const math::PolynomialGeneric<F>& 
  * @throw PolynomialException if input arguments are invalid or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>::PolynomialGeneric(const F* carray, size_t n) throw (math::PolynomialException)
+math::PolynomialGeneric<F>::PolynomialGeneric(const F* carray, const size_t n) throw (math::PolynomialException)
 {
     // sanity check
     if ( NULL==carray || n<=0 )
@@ -152,7 +152,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const F* carray, size_t n) throw (
  * @throw PolynomialException if 'n' is invalid or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>::PolynomialGeneric(bool ignored, size_t n) throw (math::PolynomialException)
+math::PolynomialGeneric<F>::PolynomialGeneric(const bool ignored, const size_t n) throw (math::PolynomialException)
 {
     // sanity check:
     if ( n<=0 )
@@ -339,7 +339,7 @@ void math::PolynomialGeneric<F>::getDesc(std::vector<F>& vec) const throw (math:
  * @return coefficient of the 'pos'-degree term or zero if pos is greater than degree of the polynomial
  */
 template <typename F>
-F math::PolynomialGeneric<F>::get(size_t pos) const
+F math::PolynomialGeneric<F>::get(const size_t pos) const
 {
     // TODO does it make any sense checking if 'pos' exceeds vector:max_size()???
     
@@ -463,7 +463,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::setDesc(const std::vecto
  * @throw PolynomialException if allocation of memory (possible when 'pos' exceeds the polynomial's degree) fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(size_t pos, const F& c) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const size_t pos, const F& c) throw (math::PolynomialException)
 {
     /*
      * If 'pos' exceeds the polynomial's degree, the appropriate number of zero-coefficients
@@ -513,7 +513,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(size_t pos, const F&
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(size_t pos, const F& c) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(const size_t pos, const F& c) throw (math::PolynomialException)
 {
     const size_t N = this->coef.size();
 
@@ -576,7 +576,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(size_t pos, const
  * @return reference to itself
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove(size_t pos)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove(const size_t pos)
 {
     // Nothing to do if 'pos' exceeds the polynomial's degree
     if ( pos >= this->coef.size() || this->coef.size() <= 1 )
@@ -758,7 +758,7 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::integ(const F& c) const t
  * their quotient an remainder.
  *
  * @note If 'q' or 'rem' is a NULL pointer, it will not be filled by
- *       quotient or remainder coeficients, respectively.
+ *       quotient or remainder coefficients, respectively.
  * 
  * @param p1 - dividend polynomial
  * @param p2 - divisor polynomial
@@ -1184,7 +1184,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator%=(const F& sc) 
  * @param str - output stream, where the polynomial will be dislayed to (default: cout)
  */
 template <typename F>
-void math::PolynomialGeneric<F>::display(char arg, std::ostream& str) const
+void math::PolynomialGeneric<F>::display(const char arg, std::ostream& str) const
 {
     /*
      * Primarily the method was introduced for brief unit testing purposes

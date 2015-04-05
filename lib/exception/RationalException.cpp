@@ -33,7 +33,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::RationalException::RationalException(err_codes err)
+math::RationalException::RationalException(const math::RationalException::err_codes err)
 {
     this->error = err;
 }
@@ -47,28 +47,28 @@ void math::RationalException::what(std::ostream& str) const
 {
     switch (this->error)
     {
-        case ZERO_DENOMINATOR :
+        case math::RationalException::ZERO_DENOMINATOR :
             str << "Zero denominator is forbidden.";
             break;
-        case UNINVERTIBLE :
+        case math::RationalException::UNINVERTIBLE :
             str << "Uninvertible fraction.";
             break;
-        case DIVIDE_BY_ZERO :
+        case math::RationalException::DIVIDE_BY_ZERO :
             str << "Attempt of division by zero.";
             break;
-        case INT_OVERFLOW :
+        case math::RationalException::INT_OVERFLOW :
             str << "Operation caused an integer overflow.";
             break;
-        case INVALID_INPUT :
+        case math::RationalException::INVALID_INPUT :
             str << "Invalid input argument.";
             break;
-        case INPUT_OUT_OF_RANGE :
+        case math::RationalException::INPUT_OUT_OF_RANGE :
             str << "Input argument out of range.";
             break;
-        case OUT_OF_MEMORY :
+        case math::RationalException::OUT_OF_MEMORY :
             str << "Allocation of memory failed.";
             break;
-        case UNSIGNED :
+        case math::RationalException::UNSIGNED :
             str << "Operation is not possible for unsigned types.";
             break;
         default:

@@ -190,7 +190,7 @@ F math::Diff::diff(
         const math::IFunctionGeneric<F>& f,
         const F& x,
         const F& h,
-        math::EDiffMethod::method method
+        const math::EDiffMethod::method method
       ) throw(math::CalculusException)
 {
     // sanity check:

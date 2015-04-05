@@ -58,7 +58,7 @@ struct CurveFittingException : public IMathException
 
     err_codes error;     /// Type of an error
     // Constructor
-    CurveFittingException(err_codes err);
+    CurveFittingException(const CurveFittingException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

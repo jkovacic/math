@@ -44,7 +44,7 @@ namespace math
 
 
 template <class T>
-void mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, bool add=true);
+void mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, const bool add=true);
 
 
 template <class T>
@@ -56,8 +56,8 @@ void mtvectscalaradd(
         const std::vector<T>& v1,
         const T& scalar,
         std::vector<T>& dest,
-        bool add = true,
-        bool vectFirst = true );
+        const bool add = true,
+        const bool vectFirst = true );
 
 
 template <class T>
@@ -65,7 +65,7 @@ bool mtvectewmult(
         const std::vector<T>& v1,
         const std::vector<T>& v2,
         std::vector<T>& dest,
-        bool mult = true );
+        const bool mult = true );
 
 }  // namespace math
 

@@ -66,7 +66,7 @@ namespace ChiSquareDist
     F prob(
           const F& x,
           const F& df,
-          bool lowerTail = true
+          const bool lowerTail = true
        ) throw (StatisticsException);
 
 
@@ -74,7 +74,7 @@ namespace ChiSquareDist
     F quant(
           const F& p,
           const F& df,
-          bool lowerTail = true
+          const bool lowerTail = true
         ) throw (math::StatisticsException);
 
 }  // namespace ChiSquareDist

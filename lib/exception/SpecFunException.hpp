@@ -50,7 +50,7 @@ struct SpecFunException : public IMathException
 
     err_codes error;    /// type of an error
     // Constructor
-    SpecFunException(err_codes err);
+    SpecFunException(const SpecFunException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

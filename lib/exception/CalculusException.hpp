@@ -54,7 +54,7 @@ struct CalculusException : public IMathException
 
     err_codes error;     /// Type of an error
     // Constructor
-    CalculusException(err_codes err);
+    CalculusException(const CalculusException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

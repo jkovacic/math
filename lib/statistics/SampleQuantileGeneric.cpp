@@ -101,7 +101,7 @@ template <typename F> template <typename I>
 F math::SampleQuantileGeneric<F>::quantile(
                     const I& num, 
                     const I& den, 
-                    math::EQntlType::type method ) 
+                    const math::EQntlType::type method ) 
                 const throw(math::StatisticsException)
 {
     if ( true == math::IntUtil::isNegative<I>(num) ||
@@ -169,7 +169,7 @@ F math::SampleQuantileGeneric<F>::linIntrp(const F& h) const
  * @throw StatisticsException if any input argument is invalid
  */
 template <typename F>
-F math::SampleQuantileGeneric<F>::qntl(const F& p, math::EQntlType::type method) const throw(math::StatisticsException)
+F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type method) const throw(math::StatisticsException)
 {
     F retVal;
 
@@ -491,8 +491,8 @@ F math::SampleQuantileGeneric<F>::median() const
  */
 template <typename F>
 F math::SampleQuantileGeneric<F>::quartile(
-            unsigned short int q, 
-            math::EQntlType::type method) 
+            const unsigned short int q, 
+            const math::EQntlType::type method) 
         const throw(math::StatisticsException)
 {
     F retVal;
@@ -524,7 +524,7 @@ F math::SampleQuantileGeneric<F>::quartile(
  * @return sample's interquartile range (difference between the 3rd and the 1st quartile)
  */
 template <typename F>
-F math::SampleQuantileGeneric<F>::iqr(math::EQntlType::type method) const
+F math::SampleQuantileGeneric<F>::iqr(const math::EQntlType::type method) const
 {
     return ( this->quartile(3, method) - this->quartile(1, method) );
 }
@@ -649,9 +649,9 @@ F math::SampleQuantileGeneric<F>::max() const
  */
 template <typename F>
 F math::SampleQuantileGeneric<F>::elem(
-             size_t n, 
-             bool largest,
-             bool zerobase
+             const size_t n, 
+             const bool largest,
+             const bool zerobase
            ) const throw(math::StatisticsException)
 {
     // sanity check
@@ -695,7 +695,7 @@ template <typename F>
 bool math::SampleQuantileGeneric<F>::isOutlier(
                 const F& val,
                 const F& iqrs,
-                math::EQntlType::type method) const
+                const math::EQntlType::type method) const
 {
     const F q1 = this->quartile(1, method);
     const F q3 = this->quartile(3, method);
@@ -725,7 +725,7 @@ template <typename F>
 void math::SampleQuantileGeneric<F>::outliers(
                 std::set<F>& outl,
                 const F& iqrs,
-                math::EQntlType::type method) const
+                const math::EQntlType::type method) const
             throw (math::StatisticsException)
 {
     try

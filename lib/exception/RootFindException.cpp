@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::RootFindException::RootFindException(err_codes err)
+math::RootFindException::RootFindException(const math::RootFindException::err_codes err)
 {
     this->error = err;
 }
@@ -46,19 +46,19 @@ void math::RootFindException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case UNDEFINED :
+        case math::RootFindException::UNDEFINED :
             str << "Encountered a point where the function is not defined";
             break;
-        case INVALID_ARGS :
+        case math::RootFindException::INVALID_ARGS :
             str << "Invalid input arguments";
             break;
-        case TOO_MANY_ROOTS :
+        case math::RootFindException::TOO_MANY_ROOTS :
             str << "There are too many roots in the specified search interval";
             break;
-        case NO_CONVERGENCE :
+        case math::RootFindException::NO_CONVERGENCE :
             str << "Algorithm did not converge";
             break;
-        case ZERO_SLOPE :
+        case math::RootFindException::ZERO_SLOPE :
             str << "Encountered a point with the slope equal to zero";
             break;
 

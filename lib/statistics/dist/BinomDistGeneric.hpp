@@ -91,8 +91,8 @@ namespace BinomDist
         const I& b,
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2),
-        bool incLower = true,
-        bool incUpper = true
+        const bool incLower = true,
+        const bool incUpper = true
       ) throw(StatisticsException);
 
 
@@ -101,8 +101,8 @@ namespace BinomDist
         const I& k,
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2),
-        bool incl = true,
-        bool lowerTail = true
+        const bool incl = true,
+        const bool lowerTail = true
       ) throw(StatisticsException);
 
 
@@ -111,8 +111,8 @@ namespace BinomDist
         const F& prob,
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2),
-        bool smallest = true,
-        bool lowerTail = true
+        const bool smallest = true,
+        const bool lowerTail = true
       ) throw(StatisticsException);
 
 }  // namespace BinomDist

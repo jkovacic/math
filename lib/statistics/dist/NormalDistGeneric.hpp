@@ -87,7 +87,7 @@ namespace NormalDist
           const F& x,
           const F& mu = static_cast<F>(0),
           const F& sigma = static_cast<F>(1),
-          bool lowerTail = true
+          const bool lowerTail = true
         ) throw (StatisticsException);
 
 
@@ -96,7 +96,7 @@ namespace NormalDist
           const F& p,
           const F& mu = static_cast<F>(0),
           const F& sigma = static_cast<F>(1),
-          bool lowerTail = true
+          const bool lowerTail = true
         ) throw (StatisticsException);
 
 

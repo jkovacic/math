@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::SpecFunException::SpecFunException(err_codes err)
+math::SpecFunException::SpecFunException(const math::SpecFunException::err_codes err)
 {
     this->error = err;
 }
@@ -46,10 +46,10 @@ void math::SpecFunException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case UNDEFINED :
+        case math::SpecFunException::UNDEFINED :
             str << "Function undefined for the given input argument.";
             break;
-        case NO_CONVERGENCE :
+        case math::SpecFunException::NO_CONVERGENCE :
             str << "Evaluation of the special function did not converge.";
             break;
 

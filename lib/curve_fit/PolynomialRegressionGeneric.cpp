@@ -53,7 +53,7 @@ math::PolynomialRegressionGeneric<F>::PolynomialRegressionGeneric()
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
 template <typename F>
-void math::PolynomialRegressionGeneric<F>::generateCurve(size_t degree) throw (math::CurveFittingException)
+void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
     this->_curveGenerationCheck();

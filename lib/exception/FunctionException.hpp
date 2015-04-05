@@ -50,7 +50,7 @@ struct FunctionException : public IMathException
 
     err_codes error;     /// Type of an error
     // Constructor
-    FunctionException(err_codes err);
+    FunctionException(const FunctionException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

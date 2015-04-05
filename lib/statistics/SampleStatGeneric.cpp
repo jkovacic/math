@@ -60,7 +60,7 @@ namespace __private
  * @return observation with the highest absolute value among the first 'Nmax' elements of 'x'
  */
 template <typename F>
-F __getShift(const std::vector<F>& x, size_t Nmax = 5)
+F __getShift(const std::vector<F>& x, const size_t Nmax = 5)
 {
     F retVal = x.at(0);
     F absRetVal = ( retVal<static_cast<F>(0) ? -retVal : retVal );
@@ -96,7 +96,7 @@ F __getShift(const std::vector<F>& x, size_t Nmax = 5)
  * @throw StatisticsException if 'x' is empty
  */
 template <typename F>
-F __minmax(const std::vector<F>& x, bool min) throw(math::StatisticsException)
+F __minmax(const std::vector<F>& x, const bool min) throw(math::StatisticsException)
 {
     const size_t N = x.size();
 
@@ -291,7 +291,7 @@ F math::SampleStat::mean(const std::vector<F>& x) throw(math::StatisticsExceptio
  * @throw StatisticsException if 'x' is empty or if 'df_sub' exceeds sample's size
  */
 template <typename F>
-F math::SampleStat::var(const std::vector<F>& x, size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * The best known algorithm to calculate a variance is:
@@ -403,7 +403,7 @@ F math::SampleStat::var(const std::vector<F>& x, size_t df_sub) throw(math::Stat
  * @throw StatisticsException if the sample is empty or too small
  */
 template <typename F>
-F math::SampleStat::var(const std::vector<F>& x, bool sample) throw(math::StatisticsException)
+F math::SampleStat::var(const std::vector<F>& x, const bool sample) throw(math::StatisticsException)
 {
     return math::SampleStat::var<F>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
@@ -422,7 +422,7 @@ F math::SampleStat::var(const std::vector<F>& x, bool sample) throw(math::Statis
  * @throw StatisticsException if the sample is empty or too small
  */
 template <typename F>
-F math::SampleStat::stdev(const std::vector<F>& x, bool sample) throw(math::StatisticsException)
+F math::SampleStat::stdev(const std::vector<F>& x, const bool sample) throw(math::StatisticsException)
 {
     return math::SampleStat::stdev<F>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }
@@ -442,7 +442,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, bool sample) throw(math::Stat
  * @throw StatisticsException if 'x' is empty or 'df_sub' exceeds sample's size
  */
 template <typename F>
-F math::SampleStat::stdev(const std::vector<F>& x, size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::stdev(const std::vector<F>& x, const size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Standard deviation is calculated as square root
@@ -469,7 +469,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, size_t df_sub) throw(math::St
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or 'df_sub' exceeds single sample's size
  */
 template <typename F>
-F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Covariance of two equally sized samples (X1 and X2) can be
@@ -596,7 +596,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, size
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
 template <typename F>
-F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, bool sample) throw(math::StatisticsException)
+F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const bool sample) throw(math::StatisticsException)
 {
     return math::SampleStat::cov<F>( x1, x2, static_cast<size_t>( (false==sample ? 0 : 1) ) );
 }

@@ -185,7 +185,7 @@ public:
     // Constructor from a string
     RationalGeneric(
             const std::string& str, 
-            size_t repSeqLen = 0 ) 
+            const size_t repSeqLen = 0 ) 
         throw (RationalException);
 
     // Copy constructor
@@ -210,7 +210,7 @@ public:
     // Parses the fraction from its decimal representation
     RationalGeneric<I>& set(
             const std::string& str, 
-            size_t repSeqLen = 0 ) 
+            const size_t repSeqLen = 0 ) 
         throw (RationalException);
 
     // Outputs the fraction to std::cout, optionally multiplies both members by a factor
@@ -252,8 +252,8 @@ public:
 private:
 
     // tries to assign a rational from long long int arguments:
-    void __setLL( long long int numerator,
-                  long long int denominator ) 
+    void __setLL( const long long int numerator,
+                  const long long int denominator ) 
             throw (RationalException);
 
     // Reduces the fraction (divides numerator and denominator by their greatest common divisor)

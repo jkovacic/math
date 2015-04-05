@@ -33,7 +33,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::LinearEquationSolverException::LinearEquationSolverException(err_codes err)
+math::LinearEquationSolverException::LinearEquationSolverException(const math::LinearEquationSolverException::err_codes err)
 {
     this->error = err;
 }
@@ -47,10 +47,10 @@ void math::LinearEquationSolverException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case OUT_OF_MEMORY:
+        case math::LinearEquationSolverException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory";
             break;
-        case INVALID_DIMENSION:
+        case math::LinearEquationSolverException::INVALID_DIMENSION :
             str << "Invalid dimensions of input matrices";
             break;
         default:

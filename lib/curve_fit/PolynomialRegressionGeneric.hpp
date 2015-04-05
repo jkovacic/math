@@ -61,7 +61,7 @@ public:
     PolynomialRegressionGeneric();
     
     // inherited as an abstract function from the base class
-    void generateCurve(size_t degree = 1) throw (CurveFittingException);
+    void generateCurve(const size_t degree = 1) throw (CurveFittingException);
 
 };
 

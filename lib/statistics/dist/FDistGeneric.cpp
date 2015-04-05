@@ -223,7 +223,7 @@ F math::FDist::prob(
       const F& x,
       const F& d1,
       const F& d2,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     /*
@@ -293,7 +293,7 @@ F math::FDist::quant(
       const F& p,
       const F& d1,
       const F& d2,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     // sanity check

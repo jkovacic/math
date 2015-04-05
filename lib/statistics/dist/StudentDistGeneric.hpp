@@ -92,7 +92,7 @@ namespace StudentDist
     F prob(
         const F& x,
         const F& df,
-        bool lowerTail = true,
+        const bool lowerTail = true,
         const F& mu = static_cast<F>(0),
         const F& sigma = static_cast<F>(1)
       ) throw (StatisticsException);
@@ -103,7 +103,7 @@ namespace StudentDist
     F quant(
         const F& p,
         const F& df,
-        bool lowerTail = true,
+        const bool lowerTail = true,
         const F& mu = static_cast<F>(0),
         const F& sigma = static_cast<F>(1)
       ) throw (StatisticsException);

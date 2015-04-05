@@ -165,7 +165,7 @@ template <typename F>
 F math::ChiSquareDist::prob(
       const F& x,
       const F& df,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     /*
@@ -226,7 +226,7 @@ template <typename F>
 F math::ChiSquareDist::quant(
       const F& p,
       const F& df,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     // sanity check

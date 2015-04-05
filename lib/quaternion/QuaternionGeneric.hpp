@@ -116,10 +116,11 @@ private:
 
 public:
     // Constructor
-    QuaternionGeneric(const F& o = static_cast<F>(0),
-                      const F& i = static_cast<F>(0),
-                      const F& j = static_cast<F>(0),
-                      const F& k = static_cast<F>(0) );
+    QuaternionGeneric(
+            const F& o = static_cast<F>(0),
+            const F& i = static_cast<F>(0),
+            const F& j = static_cast<F>(0),
+            const F& k = static_cast<F>(0) );
 
     // Copy constructor
     QuaternionGeneric(const QuaternionGeneric& q);
@@ -131,10 +132,11 @@ public:
     F getK() const;
 
     // Setters:
-    QuaternionGeneric<F>& set(const F& o = static_cast<F>(0),
-             const F& i = static_cast<F>(0),
-             const F& j = static_cast<F>(0),
-             const F& k = static_cast<F>(0) );
+    QuaternionGeneric<F>& set(
+            const F& o = static_cast<F>(0),
+            const F& i = static_cast<F>(0),
+            const F& j = static_cast<F>(0),
+            const F& k = static_cast<F>(0) );
 
     QuaternionGeneric<F>& setOne(const F& o = static_cast<F>(0));
     QuaternionGeneric<F>& setI(const F& i = static_cast<F>(0));

@@ -69,7 +69,7 @@ namespace ContUniformDist
           const F& x,
           const F& min = static_cast<F>(0),
           const F& max = static_cast<F>(1),
-          bool lowerTail = true
+          const bool lowerTail = true
         ) throw (StatisticsException);
 
 
@@ -78,7 +78,7 @@ namespace ContUniformDist
           const F& p,
           const F& min = static_cast<F>(0),
           const F& max = static_cast<F>(1),
-          bool lowerTail = true
+          const bool lowerTail = true
         ) throw (StatisticsException);
 
 

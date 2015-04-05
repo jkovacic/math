@@ -46,7 +46,7 @@ struct QuaternionException : public IMathException
 
     err_codes error;     /// Type of an error
     // Constructor
-    QuaternionException(err_codes err);
+    QuaternionException(const QuaternionException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

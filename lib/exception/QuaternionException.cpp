@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::QuaternionException::QuaternionException(err_codes err)
+math::QuaternionException::QuaternionException(const math::QuaternionException::err_codes err)
 {
     this->error = err;
 }
@@ -46,7 +46,7 @@ void math::QuaternionException::what(std::ostream& str) const
 {
     switch (this->error)
     {
-        case DIVIDE_BY_ZERO:
+        case math::QuaternionException::DIVIDE_BY_ZERO :
             str << "Attempt of division by zero.";
             break;
         default:

@@ -67,8 +67,8 @@ namespace Integ
                const IFunctionGeneric<F>& f,
                const F& a,
                const F& b,
-               size_t n = INTEG_DEFAULT_STEPS,
-               EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+               const size_t n = INTEG_DEFAULT_STEPS,
+               const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
 
@@ -78,7 +78,7 @@ namespace Integ
                const F& a,
                const F& b,
                const F& h = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
-               EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+               const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
 
@@ -86,10 +86,10 @@ namespace Integ
     F integImpNegInf(
                const IFunctionGeneric<F>& f,
                const F& b,
-               size_t nimp = INTEG_DEFAULT_STEPS,
-               size_t nprop = INTEG_DEFAULT_STEPS,
+               const size_t nimp = INTEG_DEFAULT_STEPS,
+               const size_t nprop = INTEG_DEFAULT_STEPS,
                const F& bp = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
-               EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+               const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
 
@@ -97,21 +97,21 @@ namespace Integ
     F integImpPosInf(
                    const IFunctionGeneric<F>& f,
                    const F& a,
-                   size_t nimp = INTEG_DEFAULT_STEPS,
-                   size_t prop = INTEG_DEFAULT_STEPS,
+                   const size_t nimp = INTEG_DEFAULT_STEPS,
+                   const size_t prop = INTEG_DEFAULT_STEPS,
                    const F& bp = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
-                   EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+                   const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
                  ) throw(CalculusException);
 
 
     template <typename F>
     F integImp(
                    const IFunctionGeneric<F>& f,
-                   size_t nimp = INTEG_DEFAULT_STEPS,
-                   size_t nprop = INTEG_DEFAULT_STEPS,
+                   const size_t nimp = INTEG_DEFAULT_STEPS,
+                   const size_t nprop = INTEG_DEFAULT_STEPS,
                    const F& bpneg = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const F& bppos = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
-                   EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+                   const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
                  ) throw(CalculusException);
 
 
@@ -122,7 +122,7 @@ namespace Integ
                    const F& himp = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                    const F& hprop = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                    const F& bp = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
-                   EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+                   const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
                  ) throw(CalculusException);
 
 
@@ -133,7 +133,7 @@ namespace Integ
                    const F& himp = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                    const F& hprop = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                    const F& bp = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
-                   EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+                   const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
                  ) throw(CalculusException);
 
 
@@ -144,7 +144,7 @@ namespace Integ
                    const F& hprop = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                    const F& bpneg = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const F& bppos = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
-                   EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
+                   const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
                  ) throw(CalculusException);
 
 }  // namespace Integ

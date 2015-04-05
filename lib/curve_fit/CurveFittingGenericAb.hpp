@@ -104,10 +104,10 @@ public:
     F upperBound() const throw (CurveFittingException);
 
     // generate a curve that fits entered points best
-    virtual void generateCurve(size_t degree) throw (CurveFittingException) = 0;
+    virtual void generateCurve(const size_t degree) throw (CurveFittingException) = 0;
 
     // value of the curve at the given abscissa
-    virtual F valueAt(const F& x, bool strict=true) const throw (CurveFittingException) = 0;
+    virtual F valueAt(const F& x, const bool strict=true) const throw (CurveFittingException) = 0;
 
     // Destructor
     virtual ~CurveFittingGenericAb();

@@ -51,7 +51,7 @@ limitations under the License.
  * @param add - if 'true', addition will be performed, subtraction if 'false' (default: true)
  */
 template <class T>
-void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, bool add=true)
+void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, const bool add=true)
 {
     const size_t N = std::min( v1.size(), v2.size() );
 
@@ -195,8 +195,8 @@ void math::mtvectscalaradd(
         const std::vector<T>& v1,
         const T& scalar,
         std::vector<T>& dest,
-        bool add,
-        bool vectFirst )
+        const bool add,
+        const bool vectFirst )
 {
     const size_t N = v1.size();
 
@@ -298,7 +298,7 @@ bool math::mtvectewmult(
         const std::vector<T>& v1,
         const std::vector<T>& v2,
         std::vector<T>& dest,
-        bool mult )
+        const bool mult )
 {
     bool retVal = true;
 

@@ -51,7 +51,7 @@ struct PolynomialException : public IMathException
 
     err_codes error;     /// Type of an error
     // Constructor
-    PolynomialException(err_codes err);
+    PolynomialException(const PolynomialException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

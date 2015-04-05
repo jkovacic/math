@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::StatisticsException::StatisticsException(err_codes err)
+math::StatisticsException::StatisticsException(const math::StatisticsException::err_codes err)
 {
     this->error = err;
 }
@@ -46,43 +46,43 @@ void math::StatisticsException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case SAMPLE_EMPTY :
+        case math::StatisticsException::SAMPLE_EMPTY :
             str << "The sample is empty.";
             break;
-        case SAMPLE_TOO_SMALL :
+        case math::StatisticsException::SAMPLE_TOO_SMALL :
             str << "The sample is too small to perform the operation.";
             break;
-        case DF_SUBTRAHEND_TOO_LARGE :
+        case math::StatisticsException::DF_SUBTRAHEND_TOO_LARGE :
             str << "DF subtrahend exceeds the sample's size.";
             break;
-        case UNEQUAL_SAMPLE_SIZES :
+        case math::StatisticsException::UNEQUAL_SAMPLE_SIZES :
             str << "Sample sizes are not equal.";
             break;
-        case OUT_OF_MEMORY :
+        case math::StatisticsException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory.";
             break;
-        case INVALID_PROBABILTY :
+        case math::StatisticsException::INVALID_PROBABILTY :
             str << "Probability is not within the valid range.";
             break;
-        case UNSUPPORTED_QUANTILE_METHOD :
+        case math::StatisticsException::UNSUPPORTED_QUANTILE_METHOD :
             str << "The method to estimate the quantile is not supported yet.";
             break;
-        case INVALID_STDEV :
+        case math::StatisticsException::INVALID_STDEV :
             str << "Standard deviation is negative or zero.";
             break;
-        case INVALID_DF :
+        case math::StatisticsException::INVALID_DF :
             str << "Zero or negative number of degrees of freedom.";
             break;
-        case INVALID_ARG :
+        case math::StatisticsException::INVALID_ARG :
             str << "Invalid value of the input argument.";
             break;
-        case UNDEFINED :
+        case math::StatisticsException::UNDEFINED :
             str << "Operation not defined for the given combination of arguments.";
             break;
-        case OPERATION_FAILED :
+        case math::StatisticsException::OPERATION_FAILED :
             str << "Unable to perform an operation.";
             break;
-        case INTEGER_OUT_OF_RANGE :
+        case math::StatisticsException::INTEGER_OUT_OF_RANGE :
             str << "The solution is out of integer range.";
             break;
 

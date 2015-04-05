@@ -272,7 +272,7 @@ template <typename F>
 F math::StudentDist::prob(
         const F& x,
         const F& df,
-        bool lowerTail,
+        const bool lowerTail,
         const F& mu,
         const F& sigma
       ) throw (math::StatisticsException)
@@ -399,7 +399,7 @@ template <typename F>
 F math::StudentDist::quant(
         const F& p,
         const F& df,
-        bool lowerTail,
+        const bool lowerTail,
         const F& mu,
         const F& sigma
       ) throw (math::StatisticsException)

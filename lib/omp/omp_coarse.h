@@ -43,7 +43,7 @@ limitations under the License.
  *
  * @return ideal number of threads
  */
-inline size_t ompIdealNrThreads( size_t n, size_t per_thread )
+inline size_t ompIdealNrThreads( const size_t n, const size_t per_thread )
 {
     return (n / per_thread) + ( 0 == (n % per_thread) ? 0 : 1 );
 }
@@ -60,7 +60,7 @@ inline size_t ompIdealNrThreads( size_t n, size_t per_thread )
  *
  * @see ompIdealNrThreads
  */
-inline unsigned long int ompIdeal( unsigned long int n )
+inline unsigned long int ompIdeal( const unsigned long int n )
 {
     return ompIdealNrThreads(n, OMP_CHUNKS_PER_THREAD);
 }

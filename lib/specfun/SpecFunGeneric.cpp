@@ -472,7 +472,7 @@ public:
     }
 
     // a(x,i) = -i * (i-a)
-    T fa(const T& x, size_t i) const throw (math::FunctionException)
+    T fa(const T& x, const size_t i) const throw (math::FunctionException)
     {
         (void) x;
         const T f = static_cast<T>(i);
@@ -480,7 +480,7 @@ public:
     }
 
     // b(x,i) = x - a + 1 + 2*i
-    T fb(const T& x, size_t i) const throw (math::FunctionException)
+    T fb(const T& x, const size_t i) const throw (math::FunctionException)
     {
         return x - this->m_a + static_cast<T>(1) + static_cast<T>(2*i);
     }
@@ -538,7 +538,7 @@ public:
      * a(x,i) = -(a+m)*(a+b+m)*x / ( (a+2m)*(a+2m+1) )   when i=2*m+1
      * a(x,i) = m*(b-m)*x / ( (a+2m-1)*(a+2m) )          when i=2*m
      */
-    T fa(const T& x, size_t i) const throw(math::FunctionException)
+    T fa(const T& x, const size_t i) const throw(math::FunctionException)
     {
         const size_t m = i / 2;
         T ai = static_cast<T>(0);
@@ -560,7 +560,7 @@ public:
     }
 
     // b(x,i) = 1
-    T fb(const T& x, size_t i) const throw(math::FunctionException)
+    T fb(const T& x, const size_t i) const throw(math::FunctionException)
     {
         (void) x;
         (void) i;
@@ -585,8 +585,8 @@ template <class T>
 T __incGamma(
                  const T& a,
                  const T& x,
-                 bool upper,
-                 bool reg,
+                 const bool upper,
+                 const bool reg,
                  const T& tol
                ) throw(math::SpecFunException)
 {
@@ -755,8 +755,8 @@ template <class T>
 std::complex<T> __incGamma(
                  const std::complex<T>& a,
                  const std::complex<T>& x,
-                 bool upper,
-                 bool reg,
+                 const bool upper,
+                 const bool reg,
                  const std::complex<T>& tol
                ) throw(math::SpecFunException)
 {
@@ -867,8 +867,8 @@ T __incBeta(
           const T& a,
           const T& b,
           const T& x,
-          bool lower,
-          bool reg,
+          const bool lower,
+          const bool reg,
           const T& tol
         ) throw (math::SpecFunException)
 {
@@ -998,8 +998,8 @@ std::complex<T> __incBeta(
           const std::complex<T>& a,
           const std::complex<T>& b,
           const std::complex<T>& x,
-          bool lower,
-          bool reg,
+          const bool lower,
+          const bool reg,
           const std::complex<T>& tol
         ) throw (math::SpecFunException)
 {
@@ -1596,8 +1596,8 @@ template <class T>
 T __invIncGamma(
              const T& a,
              const T& g,
-             bool upper,
-             bool reg,
+             const bool upper,
+             const bool reg,
              const T& tol
            ) throw (math::SpecFunException)
 {
@@ -1807,8 +1807,8 @@ T __invIncBeta(
              const T& a,
              const T& b,
              const T& y,
-             bool lower,
-             bool reg,
+             const bool lower,
+             const bool reg,
              const T& tol
            ) throw (math::SpecFunException)
 {

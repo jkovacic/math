@@ -239,7 +239,7 @@ F math::NormalDist::prob(
       const F& x,
       const F& mu,
       const F& sigma,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     /*
@@ -325,7 +325,7 @@ F math::NormalDist::quant(
       const F& p,
       const F& mu,
       const F& sigma,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     // sanity check

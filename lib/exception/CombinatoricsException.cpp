@@ -33,7 +33,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::CombinatoricsException::CombinatoricsException(err_codes err)
+math::CombinatoricsException::CombinatoricsException(const math::CombinatoricsException::err_codes err)
 {
     this->error = err;
 }
@@ -47,13 +47,13 @@ void math::CombinatoricsException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case OUT_OF_RANGE:
+        case math::CombinatoricsException::OUT_OF_RANGE:
             str << "Result of the operation is out of the integer range.";
             break;
-        case INVALID_INPUT:
+        case math::CombinatoricsException::INVALID_INPUT:
             str << "Operation not defined for this input argument.";
             break;
-        case OUT_OF_MEMORY:
+        case math::CombinatoricsException::OUT_OF_MEMORY:
             str << "Could not allocate enough memory.";
             break;
         default:

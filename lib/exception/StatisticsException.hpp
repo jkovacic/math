@@ -61,7 +61,7 @@ struct StatisticsException : public IMathException
 
     err_codes error;    /// type of an error
     // Constructor
-    StatisticsException(err_codes err);
+    StatisticsException(const StatisticsException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

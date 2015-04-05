@@ -97,22 +97,22 @@ public:
     F quantile(
            const I& num,
            const I& den, 
-           EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
+           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
     F qntl(
            const F& p,
-           EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
+           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
     F median() const;
 
     F quartile(
-           unsigned short int q,
-           EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
+           const unsigned short int q,
+           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
-    F iqr(EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
+    F iqr(const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
 
     F ecdf(const F& t) const;
 
@@ -121,21 +121,21 @@ public:
     F max() const;
 
     F elem(
-           size_t n, 
-           bool largest = true,
-           bool zerobase = STAT_DEFAULT_ZERO_BASE
+           const size_t n, 
+           const bool largest = true,
+           const bool zerobase = STAT_DEFAULT_ZERO_BASE
          ) const throw(StatisticsException);
 
     bool isOutlier(
            const F& val,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
-           EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
+           const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
         )  const;
 
     void outliers(
            std::set<F>& outl,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
-           EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
+           const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
          ) const throw (StatisticsException );
 
     // Destructor

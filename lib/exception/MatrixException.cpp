@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::MatrixException::MatrixException(err_codes err)
+math::MatrixException::MatrixException(const math::MatrixException::err_codes err)
 {
     this->error = err;
 }
@@ -46,25 +46,25 @@ void math::MatrixException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case FORBIDDEN:
+        case math::MatrixException::FORBIDDEN :
             str << "Forbidden operation";
             break;
-        case OUT_OF_MEMORY:
+        case math::MatrixException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory";
             break;
-        case TOO_LARGE:
+        case math::MatrixException::TOO_LARGE :
             str << "Too many rows or columns";
             break;
-        case INVALID_DIMENSION:
+        case math::MatrixException::INVALID_DIMENSION :
             str << "Invalid dimension of matrix";
             break;
-        case OUT_OF_RANGE:
+        case math::MatrixException::OUT_OF_RANGE :
             str << "Attempted to access elements out of valid range";
             break;
-        case NOT_ENOUGH_ELEMENTS:
+        case math::MatrixException::NOT_ENOUGH_ELEMENTS :
             str << "Not enough elements";
             break;
-        case NON_INVERTIBLE_MATRIX:
+        case math::MatrixException::NON_INVERTIBLE_MATRIX :
             str << "Matrix is not invertible";
             break;
         default:

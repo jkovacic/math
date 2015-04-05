@@ -303,8 +303,8 @@ F math::BinomDist::probInt(
           const I& b,
           const I& n,
           const F& p,
-          bool incLower,
-          bool incUpper
+          const bool incLower,
+          const bool incUpper
         ) throw(math::StatisticsException)
 {
     /*
@@ -359,8 +359,8 @@ F math::BinomDist::prob(
           const I& k,
           const I& n,
           const F& p,
-          bool incl,
-          bool lowerTail
+          const bool incl,
+          const bool lowerTail
         ) throw(math::StatisticsException)
 {
     math::BinomDist::__private::__checkParams<F, I>(
@@ -521,8 +521,8 @@ I math::BinomDist::quant(
           const F& prob,
           const I& n,
           const F& p,
-          bool smallest,
-          bool lowerTail
+          const bool smallest,
+          const bool lowerTail
         ) throw(math::StatisticsException)
 {
     const I Imax = std::numeric_limits<I>::max();

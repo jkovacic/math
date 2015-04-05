@@ -56,7 +56,7 @@ math::PolynomialGeneric<F> math::PolynomialFittingGenericAb<F>::getPolynomial() 
  * @throw CurveFittingException if the polynomial has not been generated yet or 'x' is out of definition range bounds
  */
 template <typename F>
-F math::PolynomialFittingGenericAb<F>::valueAt(const F& x, bool strict) const throw (math::CurveFittingException)
+F math::PolynomialFittingGenericAb<F>::valueAt(const F& x, const bool strict) const throw (math::CurveFittingException)
 {
     // the curve must be already generated
     if ( false==this->curveGenerated )

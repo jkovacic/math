@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::PolynomialException::PolynomialException(err_codes err)
+math::PolynomialException::PolynomialException(const math::PolynomialException::err_codes err)
 {
     this->error = err;
 }
@@ -46,19 +46,19 @@ void math::PolynomialException::what(std::ostream& str) const
 {
     switch (this->error)
     {
-        case OUT_OF_MEMORY:
+        case math::PolynomialException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory";
             break;
-        case OUT_OF_RANGE:
+        case math::PolynomialException::OUT_OF_RANGE :
             str << "Attempted to access elements out of valid range";
             break;
-        case INVALID_ARGUMENT:
+        case math::PolynomialException::INVALID_ARGUMENT :
             str << "Invalid argument";
             break;
-        case TOO_LARGE:
+        case math::PolynomialException::TOO_LARGE :
             str << "Too many polynomial terms";
             break;
-        case DIVIDE_BY_ZERO:
+        case math::PolynomialException::DIVIDE_BY_ZERO :
             str << "Attempt of division by zero";
             break;
         default:

@@ -88,7 +88,7 @@ F __rectangle(
         const math::IFunctionGeneric<F>& f,
         const F& a,
         const F& b,
-        size_t n
+        const size_t n
       ) throw(math::CalculusException)
 {
     /*
@@ -171,8 +171,8 @@ F __closedNewtonCotes(
                const math::IFunctionGeneric<F>& f,
                const F& a,
                const F& b,
-               size_t n,
-               size_t degree,
+               const size_t n,
+               const size_t degree,
                const F* coef,
                const F& bCoef,
                const F& hCoef
@@ -257,7 +257,7 @@ F __trapezoidal(
         const math::IFunctionGeneric<F>& f,
         const F& a,
         const F& b,
-        size_t n
+        const size_t n
       ) throw(math::CalculusException)
 {
     /*
@@ -320,7 +320,7 @@ F __simpson(
        const math::IFunctionGeneric<F>& f,
        const F& a,
        const F& b,
-       size_t n
+       const size_t n
      ) throw(math::CalculusException)
 {
     /*
@@ -365,7 +365,7 @@ F __simpson38(
       const math::IFunctionGeneric<F>& f,
       const F& a,
       const F& b,
-      size_t n
+      const size_t n
     ) throw(math::CalculusException)
 {
     /*
@@ -411,7 +411,7 @@ F __boole(
       const math::IFunctionGeneric<F>& f,
       const F& a,
       const F& b,
-      size_t n
+      const size_t n
     ) throw(math::CalculusException)
 {
     /*
@@ -654,7 +654,7 @@ public:
  * @param v2 - the second variable
  */
 template <typename F>
-inline void __checkSwap(bool swapped, F& v1, F& v2)
+inline void __checkSwap(const bool swapped, F& v1, F& v2)
 {
     if ( false == swapped )
     {
@@ -694,8 +694,8 @@ F math::Integ::integ(
         const math::IFunctionGeneric<F>& f,
         const F& a,
         const F& b,
-        size_t n,
-        math::EIntegAlg::alg algorithm
+        const size_t n,
+        const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
     // sanity check:
@@ -792,7 +792,7 @@ F math::Integ::integH(
         const F& a,
         const F& b,
         const F& h,
-        math::EIntegAlg::alg algorithm
+        const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
     math::Integ::__private::__checkStep<F>(h);
@@ -842,10 +842,10 @@ template <typename F>
 F math::Integ::integImpNegInf(
         const math::IFunctionGeneric<F>& f,
         const F& b,
-        size_t nimp,
-        size_t nprop,
+        const size_t nimp,
+        const size_t nprop,
         const F& bp,
-        math::EIntegAlg::alg algorithm
+        const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
     // sanity check
@@ -940,10 +940,10 @@ template <typename F>
 F math::Integ::integImpPosInf(
         const math::IFunctionGeneric<F>& f,
         const F& a,
-        size_t nimp,
-        size_t nprop,
+        const size_t nimp,
+        const size_t nprop,
         const F& bp,
-        math::EIntegAlg::alg algorithm
+        const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
     // sanity check
@@ -1034,11 +1034,11 @@ F math::Integ::integImpPosInf(
 template <typename F>
 F math::Integ::integImp(
         const math::IFunctionGeneric<F>& f,
-        size_t nimp,
-        size_t nprop,
+        const size_t nimp,
+        const size_t nprop,
         const F& bpneg,
         const F& bppos,
-        math::EIntegAlg::alg algorithm
+        const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
     // sanity check
@@ -1136,7 +1136,7 @@ F math::Integ::integImpNegInfH(
         const F& himp,
         const F& hprop,
         const F& bp,
-        math::EIntegAlg::alg algorithm
+        const math::EIntegAlg::alg algorithm
      ) throw(math::CalculusException)
 {
     // sanity check
@@ -1236,7 +1236,7 @@ F math::Integ::integImpPosInfH(
         const F& himp,
         const F& hprop,
         const F& bp,
-        math::EIntegAlg::alg algorithm
+        const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
     // sanity check
@@ -1334,7 +1334,7 @@ F math::Integ::integImpH(
         const F& hprop,
         const F& bpneg,
         const F& bppos,
-        math::EIntegAlg::alg algorithm
+        const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
     // sanity check

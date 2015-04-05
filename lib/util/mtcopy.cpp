@@ -85,7 +85,7 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
  * @param dest - reference to a vector where the selected range will be copied to
  */
 template <class T>
-void math::mtcopy(const T* first, size_t len, std::vector<T>& dest)
+void math::mtcopy(const T* first, const size_t len, std::vector<T>& dest)
 {
     math::mtcopy(first, first+len, dest);
 }
@@ -118,8 +118,8 @@ void math::mtcopy(const std::vector<T>& src, std::vector<T>& dest)
  */
 template <class T>
 void math::mtcopy(const std::vector<T>&src,
-                  size_t first,
-                  size_t len,
+                  const size_t first,
+                  const size_t len,
                   std::vector<T>& dest)
 {
     // take care that the range does not exceed

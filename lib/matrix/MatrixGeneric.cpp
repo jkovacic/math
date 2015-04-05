@@ -53,7 +53,7 @@ limitations under the License.
  *        input parameters (both must be at least 1)
  */
 template <class T>
-math::MatrixGeneric<T>::MatrixGeneric(size_t rows, size_t columns) throw(math::MatrixException)
+math::MatrixGeneric<T>::MatrixGeneric(const size_t rows, const size_t columns) throw(math::MatrixException)
 {
     // Matrix must contain at least 1 row and at least 1 column
     if ( rows < 1 || columns < 1 )
@@ -161,7 +161,7 @@ size_t math::MatrixGeneric<T>::nrColumns() const
  * @throw MatrixException if input parameters are out of range
  */
 template <class T>
-T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::MatrixException)
+T math::MatrixGeneric<T>::get(const size_t row, const size_t column) const throw (math::MatrixException)
 {
     // Check of input parameters
     if ( row >= this->rows || column >= this->cols )
@@ -192,7 +192,7 @@ T math::MatrixGeneric<T>::get(size_t row, size_t column) const throw (math::Matr
  * @deprecated
  */
 template <class T>
-T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixException)
+T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) throw (math::MatrixException)
 {
     // Check if input arguments are within the matrix's range
     if ( row >= this->rows || column >= this->cols )
@@ -222,7 +222,7 @@ T& math::MatrixGeneric<T>::at(size_t row, size_t column) throw (math::MatrixExce
  * @deprecated
  */
 template <class T>
-const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math::MatrixException)
+const T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) const throw (math::MatrixException)
 {
     /*
      * Implementation is actually the same as implementation of another at()
@@ -254,7 +254,7 @@ const T& math::MatrixGeneric<T>::at(size_t row, size_t column) const throw (math
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template <class T>
-T& math::MatrixGeneric<T>::operator()(size_t row, size_t column) throw(math::MatrixException)
+T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t column) throw(math::MatrixException)
 {
     // Check if input arguments are within the matrix's range
     if ( row >= this->rows || column >= this->cols )
@@ -279,7 +279,7 @@ T& math::MatrixGeneric<T>::operator()(size_t row, size_t column) throw(math::Mat
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template <class T>
-const T& math::MatrixGeneric<T>::operator()(size_t row, size_t column) const throw(math::MatrixException)
+const T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t column) const throw(math::MatrixException)
 {
     /*
      * Implementation is actually the same as implementation of another operator()
@@ -315,7 +315,7 @@ const T& math::MatrixGeneric<T>::operator()(size_t row, size_t column) const thr
  * @throw MatrixException if 'idx' is out of the matrix's range
  */
 template <class T>
-T& math::MatrixGeneric<T>::operator()(size_t idx) throw(math::MatrixException)
+T& math::MatrixGeneric<T>::operator()(const size_t idx) throw(math::MatrixException)
 {
     // check if 'idx' is within elems' range
     if ( idx >= this->elems.size() )
@@ -347,7 +347,7 @@ T& math::MatrixGeneric<T>::operator()(size_t idx) throw(math::MatrixException)
  * @throw MatrixException if 'idx' is out of the matrix's range
  */
 template <class T>
-const T& math::MatrixGeneric<T>::operator()(size_t idx) const throw(math::MatrixException)
+const T& math::MatrixGeneric<T>::operator()(const size_t idx) const throw(math::MatrixException)
 {
     // check if 'idx' is within elems' range
     if ( idx >= this->elems.size() )
@@ -376,7 +376,7 @@ const T& math::MatrixGeneric<T>::operator()(size_t idx) const throw(math::Matrix
  * @throw MatrixException if input parameters are out of range
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(size_t row, size_t column, const T& element) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(const size_t row, const size_t column, const T& element) throw (math::MatrixException)
 {
     // Check of input parameters
     if ( row >= this->rows || column >= this->cols )
@@ -785,7 +785,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixE
  * @throw MatrixException if attempting to remove the nonexistent row
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(const size_t rowNr) throw (math::MatrixException)
 {
     /*
      * Check of input arguments.
@@ -823,7 +823,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(size_t rowNr) throw (m
  * @throw MatrixException if attempting to remove the nonexistent column
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(const size_t colNr) throw (math::MatrixException)
 {
     /*
      * Checking of input argumentss. The matrix must contain at least 2 columns
@@ -869,7 +869,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(size_t colNr) throw
   * @throw MatrixException if invalid rowNr or if reallocation fails
   */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(const size_t rowNr, const T& el) throw (math::MatrixException)
 {
     // a valid rowNr value is between 0 and rows (incl.)
     if ( rowNr > this->rows )
@@ -916,7 +916,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(size_t rowNr, const T&
   * @throw MatrixException if invalid colNr or if reallocation fails
   */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr, const T& el) throw (math::MatrixException)
 {
     // A valid colNr is between 0 and cols (incl.)
     if ( colNr > this->cols )
@@ -1403,8 +1403,7 @@ math::MatrixGeneric<T> math::matEwDiv(
  * just copies the input matrix.
  *
  * @param m - matrix to conjugate
- *
- * @return m "conjugated"
+ * @param dest - a reference to a matrix to fill with elements of 'm' conjugated
  *
  * @throw MatrixException if allocation of memory fails
  */
@@ -1423,8 +1422,7 @@ void math::__matrixprivate::__matconj(
  * for complex numbers. It actually conjugates each element.
  *
  * @param m - matrix to conjugate
- *
- * @return m conjugated
+ * @param dest - a reference to a matrix to fill with elements of 'm' conjugated
  *
  * @throw MatrixException if allocation of memory fails
  */

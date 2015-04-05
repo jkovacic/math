@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::CalculusException::CalculusException(err_codes err)
+math::CalculusException::CalculusException(const math::CalculusException::err_codes err)
 {
     this->error = err;
 }
@@ -46,19 +46,19 @@ void math::CalculusException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case UNDEFINED :
+        case math::CalculusException::UNDEFINED :
             str << "Function undefined at the given input";
             break;
-        case NOT_ENOUGH_STEPS :
+        case math::CalculusException::NOT_ENOUGH_STEPS :
             str << "Desired number of integration steps is too small";
             break;
-        case INVALID_STEP :
+        case math::CalculusException::INVALID_STEP :
             str << "Step size is negative or too small";
             break;
-        case UNSUPPORTED_ALGORITHM :
+        case math::CalculusException::UNSUPPORTED_ALGORITHM :
             str << "Unsupported algorithm";
             break;
-        case INVALID_BREAKPOINT :
+        case math::CalculusException::INVALID_BREAKPOINT :
             str << "Invalid sign of a breakpoint";
             break;
         default:

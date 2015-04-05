@@ -167,7 +167,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (
  * @throw CombinatoricsException if input arguments are invalid or if allocation of memory fails
  */
 template <class T>
-math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, size_t len) throw (math::CombinatoricsException)
+math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, const size_t len) throw (math::CombinatoricsException)
 {
     try
     {
@@ -239,7 +239,7 @@ void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
  * @throw CombinatoricsException if 'n' is invalid or if allocation of memory fails
  */
 template <class T>
-void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, size_t n) throw (math::CombinatoricsException)
+void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const size_t n) throw (math::CombinatoricsException)
 {
     /*
      * The algorithm is based on code, available at

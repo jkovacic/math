@@ -81,14 +81,14 @@ public:
     CombinationGeneric(const std::list<T>& el) throw(CombinatoricsException);
     CombinationGeneric(const std::set<T>& el) throw(CombinatoricsException);
     CombinationGeneric(const std::deque<T>& el) throw (CombinatoricsException);
-    CombinationGeneric(const T* elarray, size_t len) throw (CombinatoricsException);
+    CombinationGeneric(const T* elarray, const size_t len) throw (CombinatoricsException);
     
     // Getter and setter for size of a subset (k) 
     size_t getK() const;
-    void setK(size_t k) throw (CombinatoricsException);
+    void setK(const size_t k) throw (CombinatoricsException);
     
     // Retrieves next n combinations
-    void next(std::list<std::set<T> >& ret, size_t n=1) throw (CombinatoricsException);
+    void next(std::list<std::set<T> >& ret, const size_t n=1) throw (CombinatoricsException);
     
     // More combinations available to be retrieved?
     bool hasNext() const;

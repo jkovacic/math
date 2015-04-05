@@ -31,7 +31,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::CurveFittingException::CurveFittingException(err_codes err)
+math::CurveFittingException::CurveFittingException(const math::CurveFittingException::err_codes err)
 {
     this->error = err;
 }
@@ -45,39 +45,39 @@ void math::CurveFittingException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case OUT_OF_MEMORY:
+        case math::CurveFittingException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory";
             break;
 
-        case ADD_POINT_NOT_ALLOWED:
+        case math::CurveFittingException::ADD_POINT_NOT_ALLOWED :
             str << "Prohibited to enter more points";
             break;
 
-        case NO_POINTS:
+        case math::CurveFittingException::NO_POINTS :
             str << "No points have been entered so far";
             break;
 
-        case DUPLICATE_POINTS:
+        case math::CurveFittingException::DUPLICATE_POINTS :
             str << "Duplicate points (with the same value of abscise) have been entered";
             break;
 
-        case CURVE_NOT_GENERATED:
+        case math::CurveFittingException::CURVE_NOT_GENERATED :
             str << "Curve has not been generated yet";
             break;
 
-        case CURVE_ALREADY_GENERATED:
+        case math::CurveFittingException::CURVE_ALREADY_GENERATED :
             str << "Curve is already generated";
             break;
 
-        case OUT_OF_BOUNDS:
+        case math::CurveFittingException::OUT_OF_BOUNDS :
             str << "Input is out of the definition range";
             break;
 
-        case CURVE_GENERATION_FAILED:
+        case math::CurveFittingException::CURVE_GENERATION_FAILED :
             str << "Could not generate a curve";
             break;
 
-        case INVALID_ARGUMENT:
+        case math::CurveFittingException::INVALID_ARGUMENT :
             str << "Invalid argument passed";
             break;
 

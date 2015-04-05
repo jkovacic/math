@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::FunctionException::FunctionException(err_codes err)
+math::FunctionException::FunctionException(const math::FunctionException::err_codes err)
 {
     this->error = err;
 }
@@ -46,7 +46,7 @@ void math::FunctionException::what(std::ostream& str) const
 {
     switch (error)
     {
-        case UNDEFINED :
+        case math::FunctionException::UNDEFINED :
             str << "Function undefined at the given input";
             break;
         default:

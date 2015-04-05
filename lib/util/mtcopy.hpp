@@ -47,7 +47,7 @@ void mtcopy(const T* first, const T* last, std::vector<T>& dest);
 
 
 template <class T>
-void mtcopy(const T* first, size_t len, std::vector<T>& dest);
+void mtcopy(const T* first, const size_t len, std::vector<T>& dest);
 
 
 template <class T>
@@ -56,8 +56,8 @@ void mtcopy(const std::vector<T>& src, std::vector<T>& dest);
 
 template <class T>
 void mtcopy(const std::vector<T>&src,
-            size_t first,
-            size_t len,
+            const size_t first,
+            const size_t len,
             std::vector<T>& dest);
 
 

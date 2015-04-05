@@ -54,7 +54,7 @@ struct RationalException : public IMathException
 
     err_codes error;    /// type of an error
     // Constructor
-    RationalException(err_codes err);
+    RationalException(const RationalException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

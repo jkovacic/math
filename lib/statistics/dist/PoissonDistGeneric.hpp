@@ -58,8 +58,8 @@ namespace PoissonDist
         const I& a,
         const I& b,
         const F& lambda,
-        bool incLower = true,
-        bool incUpper = true
+        const bool incLower = true,
+        const bool incUpper = true
       ) throw (StatisticsException);
 
 
@@ -67,8 +67,8 @@ namespace PoissonDist
     F prob(
         const I& k,
         const F& lambda,
-        bool incl = true,
-        bool lowerTail = true
+        const bool incl = true,
+        const bool lowerTail = true
       ) throw(StatisticsException);
 
 
@@ -76,8 +76,8 @@ namespace PoissonDist
     I quant(
         const F& prob,
         const F& lambda,
-        bool smallest = true,
-        bool lowerTail = true
+        const bool smallest = true,
+        const bool lowerTail = true
       ) throw(StatisticsException);
 
 }  // namespace PoissonDist

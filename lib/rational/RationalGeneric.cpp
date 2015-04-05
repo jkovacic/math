@@ -89,7 +89,7 @@ long long int __str2ll(const std::string& str) throw (math::RationalException)
  *
  * @throw RationalException if the result exceeds unsigned I's range
  */
- long long int __pow10(size_t n) throw (math::RationalException)
+ long long int __pow10(const size_t n) throw (math::RationalException)
 {
 
 #define POW10_BASE            ( 10ULL )
@@ -225,7 +225,7 @@ long long int __auxSum(
             const I& denom2, 
             const I& num2, 
             const I& denom1,
-            bool add ) 
+            const bool add ) 
         throw (math::RationalException)
 {
     // All intermediate results are long long int values:
@@ -391,7 +391,7 @@ math::RationalGeneric<I>::RationalGeneric(
 template <typename I>
 math::RationalGeneric<I>::RationalGeneric(
             const std::string& str, 
-            size_t repSeqLen) 
+            const size_t repSeqLen) 
         throw (math::RationalException)
 {
     /*
@@ -540,7 +540,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::set(
             const std::string& str, 
-            size_t repSeqLen) 
+            const size_t repSeqLen) 
         throw (math::RationalException)
 {
     const size_t LEN = str.length();
@@ -701,8 +701,8 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
  */
 template <typename I>
 void math::RationalGeneric<I>::__setLL(
-        long long int numerator,
-        long long int denominator )
+        const long long int numerator,
+        const long long int denominator )
         throw (math::RationalException)
 {
     // Zero denominator is not valid:

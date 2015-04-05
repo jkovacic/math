@@ -51,7 +51,7 @@ struct CombinatoricsException : public IMathException
 
     err_codes error;    /// type of an error
     // Constructor
-    CombinatoricsException(err_codes err);
+    CombinatoricsException(const CombinatoricsException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

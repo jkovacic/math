@@ -140,23 +140,23 @@ public:
     // Constructors
     PolynomialGeneric(const std::vector<F>& cvect) throw (PolynomialException);
     PolynomialGeneric(const F& c0 = static_cast<F>(0)) throw (PolynomialException);
-    PolynomialGeneric(const F* carray, size_t n) throw (PolynomialException);
-    PolynomialGeneric(bool ignored, size_t n = 1) throw (PolynomialException);
+    PolynomialGeneric(const F* carray, const size_t n) throw (PolynomialException);
+    PolynomialGeneric(const bool ignored, const size_t n = 1) throw (PolynomialException);
     PolynomialGeneric(const PolynomialGeneric<F>& poly) throw (PolynomialException);
 
     // Getters
     void get(std::vector<F>& vec) const throw (PolynomialException);
     void getDesc(std::vector<F>& vec) const throw (PolynomialException);
-    F get(size_t pos) const;
+    F get(const size_t pos) const;
 
     // Setters
     PolynomialGeneric<F>& set(const std::vector<F>& cvect) throw (PolynomialException);
     PolynomialGeneric<F>& setDesc(const std::vector<F>& cvect) throw (PolynomialException);
-    PolynomialGeneric<F>& set(size_t pos, const F& c = static_cast<F>(0)) throw (PolynomialException);
+    PolynomialGeneric<F>& set(const size_t pos, const F& c = static_cast<F>(0)) throw (PolynomialException);
 
     // Insert and remove coefficients
-    PolynomialGeneric<F>& insert(size_t pos, const F& c) throw (PolynomialException);
-    PolynomialGeneric<F>& remove(size_t pos);
+    PolynomialGeneric<F>& insert(const size_t pos, const F& c) throw (PolynomialException);
+    PolynomialGeneric<F>& remove(const size_t pos);
 
     // Degree of the polynomial
     size_t degree() const;
@@ -171,7 +171,7 @@ public:
     PolynomialGeneric<F> integ(const F& c = static_cast<F>(0)) const throw (PolynomialException);
 
     // Display the polynomial
-    void display(char arg = 'x', std::ostream& str = std::cout) const;
+    void display(const char arg = 'x', std::ostream& str = std::cout) const;
 
     // Assignment operator
     PolynomialGeneric<F>& operator=(const PolynomialGeneric<F>& poly) throw (PolynomialException);

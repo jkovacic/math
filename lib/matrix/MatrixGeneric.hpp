@@ -148,14 +148,14 @@ protected:
      * function are usually passed directly to std::vector.at() which throws
      * an exception if 'pos' is out of the vector's range.
      */
-    inline size_t _pos(size_t row, size_t column) const
+    inline size_t _pos(const size_t row, const size_t column) const
     {
         return ( row * this->cols + column );
     }
 
 public:
     // Constructor
-    MatrixGeneric(size_t rows = 1, size_t columns = 1) throw (MatrixException);
+    MatrixGeneric(const size_t rows = 1, const size_t columns = 1) throw (MatrixException);
     // Copy constructor
     MatrixGeneric(const MatrixGeneric& orig) throw (MatrixException);
 
@@ -164,14 +164,14 @@ public:
     size_t nrColumns() const;
 
     // Get and set the element of the specified row and column
-    T get(size_t row, size_t column) const throw (MatrixException);
-    T& at(size_t row, size_t column) throw (MatrixException);
-    const T& at(size_t row, size_t column) const throw(MatrixException);
-    T& operator()(size_t row, size_t column) throw(MatrixException);
-    const T& operator()(size_t row, size_t column) const throw(MatrixException);
-    T& operator()(size_t idx) throw(MatrixException);
-    const T& operator()(size_t idx) const throw(MatrixException);
-    MatrixGeneric<T>& set(size_t row, size_t column, const T& element) throw (MatrixException);  
+    T get(const size_t row, const size_t column) const throw (MatrixException);
+    T& at(const size_t row, const size_t column) throw (MatrixException);
+    const T& at(const size_t row, const size_t column) const throw(MatrixException);
+    T& operator()(const size_t row, const size_t column) throw(MatrixException);
+    const T& operator()(const size_t row, const size_t column) const throw(MatrixException);
+    T& operator()(const size_t idx) throw(MatrixException);
+    const T& operator()(const size_t idx) const throw(MatrixException);
+    MatrixGeneric<T>& set(const size_t row, const size_t column, const T& element) throw (MatrixException);  
 
     // Display elements of the matrix
     void display(std::ostream& str = std::cout) const throw (MatrixException);
@@ -195,10 +195,10 @@ public:
     MatrixGeneric<T> conj() const throw (MatrixException);
 
     // Insert or remove rows/columns.
-    virtual MatrixGeneric<T>& removeRow(size_t rowNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& removeColumn(size_t colNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertRow(size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertColumn(size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    virtual MatrixGeneric<T>& removeRow(const size_t rowNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& removeColumn(const size_t colNr) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    virtual MatrixGeneric<T>& insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();

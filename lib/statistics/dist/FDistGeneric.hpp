@@ -70,7 +70,7 @@ namespace FDist
           const F& x,
           const F& d1,
           const F& d2,
-          bool lowerTail = true
+          const bool lowerTail = true
        ) throw (StatisticsException);
 
 
@@ -79,7 +79,7 @@ namespace FDist
           const F& p,
           const F& d1,
           const F& d2,
-          bool lowerTail = true
+          const bool lowerTail = true
         ) throw (math::StatisticsException);
 
 }  // namespace FDist

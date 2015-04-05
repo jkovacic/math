@@ -170,7 +170,7 @@ F math::ContUniformDist::prob(
       const F& x,
       const F& min,
       const F& max,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     /*
@@ -247,7 +247,7 @@ F math::ContUniformDist::quant(
       const F& p,
       const F& min,
       const F& max,
-      bool lowerTail
+      const bool lowerTail
     ) throw (math::StatisticsException)
 {
     // sanity check

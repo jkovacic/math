@@ -52,7 +52,7 @@ struct RootFindException : public IMathException
 
     err_codes error;    /// type of an error
     // Constructor
-    RootFindException(err_codes err);
+    RootFindException(const RootFindException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };

@@ -96,7 +96,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined at given 'x'
      */
-    virtual T fa(const T& x, size_t i) const throw (FunctionException) = 0;
+    virtual T fa(const T& x, const size_t i) const throw (FunctionException) = 0;
 
     /*
      * An interface for the function that returns the i^th coefficient
@@ -113,7 +113,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined at given 'x'
      */
-    virtual T fb(const T& x, size_t i) const throw (FunctionException) = 0;
+    virtual T fb(const T& x, const size_t i) const throw (FunctionException) = 0;
 
     virtual ~ICtdFracFuncGeneric();
 

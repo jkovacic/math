@@ -49,7 +49,7 @@ limitations under the License.
  *        input parameters (dim must be at least 1)
  */
 template <class T>
-math::SqMatrixGeneric<T>::SqMatrixGeneric(size_t dim) throw (math::MatrixException) :
+math::SqMatrixGeneric<T>::SqMatrixGeneric(const size_t dim) throw (math::MatrixException) :
     math::MatrixGeneric<T>(dim, dim)
 {
     /*
@@ -476,21 +476,21 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::Matr
  * Therefore they will automatically throw an exception if called.
  */
 template <class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeRow(size_t rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeRow(const size_t rowNr) throw (math::MatrixException)
 {
     throw math::MatrixException(MatrixException::FORBIDDEN);
     (void) rowNr;
 }
 
 template <class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeColumn(size_t colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::removeColumn(const size_t colNr) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
     (void) colNr;
 }
 
 template <class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(size_t rowNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(const size_t rowNr, const T& el) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
     (void) rowNr;
@@ -498,7 +498,7 @@ math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertRow(size_t rowNr, const 
 }
 
 template <class T>
-math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(size_t colNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::SqMatrixGeneric<T>::insertColumn(const size_t colNr, const T& el) throw (math::MatrixException)
 {
     throw math::MatrixException(math::MatrixException::FORBIDDEN);
     (void) colNr;
