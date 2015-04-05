@@ -34,6 +34,7 @@ limitations under the License.
 // no #include "BinomialDistGeneric.h" !!!
 #include <cmath>
 #include <algorithm>
+#include <limits>
 
 # include "../settings/stat_settings.h"
 
@@ -45,6 +46,7 @@ limitations under the License.
 
 #include "exception/StatisticsException.hpp"
 #include "exception/SpecFunException.hpp"
+#include "exception/CombinatoricsException.hpp"
 
 
 
@@ -234,9 +236,40 @@ F math::BinomDist::pmf(
      *         \   /
      */
 
-    return static_cast<F>( math::IntCombinatorics::binom<I>(n, k) ) *
+    const F ONE = static_cast<F>(1);
+    F bnm;
+
+    try
+    {
+        /*
+         * This function to evaluate binom is usually
+         * more efficient....
+         */
+
+        bnm = static_cast<F>( math::IntCombinatorics::binom<I>(n, k) );
+    }
+    catch ( const math::CombinatoricsException& cex )
+    {
+        /*
+         * ... but if it failed due to an integer overflow,
+         * it is evaluated via the beta function:
+         * 
+         *   /   \
+         *   | n |              1
+         *   |   | = -----------------------
+         *   | k |    (n+1) * B(n-k+1, k+1)
+         *   \   /
+         * 
+         */
+
+        bnm = ONE /
+                ( (static_cast<F>(n) + ONE) *
+                   math::SpecFun::beta<F>(static_cast<F>(n-k)+ONE, static_cast<F>(n)+ONE) );
+    }
+
+    return bnm *
            math::IntExponentiator::power<F, I>(p, k) *
-           math::IntExponentiator::power<F, I>(static_cast<F>(1)-p, n-k);
+           math::IntExponentiator::power<F, I>(ONE-p, n-k);
 
 }
 
@@ -394,7 +427,7 @@ F math::BinomDist::prob(
             // P(X>0) = 1 - pmf(0)
             if ( false==lowerTail && false==incl )
             {
-                return static_cast<F>(1) - math::BinomDist::pmf<F, I>(static_cast<I>(0), n, p);
+                return ( static_cast<F>(1) - math::BinomDist::pmf<F, I>(static_cast<I>(0), n, p) );
             }
         }
 
@@ -410,7 +443,7 @@ F math::BinomDist::prob(
             // P(X<n) = 1 - pmf(n)
             if ( true==lowerTail && false==incl )
             {
-                return static_cast<F>(1) - math::BinomDist::pmf<F, I>(n, n, p);
+                return ( static_cast<F>(1) - math::BinomDist::pmf<F, I>(n, n, p) );
             }
 
             // P(X>=n) = pmf(n)
@@ -434,11 +467,11 @@ F math::BinomDist::prob(
         const F Ip = ( lowerTail != incl ?
                 math::SpecFun::incBetaLowerReg<F>(
                      static_cast<F>(k),
-                     static_cast<F>(n) - static_cast<F>(k) + static_cast<F>(1),
+                     static_cast<F>(n-k) + static_cast<F>(1),
         		     p, TOL ) :
                 math::SpecFun::incBetaLowerReg<F>(
                      static_cast<F>(k) + static_cast<F>(1),
-                     static_cast<F>(n) - static_cast<F>(k),
+                     static_cast<F>(n-k),
                      p, TOL )   );
 
         // subtract the inc. beta function from 1 if necessary
@@ -492,6 +525,7 @@ I math::BinomDist::quant(
           bool lowerTail
         ) throw(math::StatisticsException)
 {
+    const I Imax = std::numeric_limits<I>::max();
     const I ONE = static_cast<I>(1);
     const I ZERO = static_cast<I>(0);
 
@@ -524,13 +558,13 @@ I math::BinomDist::quant(
     const bool SV = ( true==lowerTail ? smallest : !smallest );
 
     /*
-     * Algorithm proposed in Numerical Recipes, 3rd Edition, page 339
+     * Algorithm proposed in Numerical Recipes, 3rd Edition, page 339.
+     * Many integer checks have been added to improve robustness.
      */
 
     I k = static_cast<I>( math::BinomDist::mean<F, I>(n, PB) );
     I step = ONE;
     I kl, ku;
-    const I N1 = n + ONE;
     F cdf = math::BinomDist::prob<F, I>(k, n, PB, false);
 
     if ( prob < cdf )
@@ -538,25 +572,33 @@ I math::BinomDist::quant(
         do
         {
             k = ( k<step ? ZERO : k-step );
-            step += step;
+            step = ( step<(Imax-step) ? step * static_cast<I>(2) : Imax );
             cdf = math::BinomDist::prob<F, I>(k, n, PB, false);
         }
         while ( prob < cdf );
 
+        const I s2 = step / static_cast<I>(2);
         kl = k;
-        ku = k + step / static_cast<I>(2);
+        ku = std::min( ( k<=(Imax-s2) ? k + s2 : Imax ), n );
     }
     else
     {
         do
         {
-            k = ( k>N1-step ? N1 : k+step );
-            step += step;
+            k = std::min( ( k<=(Imax-step) ? k+step : Imax ), n );
+            step = ( step<(Imax-step) ? step * static_cast<I>(2) : Imax );
             cdf = math::BinomDist::prob<F, I>(k, n, PB, false);
+            if ( k == n )
+            {
+                // prevent possible infinite loop if 'cdf'
+                // is still less than 'prob'
+                break;  // out of do - while
+            }
         }
         while ( prob > cdf );
 
-        kl = k - step / static_cast<I>(2);
+        const I s2 = step / static_cast<I>(2);
+        kl = ( k>=s2 ? k-s2 : ZERO );
         ku = k;
     }
 
