@@ -605,8 +605,12 @@ I math::BinomDist::quant(
     // Bisection between 'kl' and 'ku'
     while ( (ku-kl) > ONE )
     {
-    	// when a positive number is casted to an integer, it is always rounded down
-        k = (ku + kl) / static_cast<I>(2);
+        /*
+         * Equivalent to (kl + ku) / 2, but more robust
+    	 * Note: when a positive number is casted to an integer,
+         * it is always rounded down.
+         */
+        k = kl + (ku - kl) / static_cast<I>(2);
 
         if ( prob < math::BinomDist::prob<F, I>(k, n, PB, false) )
         {
