@@ -838,7 +838,7 @@ F math::RootFind::quasiHalley(
      */
 
     // The algorithm is implemented in __halleyCommon:
-	return math::RootFind::__private::__halleyCommon<F>(
+    return math::RootFind::__private::__halleyCommon<F>(
         f, f, f, x0, epsy, h, Nmax, false, false);
 }
 
@@ -890,7 +890,7 @@ F math::RootFind::halleyMod(
      */
 
     // The algorithm is implemented in __halleyCommon:
-	return math::RootFind::__private::__halleyCommon<F>(
+    return math::RootFind::__private::__halleyCommon<F>(
         f, diff, diff2, x0, epsy, static_cast<F>(0), Nmax, true, true);
 }
 
