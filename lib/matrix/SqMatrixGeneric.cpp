@@ -27,7 +27,7 @@ limitations under the License.
 #include "util/NumericUtil.hpp"
 #include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
-#include "lineq/LinearEquationSolverGeneric.hpp"
+#include "matrix/LinearEquationSolverGeneric.hpp"
 #include "../settings/omp_settings.h"
 #include "omp/omp_header.h"
 #include "omp/omp_coarse.h"

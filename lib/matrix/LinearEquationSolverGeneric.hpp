@@ -58,7 +58,7 @@ namespace LinearEquationSolver
 }  // namespace math
 
 // DEFINITION
-#include "lineq/LinearEquationSolverGeneric.cpp"
+#include "matrix/LinearEquationSolverGeneric.cpp"
 
 
 #endif // _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_

@@ -26,7 +26,7 @@ limitations under the License.
 // no #include "PolynomialRegressionGeneric.hpp" !!!
 #include "matrix/MatrixGeneric.hpp"
 #include "matrix/SqMatrixGeneric.hpp"
-#include "lineq/LinearEquationSolverGeneric.hpp"
+#include "matrix/LinearEquationSolverGeneric.hpp"
 #include "exception/MatrixException.hpp"
 #include "exception/CurveFittingException.hpp"
 

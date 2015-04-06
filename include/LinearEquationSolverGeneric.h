@@ -27,6 +27,6 @@ limitations under the License.
 #ifndef _MATH_LINEAREQUATIONSOLVERGENERIC_H_
 #define _MATH_LINEAREQUATIONSOLVERGENERIC_H_
 
-#include "lineq/LinearEquationSolverGeneric.hpp"
+#include "matrix/LinearEquationSolverGeneric.hpp"
 
 #endif  /*  _LINEAREQUATIONSOLVERGENERIC_H_  */
