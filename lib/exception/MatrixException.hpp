@@ -50,7 +50,7 @@ struct MatrixException : public IMathException
         INVALID_DIMENSION,          /// Dimension is not valid for the operation
         OUT_OF_RANGE,               /// Attempt to access an element out of defined range
         NOT_ENOUGH_ELEMENTS,        /// Not enough elements
-        NON_INVERTIBLE_MATRIX       /// Matrix cannot be inverted
+        NON_INVERTIBLE_MATRIX,      /// Matrix cannot be inverted
     };
 
     err_codes error;     /// Type of an error

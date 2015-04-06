@@ -28,7 +28,7 @@ limitations under the License.
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
 #include "LinearEquationSolverGeneric.h"
-#include "LinearEquationSolverException.h"
+#include "MatrixException.h"
 
 
 using namespace std;
@@ -74,10 +74,10 @@ void lineqSolverTest()
             cerr << "Unique solution does not exist" << endl;
         }
     }
-    catch ( const LinearEquationSolverException& leqex )
+    catch ( const MatrixException& mex )
     {
-        cerr << "LinearEquationSolverException caught: '";
-        leqex.what();
+        cerr << "MatrixException caught: '";
+        mex.what();
         cerr << "'" << endl;
     }
     catch (...)

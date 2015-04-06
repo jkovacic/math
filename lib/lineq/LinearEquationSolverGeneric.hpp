@@ -31,7 +31,7 @@ limitations under the License.
 
 #include <complex>
 
-#include "exception/LinearEquationSolverException.hpp"
+#include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
 #include "matrix/SqMatrixGeneric.hpp"
 
@@ -50,7 +50,7 @@ namespace LinearEquationSolver
               const SqMatrixGeneric<T>& coef,
               const MatrixGeneric<T>& term,
               MatrixGeneric<T>& sol
-            ) throw (LinearEquationSolverException);
+            ) throw (MatrixException);
 
 
 }  // namespace LinearEquationSolver

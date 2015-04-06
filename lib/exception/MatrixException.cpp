@@ -56,7 +56,7 @@ void math::MatrixException::what(std::ostream& str) const
             str << "Too many rows or columns";
             break;
         case math::MatrixException::INVALID_DIMENSION :
-            str << "Invalid dimension of matrix";
+            str << "Invalid dimension of a matrix";
             break;
         case math::MatrixException::OUT_OF_RANGE :
             str << "Attempted to access elements out of valid range";

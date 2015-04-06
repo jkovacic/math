@@ -187,7 +187,7 @@ TEST_RAT_OBJDEP = RationalException
 TEST_MATRIX_OBJDEP = MatrixException
 TEST_RATMAT_OBJDEP = MatrixException RationalException
 TEST_POLY_OBJDEP = PolynomialException
-TEST_LINEQ_OBJDEP = LinearEquationSolverException
+TEST_LINEQ_OBJDEP = MatrixException
 TEST_CURVEFIT_OBJDEP = CurveFittingException
 TEST_INTEXP_OBJDEP = MatrixException QuaternionException RationalException PolynomialException
 TEST_INTFACTOR_OBJDEP = IntFactorizationException
@@ -361,9 +361,6 @@ $(OBJDIR)RationalException$(OBJSUFFIX) : $(LIBEXCPDIR)RationalException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)QuaternionException$(OBJSUFFIX) : $(LIBEXCPDIR)QuaternionException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
-
-$(OBJDIR)LinearEquationSolverException$(OBJSUFFIX) : $(LIBEXCPDIR)LinearEquationSolverException.cpp
 	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
 
 $(OBJDIR)CurveFittingException$(OBJSUFFIX) : $(LIBEXCPDIR)CurveFittingException.cpp

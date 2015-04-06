@@ -27,6 +27,7 @@ limitations under the License.
 #include "matrix/MatrixGeneric.hpp"
 #include "matrix/SqMatrixGeneric.hpp"
 #include "lineq/LinearEquationSolverGeneric.hpp"
+#include "exception/MatrixException.hpp"
 #include "exception/CurveFittingException.hpp"
 
 #include <cstddef>
@@ -163,12 +164,14 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
     }  // try
     catch ( const math::MatrixException& mex )
     {
-        // the only possible MatrixException is out of memory
-        throw math::CurveFittingException(math::CurveFittingException::OUT_OF_MEMORY);
-    }
-    catch ( const math::LinearEquationSolverException& leqex )
-    {
-        throw math::CurveFittingException(math::CurveFittingException::CURVE_GENERATION_FAILED);
+        if ( math::MatrixException::OUT_OF_MEMORY == mex.error )
+        {
+            throw math::CurveFittingException(math::CurveFittingException::OUT_OF_MEMORY);
+        }
+        else
+        {
+            throw math::CurveFittingException(math::CurveFittingException::CURVE_GENERATION_FAILED);
+        }
     }
     catch ( const math::PolynomialException& pex )
     {

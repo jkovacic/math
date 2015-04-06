@@ -28,7 +28,6 @@ limitations under the License.
 #include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
 #include "lineq/LinearEquationSolverGeneric.hpp"
-#include "exception/LinearEquationSolverException.hpp"
 #include "../settings/omp_settings.h"
 #include "omp/omp_header.h"
 #include "omp/omp_coarse.h"
@@ -363,31 +362,24 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
      * This functionality is already implemented by the class LinearEquationSolverGeneric.
      */
 
-    try
+    // prepare an identity matrix NxN...
+    math::SqMatrixGeneric<T> id(this->rows);
+    id.setUnit();
+
+    // Inverse matrix is a solution (if it exists) of the equation:
+    // this * inv = id
+    math::SqMatrixGeneric<T> retVal;
+
+    const bool succ = math::LinearEquationSolver::solve<T>(*this, id, retVal);
+
+    // is *this an uninvertible matrix? (determinant()=0):
+    if ( false == succ )
     {
-        // prepare an identity matrix NxN...
-        math::SqMatrixGeneric<T> id(this->rows);
-        id.setUnit();
-
-        // Inverse matrix is a solution (if it exists) of the equation:
-        // this * inv = id
-        math::SqMatrixGeneric<T> retVal;
-
-        const bool succ = math::LinearEquationSolver::solve<T>(*this, id, retVal);
-
-        // is *this an uninvertible matrix? (determinant()=0):
-        if ( false == succ )
-        {
-            throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
-        }
-
-        return retVal;
+        throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
     }
-    catch ( const LinearEquationSolverException& leqex )
-    {
-        // This exception can only be thrown if allocation of memory failed.
-        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
-    }
+
+    return retVal;
+
 }
 
 /**
