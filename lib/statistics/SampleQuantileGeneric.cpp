@@ -582,7 +582,8 @@ F math::SampleQuantileGeneric<F>::ecdf(const F& t) const
      */
     while ( (ku-kl) > WMAX )
     {
-        k = (ku + kl) / 2;
+        // A more robust version (w.r.t. int. range) of (ku+kl)/2
+        k = kl + (ku - kl) / 2;
 
         if ( v.at(k) < t  )
         {
