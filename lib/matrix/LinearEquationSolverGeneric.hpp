@@ -43,10 +43,9 @@ namespace math
  */
 namespace LinearEquationSolver
 {
-    
-    // Solves a system of linear equations
+
     template <class T>
-    bool solve(
+    bool solveGaussJordan(
               const SqMatrixGeneric<T>& coef,
               const MatrixGeneric<T>& term,
               MatrixGeneric<T>& sol

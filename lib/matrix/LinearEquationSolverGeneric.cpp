@@ -36,7 +36,8 @@ limitations under the License.
 
 
 /**
- * Solves the system of linear equations and returns its unique solution if it exists.
+ * Solves the system of linear equations using the Gauss - Jordan elimination
+ * method and returns its unique solution if it exists.
  * 
  * Number of coef's columns must be equal to the number of term's rows.
  * 
@@ -49,15 +50,17 @@ limitations under the License.
  * 
  * @return a logical value indicating whether a unique solution was found
  * 
- * @throw LinearEquationSolverException if dimensions of 'coef' and 'term' are invalid or internal allocation of memory failed
+ * @throw MatrixException if dimensions of 'coef' and 'term' are invalid or internal allocation of memory failed
  */
 template <class T>
-bool math::LinearEquationSolver::solve(
+bool math::LinearEquationSolver::solveGaussJordan(
           const math::SqMatrixGeneric<T>& coef,
           const math::MatrixGeneric<T>& term,
           math::MatrixGeneric<T>& sol
         ) throw (math::MatrixException)
 {
+    // TODO pivoting for better stability
+
     /*
      * The Gaussian elimination algorithm is implemented:
      * multiples of coef's and term's lines are added to other lines until

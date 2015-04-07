@@ -370,7 +370,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
     // this * inv = id
     math::SqMatrixGeneric<T> retVal;
 
-    const bool succ = math::LinearEquationSolver::solve<T>(*this, id, retVal);
+    const bool succ = math::LinearEquationSolver::solveGaussJordan<T>(*this, id, retVal);
 
     // is *this an uninvertible matrix? (determinant()=0):
     if ( false == succ )

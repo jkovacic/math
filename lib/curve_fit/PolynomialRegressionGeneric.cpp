@@ -142,9 +142,13 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
             }  // for i
         }  // for it
 
-        // Matrices are filled, solve the system of linear equations
+        /*
+         * Matrices are filled, solve the system of linear equations.
+         * Note that 'degree' will usually be rather small, hence
+         * the Gauss - Jordan method will be sufficient in majority of cases.
+         */
         math::MatrixGeneric<F> x;
-        const bool succ = math::LinearEquationSolver::solve<F>(a, b, x);
+        const bool succ = math::LinearEquationSolver::solveGaussJordan<F>(a, b, x);
 
         // System of linear equations successfully solved?
         if ( false == succ )
