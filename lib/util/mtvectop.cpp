@@ -64,7 +64,7 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
     // Coarse grained parallelism, if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(dest, v1, v2, add)
+                default(none) shared(dest, v1, v2)
     {
         // Depending on the number of available threads,
         // determine the ideal nr. of samples per thread,
@@ -209,7 +209,7 @@ void math::mtvectscalaradd(
     // Coarse grained parallelism, if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(dest, v1, scalar, add, vectFirst)
+                default(none) shared(dest, v1, scalar)
     {
         // Depending on the number of available threads,
         // determine the ideal nr. of samples per thread,
@@ -313,7 +313,7 @@ bool math::mtvectewmult(
     // Coarse grained parallelism, if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(dest, v1, v2, mult, retVal)
+                default(none) shared(dest, v1, v2, retVal)
     {
         // Depending on the number of available threads,
         // determine the ideal nr. of samples per thread,

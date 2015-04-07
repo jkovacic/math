@@ -112,7 +112,7 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::StatisticsExcept
     // Coarse grained parallelism:
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(x, retVal, min)
+                default(none) shared(x, retVal)
     {
     	const size_t thnr = omp_get_thread_num();
         const size_t nthreads  = omp_get_num_threads();

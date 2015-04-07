@@ -203,7 +203,7 @@ F __closedNewtonCotes(
         // Coarse grained parallelism
         #pragma omp parallel num_threads(ompIdeal(N-1)) \
                     if((N-1)>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(f, a, coef, degree) \
+                    default(none) shared(f, a, coef) \
                     reduction(+ : sum)
         {
             const size_t thnr = omp_get_thread_num();
