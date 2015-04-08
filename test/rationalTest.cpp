@@ -45,8 +45,10 @@ void rationalTest()
         cout << "s = 34.824 = " << s << "\texpected 4353/125" << endl;
         s.set("-4.285714", 6);
         cout << "s = -4.|285714 = " << s << "\texpected -30/7" << endl;
+        cout << "abs(" << s << ") = " << abs(s) << "\texpected 30/7" << endl;
         s.set("3,5167", 3);
         cout << "s = 3.5|167 = " << s << "\texpected 17566/4995" << endl;
+        cout << "abs(" << s << ") = " << abs(s) << "\texpected 17566/4995" << endl;
         cout << endl;
 
         // Constructor test:

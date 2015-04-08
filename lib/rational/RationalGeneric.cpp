@@ -1889,7 +1889,7 @@ bool math::operator<=(
 
 /*
  * Specialization of other classes' templated functions for
- * the class Rational.
+ * the class RationalGeneric.
  *
  * Note: the specialized functions must be implemented within
  *       classes' corresponding namespaces.
@@ -1901,6 +1901,9 @@ namespace math
 namespace NumericUtil
 {
 
+/*
+ * "Specialization" of NumericUtil::isZero()
+ */
 template <typename I>
 bool isZero(const math::RationalGeneric<I>& value, const math::RationalGeneric<I>& eps)
 {
@@ -1913,3 +1916,18 @@ bool isZero(const math::RationalGeneric<I>& value, const math::RationalGeneric<I
 }  // namespace NumericUtil
 
 }  // namespace math
+
+
+namespace std
+{
+
+/*
+ * "Specialization" of std::abs()
+ */
+template <typename I>
+math::RationalGeneric<I> abs(const math::RationalGeneric<I>& f)
+{
+    return ( true==f.isNegative() ? -f : f );
+}
+
+}
