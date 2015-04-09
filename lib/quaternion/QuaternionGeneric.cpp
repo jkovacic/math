@@ -859,3 +859,28 @@ std::ostream& math::operator<<(std::ostream& output, const math::QuaternionGener
     // ... and return reference of the stream
     return output;
 }
+
+
+
+/*
+ * Specialization of other classes'/namespaces' templated functions for
+ * the class QuternionGeneric.
+ *
+ * Note: the specialized functions must be implemented within
+ *       corresponding namespaces.
+ */
+
+namespace std
+{
+
+/*
+ * "Specialization" of std::abs()
+ */
+template <typename F>
+F abs(const math::QuaternionGeneric<F>& q)
+{
+    // Absolute value of a quaternion is actually equal to its norm
+    return q.norm();
+}
+
+}

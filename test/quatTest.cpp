@@ -46,6 +46,7 @@ void quaternionTest()
         cout << "zero: " << zeroq << endl;
         cout << "q: " << q << endl;
         cout << "q: 1: " << q.getOne() << "   i: " << q.getI() << "   j: " << q.getJ() << "   k: " << q.getK() << endl;
+        cout << "abs(q): " << abs(q) << " (expected: 2.824889)" << endl;
 
         FQuaternion uq = q.unit();
         cout << "U(q): " << uq << "\tnorm(U(q)): " << uq.norm() << endl;
