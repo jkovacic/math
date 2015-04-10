@@ -62,7 +62,7 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
 
         const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
 
         typename std::vector<T>::iterator it = dest.begin() + istart;
         for ( size_t idx = istart;
@@ -87,7 +87,7 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
 template <class T>
 void math::mtcopy(const T* first, const size_t len, std::vector<T>& dest)
 {
-    math::mtcopy(first, first+len, dest);
+    math::mtcopy<T>(first, first+len, dest);
 }
 
 
@@ -102,7 +102,7 @@ void math::mtcopy(const T* first, const size_t len, std::vector<T>& dest)
 template <class T>
 void math::mtcopy(const std::vector<T>& src, std::vector<T>& dest)
 {
-    math::mtcopy(src.begin(), src.end(), dest);
+    math::mtcopy<T>(src.begin(), src.end(), dest);
 }
 
 
@@ -125,9 +125,9 @@ void math::mtcopy(const std::vector<T>&src,
     // take care that the range does not exceed
     // the actual src's range:
 
-    math::mtcopy(src.begin() + first,
-                 src.begin() + std::min( first+len, src.size() ),
-                 dest);
+    math::mtcopy<T>(src.begin() + first,
+                    src.begin() + std::min<size_t>( first+len, src.size() ),
+                    dest);
 }
 
 
@@ -169,7 +169,7 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
 
         const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
 
         // Iterator to the final element of the source block
         const typename std::vector<T>::const_iterator final = first + iend;

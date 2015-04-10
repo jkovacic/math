@@ -53,7 +53,7 @@ limitations under the License.
 template <class T>
 void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, const bool add=true)
 {
-    const size_t N = std::min( v1.size(), v2.size() );
+    const size_t N = std::min<size_t>( v1.size(), v2.size() );
 
     // Only resize if 'dest' is too small
     if ( dest.size() < N )
@@ -74,7 +74,7 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
 
         const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
 
         typename std::vector<T>::const_iterator it1 = v1.begin() + istart;
         typename std::vector<T>::const_iterator it2 = v2.begin() + istart;
@@ -141,7 +141,7 @@ void math::mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>&
 
         const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
 
         typename std::vector<T>::const_iterator srcit = v1.begin() + istart;
         typename std::vector<T>::iterator destit = dest.begin() + istart;
@@ -219,7 +219,7 @@ void math::mtvectscalaradd(
 
         const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
 
         typename std::vector<T>::const_iterator srcit = v1.begin() + istart;
         typename std::vector<T>::iterator destit = dest.begin() + istart;
@@ -302,7 +302,7 @@ bool math::mtvectewmult(
 {
     bool retVal = true;
 
-    const size_t N = std::min( v1.size(), v2.size() );
+    const size_t N = std::min<size_t>( v1.size(), v2.size() );
 
     // Only resize if 'dest' is too small
     if ( dest.size() < N )
@@ -323,7 +323,7 @@ bool math::mtvectewmult(
 
         const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
         const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
 
         typename std::vector<T>::const_iterator it1 = v1.begin() + istart;
         typename std::vector<T>::const_iterator it2 = v2.begin() + istart;
