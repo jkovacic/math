@@ -122,11 +122,13 @@ void math::mtcopy(const std::vector<T>&src,
                   const size_t len,
                   std::vector<T>& dest)
 {
-    // take care that the range does not exceed
-    // the actual src's range:
+    // First make sure that "first+len" does not exceed size_t's range
+    const size_t lenlim = std::min<size_t>(len, static_cast<size_t>(-1)-first);
 
+    // Then take care that the range does not exceed
+    // the actual src's range:
     math::mtcopy<T>(src.begin() + first,
-                    src.begin() + std::min<size_t>( first+len, src.size() ),
+                    src.begin() + std::min<size_t>( first+lenlim, src.size() ),
                     dest);
 }
 
@@ -136,6 +138,8 @@ void math::mtcopy(const std::vector<T>&src,
  *
  * @note The function changes the actual content of 'dest'!
  *
+ * @note Nothing will be done if 'first' is located after 'last'.
+ * 
  * @param first - iterator to the initial element of the selected range
  * @param last - iterator to the final position of the range (will not be copied)
  * @param dest - reference to a vector where the selected range will be copied to
@@ -149,6 +153,18 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
      * 'first' and 'last' are instances of a Random Access Iterator
      * with numerous properly defined operators
      */
+
+    /*
+     * Sanity check.
+     * If 'first' is located after 'last', nothing will be done.
+     * 
+     * Note that inequality comparison operators exist
+     * for random access iterators, incl. std::vector::const_iterator.
+     */
+    if ( last <= first )
+    {
+        return;
+    }
 
     // Number of elements in the range
     const size_t N = last - first;
