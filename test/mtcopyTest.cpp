@@ -77,7 +77,7 @@ void mtcopyTest()
         cout << "Expected: 56  12  56  23  -23  92  -1" << endl;
 
         cout << "Copy the entire vector: " << endl;
-        sort(v. begin(), v.end());
+        sort(v.begin(), v.end());
         mtcopy(v, v2);
         cout << "Copy:     ";
         printVector(v2);
