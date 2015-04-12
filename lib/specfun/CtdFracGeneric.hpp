@@ -58,22 +58,22 @@ namespace  CtdFrac
  *
  * and
  *
- *   T fa(const T& x, size_t i) const throw(FunctionException)
+ *   T fb(const T& x, size_t i) const throw(FunctionException)
  *
- *  that return values of 'a_i' and 'b_i', respectively, optionally
- *  depending on 'x'. The functions are expected to throw
- *  FuncException::UNDEFINED if the value is not defined for the given
- *  input argument 'x'.
+ * that return values of 'a_i' and 'b_i', respectively, optionally
+ * depending on 'x'. The functions are expected to throw
+ * FunctionException::UNDEFINED if the value is not defined for the
+ * given input argument 'x'.
  *
- *  The instance of the derived class is then passed to the function
- *  math::CtdFrac::ctdFrac() that actually evaluates the continued
- *  fraction and calls fa() and fb() as applicable.
+ * The instance of the derived class is then passed to the function
+ * math::CtdFrac::ctdFrac() that actually evaluates the continued
+ * fraction and calls fa() and fb() as applicable.
  *
- *  @note 'fa' and 'fb' should not be stateful, their return values
- *  should only depend on 'x' and 'i'.
+ * @note 'fa' and 'fb' should not be stateful, their return values
+ * should only depend on 'x' and 'i'.
  *
- *  It is possible to parameterize the class by introducing additional
- *  properties that can be set via setter methods.
+ * It is possible to parameterize the class by introducing additional
+ * properties that can be set via setter methods.
  */
 template <class T>
 class ICtdFracFuncGeneric
