@@ -291,6 +291,10 @@ OPENMP_FLAG = -fopenmp
 DEBUG_MACRO = -D_DEBUG
 OPENMP_MACRO = -D_OPENMP
 
+# GCC compile and output flag
+CFLAG = -c
+OFLAG = -o
+
 # GCC flag and paths to include directories
 INCLUDEFLAG = -I
 INCLIB = $(LIBDIR)
@@ -349,105 +353,105 @@ _openmp_flags :
 
 # Build rules for exception classes
 $(OBJDIR)IMathException$(OBJSUFFIX) : $(LIBEXCPDIR)IMathException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)MatrixException$(OBJSUFFIX) : $(LIBEXCPDIR)MatrixException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)PolynomialException$(OBJSUFFIX) : $(LIBEXCPDIR)PolynomialException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)RationalException$(OBJSUFFIX) : $(LIBEXCPDIR)RationalException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)QuaternionException$(OBJSUFFIX) : $(LIBEXCPDIR)QuaternionException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)CurveFittingException$(OBJSUFFIX) : $(LIBEXCPDIR)CurveFittingException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)CombinatoricsException$(OBJSUFFIX) : $(LIBEXCPDIR)CombinatoricsException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)IntFactorizationException$(OBJSUFFIX) : $(LIBEXCPDIR)IntFactorizationException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)StatisticsException$(OBJSUFFIX) : $(LIBEXCPDIR)StatisticsException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)FunctionException$(OBJSUFFIX) : $(LIBEXCPDIR)FunctionException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)CalculusException$(OBJSUFFIX) : $(LIBEXCPDIR)CalculusException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)RootFindException$(OBJSUFFIX) : $(LIBEXCPDIR)RootFindException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)SpecFunException$(OBJSUFFIX) : $(LIBEXCPDIR)SpecFunException.cpp
-	$(CPP) -c $(CPPFLAGS) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
 
 
 # Build rules for test modules
 $(OBJDIR)mtcopyTest$(OBJSUFFIX) : $(TESTDIR)mtcopyTest.cpp $(call gen_deps,$(TEST_MTCOPY_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)quatTest$(OBJSUFFIX) : $(TESTDIR)quatTest.cpp $(call gen_deps,$(TEST_QUAT_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)rationalTest$(OBJSUFFIX) : $(TESTDIR)rationalTest.cpp $(call gen_deps,$(TEST_RAT_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)matrixTest$(OBJSUFFIX) : $(TESTDIR)matrixTest.cpp $(call gen_deps,$(TEST_MATRIX_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)ratmatTest$(OBJSUFFIX) : $(TESTDIR)ratmatTest.cpp $(call gen_deps,$(TEST_RATMAT_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)polyTest$(OBJSUFFIX) : $(TESTDIR)polyTest.cpp $(call gen_deps,$(TEST_POLY_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)lineqTest$(OBJSUFFIX) : $(TESTDIR)lineqTest.cpp $(call gen_deps,$(TEST_LINEQ_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)curvefitTest$(OBJSUFFIX) : $(TESTDIR)curvefitTest.cpp $(call gen_deps,$(TEST_CURVEFIT_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)intexpTest$(OBJSUFFIX) : $(TESTDIR)intexpTest.cpp $(call gen_deps,$(TEST_INTEXP_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)intfactorTest$(OBJSUFFIX) : $(TESTDIR)intfactorTest.cpp $(call gen_deps,$(TEST_INTFACTOR_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)intcombTest$(OBJSUFFIX) : $(TESTDIR)intcombTest.cpp $(call gen_deps,$(TEST_INTCOMB_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)specfunTest$(OBJSUFFIX) : $(TESTDIR)specfunTest.cpp $(call gen_deps,$(TEST_SPECFUN_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)combTest$(OBJSUFFIX) : $(TESTDIR)combTest.cpp $(call gen_deps,$(TEST_COMB_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)calcTest$(OBJSUFFIX) : $(TESTDIR)calcTest.cpp $(call gen_deps,$(TEST_CALC_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)rootfindTest$(OBJSUFFIX) : $(TESTDIR)rootfindTest.cpp $(call gen_deps,$(TEST_ROOTFIND_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)statTest$(OBJSUFFIX) : $(TESTDIR)statTest.cpp $(call gen_deps,$(TEST_STAT_GENDEP))
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 
 
 # Build rule for the main test module
 $(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp
-	$(CPP) -c $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< -o $@
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 
 # Build (link) rule for the final test application
 $(TARGET) : $(OBJDIR) $(BUILDDIR) $(TARGETOBJ) $(TESTOBJS) $(TEST_LINKOBJS) 
-	$(LINKER) $(LDFLAGS) $(TARGETOBJ) $(TESTOBJS) $(TEST_LINKOBJS) -o $@ 
+	$(LINKER) $(LDFLAGS) $(TARGETOBJ) $(TESTOBJS) $(TEST_LINKOBJS) $(OFLAG) $@ 
 
 
 # Cleanup directives:
