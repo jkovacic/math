@@ -171,8 +171,8 @@ class RationalGeneric
 
 
 private:
-    I num;                /// fraction's numerator
-    I denom;              /// fraction's denominator (will be always assigned a positive value, cannot be 0)
+    I m_num;                /// fraction's numerator
+    I m_denom;              /// fraction's denominator (will be always assigned a positive value, cannot be 0)
 
 public:
 

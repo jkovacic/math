@@ -27,7 +27,7 @@ limitations under the License.
  * distribute large amounts of swaps among multiple threads
  * and thus accelerate the task.
  *
- * @note All thrown exceptions (e.g. std:bad_alloc, std::out_of_range, etc.)
+ * @note All thrown exceptions (e.g. std::out_of_range, etc.)
  *       are transferred to caller functions.
  */
 

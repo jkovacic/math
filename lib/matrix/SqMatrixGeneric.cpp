@@ -124,15 +124,15 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::setDiag(const T& scalar) thr
     // A double for loop will traverse the matrix, its diagonal elements
     // (row == column) will be set to the scalar, others to 0
 
-    const size_t N = this->rows;
+    const size_t& N = this->m_rows;
     const size_t N2 = N * N;
 
     // Coarse grained parallelism:
-    std::vector<T>& els = this->elems;
+    std::vector<T>& els = this->m_elems;
 
     #pragma omp parallel num_threads(ompIdeal(N2)) \
                 if(N2>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(els, scalar)
+                default(none) shared(N, els, scalar)
     {
         const size_t thnr = omp_get_thread_num();
         const size_t nthreads  = omp_get_num_threads();
@@ -204,8 +204,8 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
      * are permitted
      */
     std::vector<T> temp;
-    math::mtcopy(this->elems, temp);
-    const size_t N = this->rows;  // number of rows (and columns)
+    math::mtcopy(this->m_elems, temp);
+    const size_t& N = this->m_rows;  // number of rows (and columns)
 
     /*
      * First part of the algorithm just finds the first occurrence of a
@@ -279,7 +279,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
          *
          * Note: only the outer for loop (for r) will be parallelized.
          */
-        #pragma omp parallel for default(none) shared(temp, i)
+        #pragma omp parallel for default(none) shared(N, temp, i)
         for ( size_t r=i+1; r<N; ++r )
         {
             /*
@@ -308,7 +308,7 @@ T math::SqMatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(temp, prod)
+                default(none) shared(N, temp, prod)
     {
         const size_t thnr = omp_get_thread_num();
         const size_t nthreads  = omp_get_num_threads();
@@ -363,7 +363,7 @@ math::SqMatrixGeneric<T> math::SqMatrixGeneric<T>::inverse() const throw(math::M
      */
 
     // prepare an identity matrix NxN...
-    math::SqMatrixGeneric<T> id(this->rows);
+    math::SqMatrixGeneric<T> id(this->m_rows);
     id.setUnit();
 
     // Inverse matrix is a solution (if it exists) of the equation:
@@ -395,7 +395,7 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
 {
     // TODO: find and implement a better algorithm
 
-    const size_t N = this->rows;       // number of rows (and columns)
+    const size_t& N = this->m_rows;    // number of rows (and columns)
     const size_t Ntr = N * (N-1) / 2;  // number of all elements to be transposed
 
     /*
@@ -411,11 +411,11 @@ math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::transposed() throw(math::Mat
      * in an elegant way. Hence only the outer loop is parallelized.
      * As the threads' load varies, dynamic scheduling is applied.
      */
-    std::vector<T>& els = this->elems;
+    std::vector<T>& els = this->m_elems;
     #pragma omp parallel for \
                 if(Ntr>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(els) \
-                schedule(dynamic)
+                schedule(dynamic) shared(N)
     for ( size_t r=0; r<N-1; ++r )
     {
         for ( size_t c=r+1; c<N; ++c )
@@ -448,7 +448,7 @@ template <class T>
 math::SqMatrixGeneric<T>& math::SqMatrixGeneric<T>::operator*= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
     // Check of additional condition ('m' must have the same dimensions):
-    if ( m.nrRows()!=this->rows || m.nrColumns()!=this->rows )
+    if ( m.nrRows()!=this->m_rows || m.nrColumns()!=this->m_rows )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }

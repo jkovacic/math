@@ -116,7 +116,7 @@ private:
      * Coefficients of the polynomial:
      * p(x) = c0 + c1*x + c2*x^2 + ... + cn*x^n
      */
-    std::vector<F> coef;
+    std::vector<F> m_coef;
 
     // A utility function that copies vector's coefficients
     void __copyCoefs(const std::vector<F>& cvect) throw (PolynomialException);
@@ -132,7 +132,7 @@ private:
      */
     inline bool __isZero() const
     {
-        return ( 1==this->coef.size() && true==math::NumericUtil::isZero<F>(this->coef.at(0)) );
+        return ( 1==this->m_coef.size() && true==math::NumericUtil::isZero<F>(this->m_coef.at(0)) );
     }
 
 

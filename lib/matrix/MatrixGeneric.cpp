@@ -63,19 +63,19 @@ math::MatrixGeneric<T>::MatrixGeneric(const size_t rows, const size_t columns) t
     }
 
     // even theoretically the number of vector's elements is limited
-    if ( columns > this->elems.max_size()/rows )
+    if ( columns > this->m_elems.max_size()/rows )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
 
     try
     {
-        this->rows = rows;
-        this->cols = columns;
+        this->m_rows = rows;
+        this->m_cols = columns;
         // make sure, the vector will be empty
-        this->elems.clear();
+        this->m_elems.clear();
         // allocate memory for required number of elements, initialize each of them
-        this->elems.resize(rows*columns, static_cast<T>(0));
+        this->m_elems.resize(rows*columns, static_cast<T>(0));
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -106,17 +106,17 @@ math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw 
 template <class T>
 void math::MatrixGeneric<T>::_copyElems(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
-    // Check if the original matrix is OK (if its rows and cols are set correctly)
-    if ( orig.rows * orig.cols != orig.elems.size() )
+    // Check if the original matrix is OK (if its m_rows and m_cols are set correctly)
+    if ( orig.m_rows * orig.m_cols != orig.m_elems.size() )
     {
         throw math::MatrixException(MatrixException::INVALID_DIMENSION);
     }
 
     try
     {
-        this->rows = orig.rows;
-        this->cols = orig.cols;
-        math::mtcopy<T>(orig.elems, this->elems);
+        this->m_rows = orig.m_rows;
+        this->m_cols = orig.m_cols;
+        math::mtcopy<T>(orig.m_elems, this->m_elems);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -124,7 +124,7 @@ void math::MatrixGeneric<T>::_copyElems(const math::MatrixGeneric<T>& orig) thro
     }
 
     // Check if the correct number of elements was copied
-    if ( this->rows * this->cols != this->elems.size() )
+    if ( this->m_rows * this->m_cols != this->m_elems.size() )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
@@ -137,7 +137,7 @@ void math::MatrixGeneric<T>::_copyElems(const math::MatrixGeneric<T>& orig) thro
 template <class T>
 size_t math::MatrixGeneric<T>::nrRows() const
 {
-    return this->rows;
+    return this->m_rows;
 }
 
 
@@ -147,7 +147,7 @@ size_t math::MatrixGeneric<T>::nrRows() const
 template <class T>
 size_t math::MatrixGeneric<T>::nrColumns() const
 {
-    return this->cols;
+    return this->m_cols;
 }
 
 
@@ -165,13 +165,13 @@ template <class T>
 T math::MatrixGeneric<T>::get(const size_t row, const size_t column) const throw (math::MatrixException)
 {
     // Check of input parameters
-    if ( row >= this->rows || column >= this->cols )
+    if ( row >= this->m_rows || column >= this->m_cols )
     {
         // At least one input parameter is out of range
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->elems.at(_pos(row, column));
+    return this->m_elems.at(_pos(row, column));
 }
 
 
@@ -196,12 +196,12 @@ template <class T>
 T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) throw (math::MatrixException)
 {
     // Check if input arguments are within the matrix's range
-    if ( row >= this->rows || column >= this->cols )
+    if ( row >= this->m_rows || column >= this->m_cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->elems.at(_pos(row, column));
+    return this->m_elems.at(_pos(row, column));
 }
 
 
@@ -233,12 +233,12 @@ const T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) const
      */
 
     // Check if input arguments are within the matrix's range
-    if ( row >= this->rows || column >= this->cols )
+    if ( row >= this->m_rows || column >= this->m_cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->elems.at(_pos(row, column));
+    return this->m_elems.at(_pos(row, column));
 }
 
 
@@ -258,12 +258,12 @@ template <class T>
 T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t column) throw(math::MatrixException)
 {
     // Check if input arguments are within the matrix's range
-    if ( row >= this->rows || column >= this->cols )
+    if ( row >= this->m_rows || column >= this->m_cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->elems.at(_pos(row, column));
+    return this->m_elems.at(_pos(row, column));
 }
 
 
@@ -290,12 +290,12 @@ const T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t colum
      */
 
     // Check if input arguments are within the matrix's range
-    if ( row >= this->rows || column >= this->cols )
+    if ( row >= this->m_rows || column >= this->m_cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->elems.at(_pos(row, column));
+    return this->m_elems.at(_pos(row, column));
 }
 
 
@@ -319,15 +319,15 @@ template <class T>
 T& math::MatrixGeneric<T>::operator()(const size_t idx) throw(math::MatrixException)
 {
     // check if 'idx' is within elems' range
-    if ( idx >= this->elems.size() )
+    if ( idx >= this->m_elems.size() )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    const size_t col = idx / this->rows;
-    const size_t row = idx % this->rows;
+    const size_t col = idx / this->m_rows;
+    const size_t row = idx % this->m_rows;
 
-    return this->elems.at(_pos(row, col));
+    return this->m_elems.at(_pos(row, col));
 }
 
 
@@ -351,15 +351,15 @@ template <class T>
 const T& math::MatrixGeneric<T>::operator()(const size_t idx) const throw(math::MatrixException)
 {
     // check if 'idx' is within elems' range
-    if ( idx >= this->elems.size() )
+    if ( idx >= this->m_elems.size() )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    const size_t col = idx / this->rows;
-    const size_t row = idx % this->rows;
+    const size_t col = idx / this->m_rows;
+    const size_t row = idx % this->m_rows;
 
-    return this->elems.at(_pos(row, col));
+    return this->m_elems.at(_pos(row, col));
 }
 
 
@@ -380,12 +380,12 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(const size_t row, const size_t column, const T& element) throw (math::MatrixException)
 {
     // Check of input parameters
-    if ( row >= this->rows || column >= this->cols )
+    if ( row >= this->m_rows || column >= this->m_cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    this->elems.at(_pos(row, column)) = element;
+    this->m_elems.at(_pos(row, column)) = element;
 
     return *this;
 }
@@ -412,12 +412,12 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
      * Anyway, it would be nice to improve it in future.
      */
 
-    for ( size_t r=0; r<(this->rows); ++r )
+    for ( size_t r=0; r<(this->m_rows); ++r )
     {
         // display elements of the row r, separated by tabs
-        for ( size_t c=0; c<(this->cols); ++c )
+        for ( size_t c=0; c<(this->m_cols); ++c )
         {
-            str << this->elems.at(_pos(r, c)) << "\t";
+            str << this->m_elems.at(_pos(r, c)) << "\t";
         }
         // the line must be terminated by a newline
         str << std::endl;
@@ -464,13 +464,13 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGeneric<T>& m) throw(math::MatrixException)
 {
     // Check if dimensions of both matrices match
-    if ( this->rows != m.rows || this->cols != m.cols )
+    if ( this->m_rows != m.m_rows || this->m_cols != m.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
     // For a definition of matrix addition, see operator+
-    math::mtvectadd<T>(this->elems, m.elems, this->elems, true);
+    math::mtvectadd<T>(this->m_elems, m.m_elems, this->m_elems, true);
 
     return *this;
 }
@@ -490,13 +490,13 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGeneric<T>& matrix) throw(math::MatrixException)
 {
     // Check if dimensions of both matrices match
-    if ( this->rows != matrix.rows || this->cols != matrix.cols )
+    if ( this->m_rows != matrix.m_rows || this->m_cols != matrix.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
     // For a definition of matrix subtraction, see operator-
-    math::mtvectadd<T>(this->elems, matrix.elems, this->elems, false);
+    math::mtvectadd<T>(this->m_elems, matrix.m_elems, this->m_elems, false);
 
     return *this;
 }
@@ -513,7 +513,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGe
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+=(const T& scalar)
 {
-    math::mtvectscalaradd<T>(this->elems, scalar, this->elems, true, true);
+    math::mtvectscalaradd<T>(this->m_elems, scalar, this->m_elems, true, true);
 
     return *this;
 }
@@ -530,7 +530,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+=(const T& scalar)
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-=(const T& scalar)
 {
-    math::mtvectscalaradd<T>(this->elems, scalar, this->elems, false, true);
+    math::mtvectscalaradd<T>(this->m_elems, scalar, this->m_elems, false, true);
 
     return *this;
 }
@@ -584,7 +584,7 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const T& scalar)
 {
     // Multiply each element by the 'scalar'
-    math::mtvectmult<T>(this->elems, scalar, this->elems);
+    math::mtvectmult<T>(this->m_elems, scalar, this->m_elems);
 
     return *this;
 }
@@ -612,7 +612,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator/=(const T& scalar) thro
     const T f = static_cast<T>(1) / scalar;
 
     // Multiply each element of 'this' by 1/scalar:
-    math::mtvectmult(this->elems, f, this->elems);
+    math::mtvectmult(this->m_elems, f, this->m_elems);
 
     return *this;
 }
@@ -632,12 +632,12 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::ewMult(const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
     // Check if dimensions of both matrices match
-    if ( this->rows != m.rows || this->cols != m.cols )
+    if ( this->m_rows != m.m_rows || this->m_cols != m.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    math::mtvectewmult<T>(this->elems, m.elems, this->elems, true);
+    math::mtvectewmult<T>(this->m_elems, m.m_elems, this->m_elems, true);
 
     return *this;
 }
@@ -657,12 +657,12 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::ewDiv(const math::MatrixGeneric<T>& m) throw (math::MatrixException)
 {
     // Check if dimensions of both matrices match
-    if ( this->rows != m.rows || this->cols != m.cols )
+    if ( this->m_rows != m.m_rows || this->m_cols != m.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    const bool succ = math::mtvectewmult<T>(this->elems, m.elems, this->elems, false);
+    const bool succ = math::mtvectewmult<T>(this->m_elems, m.m_elems, this->m_elems, false);
 
     if ( false == succ )
     {
@@ -687,14 +687,14 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     // T(r,c) = this(c,r)
 
     // Create an instance with swapped dimensions
-    math::MatrixGeneric<T> retVal(this->cols, this->rows);
+    math::MatrixGeneric<T> retVal(this->m_cols, this->m_rows);
 
-    const size_t& tcols = this->cols;
+    const size_t& tcols = this->m_cols;
 
-    const size_t N = this->rows * this->cols;
+    const size_t N = this->m_rows * this->m_cols;
 
     // Coarse grained parallelism
-    const std::vector<T>& els = this->elems;
+    const std::vector<T>& els = this->m_elems;
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
@@ -711,7 +711,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
             const size_t r = idx / tcols;
             const size_t c = idx % tcols;
 
-            retVal.elems.at(retVal._pos(c, r)) = els.at(this->_pos(r, c));
+            retVal.m_elems.at(retVal._pos(c, r)) = els.at(this->_pos(r, c));
         }
     }  // omp parallel
 
@@ -746,10 +746,10 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     math::MatrixGeneric<T> temp = this->transpose();
 
     // update the vector of elements:
-    math::mtcopy<T>(temp.elems, this->elems);
+    math::mtcopy<T>(temp.m_elems, this->m_elems);
 
     // and swap matrix's dimensions:
-    std::swap( this->rows, this->cols );
+    std::swap( this->m_rows, this->m_cols );
 
     return *this;
 }
@@ -793,21 +793,23 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(const size_t rowNr) th
      * The matrix must contain at least two rows (as the updated matrix must still
      * contain at least one row), rowNr must be between 0 and rows-1.
      */
-    if ( rowNr >= this->rows || this->rows <= 1 )
+    if ( rowNr >= this->m_rows || this->m_rows <= 1 )
     {
         throw math::MatrixException(MatrixException::OUT_OF_RANGE);
     }
 
     /*
-     * Elements of the r^th row are located between r*cols and (r+1)*cols-1.
-     * The first element of the next row is located at (r+1)*cols.
+     * Elements of the r^th row are located between r*m_cols and (r+1)*m_cols-1.
+     * The first element of the next row is located at (r+1)*m_cols.
      * Row elements are contiguous and can be removed with one vector.erase() call.
      * It will also relocate remaining elements if applicable.
      */
-    this->elems.erase(this->elems.begin()+rowNr*this->cols, this->elems.begin()+(rowNr+1)*this->cols);
+    this->m_elems.erase(
+                this->m_elems.begin() + rowNr * this->m_cols,
+    		    this->m_elems.begin() + (rowNr+1) * this->m_cols );
 
     // Elements have been removed, update the number of rows
-    --(this->rows);
+    --(this->m_rows);
 
     return *this;
 }
@@ -827,11 +829,11 @@ template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(const size_t colNr) throw (math::MatrixException)
 {
     /*
-     * Checking of input argumentss. The matrix must contain at least 2 columns
+     * Checking of input arguments. The matrix must contain at least 2 columns
      * as the result must still contain at least one. colNr must be
-     * between 0 and cols-1
+     * between 0 and m_cols-1
      */
-    if ( colNr >= this->cols || this->cols <= 1 )
+    if ( colNr >= this->m_cols || this->m_cols <= 1 )
     {
         throw math::MatrixException(MatrixException::OUT_OF_RANGE);
     }
@@ -840,19 +842,20 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(const size_t colNr)
      * Elements of the column are not contiguous so their removal is a bit tricky.
      * It is best to remove them from the last (the highest row number) till
      * the first one (row=0). This way the position of the element to be removed
-     * is (rows-i)*cols+colNr, cols is not updated yet. vector.erase() will
+     * is (m_rows-i)*m_cols+colNr, m_cols is not updated yet. vector.erase() will
      * move remaining elements appropriately.
      *
      * Note: vector.erase() is by no means thread safe, so the for loop
      * should not be parallelized!
      */
-    for ( size_t i=1; i<=this->rows; ++i )
+    for ( size_t i=1; i<=this->m_rows; ++i )
     {
-        this->elems.erase(this->elems.begin()+(this->rows-i)*this->cols+colNr);
+        this->m_elems.erase(
+                this->m_elems.begin() + (this->m_rows - i) * this->m_cols + colNr );
     }
 
     // All required elements have been removed, now update the number of columns
-    --(this->cols);
+    --(this->m_cols);
 
     return *this;
 }
@@ -872,25 +875,27 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(const size_t colNr)
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(const size_t rowNr, const T& el) throw (math::MatrixException)
 {
-    // a valid rowNr value is between 0 and rows (incl.)
-    if ( rowNr > this->rows )
+    // a valid rowNr value is between 0 and m_rows (incl.)
+    if ( rowNr > this->m_rows )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
     // Nr. of elements will increase, so make sure the product will contain
     // more elements than max. possible size of a vector.
-    if ( this->rows > (this->elems.max_size()/this->cols - 1) )
+    if ( this->m_rows > (this->m_elems.max_size() / this->m_cols - 1) )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
 
     try
     {
-        this->elems.reserve( (this->rows+1) * this->cols );
-        // a contiguous block of cols elements will be inserted
-        // the position of rowNr*cols element.
-        this->elems.insert(this->elems.begin()+rowNr*this->cols, this->cols, el);
+        this->m_elems.reserve( (this->m_rows + 1) * this->m_cols );
+        // a contiguous block of m_cols elements will be inserted
+        // the position of rowNr*m_cols element.
+        this->m_elems.insert(
+                this->m_elems.begin() + rowNr * this->m_cols,
+                this->m_cols, el );
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -899,7 +904,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(const size_t rowNr, co
     }
 
     // Insertion was successful, update the number of rows
-    ++(this->rows);
+    ++(this->m_rows);
 
     return *this;
 }
@@ -919,15 +924,15 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(const size_t rowNr, co
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr, const T& el) throw (math::MatrixException)
 {
-    // A valid colNr is between 0 and cols (incl.)
-    if ( colNr > this->cols )
+    // A valid colNr is between 0 and m_cols (incl.)
+    if ( colNr > this->m_cols )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
     // Nr. of elements will increase, so make sure the product will contain
     // no more than MAX_SIZE_T elements
-    if ( this->cols > (this->elems.max_size()/this->rows - 1) )
+    if ( this->m_cols > (this->m_elems.max_size() / this->m_rows - 1) )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
@@ -938,18 +943,19 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr,
          * row elements will be inserted, however they are not contiguous.
          * First reserve enough memory for smoother reallocations
          */
-        this->elems.reserve( this->rows * (this->cols+1) );
+        this->m_elems.reserve( this->m_rows * (this->m_cols + 1) );
 
         /*
          * Elements will be inserted step by step, with ascending row coordinate.
-         * The position of each such element can be calculated as r*(cols+1)+colNr.
+         * The position of each such element can be calculated as r*(m_cols+1)+colNr.
          *
          * Note: vector.insert() is by no means thread safe, so the for loop
          * should not be parallelized!
          */
-        for ( size_t r = 0; r < this->rows; ++r )
+        for ( size_t r = 0; r < this->m_rows; ++r )
         {
-            this->elems.insert(this->elems.begin()+r*(this->cols+1)+colNr, el);
+            this->m_elems.insert(
+                    this->m_elems.begin() + r * (this->m_cols + 1) + colNr, el);
         }  // for r
     }  // try
     catch ( const std::bad_alloc& ba )
@@ -958,7 +964,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr,
     }
 
     // Insertion successful, update the number of columns
-    ++(this->cols);
+    ++(this->m_cols);
 
     return *this;
 }
@@ -981,7 +987,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows(
       ) throw(math::MatrixException)
 {
     // Sanity check
-    if ( r1>=this->rows || r2>=this->rows )
+    if ( r1>=this->m_rows || r2>=this->m_rows )
     {
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
@@ -993,9 +999,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows(
     }
 
     math::mtswap<T>(
-        this->elems.begin() + r1 * this->cols,
-        this->elems.begin() + (r1+1) * this->cols,
-        this->elems.begin() + r2 * this->cols );
+        this->m_elems.begin() + r1 * this->m_cols,
+        this->m_elems.begin() + (r1+1) * this->m_cols,
+        this->m_elems.begin() + r2 * this->m_cols );
 
 
     return *this;
@@ -1010,7 +1016,7 @@ math::MatrixGeneric<T>::~MatrixGeneric()
 {
     // Vector's destructors would probably clean up this automatically.
     // Anyway let us clear the vector, just to be aware of allocated resources.
-    this->elems.clear();
+    this->m_elems.clear();
 
     // Other dynamically allocated memory (via malloc or new) should be freed here.
     // There are no other resources to release.
@@ -1055,9 +1061,9 @@ math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m) throw(ma
      * at the same position:
      * N(r,c) = -m(r,c)
      */
-    math::MatrixGeneric<T> temp(m.rows, m.cols);
+    math::MatrixGeneric<T> temp(m.m_rows, m.m_cols);
 
-    math::mtvectmult<T>(m.elems, static_cast<T>(-1), temp.elems);
+    math::mtvectmult<T>(m.m_elems, static_cast<T>(-1), temp.m_elems);
 
     return temp;
 }
@@ -1079,16 +1085,16 @@ math::MatrixGeneric<T> math::operator+(const math::MatrixGeneric<T>& m1, const m
 {
     // Check of dimensions. Numbers of rows and columns must match
     // otherwise addition is not possible
-    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    if ( m1.m_rows != m2.m_rows || m1.m_cols != m2.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
     // Each element of the sum matrix is a sum of elements at the same position
     // S(r,c) = m1(r,c) + m2(r,c)
-    math::MatrixGeneric<T> temp(m1.rows, m2.cols);
+    math::MatrixGeneric<T> temp(m1.m_rows, m2.m_cols);
 
-    math::mtvectadd<T>(m1.elems, m2.elems, temp.elems, true);
+    math::mtvectadd<T>(m1.m_elems, m2.m_elems, temp.m_elems, true);
 
     return temp;
 }
@@ -1109,16 +1115,16 @@ template <class T>
 math::MatrixGeneric<T> math::operator-(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
 {
     // Check dimensions of both matrices. They must have the same number of rows and columns
-    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    if ( m1.m_rows != m2.m_rows || m1.m_cols != m2.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
     // Each element of the difference matrix is a difference of elements at the same position
     // D(r,c) = m1(r,c) - m2(r,c)
-    math::MatrixGeneric<T> temp(m1.rows, m2.cols);
+    math::MatrixGeneric<T> temp(m1.m_rows, m2.m_cols);
 
-    math::mtvectadd<T>(m1.elems, m2.elems, temp.elems, false);
+    math::mtvectadd<T>(m1.m_elems, m2.m_elems, temp.m_elems, false);
 
     return temp;
 }
@@ -1143,7 +1149,7 @@ template <class T>
 math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const math::MatrixGeneric<T>& m2) throw (math::MatrixException)
 {
     // Check if dimensions match (this.cols must be equal to matrix.rows)
-    if ( m1.cols != m2.rows )
+    if ( m1.m_cols != m2.m_rows )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
@@ -1152,7 +1158,7 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
      * Multiplication modifies dimensions, so make sure the product will not
      * contain more elements than allowed by vector:
      */
-    if ( m2.cols > m1.elems.max_size() / m1.rows )
+    if ( m2.m_cols > m1.m_elems.max_size() / m1.m_rows )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
@@ -1171,21 +1177,21 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
      *
      */
 
-    math::MatrixGeneric<T> temp(m1.rows, m2.cols);
+    math::MatrixGeneric<T> temp(m1.m_rows, m2.m_cols);
 
     #pragma omp parallel for collapse(2) \
                 default(none) shared(m1, m2, temp)
-    for ( size_t r=0; r<m1.rows; ++r )
+    for ( size_t r=0; r<m1.m_rows; ++r )
     {
-        for ( size_t c=0; c<m2.cols; ++c)
+        for ( size_t c=0; c<m2.m_cols; ++c)
         {
             T sum = static_cast<T>(0);
-            for ( size_t i=0; i<m1.cols; ++i )
+            for ( size_t i=0; i<m1.m_cols; ++i )
             {
-                sum += m1.elems.at(m1._pos(r, i)) * m2.elems.at(m2._pos(i, c));
+                sum += m1.m_elems.at(m1._pos(r, i)) * m2.m_elems.at(m2._pos(i, c));
             }
 
-            temp.elems.at(temp._pos(r, c)) = sum;
+            temp.m_elems.at(temp._pos(r, c)) = sum;
         }  // for c
     }  // for r
 
@@ -1212,9 +1218,9 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m, const T&
 
     // Just multiply each element by the scalar:
     // P(r,c) = scalar * m(r,c)
-    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+    math::MatrixGeneric<T> retVal(m.m_rows, m.m_cols);
 
-    math::mtvectmult<T>(m.elems, sc, retVal.elems);
+    math::mtvectmult<T>(m.m_elems, sc, retVal.m_elems);
 
     return retVal;
 }
@@ -1255,9 +1261,9 @@ math::MatrixGeneric<T> math::operator+(
             const T& sc)
         throw (math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+    math::MatrixGeneric<T> retVal(m.m_rows, m.m_cols);
 
-    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, true, true);
+    math::mtvectscalaradd<T>(m.m_elems, sc, retVal.m_elems, true, true);
 
     return retVal;
 }
@@ -1279,9 +1285,9 @@ math::MatrixGeneric<T> math::operator+(
             const math::MatrixGeneric<T>& m)
         throw (math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+    math::MatrixGeneric<T> retVal(m.m_rows, m.m_cols);
 
-    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, true, false);
+    math::mtvectscalaradd<T>(m.m_elems, sc, retVal.m_elems, true, false);
 
     return retVal;
 }
@@ -1303,9 +1309,9 @@ math::MatrixGeneric<T> math::operator-(
             const T& sc)
         throw (math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+    math::MatrixGeneric<T> retVal(m.m_rows, m.m_cols);
 
-    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, false, true);
+    math::mtvectscalaradd<T>(m.m_elems, sc, retVal.m_elems, false, true);
 
     return retVal;
 }
@@ -1327,9 +1333,9 @@ math::MatrixGeneric<T> math::operator-(
             const math::MatrixGeneric<T>& m)
         throw (math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+    math::MatrixGeneric<T> retVal(m.m_rows, m.m_cols);
 
-    math::mtvectscalaradd<T>(m.elems, sc, retVal.elems, false, false);
+    math::mtvectscalaradd<T>(m.m_elems, sc, retVal.m_elems, false, false);
 
     return retVal;
 }
@@ -1358,10 +1364,10 @@ throw (math::MatrixException)
     }
 
     const T f = static_cast<T>(1) / sc;
-    math::MatrixGeneric<T> retVal(m.rows, m.cols);
+    math::MatrixGeneric<T> retVal(m.m_rows, m.m_cols);
 
     // Multiply all m's elements by 1/sc:
-    math::mtvectmult(m.elems, f, retVal.elems);
+    math::mtvectmult(m.m_elems, f, retVal.m_elems);
 
     return retVal;
 }
@@ -1386,14 +1392,14 @@ math::MatrixGeneric<T> math::matEwMult(
 {
     // Check of dimensions. Numbers of rows and columns must match
     // otherwise element wise multiplication is not possible
-    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    if ( m1.m_rows != m2.m_rows || m1.m_cols != m2.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    MatrixGeneric<T> retVal(m1.rows, m1.cols);
+    MatrixGeneric<T> retVal(m1.m_rows, m1.m_cols);
 
-    math::mtvectewmult<T>(m1.elems, m2.elems, retVal.elems, true);
+    math::mtvectewmult<T>(m1.m_elems, m2.m_elems, retVal.m_elems, true);
 
     return retVal;
 }
@@ -1418,14 +1424,14 @@ math::MatrixGeneric<T> math::matEwDiv(
 {
     // Check of dimensions. Numbers of rows and columns must match
     // otherwise element wise division is not possible
-    if ( m1.rows != m2.rows || m1.cols != m2.cols )
+    if ( m1.m_rows != m2.m_rows || m1.m_cols != m2.m_cols )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    MatrixGeneric<T> retVal(m1.rows, m1.cols);
+    MatrixGeneric<T> retVal(m1.m_rows, m1.m_cols);
 
-    const bool succ = math::mtvectewmult<T>(m1.elems, m2.elems, retVal.elems, false);
+    const bool succ = math::mtvectewmult<T>(m1.m_elems, m2.m_elems, retVal.m_elems, false);
 
     if ( false == succ )
     {
@@ -1490,9 +1496,9 @@ void math::__matrixprivate::__matconj(
         const size_t istart = elems_per_thread * thnr;
         const size_t iend = std::min(istart + elems_per_thread, N);
 
-        typename std::vector<std::complex<T> >::iterator it = dest.elems.begin() + istart;
+        typename std::vector<std::complex<T> >::iterator it = dest.m_elems.begin() + istart;
         for ( size_t i=istart;
-              i<iend && it!=dest.elems.end(); ++it, ++i )
+              i<iend && it!=dest.m_elems.end(); ++it, ++i )
         {
             *it = std::conj(*it);
         }

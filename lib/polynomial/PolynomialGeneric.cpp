@@ -72,8 +72,8 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const F& c0) throw (math::Polynomi
 {
     try
     {
-        this->coef.resize(1);
-        this->coef.at(0) = c0;
+        this->m_coef.resize(1);
+        this->m_coef.at(0) = c0;
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -95,7 +95,7 @@ template <typename F>
 math::PolynomialGeneric<F>::PolynomialGeneric(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
 {
     // Just copy the poly's coefficients
-    this->__copyCoefs(poly.coef); 
+    this->__copyCoefs(poly.m_coef);
     // 'poly' is supposed to be already reduced, so no need to call __reduce()
 }
 
@@ -121,14 +121,14 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const F* carray, const size_t n) t
     }
     
     // check that carray's size does not exceed maximum allowed vector's size
-    if ( n > this->coef.max_size() )
+    if ( n > this->m_coef.max_size() )
     {
         throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
     }
 
     try
     {
-        math::mtcopy(carray, n, this->coef);
+        math::mtcopy(carray, n, this->m_coef);
 
         this->__reduce();
     }
@@ -161,22 +161,22 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const bool ignored, const size_t n
     }
     
     // check that 'n' does not exceed max. allowed vector's size
-    if ( n > this->coef.max_size() )
+    if ( n > this->m_coef.max_size() )
     {
         throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
     }
 
     try
     {
-        this->coef.clear();
+        this->m_coef.clear();
         // Populate the whole vector with "zeros":
-        this->coef.resize(n, static_cast<F>(0));
+        this->m_coef.resize(n, static_cast<F>(0));
 
         // Set the highest order coefficients is set to "1" to prevent reductions:
         if ( n>1 )
         {
             // However this is not necessary for 0 - degree polynomials
-            this->coef.at(n-1) = static_cast<F>(1);
+            this->m_coef.at(n-1) = static_cast<F>(1);
         }
     }
     catch ( const std::bad_alloc& ba )
@@ -201,7 +201,7 @@ void math::PolynomialGeneric<F>::__copyCoefs(const std::vector<F>& cvect) throw 
 {
     try
     {
-        math::mtcopy(cvect, this->coef);
+        math::mtcopy(cvect, this->m_coef);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -223,7 +223,7 @@ void math::PolynomialGeneric<F>::__copyCoefs(const std::vector<F>& cvect) throw 
 template <typename F>
 void math::PolynomialGeneric<F>::__reduce()
 {
-    const size_t N = this->coef.size() - 1;
+    const size_t N = this->m_coef.size() - 1;
     size_t f = 0;
     
     /*
@@ -232,11 +232,13 @@ void math::PolynomialGeneric<F>::__reduce()
      * excluding the first non-zero coefficient. The first coefficient (coef[0])
      * must never be deleted even if it also equals zero.
      */
-    for ( f=N; f>0 && true==math::NumericUtil::isZero<F>(coef.at(f)); --f );
+    for ( f=N; f>0 && true==math::NumericUtil::isZero<F>(this->m_coef.at(f)); --f );
     
     if ( f<N )
     {
-        this->coef.erase(this->coef.begin()+f+1, this->coef.end());
+        this->m_coef.erase(
+                this->m_coef.begin() + f + 1,
+                this->m_coef.end() );
     }
 }
 
@@ -260,7 +262,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const math::Po
     }
 
     // otherwise copy coefficients from 'poly';
-    this->__copyCoefs(poly.coef);
+    this->__copyCoefs(poly.m_coef);
 
     // 'poly' is supposed to be already reduced, so no need to call reduce()
 
@@ -278,8 +280,8 @@ void math::PolynomialGeneric<F>::get(std::vector<F>& vec) const throw (math::Pol
 {
     try
     {
-        // This will copy contents of coef into the return value:
-        math::mtcopy(this->coef, vec);
+        // This will copy contents of m_coef into the return value:
+        math::mtcopy(this->m_coef, vec);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -299,14 +301,15 @@ void math::PolynomialGeneric<F>::getDesc(std::vector<F>& vec) const throw (math:
 {
     try
     {
-        const size_t N = this->coef.size();
+        const size_t N = this->m_coef.size();
+
         // Allocate the return vector:
         vec.resize(N);
 
-        // copy elements from coef to retVal in reverse order:
+        // copy elements from m_coef to retVal in reverse order:
 
         // Coarse grained parallelism:
-        const std::vector<F>& els = this->coef;
+        const std::vector<F>& els = this->m_coef;
 
         #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
@@ -344,13 +347,13 @@ F math::PolynomialGeneric<F>::get(const size_t pos) const
     // TODO does it make any sense checking if 'pos' exceeds vector:max_size()???
     
     // if 'pos' exceeds the polynomial's degree, return zero
-    if ( pos >= this->coef.size() )
+    if ( pos >= this->m_coef.size() )
     {
         return static_cast<F>(0);
     }
 
     // otherwise it is safe to access the desired coefficient:
-    return this->coef.at(pos);
+    return this->m_coef.at(pos);
 }
 
 
@@ -362,10 +365,10 @@ size_t math::PolynomialGeneric<F>::degree() const
 {
     /*
      * If the polynomial: c0 + c1*x + c2*x^2 + ... + cn*x^n
-     * is reduced then the size of its 'coef' vector
+     * is reduced then the size of its 'm_coef' vector
      * is  n+1 elements (0 to n), one more than the actual degree (n).
      */
-    return this->coef.size() - 1;
+    return this->m_coef.size() - 1;
 }
 
 
@@ -420,7 +423,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::setDesc(const std::vecto
 
     try
     {
-        std::vector<F>& me = this->coef;
+        std::vector<F>& me = this->m_coef;
         me.resize(N);
 
         // Coarse grained parallelism:
@@ -467,16 +470,16 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const size_t pos, co
 {
     /*
      * If 'pos' exceeds the polynomial's degree, the appropriate number of zero-coefficients
-     * will be inserted between the highest coef and 'pos'.
+     * will be inserted between the highest m_coef and 'pos'.
      * If 'c' equals zero, this does not make any sense as reduce would revert the
      * polynomial back into its original state.
      */
-    if ( pos >= this->coef.size() )
+    if ( pos >= this->m_coef.size() )
     {
         if ( false==math::NumericUtil::isZero<F>(c) )
         {
             // check that pos does not exceed max. allowed vector's size
-            if ( pos > this->coef.max_size() )
+            if ( pos > this->m_coef.max_size() )
             {
                 throw math::PolynomialException(math::PolynomialException::OUT_OF_RANGE);
             }
@@ -490,9 +493,9 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const size_t pos, co
          * If 'pos' is less or equal than the polynomial's degree,
          * it is safe to access the desired coefficient directly:
          */
-        this->coef.at(pos) = c;
+        this->m_coef.at(pos) = c;
 
-        // it is possible that coef(N) is set to zero....
+        // it is possible that m_coef(N) is set to zero....
         this->__reduce();
     }
 
@@ -515,12 +518,12 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const size_t pos, co
 template <typename F>
 math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(const size_t pos, const F& c) throw (math::PolynomialException)
 {
-    const size_t N = this->coef.size();
+    const size_t N = this->m_coef.size();
 
     try
     {
-        //pos must not exceed vector's max. allowed size
-        if ( pos > this->coef.max_size() )
+        // 'pos' must not exceed vector's max. allowed size
+        if ( pos > this->m_coef.max_size() )
         {
             throw math::PolynomialException(math::PolynomialException::OUT_OF_RANGE);    
         }
@@ -541,21 +544,25 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(const size_t pos,
             }
 
             // 'c' is not equal to zero, just append the necessary number of zero-coefficients
-            this->coef.insert(this->coef.begin()+N, pos-N+1, static_cast<F>(0));
+            this->m_coef.insert(
+                    this->m_coef.begin() + N,
+                    pos - N + 1,
+                    static_cast<F>(0) );
+
             // and assign the highest order coefficient the value of 'c':
-            this->coef.at(pos) = c;
+            this->m_coef.at(pos) = c;
         }
         else
         {
             // 'pos' does not exceed the polynomial's degree, just insert the 'c' into coef.
-            // Prior to that, check that the expanded coef would not exceed max. allowed size:
-            if ( N == this->coef.max_size() )
+            // Prior to that, check that the expanded m_coef would not exceed max. allowed size:
+            if ( N == this->m_coef.max_size() )
             {
                 throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
             }
             
-            this->coef.insert(this->coef.begin()+pos, c);
-            // as 'c' is not appended at the end of coef, it cannot be set to "reduced" state
+            this->m_coef.insert( this->m_coef.begin() + pos, c );
+            // as 'c' is not appended at the end of m_coef, it cannot be set to "reduced" state
         }
     }
     catch ( const std::bad_alloc& ba )
@@ -579,13 +586,13 @@ template <typename F>
 math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove(const size_t pos)
 {
     // Nothing to do if 'pos' exceeds the polynomial's degree
-    if ( pos >= this->coef.size() || this->coef.size() <= 1 )
+    if ( pos >= this->m_coef.size() || this->m_coef.size() <= 1 )
     {
         return *this;
     }
 
     // now it is safe to erase the desired coefficient:
-    this->coef.erase(this->coef.begin() + pos);
+    this->m_coef.erase( this->m_coef.begin() + pos );
 
     /*
      * It is possible that the highest order coefficient is removed and an
@@ -618,12 +625,12 @@ F math::PolynomialGeneric<F>::value(const F& x) const
      * p(x) = ((((cn*x + c[n-1])*x + ... + c3)*x + c2)*x + c1)*x + c0
      */
 
-    size_t i = this->coef.size() - 1;
-    F retVal = this->coef.at(i);
+    size_t i = this->m_coef.size() - 1;
+    F retVal = this->m_coef.at(i);
 
     for ( ; i>0; --i )
     {
-        retVal = retVal*x + this->coef.at(i-1);
+        retVal = retVal*x + this->m_coef.at(i-1);
     }
 
     return retVal;
@@ -646,7 +653,7 @@ F math::PolynomialGeneric<F>::value(const F& x) const
 template <typename F>
 math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math::PolynomialException)
 {
-    const size_t N = this->coef.size();
+    const size_t N = this->m_coef.size();
 
     // if 'this' is already a constant (degree==0), its derivative will also be a constant with value 0:
     const size_t DEG = std::max(N-1, static_cast<size_t>(1));
@@ -658,14 +665,14 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math
          * Handling of a zero degree polynomial ( p(x) = c )
          * Its derivative is 0.
          */
-        retVal.coef.at(0) = static_cast<F>(0);
+        retVal.m_coef.at(0) = static_cast<F>(0);
         return retVal;
     }
 
     // For polynomials of higher degree (>0) apply the formula above:
 
     // Coarse grained parallelism:
-    const std::vector<F>& els = this->coef;
+    const std::vector<F>& els = this->m_coef;
 
     #pragma omp parallel num_threads(ompIdeal(DEG)) \
                 if(DEG>OMP_CHUNKS_PER_THREAD) \
@@ -677,9 +684,9 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math
         const size_t istart = elems_per_thread * thnr;
 
         typename std::vector<F>::const_iterator mit = els.begin() + istart + 1;
-        typename std::vector<F>::iterator it = retVal.coef.begin() + istart;
+        typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart;
         for ( size_t i = 0;
-              i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
+              i<elems_per_thread && mit!=els.end() && it!=retVal.m_coef.end();
               ++mit, ++it, ++i )
         {
             *it = static_cast<F>(istart+i+1) * (*mit);
@@ -712,23 +719,23 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math
 template <typename F>
 math::PolynomialGeneric<F> math::PolynomialGeneric<F>::integ(const F& c) const throw (math::PolynomialException)
 {
-    const size_t N = this->coef.size();
+    const size_t N = this->m_coef.size();
     
     // Note that integration increments degree of the polynomial...
-    if ( N == this->coef.max_size() )
+    if ( N == this->m_coef.max_size() )
     {
         throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
     }
     
     math::PolynomialGeneric<F> retVal(true, N+1);
 
-    // coef(0) is an arbitrary value, given as c:
-    retVal.coef.at(0) = c;
+    // m_coef(0) is an arbitrary value, given as c:
+    retVal.m_coef.at(0) = c;
 
     // for other coefficients, apply the formula above:
 
     // Coarse grained parallelism:
-    const std::vector<F>& els = this->coef;
+    const std::vector<F>& els = this->m_coef;
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
@@ -740,12 +747,12 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::integ(const F& c) const t
         const size_t istart = elems_per_thread * thnr;
 
         typename std::vector<F>::const_iterator mit = els.begin() + istart;
-        typename std::vector<F>::iterator it = retVal.coef.begin() + istart + 1;
+        typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart + 1;
         for ( size_t i = 0;
-              i<elems_per_thread && mit!=els.end() && it!=retVal.coef.end();
+              i<elems_per_thread && mit!=els.end() && it!=retVal.m_coef.end();
               ++mit, ++it, ++i )
         {
-            *it = *mit / static_cast<F>(istart+i+1);
+            *it = *mit / static_cast<F>(istart + i + 1);
         }
     }  // omp parallel
 
@@ -788,11 +795,11 @@ void math::PolynomialGeneric<F>::__polyDivision(
     }
 
     // Degrees of 'p1' and 'p2':
-    const size_t Np1 = p1.coef.size() - 1;
-    const size_t Np2 = p2.coef.size() - 1;
+    const size_t Np1 = p1.m_coef.size() - 1;
+    const size_t Np2 = p2.m_coef.size() - 1;
 
     // Use specialized operators of 'p2' is a scalar
-    if ( Np2==0 && false==math::NumericUtil::isZero<F>(p2.coef.at(0)) )
+    if ( Np2==0 && false==math::NumericUtil::isZero<F>(p2.m_coef.at(0)) )
     {
         if ( NULL != q )
         {
@@ -801,7 +808,7 @@ void math::PolynomialGeneric<F>::__polyDivision(
 
         if ( NULL != rem )
         {
-            rem->coef.resize(1, static_cast<F>(0));
+            rem->m_coef.resize(1, static_cast<F>(0));
         }
 
         return;
@@ -812,7 +819,7 @@ void math::PolynomialGeneric<F>::__polyDivision(
     {
         if ( NULL != q )
         {
-            q->coef.resize(1, static_cast<F>(0) );
+            q->m_coef.resize(1, static_cast<F>(0) );
         }
 
         if ( NULL != rem )
@@ -828,15 +835,15 @@ void math::PolynomialGeneric<F>::__polyDivision(
 
     // As 'p1' must remain constant, this vector will store its coefficients
     // during the division procedure:
-    std::vector<F> p(p1.coef);
+    std::vector<F> p(p1.m_coef);
 
     // The highest degree coefficient of 'p2':
-    const F Cdiv = p2.coef.at( Np2 );
+    const F Cdiv = p2.m_coef.at( Np2 );
 
     // Preallocate q's vector of coefficients
     if ( NULL != q )
     {
-        q->coef.resize(Nq+1, static_cast<F>(0));
+        q->m_coef.resize(Nq+1, static_cast<F>(0));
     }
 
     // This for loop sequentially updates 'p' so it is
@@ -848,7 +855,7 @@ void math::PolynomialGeneric<F>::__polyDivision(
         // ... the quotient is also one of q's coefficients...
         if ( NULL != q )
         {
-            q->coef.at(Nq-i) = c;
+            q->m_coef.at(Nq-i) = c;
         }
 
         // If the for loop below were extended by one iteration,
@@ -875,9 +882,9 @@ void math::PolynomialGeneric<F>::__polyDivision(
             const size_t istart = elems_per_thread * thnr;
 
             typename std::vector<F>::iterator pit = p.begin() + istart + Nq - i;
-            typename std::vector<F>::const_iterator p2it = p2.coef.begin() + istart;
+            typename std::vector<F>::const_iterator p2it = p2.m_coef.begin() + istart;
             for ( size_t j = 0;
-                  j<elems_per_thread && pit!=p.end() && p2it!=p2.coef.end();
+                  j<elems_per_thread && pit!=p.end() && p2it!=p2.m_coef.end();
                   ++pit, ++p2it, ++j)
             {
                 *pit -= c * (*p2it);
@@ -888,7 +895,7 @@ void math::PolynomialGeneric<F>::__polyDivision(
     // Finally assign the remainder of 'p' to 'rem'
     if ( NULL != rem )
     {
-        math::mtcopy(p, rem->coef);
+        math::mtcopy(p, rem->m_coef);
         rem->__reduce();
     }
 }
@@ -911,19 +918,19 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator+=(const math::P
     // For a definition of polynomial addition, see operator+
     try
     {
-        const size_t nthis = this->coef.size();
-        const size_t npoly = poly.coef.size();
+        const size_t nthis = this->m_coef.size();
+        const size_t npoly = poly.m_coef.size();
 
         // If 'poly' is of higher degree,
         // insert the appropriate number of coefficients and set them to 0:
         if ( nthis<npoly )
         {
-            this->coef.insert(this->coef.begin()+nthis, npoly-nthis, static_cast<F>(0));
+            this->m_coef.insert(this->m_coef.begin()+nthis, npoly-nthis, static_cast<F>(0));
         }
 
         // ... and perform addition of same degree terms' coefficients
 
-        math::mtvectadd(this->coef, poly.coef, this->coef, true);
+        math::mtvectadd(this->m_coef, poly.m_coef, this->m_coef, true);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -945,7 +952,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator+=(const math::P
 template <typename F>
 math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator+=(const F& sc)
 {
-    this->coef.at(0) += sc;
+    this->m_coef.at(0) += sc;
     this->__reduce();
     return *this;
 }
@@ -969,18 +976,20 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator-=(const math::P
     // For a definition of polynomial subtraction, see operator-
     try
     {
-        const size_t nthis = this->coef.size();
-        const size_t npoly = poly.coef.size();
+        const size_t nthis = this->m_coef.size();
+        const size_t npoly = poly.m_coef.size();
 
-        // If 'poly' is of higher degree, insert appropriate number of coefficients and set them to 0:
+        // If 'poly' is of higher degree, insert the appropriate number of coefficients and set them to 0:
         if ( nthis<npoly )
         {
-            this->coef.insert(this->coef.begin()+nthis, npoly-nthis, static_cast<F>(0));
+            this->m_coef.insert(
+                    this->m_coef.begin() + nthis,
+                    npoly-nthis, static_cast<F>(0) );
         }
 
         // ... and perform addition of same degree terms' coefficients
 
-        math::mtvectadd(this->coef, poly.coef, this->coef, false);
+        math::mtvectadd(this->m_coef, poly.m_coef, this->m_coef, false);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -1002,7 +1011,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator-=(const math::P
 template <typename F>
 math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator-=(const F& sc)
 {
-    this->coef.at(0) -= sc;
+    this->m_coef.at(0) -= sc;
     this->__reduce();
     return *this;
 }
@@ -1027,7 +1036,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator*=(const math::P
 
     // perform a regular polynomial multiplication and copy the product's coefficients to itself
     math::PolynomialGeneric<F> temp = *this * poly;
-    this->__copyCoefs(temp.coef);
+    this->__copyCoefs(temp.m_coef);
 
     // Note that copyCoefs would throw an exception in case of unsuccessful allocation of memory
 
@@ -1049,7 +1058,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator*=(const F& sc)
 {
     // Multiply each coefficient by the scalar
 
-	math::mtvectmult(this->coef, sc, this->coef);
+	math::mtvectmult(this->m_coef, sc, this->m_coef);
 
     // applicable when the scalar is 0...
     this->__reduce();
@@ -1170,8 +1179,8 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator%=(const F& sc) 
      * no remainder. Hence *this will be set to
      * a zero polynomial.
      */
-    this->coef.clear();
-    this->coef.resize(1, static_cast<F>(0));
+    this->m_coef.clear();
+    this->m_coef.resize(1, static_cast<F>(0));
 
     return *this;
 }
@@ -1192,7 +1201,7 @@ void math::PolynomialGeneric<F>::display(const char arg, std::ostream& str) cons
      */
 
     // Display coefficients with powers of the variable in ascending order:
-    for ( size_t i=0; i < this->coef.size(); ++i )
+    for ( size_t i=0; i < this->m_coef.size(); ++i )
     {
         /*
          * A space will be displayed between terms to better distinguish them.
@@ -1209,7 +1218,7 @@ void math::PolynomialGeneric<F>::display(const char arg, std::ostream& str) cons
             str << std::showpos;
         }
 
-        str << this->coef.at(i);
+        str << this->m_coef.at(i);
         str << std::noshowpos;
 
         // Display '*' between a coefficient and a variable (not necessary for i=0)
@@ -1236,7 +1245,7 @@ math::PolynomialGeneric<F>::~PolynomialGeneric()
 {
     // Vector's destructors would probably clean up this automatically.
     // Anyway, let us clear the vector, just to be aware of allocated resources.
-    this->coef.clear();
+    this->m_coef.clear();
 
     // Other dynamically allocated memory (via malloc or new) should be freed here.
     // There are no other resources to release.
@@ -1290,7 +1299,7 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p) 
         math::PolynomialGeneric<F> retVal(p);
 
         // Just negate each coefficient:
-        math::mtvectmult(p.coef, static_cast<F>(-1), retVal.coef);
+        math::mtvectmult(p.m_coef, static_cast<F>(-1), retVal.m_coef);
 
         // no need to reduce
         return retVal;
@@ -1320,8 +1329,8 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
 
     try
     {
-        const size_t Np1 = p1.coef.size();
-        const size_t Np2 = p2.coef.size();
+        const size_t Np1 = p1.m_coef.size();
+        const size_t Np2 = p2.m_coef.size();
 
         /*
          * Addition of polynomials is similar to addition of vectors/matrices:
@@ -1340,8 +1349,8 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
 
         math::PolynomialGeneric<F> retVal(true, nmax);
 
-        // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
-        retVal.coef.at(nmax-1) = static_cast<F>(0);
+        // Note that the constructor assigns 1 to m_coef(nmax) which is not desirable at the moment:
+        retVal.m_coef.at(nmax-1) = static_cast<F>(0);
 
         /*
          * Add coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
@@ -1359,19 +1368,19 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
             const size_t elems_per_thread = (nmax + nthreads - 1) / nthreads;
             const size_t istart = elems_per_thread * thnr;
 
-            typename std::vector<F>::iterator it = retVal.coef.begin() + istart;
-            typename std::vector<F>::const_iterator p1it = p1.coef.begin() + istart;
-            typename std::vector<F>::const_iterator p2it = p2.coef.begin() + istart;
+            typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart;
+            typename std::vector<F>::const_iterator p1it = p1.m_coef.begin() + istart;
+            typename std::vector<F>::const_iterator p2it = p2.m_coef.begin() + istart;
             for ( size_t i = 0;
-                  i<elems_per_thread && it!=retVal.coef.end();
+                  i<elems_per_thread && it!=retVal.m_coef.end();
                   ++it, ++i )
             {
-                if ( p1it != p1.coef.end() )
+                if ( p1it != p1.m_coef.end() )
                 {
                     *it = *(p1it++);
                 }
 
-                if ( p2it != p2.coef.end() )
+                if ( p2it != p2.m_coef.end() )
                 {
                     *it += *(p2it++);
                 }
@@ -1405,8 +1414,8 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
 {
     try
     {
-        const size_t Np1 = p1.coef.size();
-        const size_t Np2 = p2.coef.size();
+        const size_t Np1 = p1.m_coef.size();
+        const size_t Np2 = p2.m_coef.size();
 
         /*
          * Subtraction of polynomials is similar to subtraction of vectors/matrices:
@@ -1426,8 +1435,8 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
 
         math::PolynomialGeneric<F> retVal(true, nmax);
 
-        // Note that the constructor assigns 1 to coef(nmax) which is not desirable at the moment:
-        retVal.coef.at(nmax-1) = static_cast<F>(0);
+        // Note that the constructor assigns 1 to m_coef(nmax) which is not desirable at the moment:
+        retVal.m_coef.at(nmax-1) = static_cast<F>(0);
 
         /*
          * Subtract coefficients of the same degree terms. Where 'i' exceeds size of any polynomial,
@@ -1444,19 +1453,19 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
             const size_t elems_per_thread = (nmax + nthreads - 1) / nthreads;
             const size_t istart = elems_per_thread * thnr;
 
-            typename std::vector<F>::iterator it = retVal.coef.begin() + istart;
-            typename std::vector<F>::const_iterator p1it = p1.coef.begin() + istart;
-            typename std::vector<F>::const_iterator p2it = p2.coef.begin() + istart;
+            typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart;
+            typename std::vector<F>::const_iterator p1it = p1.m_coef.begin() + istart;
+            typename std::vector<F>::const_iterator p2it = p2.m_coef.begin() + istart;
             for ( size_t i = 0;
-                  i<elems_per_thread && it!=retVal.coef.end();
+                  i<elems_per_thread && it!=retVal.m_coef.end();
                   ++it, ++i )
             {
-                if ( p1it != p1.coef.end() )
+                if ( p1it != p1.m_coef.end() )
                 {
                     *it = *(p1it++);
                 }
 
-                if ( p2it != p2.coef.end() )
+                if ( p2it != p2.m_coef.end() )
                 {
                     *it -= *(p2it++);
                 }
@@ -1518,14 +1527,14 @@ math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& p1,
 
     try
     {
-        const size_t Np1 = p1.coef.size();
-        const size_t Np2 = p2.coef.size();
+        const size_t Np1 = p1.m_coef.size();
+        const size_t Np2 = p2.m_coef.size();
 
         /*
          * At polynomial multiplication it is possible that product's number of coefficients exceeds
          * the maximum allowed vector's size. For that reason, this check is performed.
          */
-        if ( Np2>(p1.coef.max_size()-Np1 + 1) )
+        if ( Np2>(p1.m_coef.max_size() - Np1 + 1) )
         {
             throw math::PolynomialException(math::PolynomialException::TOO_LARGE);
         }
@@ -1550,10 +1559,10 @@ math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& p1,
                     continue;   // for j
                 }
 
-                temp += p1.coef.at(j) * p2.coef.at(i-j);
+                temp += p1.m_coef.at(j) * p2.m_coef.at(i-j);
             }
 
-            retVal.coef.at(i) = temp;
+            retVal.m_coef.at(i) = temp;
         }
 
         retVal.__reduce();
@@ -1633,7 +1642,7 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& pol
 {
     math::PolynomialGeneric<F> retVal(poly);
 
-    retVal.coef.at(0) += sc;
+    retVal.m_coef.at(0) += sc;
     retVal.__reduce();
     return retVal;
 }
@@ -1654,7 +1663,7 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& pol
 {
     math::PolynomialGeneric<F> retVal(poly);
 
-    retVal.coef.at(0) -= sc;
+    retVal.m_coef.at(0) -= sc;
     retVal.__reduce();
     return retVal;
 }
@@ -1688,7 +1697,7 @@ math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& pol
 
     math::PolynomialGeneric<F> retVal(poly);
 
-    math::mtvectmult(retVal.coef, sc, retVal.coef);
+    math::mtvectmult(retVal.m_coef, sc, retVal.m_coef);
 
     // applicable when sc==o
     retVal.__reduce();
@@ -1825,7 +1834,7 @@ math::PolynomialGeneric<F> math::operator/(const F& sc, const math::PolynomialGe
         throw math::PolynomialException(math::PolynomialException::DIVIDE_BY_ZERO);
     }
 
-    if ( poly.coef.size() > 1 )
+    if ( poly.m_coef.size() > 1 )
     {
         /*
          * If poly's degree is 1 or higher,
@@ -1839,7 +1848,7 @@ math::PolynomialGeneric<F> math::operator/(const F& sc, const math::PolynomialGe
          * Otherwise this is actually division of two scalars.
          * In this case convert the quotient into a 0-degree polynomial.
          */
-        retVal = math::PolynomialGeneric<F>( math::PolynomialGeneric<F>(sc / poly.coef.at(0)) );
+        retVal = math::PolynomialGeneric<F>( math::PolynomialGeneric<F>(sc / poly.m_coef.at(0)) );
     }
 
     return retVal;
@@ -1867,7 +1876,7 @@ math::PolynomialGeneric<F> math::operator%(const F& sc, const math::PolynomialGe
         throw math::PolynomialException( math::PolynomialException::DIVIDE_BY_ZERO );
     }
 
-    if ( poly.coef.size() > 1 )
+    if ( poly.m_coef.size() > 1 )
     {
         /*
          * If poly's degree is 1 or higher, 'sc' is returned,

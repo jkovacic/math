@@ -116,8 +116,8 @@ class MatrixGeneric
 
     // These properties must be accessible in inherited classes
 protected:
-    size_t rows;      /// Number of rows
-    size_t cols;      /// Number of columns
+    size_t m_rows;      /// Number of rows
+    size_t m_cols;      /// Number of columns
 
     /*
      * STL Vector has several advantages over arrays, allocated by new[],
@@ -126,7 +126,7 @@ protected:
      * (e.g. in case of a typing error) which may result in a segmentation fault (crash).
      * Operations such as inserting or removing of elements are simplified as well.
      */
-    std::vector<T> elems;   /// Elements of the matrix
+    std::vector<T> m_elems;   /// Elements of the matrix
 
     /*
      * Copy elements from one matrix into another. Used at copy constructors,
@@ -150,7 +150,7 @@ protected:
      */
     inline size_t _pos(const size_t row, const size_t column) const
     {
-        return ( row * this->cols + column );
+        return ( row * this->m_cols + column );
     }
 
 public:

@@ -411,10 +411,10 @@ math::RationalGeneric<I>::RationalGeneric(
  */
 template <typename I>
 math::RationalGeneric<I>::RationalGeneric(const math::RationalGeneric<I>& orig) : 
-                num(orig.num), denom(orig.denom)
+                m_num(orig.m_num), m_denom(orig.m_denom)
 {
     /*
-     * 'num' and 'denom' are already set, nothing more to do here.
+     * 'm_num' and 'm_denom' are already set, nothing more to do here.
      * It is impossible to pass an invalid input parameter (orig.denom == 0)
      * so there is no need for any check. All fractions are automatically reduced
      * so no need to do this explicitly
@@ -434,7 +434,7 @@ math::RationalGeneric<I>::RationalGeneric(const math::RationalGeneric<I>& orig) 
 template <typename I>
 I math::RationalGeneric<I>::getNumerator() const
 {
-    return this->num;
+    return this->m_num;
 }
 
 
@@ -450,7 +450,7 @@ I math::RationalGeneric<I>::getNumerator() const
 template <typename I>
 I math::RationalGeneric<I>::getDenominator() const
 {
-    return this->denom;
+    return this->m_denom;
 }
 
 
@@ -497,13 +497,13 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
     // denominator will always be positive:
     if ( true == math::IntUtil::isNegative<I>(local_den) )
     {
-        this->denom = -local_den;
-        this->num = -local_num;
+        this->m_denom = -local_den;
+        this->m_num = -local_num;
     }
     else
     {
-        this->denom = local_den;
-        this->num = local_num;
+        this->m_denom = local_den;
+        this->m_num = local_num;
     }
 
     // reduce the fraction
@@ -714,8 +714,8 @@ void math::RationalGeneric<I>::__setLL(
     // Special handling of numerator==0
     if ( 0LL == numerator )
     {
-        this->num = static_cast<I>(0);
-        this->denom = static_cast<I>(1);
+        this->m_num = static_cast<I>(0);
+        this->m_denom = static_cast<I>(1);
         return;
     }
 
@@ -746,13 +746,13 @@ void math::RationalGeneric<I>::__setLL(
      */
     if ( denRed < 0LL )
     {
-        this->num = -static_cast<I>(numRed);
-        this->denom = -static_cast<I>(denRed);
+        this->m_num = -static_cast<I>(numRed);
+        this->m_denom = -static_cast<I>(denRed);
     }
     else
     {
-        this->num = static_cast<I>(numRed);
-        this->denom = static_cast<I>(denRed);
+        this->m_num = static_cast<I>(numRed);
+        this->m_denom = static_cast<I>(denRed);
     }
 }
 
@@ -770,7 +770,7 @@ void math::RationalGeneric<I>::display(
             const I& factor, 
             std::ostream& str ) const
 {
-    str << this->num * factor << '/' << this->denom * factor;
+    str << this->m_num * factor << '/' << this->m_denom * factor;
 }
 
 
@@ -780,8 +780,8 @@ void math::RationalGeneric<I>::display(
 template <typename I> template <typename F>
 F math::RationalGeneric<I>::toNum() const
 {
-    return ( static_cast<F>(this->num) / 
-             static_cast<F>(this->denom) );
+    return ( static_cast<F>(this->m_num) /
+             static_cast<F>(this->m_denom) );
 }
 
 
@@ -794,7 +794,7 @@ template <typename I>
 bool math::RationalGeneric<I>::isZero() const
 {
     // just check if the numerator equals 0
-    return ( static_cast<I>(0) == this->num );
+    return ( static_cast<I>(0) == this->m_num );
 }
 
 
@@ -810,7 +810,7 @@ bool math::RationalGeneric<I>::isPositive() const
      * The denominator is always positive (see set), so it is
      * sufficient to check if the numerator is greater than 0
      */
-    return ( this->num > static_cast<I>(0) );
+    return ( this->m_num > static_cast<I>(0) );
 }
 
 
@@ -826,7 +826,7 @@ bool math::RationalGeneric<I>::isNegative() const
      * the denominator is always positive (see set), so it is
      * sufficient to check if the numerator is less than 0
      */
-    return ( math::IntUtil::isNegative<I>(this->num) );
+    return ( math::IntUtil::isNegative<I>(this->m_num) );
 }
 
 
@@ -842,7 +842,7 @@ template <typename I>
 math::RationalGeneric<I> math::RationalGeneric<I>::invert() const throw(math::RationalException)
 {
     // Check if the numerator is equal to 0
-    if ( static_cast<I>(0) == this->num )
+    if ( static_cast<I>(0) == this->m_num )
     {
         // In this case, inversion cannot be done, throw an exception
         throw math::RationalException(math::RationalException::UNINVERTIBLE);
@@ -852,7 +852,7 @@ math::RationalGeneric<I> math::RationalGeneric<I>::invert() const throw(math::Ra
      * inversion will be possible, return a fraction with with exchanged
      * numerator and denominator
      */
-    return math::RationalGeneric<I>(this->denom, this->num);
+    return math::RationalGeneric<I>(this->m_denom, this->m_num);
 }
 
 
@@ -867,15 +867,15 @@ math::RationalGeneric<I> math::RationalGeneric<I>::invert() const throw(math::Ra
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::inverse() throw(math::RationalException)
 {
-    // Check if inversion is possible (num!=0)
-    if ( static_cast<I>(0) == this->num )
+    // Check if inversion is possible (m_num!=0)
+    if ( static_cast<I>(0) == this->m_num )
     {
         // inversion is impossible, throw an exception
         throw math::RationalException(math::RationalException::UNINVERTIBLE);
     }
 
-    // inversion is possible, swap the fractions num. and denom.
-    this->set(this->denom, this->num);
+    // inversion is possible, swap the fractions 'm_num' and 'm_denom'.
+    this->set(this->m_denom, this->m_num);
 
     return *this;
 }
@@ -897,9 +897,9 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator=(
      */
     if ( this != &frac )
     {
-        // otherwise copy the num and denom
-        this->num = frac.num;
-        this->denom = frac.denom;
+        // otherwise copy the m_num and m_denom
+        this->m_num = frac.m_num;
+        this->m_denom = frac.m_denom;
     }
 
     return *this;
@@ -923,11 +923,11 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator+=(
 
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
-                this->num, frac.denom, frac.num, this->denom, true);
+                this->m_num, frac.m_denom, frac.m_num, this->m_denom, true);
 
     const long long int denominator = 
             math::RationalNS::__private::__auxProd<I>(
-                this->denom, frac.denom);
+                this->m_denom, frac.m_denom);
 
     this->__setLL(numerator, denominator);
     // __setLL will reduce the result
@@ -953,10 +953,10 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator-=(
 
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
-                this->num, frac.denom, frac.num, this->denom, false);
+                this->m_num, frac.m_denom, frac.m_num, this->m_denom, false);
  
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(this->denom, frac.denom);
+            math::RationalNS::__private::__auxProd<I>(this->m_denom, frac.m_denom);
 
     this->__setLL(numerator, denominator);
     // __setLL will reduce the result
@@ -982,10 +982,10 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator*=(
     // Result will be assigned to itself so use set().
 
     const long long numerator = 
-            math::RationalNS::__private::__auxProd<I>(this->num, frac.num);
+            math::RationalNS::__private::__auxProd<I>(this->m_num, frac.m_num);
 
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(this->denom, frac.denom);
+            math::RationalNS::__private::__auxProd<I>(this->m_denom, frac.m_denom);
 
     this->__setLL(numerator, denominator);
 
@@ -1019,10 +1019,10 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator/=(
     // Result will be assigned to itself so use set()
 
     const long long int numerator = 
-            math::RationalNS::__private::__auxProd<I>(this->num, frac.denom);
+            math::RationalNS::__private::__auxProd<I>(this->m_num, frac.m_denom);
 
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(this->denom, frac.num);
+            math::RationalNS::__private::__auxProd<I>(this->m_denom, frac.m_num);
 
     this->__setLL(numerator, denominator);
 
@@ -1042,9 +1042,9 @@ void math::RationalGeneric<I>::__reduce()
      * In that case just assign denominator to 1
      * (it can be assigned to any integer value except 0)
      */
-    if ( static_cast<I>(0) == this->num )
+    if ( static_cast<I>(0) == this->m_num )
     {
-        this->denom = static_cast<I>(1);
+        this->m_denom = static_cast<I>(1);
         return;
     }
 
@@ -1052,7 +1052,7 @@ void math::RationalGeneric<I>::__reduce()
      * The GCD algorithm requires both integers to be positive.
      * The numerator is allowed to be negative, so get its absolute value.
      */
-    const I absNum = math::IntUtil::absolute<I>(this->num);
+    const I absNum = math::IntUtil::absolute<I>(this->m_num);
 
     /*
      * Finally obtain the greatest common divisor...
@@ -1060,15 +1060,15 @@ void math::RationalGeneric<I>::__reduce()
      * IntFactorization::gcd will never throw an exception
      */
     const I gcd = 
-        math::IntFactorization::greatestCommonDivisor<I>(absNum, this->denom);
+        math::IntFactorization::greatestCommonDivisor<I>(absNum, this->m_denom);
 
     /*
      * ... and divide both members by it.
-     * if both num (handled a few lines above)and denom (not permitted when setting)
+     * if both m_num (handled a few lines above)and m_denom (not permitted when setting)
      * are different than 0, the GCD is guaranteed to be a non-zero value
      */
-    this->num /= gcd;
-    this->denom /= gcd;
+    this->m_num /= gcd;
+    this->m_denom /= gcd;
 }
 
 
@@ -1099,7 +1099,7 @@ std::ostream& math::operator<<(
             const math::RationalGeneric<I>& frac)
 {
     // output the num and denom into the stream
-    output << frac.num << '/' << frac.denom;
+    output << frac.m_num << '/' << frac.m_denom;
     // and return reference of the stream
     return output;
 }
@@ -1135,7 +1135,7 @@ math::RationalGeneric<I> math::operator-(const math::RationalGeneric<I>& f)
                          throw (math::RationalException)
 {
     // check if I is an unsigned type
-    if ( f.num != static_cast<I>(0) && 
+    if ( f.m_num != static_cast<I>(0) &&
          false == math::IntUtil::isNegative<I>(-1) )
     {
         throw math::RationalException(math::RationalException::UNSIGNED);
@@ -1145,7 +1145,7 @@ math::RationalGeneric<I> math::operator-(const math::RationalGeneric<I>& f)
      * One (doesn't matter which) member of the fraction must be negated.
      * Let it be the numerator
      */
-    return math::RationalGeneric<I>(-f.num, f.denom);
+    return math::RationalGeneric<I>(-f.m_num, f.m_denom);
 }
 
 
@@ -1177,10 +1177,10 @@ math::RationalGeneric<I> math::operator+(
 
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
-                f1.num, f2.denom, f2.num, f1.denom, true);
+                f1.m_num, f2.m_denom, f2.m_num, f1.m_denom, true);
 
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
+            math::RationalNS::__private::__auxProd<I>(f1.m_denom, f2.m_denom);
 
     math::RationalGeneric<I> retVal;
     retVal.__setLL(numerator, denominator);
@@ -1208,10 +1208,10 @@ math::RationalGeneric<I> math::operator+(
 {
     const long long int numerator =
             math::RationalNS::__private::__auxSum<I>(
-                f.num, static_cast<I>(1), i, f.denom, true );
+                f.m_num, static_cast<I>(1), i, f.m_denom, true );
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+    retVal.__setLL(numerator, static_cast<long long int>(f.m_denom));
 
     return retVal;
 }
@@ -1236,10 +1236,10 @@ math::RationalGeneric<I> math::operator+(
 {
     const long long int numerator =
             math::RationalNS::__private::__auxSum<I>(
-                i, f.denom, f.num, static_cast<I>(1), true );
+                i, f.m_denom, f.m_num, static_cast<I>(1), true );
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+    retVal.__setLL(numerator, static_cast<long long int>(f.m_denom));
 
     return retVal;
 }
@@ -1271,10 +1271,10 @@ math::RationalGeneric<I> math::operator-(
 
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
-                f1.num, f2.denom, f2.num, f1.denom, false);
+                f1.m_num, f2.m_denom, f2.m_num, f1.m_denom, false);
 
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
+            math::RationalNS::__private::__auxProd<I>(f1.m_denom, f2.m_denom);
 
     math::RationalGeneric<I> retVal;
     retVal.__setLL(numerator, denominator);
@@ -1282,7 +1282,7 @@ math::RationalGeneric<I> math::operator-(
     return retVal;
 
     /*
-     * NOTE: it would also be possible to multiply frac by -1 and add it to this
+     * NOTE: it would also be possible to multiply frac by (-1) and add it to this
      * (using operator+) but it would require a bit more operations.
      */
 }
@@ -1307,10 +1307,10 @@ math::RationalGeneric<I> math::operator-(
 {
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
-                f.num, static_cast<I>(1), i, f.denom, false);
+                f.m_num, static_cast<I>(1), i, f.m_denom, false);
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+    retVal.__setLL(numerator, static_cast<long long int>(f.m_denom));
 
     return retVal;
 }
@@ -1335,10 +1335,10 @@ math::RationalGeneric<I> math::operator-(
 {
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
-                i, f.denom, f.num, static_cast<I>(1), false);
+                i, f.m_denom, f.m_num, static_cast<I>(1), false);
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+    retVal.__setLL(numerator, static_cast<long long int>(f.m_denom));
 
     return retVal;
 }
@@ -1370,10 +1370,10 @@ math::RationalGeneric<I> math::operator*(
      */
 
     const long long int numerator = 
-            math::RationalNS::__private::__auxProd<I>(f1.num, f2.num);
+            math::RationalNS::__private::__auxProd<I>(f1.m_num, f2.m_num);
 
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(f1.denom, f2.denom);
+            math::RationalNS::__private::__auxProd<I>(f1.m_denom, f2.m_denom);
 
     math::RationalGeneric<I> retVal;
     retVal.__setLL(numerator, denominator);
@@ -1400,10 +1400,10 @@ math::RationalGeneric<I> math::operator*(
         throw (math::RationalException)
 {
     const long long int numerator = 
-            math::RationalNS::__private::__auxProd<I>(f.num, i);
+            math::RationalNS::__private::__auxProd<I>(f.m_num, i);
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+    retVal.__setLL(numerator, static_cast<long long int>(f.m_denom));
 
     return retVal;
 }
@@ -1427,10 +1427,10 @@ math::RationalGeneric<I> math::operator*(
         throw (math::RationalException)
 {
     const long long int numerator = 
-            math::RationalNS::__private::__auxProd<I>(f.num, i);
+            math::RationalNS::__private::__auxProd<I>(f.m_num, i);
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(numerator, static_cast<long long int>(f.denom));
+    retVal.__setLL(numerator, static_cast<long long int>(f.m_denom));
 
     return retVal;
 }
@@ -1469,10 +1469,10 @@ math::RationalGeneric<I> math::operator/(
     }
 
     const long long int numerator = 
-            math::RationalNS::__private::__auxProd<I>(f1.num, f2.denom);
+            math::RationalNS::__private::__auxProd<I>(f1.m_num, f2.m_denom);
 
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(f2.num, f1.denom);
+            math::RationalNS::__private::__auxProd<I>(f2.m_num, f1.m_denom);
 
     math::RationalGeneric<I> retVal;
     retVal.__setLL(numerator, denominator);
@@ -1507,10 +1507,10 @@ math::RationalGeneric<I> math::operator/(
     }
 
     const long long int denominator = 
-            math::RationalNS::__private::__auxProd<I>(i, f.denom);
+            math::RationalNS::__private::__auxProd<I>(i, f.m_denom);
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(static_cast<long long int>(f.num), denominator);
+    retVal.__setLL(static_cast<long long int>(f.m_num), denominator);
 
     return retVal;
 }
@@ -1542,10 +1542,10 @@ math::RationalGeneric<I> math::operator/(
     }
 
     const long long int numerator = 
-            math::RationalNS::__private::__auxProd<I>(i, f.denom);
+            math::RationalNS::__private::__auxProd<I>(i, f.m_denom);
 
     math::RationalGeneric<I> retVal;
-    retVal.__setLL(numerator, static_cast<long long int>(f.num));
+    retVal.__setLL(numerator, static_cast<long long int>(f.m_num));
 
     return retVal;
 }
@@ -1565,7 +1565,7 @@ bool math::operator==(
             const math::RationalGeneric<I>& f2)
 {
     return ( 0 == math::RationalNS::__private::__sign<I>(
-                  f1.num, f1.denom, f2.num, f2.denom) );
+                  f1.m_num, f1.m_denom, f2.m_num, f2.m_denom) );
 }
 
 
@@ -1584,7 +1584,7 @@ bool math::operator==(
             const I& i )
 {
     return ( 0 == math::RationalNS::__private::__sign<I>(
-                  f.num, f.denom, i, static_cast<I>(1)) );
+                  f.m_num, f.m_denom, i, static_cast<I>(1)) );
 }
 
 
@@ -1603,7 +1603,7 @@ bool math::operator==(
             const math::RationalGeneric<I>& f )
 {
     return ( 0 == math::RationalNS::__private::__sign<I>(
-                  i, static_cast<I>(1), f.num, f.denom) );
+                  i, static_cast<I>(1), f.m_num, f.m_denom) );
 }
 
 
@@ -1621,7 +1621,7 @@ bool math::operator!=(
             const math::RationalGeneric<I>& f2)
 {
     return ( 0 != math::RationalNS::__private::__sign<I>(
-                  f1.num, f1.denom, f2.num, f2.denom) );
+                  f1.m_num, f1.m_denom, f2.m_num, f2.m_denom) );
 }
 
 
@@ -1640,7 +1640,7 @@ bool math::operator!=(
             const I& i )
 {
     return ( 0 != math::RationalNS::__private::__sign<I>(
-                  f.num, f.denom, i, static_cast<I>(1)) );
+                  f.m_num, f.m_denom, i, static_cast<I>(1)) );
 }
 
 
@@ -1659,7 +1659,7 @@ bool math::operator!=(
             const math::RationalGeneric<I>& f )
 {
     return ( 0 != math::RationalNS::__private::__sign<I>(
-                  i, static_cast<I>(1), f.num, f.denom) );
+                  i, static_cast<I>(1), f.m_num, f.m_denom) );
 }
 
 
@@ -1677,7 +1677,7 @@ bool math::operator>(
             const math::RationalGeneric<I>& f2)
 {
     return ( 0 < math::RationalNS::__private::__sign<I>(
-                 f1.num, f1.denom, f2.num, f2.denom) );
+                 f1.m_num, f1.m_denom, f2.m_num, f2.m_denom) );
 }
 
 
@@ -1696,7 +1696,7 @@ bool math::operator>(
             const I& i )
 {
     return ( 0 < math::RationalNS::__private::__sign<I>(
-                 f.num, f.denom, i, static_cast<I>(1)) );
+                 f.m_num, f.m_denom, i, static_cast<I>(1)) );
 }
 
 
@@ -1715,7 +1715,7 @@ bool math::operator>(
             const math::RationalGeneric<I>& f )
 {
     return ( 0 < math::RationalNS::__private::__sign<I>(
-                 i, static_cast<I>(1), f.num, f.denom) );
+                 i, static_cast<I>(1), f.m_num, f.m_denom) );
 }
 
 
@@ -1733,7 +1733,7 @@ bool math::operator>=(
             const math::RationalGeneric<I>& f2)
 {
     return ( 0 <= math::RationalNS::__private::__sign<I>(
-                  f1.num, f1.denom, f2.num, f2.denom) );
+                  f1.m_num, f1.m_denom, f2.m_num, f2.m_denom) );
 }
 
 
@@ -1752,7 +1752,7 @@ bool math::operator>=(
             const I& i )
 {
     return ( 0 <= math::RationalNS::__private::__sign<I>(
-                  f.num, f.denom, i, static_cast<I>(1)) );
+                  f.m_num, f.m_denom, i, static_cast<I>(1)) );
 }
 
 
@@ -1771,7 +1771,7 @@ bool math::operator>=(
             const math::RationalGeneric<I>& f)
 {
     return ( 0 <= math::RationalNS::__private::__sign<I>(
-                  i, static_cast<I>(1), f.num, f.denom) );
+                  i, static_cast<I>(1), f.m_num, f.m_denom) );
 }
 
 
@@ -1789,7 +1789,7 @@ bool math::operator<(
             const math::RationalGeneric<I>& f2)
 {
     return ( 0 > math::RationalNS::__private::__sign<I>(
-                 f1.num, f1.denom, f2.num, f2.denom) );
+                 f1.m_num, f1.m_denom, f2.m_num, f2.m_denom) );
 }
 
 
@@ -1808,7 +1808,7 @@ bool math::operator<(
             const I& i )
 {
     return ( 0 > math::RationalNS::__private::__sign<I>(
-                 f.num, f.denom, i, static_cast<I>(1)) );
+                 f.m_num, f.m_denom, i, static_cast<I>(1)) );
 }
 
 
@@ -1827,7 +1827,7 @@ bool math::operator<(
             const math::RationalGeneric<I>& f )
 {
     return ( 0 > math::RationalNS::__private::__sign<I>(
-                 i, static_cast<I>(1), f.num, f.denom ) );
+                 i, static_cast<I>(1), f.m_num, f.m_denom ) );
 }
 
 /**
@@ -1844,7 +1844,7 @@ bool math::operator<=(
             const math::RationalGeneric<I>& f2)
 {
     return ( 0 >= math::RationalNS::__private::__sign<I>(
-                  f1.num, f1.denom, f2.num, f2.denom) );
+                  f1.m_num, f1.m_denom, f2.m_num, f2.m_denom) );
 }
 
 
@@ -1863,7 +1863,7 @@ bool math::operator<=(
             const I& i )
 {
     return ( 0 >= math::RationalNS::__private::__sign<I>(
-                  f.num, f.denom, i, static_cast<I>(1)) );
+                  f.m_num, f.m_denom, i, static_cast<I>(1)) );
 }
 
 
@@ -1882,7 +1882,7 @@ bool math::operator<=(
             const math::RationalGeneric<I>& f )
 {
     return ( 0 >= math::RationalNS::__private::__sign<I>(
-                  i, static_cast<I>(1), f.num, f.denom) );
+                  i, static_cast<I>(1), f.m_num, f.m_denom) );
 }
 
 

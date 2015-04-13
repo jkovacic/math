@@ -90,10 +90,10 @@ template <typename F>
 class QuaternionGeneric
 {
 private:
-    F quat_o;    /// element '1'
-    F quat_i;    /// element 'i'
-    F quat_j;    /// element 'j'
-    F quat_k;    /// element 'k'
+    F m_o;     /// element '1'
+    F m_i;     /// element 'i'
+    F m_j;     /// element 'j'
+    F m_k;     /// element 'k'
 
 
     /*
@@ -107,10 +107,10 @@ private:
     inline F __sqsum() const
     {
         return (
-                this->quat_o * this->quat_o +
-                this->quat_i * this->quat_i +
-                this->quat_j * this->quat_j +
-                this->quat_k * this->quat_k );
+                this->m_o * this->m_o +
+                this->m_i * this->m_i +
+                this->m_j * this->m_j +
+                this->m_k * this->m_k );
     }
 
 

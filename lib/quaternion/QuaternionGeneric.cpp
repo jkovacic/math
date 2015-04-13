@@ -66,7 +66,7 @@ limitations under the License.
  */
 template <typename F>
 math::QuaternionGeneric<F>::QuaternionGeneric(const F& o, const F& i, const F& j, const F& k) :
-    quat_o(o), quat_i(i), quat_j(j), quat_k(k)
+    m_o(o), m_i(i), m_j(j), m_k(k)
 {
     // Nothing else to do
 }
@@ -80,7 +80,7 @@ math::QuaternionGeneric<F>::QuaternionGeneric(const F& o, const F& i, const F& j
  */
 template <typename F>
 math::QuaternionGeneric<F>::QuaternionGeneric(const math::QuaternionGeneric<F>& q) :
-    quat_o(q.quat_o), quat_i(q.quat_i), quat_j(q.quat_j), quat_k(q.quat_k)
+    m_o(q.m_o), m_i(q.m_i), m_j(q.m_j), m_k(q.m_k)
 {
     // Nothing else to do
 }
@@ -103,10 +103,10 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator=(const math::Qu
     }
 
     // otherwise copy the components:
-    this->quat_o = q.quat_o;
-    this->quat_i = q.quat_i;
-    this->quat_j = q.quat_k;
-    this->quat_k = q.quat_k;
+    this->m_o = q.m_o;
+    this->m_i = q.m_i;
+    this->m_j = q.m_k;
+    this->m_k = q.m_k;
 
     // ... and return the reference to itself:
     return *this;
@@ -119,7 +119,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator=(const math::Qu
 template <typename F>
 F math::QuaternionGeneric<F>::getOne() const
 {
-    return this->quat_o;
+    return this->m_o;
 }
 
 
@@ -129,7 +129,7 @@ F math::QuaternionGeneric<F>::getOne() const
 template <typename F>
 F math::QuaternionGeneric<F>::getI() const
 {
-    return this->quat_i;
+    return this->m_i;
 }
 
 
@@ -139,7 +139,7 @@ F math::QuaternionGeneric<F>::getI() const
 template <typename F>
 F math::QuaternionGeneric<F>::getJ() const
 {
-    return this->quat_j;
+    return this->m_j;
 }
 
 
@@ -149,7 +149,7 @@ F math::QuaternionGeneric<F>::getJ() const
 template <typename F>
 F math::QuaternionGeneric<F>::getK() const
 {
-    return this->quat_k;
+    return this->m_k;
 }
 
 
@@ -166,10 +166,10 @@ F math::QuaternionGeneric<F>::getK() const
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::set(const F& o, const F& i, const F& j, const F& k)
 {
-    this->quat_o = o;
-    this->quat_i = i;
-    this->quat_j = j;
-    this->quat_k = k;
+    this->m_o = o;
+    this->m_i = i;
+    this->m_j = j;
+    this->m_k = k;
 
     // return the reference to itself:
     return *this;
@@ -186,7 +186,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::set(const F& o, const F&
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::setOne(const F& o)
 {
-    this->quat_o = o;
+    this->m_o = o;
 
     // return the reference to itself:
     return *this;
@@ -203,7 +203,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::setOne(const F& o)
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::setI(const F& i)
 {
-    this->quat_i = i;
+    this->m_i = i;
 
     // return the reference to itself:
     return *this;
@@ -220,7 +220,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::setI(const F& i)
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::setJ(const F& j)
 {
-    this->quat_j = j;
+    this->m_j = j;
 
     // return the reference to itself:
     return *this;
@@ -237,7 +237,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::setJ(const F& j)
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::setK(const F& k)
 {
-    this->quat_k = k;
+    this->m_k = k;
 
     // return the reference to itself:
     return *this;
@@ -261,15 +261,15 @@ void math::QuaternionGeneric<F>::display(std::ostream& str) const
     str << '(';
 
     // output he first component ('1')
-    str << this->quat_o;
+    str << this->m_o;
 
     // For the other components, display each component's sign
     
     str << std::showpos;
 
-    str << this->quat_i << 'i';
-    str << this->quat_j << 'j';
-    str << this->quat_k << 'k';
+    str << this->m_i << 'i';
+    str << this->m_j << 'j';
+    str << this->m_k << 'k';
 
     str << std::noshowpos;
     // finish with a closing bracket
@@ -290,10 +290,10 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator+=(const math::Q
     // For a definition of quaternion addition, see operator+
 
     // assign the updated values directly to relevant components:
-    this->quat_o += q.quat_o;
-    this->quat_i += q.quat_i;
-    this->quat_j += q.quat_j;
-    this->quat_k += q.quat_k;
+    this->m_o += q.m_o;
+    this->m_i += q.m_i;
+    this->m_j += q.m_j;
+    this->m_k += q.m_k;
 
     // return the reference to itself
     return *this;
@@ -310,7 +310,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator+=(const math::Q
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator+=(const F& scalar)
 {
-    this->quat_o += scalar;
+    this->m_o += scalar;
     
     return *this;
 }
@@ -329,10 +329,10 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator-=(const math::Q
     // For a definition of quaternion subtraction, see operator-
 
     // assign the updated values directly to relevant components:
-    this->quat_o -= q.quat_o;
-    this->quat_i -= q.quat_i;
-    this->quat_j -= q.quat_j;
-    this->quat_k -= q.quat_k;
+    this->m_o -= q.m_o;
+    this->m_i -= q.m_i;
+    this->m_j -= q.m_j;
+    this->m_k -= q.m_k;
 
     // return the reference to itself
     return *this;
@@ -350,7 +350,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator-=(const math::Q
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator-=(const F& scalar)
 {
-    this->quat_o -= scalar;
+    this->m_o -= scalar;
     
     return *this;
 }
@@ -380,7 +380,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const math::Q
     const math::QuaternionGeneric<F> p( *this * q );
 
     //copy the temporary variable's values into this:
-    set(p.quat_o, p.quat_i, p.quat_j, p.quat_k);
+    set(p.m_o, p.m_i, p.m_j, p.m_k);
 
     // return the reference to itself
     return *this;
@@ -399,10 +399,10 @@ template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const F& sc)
 {
     // Multiply each component by the scalar
-    this->quat_o *= sc;
-    this->quat_i *= sc;
-    this->quat_j *= sc;
-    this->quat_k *= sc;
+    this->m_o *= sc;
+    this->m_i *= sc;
+    this->m_j *= sc;
+    this->m_k *= sc;
 
     return *this;
 }
@@ -427,10 +427,10 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::conj() const
      */
 
     return math::QuaternionGeneric<F>(
-             this->quat_o,
-            -this->quat_i,
-            -this->quat_j,
-            -this->quat_k);
+             this->m_o,
+            -this->m_i,
+            -this->m_j,
+            -this->m_k );
 }
 
 
@@ -445,12 +445,12 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::conjugated()
 {
     // For a definition of quaternion conjugation, see conj().
 
-    // quat_o remains unmodified
+    // 'm_o' remains unmodified
 
     // the other members are assigned their opposite values:
-    this->quat_i = -this->quat_i;
-    this->quat_j = -this->quat_j;
-    this->quat_k = -this->quat_k;
+    this->m_i = -this->m_i;
+    this->m_j = -this->m_j;
+    this->m_k = -this->m_k;
 
     // return the reference to itself
     return *this;
@@ -554,10 +554,10 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw 
     }
 
     return math::QuaternionGeneric<F>(
-             this->quat_o / nsq,
-            -this->quat_i / nsq,
-            -this->quat_j / nsq,
-            -this->quat_k / nsq );
+             this->m_o / nsq,
+            -this->m_i / nsq,
+            -this->m_j / nsq,
+            -this->m_k / nsq );
 }
 
 
@@ -580,10 +580,10 @@ math::QuaternionGeneric<F> math::operator+(const math::QuaternionGeneric<F>& q1,
      */
 
     return math::QuaternionGeneric<F>(
-            q1.quat_o + q2.quat_o,
-            q1.quat_i + q2.quat_i,
-            q1.quat_j + q2.quat_j,
-            q1.quat_k + q2.quat_k );
+            q1.m_o + q2.m_o,
+            q1.m_i + q2.m_i,
+            q1.m_j + q2.m_j,
+            q1.m_k + q2.m_k );
 }
 
 
@@ -605,10 +605,10 @@ math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q1,
      */
 
     return math::QuaternionGeneric<F>(
-    		q1.quat_o - q2.quat_o,
-    		q1.quat_i - q2.quat_i,
-    		q1.quat_j - q2.quat_j,
-    		q1.quat_k - q2.quat_k );
+    		q1.m_o - q2.m_o,
+    		q1.m_i - q2.m_i,
+    		q1.m_j - q2.m_j,
+    		q1.m_k - q2.m_k );
 }
 
 
@@ -649,34 +649,34 @@ math::QuaternionGeneric<F> math::operator*(const math::QuaternionGeneric<F>& q1,
     {
         #pragma omp section
         {
-            retVal.quat_o = q1.quat_o * q2.quat_o -
-                            q1.quat_i * q2.quat_i -
-                            q1.quat_j * q2.quat_j -
-                            q1.quat_k * q2.quat_k;
+            retVal.m_o = q1.m_o * q2.m_o -
+                         q1.m_i * q2.m_i -
+                         q1.m_j * q2.m_j -
+                         q1.m_k * q2.m_k;
         }
 
         #pragma omp section
         {
-           retVal.quat_i = q1.quat_o * q2.quat_i +
-                           q1.quat_i * q2.quat_o +
-                           q1.quat_j * q2.quat_k -
-                           q1.quat_k * q2.quat_j;
+           retVal.m_i = q1.m_o * q2.m_i +
+                        q1.m_i * q2.m_o +
+                        q1.m_j * q2.m_k -
+                        q1.m_k * q2.m_j;
         }
 
         #pragma omp section
         {
-            retVal.quat_j = q1.quat_o * q2.quat_j -
-                            q1.quat_i * q2.quat_k +
-                            q1.quat_j * q2.quat_o +
-                            q1.quat_k * q2.quat_i;
+            retVal.m_j = q1.m_o * q2.m_j -
+                         q1.m_i * q2.m_k +
+                         q1.m_j * q2.m_o +
+                         q1.m_k * q2.m_i;
         }
 
         #pragma omp section
         {
-            retVal.quat_k = q1.quat_o * q2.quat_k +
-                            q1.quat_i * q2.quat_j -
-                            q1.quat_j * q2.quat_i +
-                            q1.quat_k * q2.quat_o;
+            retVal.m_k = q1.m_o * q2.m_k +
+                         q1.m_i * q2.m_j -
+                         q1.m_j * q2.m_i +
+                         q1.m_k * q2.m_o;
         }
     }  // omp parallel sections
 
@@ -696,10 +696,10 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator+(const math::QuaternionGeneric<F>& q, const F& sc)
 {
     return math::QuaternionGeneric<F>(
-            q.quat_o + sc,
-            q.quat_i,
-            q.quat_j,
-            q.quat_k );
+            q.m_o + sc,
+            q.m_i,
+            q.m_j,
+            q.m_k );
 }
 
 
@@ -715,10 +715,10 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q, const F& sc)
 {
     return QuaternionGeneric<F>(
-    		q.quat_o - sc,
-    		q.quat_i,
-    		q.quat_j,
-    		q.quat_k );
+    		q.m_o - sc,
+    		q.m_i,
+    		q.m_j,
+    		q.m_k );
 }
 
 
@@ -741,10 +741,10 @@ math::QuaternionGeneric<F> math::operator*(const math::QuaternionGeneric<F>& q, 
      */
 
     return math::QuaternionGeneric<F>(
-            q.quat_o * sc,
-            q.quat_i * sc,
-            q.quat_j * sc,
-            q.quat_k * sc );
+            q.m_o * sc,
+            q.m_i * sc,
+            q.m_j * sc,
+            q.m_k * sc );
 }
 
 
@@ -779,7 +779,7 @@ math::QuaternionGeneric<F> math::operator-(const F& scalar, const math::Quaterni
 {
     // Subtraction is not commutative!
     return math::QuaternionGeneric<F>
-            ( scalar - q.quat_o, -q.quat_i, -q.quat_j, -q.quat_k );
+            ( scalar - q.m_o, -q.m_i, -q.m_j, -q.m_k );
 }
 
 
@@ -835,10 +835,10 @@ math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q)
      */
 
     return math::QuaternionGeneric<F>(
-            -q.quat_o,
-            -q.quat_i,
-            -q.quat_j,
-            -q.quat_k );
+            -q.m_o,
+            -q.m_i,
+            -q.m_j,
+            -q.m_k );
 }
 
 
