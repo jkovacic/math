@@ -36,6 +36,7 @@ limitations under the License.
 #include "exception/MatrixException.hpp"
 #include "util/mtcopy.hpp"
 #include "util/mtvectop.hpp"
+#include "util/mtswap.hpp"
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
@@ -958,6 +959,44 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr,
 
     // Insertion successful, update the number of columns
     ++(this->cols);
+
+    return *this;
+}
+
+
+/**
+ * Swaps rows in the matrix.
+ *
+ * @param r1 - first row number
+ * @param r2 - second row's number
+ *
+ * @return a reference to itself
+ *
+ * @throw MatrixException if any input argument is out of range
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows(
+        const size_t r1,
+        const size_t r2
+      ) throw(math::MatrixException)
+{
+    // Sanity check
+    if ( r1>=this->rows || r2>=this->rows )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    // Nothing to do if both parameters are equal
+    if ( r1 == r2 )
+    {
+        return *this;
+    }
+
+    math::mtswap<T>(
+        this->elems.begin() + r1 * this->cols,
+        this->elems.begin() + (r1+1) * this->cols,
+        this->elems.begin() + r2 * this->cols );
+
 
     return *this;
 }

@@ -25,9 +25,9 @@ limitations under the License.
 
 #include <iostream>
 
+#include "RationalGeneric.h"
 #include "MatrixGeneric.h"
 #include "SqMatrixGeneric.h"
-#include "RationalGeneric.h"
 
 #include "MatrixException.h"
 #include "RationalException.h"
@@ -68,7 +68,7 @@ void rationalMatrixTest()
         cout << endl;
 
         inv *= a;
-        cout << "deteminant of inv * (a+inv): " << inv.determinant() << endl << endl;
+        cout << "determinant of inv * (a+inv): " << inv.determinant() << endl << endl;
 
         // test of overloaded matrix operators:
         Rational r(3, 4);

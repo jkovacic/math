@@ -186,6 +186,11 @@ void matrixTest()
         inv.display();
         cout << endl;
 
+        cout << "Swap the 2nd and the 3rd row:" << endl;
+        inv.swapRows(1, 2);
+        inv.display();
+        cout << endl;
+
        // Test of complex conjugation:
        MatrixGeneric<complex<float> > c1(2, 2);
        c1.set(0, 0, complex<float>(1.0f, 1.0f)).set(0, 1, complex<float>(1.0f, -2.0f));

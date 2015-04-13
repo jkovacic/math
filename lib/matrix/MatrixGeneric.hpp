@@ -200,6 +200,9 @@ public:
     virtual MatrixGeneric<T>& insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
     virtual MatrixGeneric<T>& insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
 
+    // Swap rows
+    MatrixGeneric<T>& swapRows(const size_t r1, const size_t r2) throw(MatrixException);
+
     // Destructor
     virtual ~MatrixGeneric();
 
