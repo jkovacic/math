@@ -132,14 +132,14 @@ math::MatrixGeneric<T>::MatrixGeneric(const size_t n) throw (math::MatrixExcepti
 template <class T>
 math::MatrixGeneric<T>::MatrixGeneric(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
-    _copyElems(orig);
+    this->__copyElems(orig);
 }
 
 
 // Copy elements from one matrix into another. Used at copy constructors,
 // assignment operators etc.
 template <class T>
-void math::MatrixGeneric<T>::_copyElems(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
+void math::MatrixGeneric<T>::__copyElems(const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
 {
     // Check if the original matrix is OK (if its m_rows and m_cols are set correctly)
     if ( orig.m_rows * orig.m_cols != orig.m_elems.size() )
@@ -206,7 +206,7 @@ T math::MatrixGeneric<T>::get(const size_t row, const size_t column) const throw
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->m_elems.at(_pos(row, column));
+    return this->m_elems.at(this->__pos(row, column));
 }
 
 
@@ -236,7 +236,7 @@ T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) throw (math
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->m_elems.at(_pos(row, column));
+    return this->m_elems.at(this->__pos(row, column));
 }
 
 
@@ -273,7 +273,7 @@ const T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) const
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->m_elems.at(_pos(row, column));
+    return this->m_elems.at(this->__pos(row, column));
 }
 
 
@@ -298,7 +298,7 @@ T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t column) thr
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->m_elems.at(_pos(row, column));
+    return this->m_elems.at(this->__pos(row, column));
 }
 
 
@@ -330,7 +330,7 @@ const T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t colum
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    return this->m_elems.at(_pos(row, column));
+    return this->m_elems.at(this->__pos(row, column));
 }
 
 
@@ -362,7 +362,7 @@ T& math::MatrixGeneric<T>::operator()(const size_t idx) throw(math::MatrixExcept
     const size_t col = idx / this->m_rows;
     const size_t row = idx % this->m_rows;
 
-    return this->m_elems.at(_pos(row, col));
+    return this->m_elems.at(this->__pos(row, col));
 }
 
 
@@ -394,7 +394,7 @@ const T& math::MatrixGeneric<T>::operator()(const size_t idx) const throw(math::
     const size_t col = idx / this->m_rows;
     const size_t row = idx % this->m_rows;
 
-    return this->m_elems.at(_pos(row, col));
+    return this->m_elems.at(this->__pos(row, col));
 }
 
 
@@ -420,7 +420,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(const size_t row, const size
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    this->m_elems.at(_pos(row, column)) = element;
+    this->m_elems.at(this->__pos(row, column)) = element;
 
     return *this;
 }
@@ -452,7 +452,7 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
         // display elements of the row r, separated by tabs
         for ( size_t c=0; c<(this->m_cols); ++c )
         {
-            str << this->m_elems.at(_pos(r, c)) << "\t";
+            str << this->m_elems.at(this->__pos(r, c)) << "\t";
         }
         // the line must be terminated by a newline
         str << std::endl;
@@ -479,7 +479,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGen
         return *this;
     }
 
-    this->_copyElems(orig);
+    this->__copyElems(orig);
 
     return *this;
 }
@@ -596,7 +596,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGe
 
     try
     {
-        this->_copyElems(temp);
+        this->__copyElems(temp);
     }
     catch ( const std::bad_alloc& ba )
     {
@@ -850,7 +850,7 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
          * Each swap multiplies the determinant by -1
          */
 
-        if ( true == math::NumericUtil::isZero<T>(temp.at(this->_pos(i, i))) )
+        if ( true == math::NumericUtil::isZero<T>(temp.at(this->__pos(i, i))) )
         {
             size_t r;
 
@@ -862,7 +862,7 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
 
             for ( r=i+1; r<N; ++r )
             {
-                if ( false == NumericUtil::isZero<T>(temp.at(this->_pos(r, i))) )
+                if ( false == NumericUtil::isZero<T>(temp.at(this->__pos(r, i))) )
                 {
                     // Found, no need to search further,
                     // so end the for (r) loop
@@ -885,9 +885,9 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
             #pragma omp parallel for \
                         if((N-i)>OMP_CHUNKS_PER_THREAD) \
                         default(none) shared(temp, r, i)
-            for ( size_t c=this->_pos(i,i); c<this->_pos(i+1,0); ++c )
+            for ( size_t c=this->__pos(i,i); c<this->__pos(i+1, 0); ++c )
             {
-                std::swap(temp.at(c), temp.at(this->_pos(r, c)));
+                std::swap(temp.at(c), temp.at(this->__pos(r, c)));
             }
 
             // finally, if two lines are swapped, det = -det
@@ -917,12 +917,13 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
              * However, its initial value is necessary to properly
              * calculate all other elements of the r.th row
              */
-            const T ri = temp.at(this->_pos(r, i));
+            const T ri = temp.at(this->__pos(r, i));
 
             for ( size_t c=i; c<N; ++c)
             {
                 // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                temp.at(this->_pos(r, c)) -= temp.at(this->_pos(i, c)) * ri / temp.at(this->_pos(i, i));
+                temp.at(this->__pos(r, c)) -= 
+                    temp.at(this->__pos(i, c)) * ri / temp.at(this->__pos(i, i));
             }  // for c
         }  // for r
     }  // for i
@@ -949,7 +950,7 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
         T tempProd = static_cast<T>(1);
         for ( size_t i = istart; i<iend; ++i )
         {
-            tempProd *= temp.at(this->_pos(i, i));
+            tempProd *= temp.at(this->__pos(i, i));
         }
 
         // Multiply in a thread safe manner:
@@ -1059,7 +1060,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
             const size_t r = idx / tcols;
             const size_t c = idx % tcols;
 
-            retVal.m_elems.at(retVal._pos(c, r)) = els.at(this->_pos(r, c));
+            retVal.m_elems.at(retVal.__pos(c, r)) = els.at(this->__pos(r, c));
         }
     }  // omp parallel
 
@@ -1115,7 +1116,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
         {
             for ( size_t c=r+1; c<N; ++c )
             {
-                std::swap(els.at(this->_pos(r, c)), els.at(this->_pos(c, r)));
+                std::swap(els.at(this->__pos(r, c)), els.at(this->__pos(c, r)));
             }  // for c
         }  // for r
 
@@ -1572,10 +1573,10 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
             T sum = static_cast<T>(0);
             for ( size_t i=0; i<m1.m_cols; ++i )
             {
-                sum += m1.m_elems.at(m1._pos(r, i)) * m2.m_elems.at(m2._pos(i, c));
+                sum += m1.m_elems.at(m1.__pos(r, i)) * m2.m_elems.at(m2.__pos(i, c));
             }
 
-            temp.m_elems.at(temp._pos(r, c)) = sum;
+            temp.m_elems.at(temp.__pos(r, c)) = sum;
         }  // for c
     }  // for r
 
