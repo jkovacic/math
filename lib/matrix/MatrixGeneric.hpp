@@ -114,8 +114,7 @@ template <class T>
 class MatrixGeneric
 {
 
-    // These properties must be accessible in inherited classes
-protected:
+private:
     size_t m_rows;      /// Number of rows
     size_t m_cols;      /// Number of columns
 
@@ -127,6 +126,10 @@ protected:
      * Operations such as inserting or removing of elements are simplified as well.
      */
     std::vector<T> m_elems;   /// Elements of the matrix
+
+
+    // Initializes a new matrix
+    void __init(const size_t rows, const size_t cols) throw (MatrixException);
 
     /*
      * Copy elements from one matrix into another. Used at copy constructors,
@@ -154,8 +157,9 @@ protected:
     }
 
 public:
-    // Constructor
-    MatrixGeneric(const size_t rows = 1, const size_t columns = 1) throw (MatrixException);
+    // Constructors
+    MatrixGeneric(const size_t rows, const size_t columns) throw (MatrixException);
+    MatrixGeneric(const size_t n) throw (MatrixException);
     // Copy constructor
     MatrixGeneric(const MatrixGeneric& orig) throw (MatrixException);
 
@@ -177,10 +181,10 @@ public:
     void display(std::ostream& str = std::cout) const throw (MatrixException);
 
     // Matrix arithmetics operators
-    virtual MatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
+    MatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
     MatrixGeneric<T>& operator+= (const MatrixGeneric<T>& m) throw (MatrixException);
     MatrixGeneric<T>& operator-= (const MatrixGeneric<T>& m) throw (MatrixException);
-    virtual MatrixGeneric<T>& operator*= (const MatrixGeneric<T>&m ) throw (MatrixException);
+    MatrixGeneric<T>& operator*= (const MatrixGeneric<T>&m ) throw (MatrixException);
     MatrixGeneric<T>& operator*= (const T& scalar);
     MatrixGeneric<T>& operator+= (const T& scalar);
     MatrixGeneric<T>& operator-= (const T& scalar);
@@ -195,13 +199,21 @@ public:
     MatrixGeneric<T> conj() const throw (MatrixException);
 
     // Insert or remove rows/columns.
-    virtual MatrixGeneric<T>& removeRow(const size_t rowNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& removeColumn(const size_t colNr) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
-    virtual MatrixGeneric<T>& insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    MatrixGeneric<T>& removeRow(const size_t rowNr) throw (MatrixException);
+    MatrixGeneric<T>& removeColumn(const size_t colNr) throw (MatrixException);
+    MatrixGeneric<T>& insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    MatrixGeneric<T>& insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
 
     // Swap rows
     MatrixGeneric<T>& swapRows(const size_t r1, const size_t r2) throw(MatrixException);
+
+    // These methods are only applicable for square matrices:
+    MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
+    MatrixGeneric<T>& setUnit() throw(MatrixException);
+    T determinant() const throw(MatrixException);
+    MatrixGeneric<T> inverse() const throw(MatrixException);
+
+    bool isSquare() const;
 
     // Destructor
     virtual ~MatrixGeneric();

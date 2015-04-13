@@ -26,7 +26,6 @@ limitations under the License.
 #include <complex>
 
 #include "MatrixGeneric.h"
-#include "SqMatrixGeneric.h"
 #include "LinearEquationSolverGeneric.h"
 #include "MatrixException.h"
 
@@ -42,7 +41,7 @@ void lineqSolverTest()
 {
     try
     {
-        SqMatrixGeneric<complex<float> > a(3);
+        MatrixGeneric<complex<float> > a(3);
         MatrixGeneric<complex<float> > b(3, 1);
 
         a.set(0, 0, complex<float>(1, 1)).set(0, 1, complex<float>(2, -1)).set(0, 2, complex<float>(-1, 0.5));
@@ -63,7 +62,7 @@ void lineqSolverTest()
          * Exact solution of the linear equation system a*x=b:
          * x  = [-0.6631640-0.3626125i, 0.1630189+1.050566i, -0.2240929+0.6002903i]'
          */
-        MatrixGeneric<complex<float> > x;
+        MatrixGeneric<complex<float> > x(b);
         if ( true == LinearEquationSolver::solveGaussJordan(a, b, x) )
         {
             cout << "Solution:" << endl;

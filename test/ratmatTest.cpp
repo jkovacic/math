@@ -27,7 +27,6 @@ limitations under the License.
 
 #include "RationalGeneric.h"
 #include "MatrixGeneric.h"
-#include "SqMatrixGeneric.h"
 
 #include "MatrixException.h"
 #include "RationalException.h"
@@ -50,7 +49,7 @@ void rationalMatrixTest()
         a.set(1, 0, Rational(3, 4));        a.set(1, 1, Rational(-1, 3));
 
         // Copy constructor should also implement cast.
-        SqMatrixGeneric<Rational> inv = ((SqMatrixGeneric<Rational>) a).inverse();
+        MatrixGeneric<Rational> inv = a.inverse();
 
         cout << "a:" << endl;
         a.display();
@@ -72,7 +71,7 @@ void rationalMatrixTest()
 
         // test of overloaded matrix operators:
         Rational r(3, 4);
-        MatrixGeneric<Rational> b;
+        MatrixGeneric<Rational> b(a);
 
         b = a + r;
         cout << "a + " << r << " : " << endl;

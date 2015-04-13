@@ -33,7 +33,6 @@ limitations under the License.
 
 #include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
-#include "matrix/SqMatrixGeneric.hpp"
 
 namespace math
 {
@@ -46,7 +45,7 @@ namespace LinearEquationSolver
 
     template <class T>
     bool solveGaussJordan(
-              const SqMatrixGeneric<T>& coef,
+              const MatrixGeneric<T>& coef,
               const MatrixGeneric<T>& term,
               MatrixGeneric<T>& sol
             ) throw (MatrixException);

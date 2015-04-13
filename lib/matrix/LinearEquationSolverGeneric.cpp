@@ -30,7 +30,6 @@ limitations under the License.
 #include "exception/MatrixException.hpp"
 #include "util/NumericUtil.hpp"
 #include "matrix/MatrixGeneric.hpp"
-#include "matrix/SqMatrixGeneric.hpp"
 #include "../settings/omp_settings.h"
 
 
@@ -54,12 +53,18 @@ limitations under the License.
  */
 template <class T>
 bool math::LinearEquationSolver::solveGaussJordan(
-          const math::SqMatrixGeneric<T>& coef,
+          const math::MatrixGeneric<T>& coef,
           const math::MatrixGeneric<T>& term,
           math::MatrixGeneric<T>& sol
         ) throw (math::MatrixException)
 {
     // TODO pivoting for better stability
+
+    // Sanity check
+    if ( false == coef.isSquare() )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
 
     /*
      * The Gaussian elimination algorithm is implemented:
@@ -78,7 +83,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    math::SqMatrixGeneric<T> temp(coef);
+    math::MatrixGeneric<T> temp(coef);
     sol = term;
 
     /*

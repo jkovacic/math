@@ -27,7 +27,6 @@ limitations under the License.
 #include <complex>
 
 #include "MatrixGeneric.h"
-#include "SqMatrixGeneric.h"
 #include "MatrixException.h"
 
 
@@ -93,7 +92,7 @@ void matrixTest()
         cout << endl;
 
         // test creation of a unit (diagonal) matrices
-        FSqMatrix a(3);
+        FMatrix a(3);
         a.setUnit();
         cout << "3x3 unit matrix:" << endl;
         a.display();
@@ -137,7 +136,7 @@ void matrixTest()
         FMatrix sq(2, 2);
         sq.set(0,0,1).set(0,1,2);
         sq.set(1,0,3).set(1,1,4);
-        FSqMatrix kv(sq);
+        FMatrix kv(sq);
         cout << "kv:" << endl;
         kv.display();
         cout << endl;
@@ -149,7 +148,7 @@ void matrixTest()
         cout << endl;
 
         // Square matrix to test determinant and inverse
-        FSqMatrix a1(3);
+        FMatrix a1(3);
         a1.set(0, 0, 1.0f).set(0, 1, 2.0f).set(0, 2, 3.0f);
         a1.set(1, 0, 4.0f).set(1, 1, 5.0f).set(1, 2, 6.0f);
         a1.set(2, 0, 7.0f).set(2, 1, 9.0f).set(2, 2, 8.0f);
@@ -162,14 +161,14 @@ void matrixTest()
         cout << "Determinant of a1: " << d << endl << endl;;
 
         // and calculation of the inverse matrix
-        FSqMatrix inv = a1.inverse();
+        FMatrix inv = a1.inverse();
         cout << "inv = inverse of a1:" <<endl;
         inv.display();
         cout << endl;
 
         // Test if inverse matrix was calculated properly
         // a1*inv must be a unit matrix
-        FMatrix prodUnit;
+        FMatrix prodUnit(inv);
         prodUnit = a1 * inv;
         cout << "a1 * inv   (must be a unit matrix):" << endl;
         prodUnit.display();

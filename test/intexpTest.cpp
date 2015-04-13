@@ -25,7 +25,7 @@ limitations under the License.
 #include <iostream>
 
 #include "IntExponentiatorGeneric.h"
-#include "SqMatrixGeneric.h"
+#include "MatrixGeneric.h"
 #include "QuaternionGeneric.h"
 #include "RationalGeneric.h"
 #include "PolynomialGeneric.h"
@@ -58,7 +58,7 @@ void intExponentiaorTest()
         cout << "sqrt(2)^30 = " << IntExponentiator::power(sqrt(2.0), 30) << endl;
         cout << endl;
 
-        FSqMatrix m(3);
+        FMatrix m(3);
         m.set(0, 0, 0.1f).set(0, 1, -0.2f).set(0, 2, 0.3f);
         m.set(1, 0, -0.4f).set(1, 1, 0.5f).set(1, 2, -0.6f);
         m.set(2, 0, 0.7f).set(2, 1, -0.8f).set(2, 2, 0.9f);

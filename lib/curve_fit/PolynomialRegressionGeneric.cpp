@@ -25,7 +25,6 @@ limitations under the License.
 
 // no #include "PolynomialRegressionGeneric.hpp" !!!
 #include "matrix/MatrixGeneric.hpp"
-#include "matrix/SqMatrixGeneric.hpp"
 #include "matrix/LinearEquationSolverGeneric.hpp"
 #include "exception/MatrixException.hpp"
 #include "exception/CurveFittingException.hpp"
@@ -97,7 +96,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
         // number of polynomial's coefficients
         const size_t N = degree + 1;
 
-        math::SqMatrixGeneric<F> a(N);
+        math::MatrixGeneric<F> a(N);
         math::MatrixGeneric<F> b(N, 1);
         
         /*
@@ -147,7 +146,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
          * Note that 'degree' will usually be rather small, hence
          * the Gauss - Jordan method will be sufficient in majority of cases.
          */
-        math::MatrixGeneric<F> x;
+        math::MatrixGeneric<F> x(b);
         const bool succ = math::LinearEquationSolver::solveGaussJordan<F>(a, b, x);
 
         // System of linear equations successfully solved?

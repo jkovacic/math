@@ -34,36 +34,38 @@ limitations under the License.
 // no #include "MatrixGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
 #include "exception/MatrixException.hpp"
+#include "matrix/LinearEquationSolverGeneric.hpp"
 #include "util/mtcopy.hpp"
 #include "util/mtvectop.hpp"
 #include "util/mtswap.hpp"
+
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
 
 
-/**
- * Constructor.
- * Creates an instance of a matrix with the specified number of rows and columns.
- * Elements of the matrix are set to the default value (zero).
- *
- * @param rows    - number of rows (default: 1)
- * @param columns - number of columns (default: 1)
+
+/*
+ * Initializes a new matrix
+ * 
+ * @param rows    - number of rows
+ * @param columns - number of columns
  *
  * @throw MatrixException when allocation of memory fails or in case of incorrect
- *        input parameters (both must be at least 1)
+ *        input arguments (both must be at least 1)
  */
 template <class T>
-math::MatrixGeneric<T>::MatrixGeneric(const size_t rows, const size_t columns) throw(math::MatrixException)
+void math::MatrixGeneric<T>::__init(
+    const size_t rows, const size_t cols) throw (math::MatrixException)
 {
     // Matrix must contain at least 1 row and at least 1 column
-    if ( rows < 1 || columns < 1 )
+    if ( rows < 1 || cols < 1 )
     {
         throw math::MatrixException(MatrixException::INVALID_DIMENSION);
     }
 
     // even theoretically the number of vector's elements is limited
-    if ( columns > this->m_elems.max_size()/rows )
+    if ( cols > this->m_elems.max_size()/rows )
     {
         throw math::MatrixException(math::MatrixException::TOO_LARGE);
     }
@@ -71,17 +73,50 @@ math::MatrixGeneric<T>::MatrixGeneric(const size_t rows, const size_t columns) t
     try
     {
         this->m_rows = rows;
-        this->m_cols = columns;
+        this->m_cols = cols;
         // make sure, the vector will be empty
         this->m_elems.clear();
         // allocate memory for required number of elements, initialize each of them
-        this->m_elems.resize(rows*columns, static_cast<T>(0));
+        this->m_elems.resize(rows * cols, static_cast<T>(0));
     }
     catch ( const std::bad_alloc& ba )
     {
         // Memory allocation failed
         throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
+}
+
+
+/**
+ * Constructor.
+ * Creates an instance of a matrix with the specified number of rows and columns.
+ * Elements of the matrix are set to the default value (zero).
+ *
+ * @param rows    - number of rows
+ * @param columns - number of columns
+ *
+ * @throw MatrixException when allocation of memory fails or in case of incorrect
+ *        input arguments (both must be at least 1)
+ */
+template <class T>
+math::MatrixGeneric<T>::MatrixGeneric(const size_t rows, const size_t columns) throw(math::MatrixException)
+{
+    this->__init(rows, columns);
+}
+
+/**
+ * Constructor.
+ * Creates an instance of a square matrix with the specified number of rows and columns.
+ *
+ * @param n  - number of rows and columns
+ *
+ * @throw MatrixException when allocation of memory fails or in case of incorrect
+ *        input arguments ('n' must be at least 1)
+ */
+template <class T>
+math::MatrixGeneric<T>::MatrixGeneric(const size_t n) throw (math::MatrixException)
+{
+    this->__init(n, n);
 }
 
 
@@ -674,6 +709,319 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::ewDiv(const math::MatrixGeneric<
 
 
 /**
+ * @return a logical value indicating whether the matrix is square
+ */
+template <class T>
+bool math::MatrixGeneric<T>::isSquare() const
+{
+    return ( this->m_rows == this->m_cols );
+}
+
+
+/**
+ * Modifies the matrix into a diagonal matrix.
+ * Values of all diagonal elements are set to scalar, the other ones to zero.
+ * 
+ * @note The method is only supported for square matrices
+ *
+ * @param scalar - value of diagonal elements
+ *
+ * @return reference to itself
+ *
+ * @throw MatrixException if the matrix is not square
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag(const T& scalar) throw(math::MatrixException)
+{
+    // Sanity check
+    if ( false == this->isSquare() )
+    {
+        throw math::MatrixException(math::MatrixException::NONSQUARE_MATRIX);
+    }
+
+    // A double for loop will traverse the matrix, its diagonal elements
+    // (row == column) will be set to the scalar, others to 0
+
+    const size_t& N = this->m_rows;
+    const size_t N2 = N * N;
+
+    // Coarse grained parallelism:
+    std::vector<T>& els = this->m_elems;
+
+    #pragma omp parallel num_threads(ompIdeal(N2)) \
+                if(N2>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(N, els, scalar)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N2 + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+
+        typename std::vector<T>::iterator it = els.begin() + istart;
+        for ( size_t idx = istart;
+              idx<(istart+elems_per_thread) && it!=els.end();
+              ++it, ++idx )
+        {
+            const size_t r = idx / N;
+            const size_t c = idx % N;
+
+            *it = ( r==c ? scalar : static_cast<T>(0) );
+        }
+    }  // omp parallel
+
+    return *this;
+}
+
+
+/**
+ * Modifies the matrix into a unit matrix (a diagonal matrix with ones on the diagonal)
+ * 
+ * @note The method is only supported for square matrices
+ *
+ * @return reference to itself
+ *
+ * @throw MatrixException if the matrix is not square
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::setUnit() throw(math::MatrixException)
+{
+    // Actually this is a diagonal matrix with units (ones)
+    // on its diagonal
+    this->setDiag(static_cast<T>(1));
+
+    return *this;
+}
+
+
+/**
+ * Calculates matrix's determinant.
+ * This operation makes sense if T is float, double, Rational, Complex.
+ * The result may be wrong if T is any implementation of int !!!!!!
+ *
+ * @note The method is only supported for square matrices
+ * 
+ * @return determinant of the matrix
+ *
+ * @throw MatrixException if the matrix is not square or if allocation of memory for auxiliary variables fails
+ */
+template <class T>
+T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
+{
+    // Sanity check
+    if ( false == this->isSquare() )
+    {
+        throw math::MatrixException(math::MatrixException::NONSQUARE_MATRIX);
+    }
+
+    /*
+     * The following properties of determinant will be utilized:
+     *
+     * - addition of one line with a multiple of another line does not affect
+     *   the determinant
+     * - swapping of two lines negates the determinant
+     * - if a matrix is "converted" into an upper or lower triangle
+     *   (all elements above/below the diagonal are 0), the determinant
+     *   is a product of all diagonal elements
+     */
+
+    // Initial value. It will be negated each time two lines need to be swapped.
+    // At the end of the algorithm it will be multiplied by all diagonal elements
+    T retVal = static_cast<T>(1);
+
+    /*
+     * We do not want to modify the matrix, therefore its vector of
+     * elements will be copied into a temporary one where any modifications
+     * are permitted
+     */
+    std::vector<T> temp;
+    math::mtcopy(this->m_elems, temp);
+    const size_t& N = this->m_rows;  // number of rows (and columns)
+
+    /*
+     * First part of the algorithm just finds the first occurrence of a
+     * row where A(i,i) does not equal 0. As such, this part is not
+     * suitable for parallelization.
+     */
+    for ( size_t i=0; i<N-1; ++i )
+    {
+        /*
+         * if temp(i,i) equals zero, swap the i^th line with
+         * another one (r; r>i) satisfying temp(r,i)!=0
+         * Each swap multiplies the determinant by -1
+         */
+
+        if ( true == math::NumericUtil::isZero<T>(temp.at(this->_pos(i, i))) )
+        {
+            size_t r;
+
+            /*
+             * Line swap will be necessary.
+             * Find the r^th line meeting the criteria above
+             * If not found, the determinant will be 0.
+             */
+
+            for ( r=i+1; r<N; ++r )
+            {
+                if ( false == NumericUtil::isZero<T>(temp.at(this->_pos(r, i))) )
+                {
+                    // Found, no need to search further,
+                    // so end the for (r) loop
+                    break;  // out of for (r)
+                }
+            }  // for r
+
+            // if no appropriate row r was found, the determinant will be 0
+            // and the method is finished
+            if ( N == r )
+            {
+                return static_cast<T>(0);
+            }
+
+            // otherwise swap the lines one element by one
+
+            // swap i.th and r.th line by replacing elements one by one
+
+            // However the swapping part might conditionally be suitable for parallelization
+            #pragma omp parallel for \
+                        if((N-i)>OMP_CHUNKS_PER_THREAD) \
+                        default(none) shared(temp, r, i)
+            for ( size_t c=this->_pos(i,i); c<this->_pos(i+1,0); ++c )
+            {
+                std::swap(temp.at(c), temp.at(this->_pos(r, c)));
+            }
+
+            // finally, if two lines are swapped, det = -det
+            retVal = -retVal;
+        } // if temp(i,i) equals 0
+
+        /*
+         * Now temp(i,i) definitely does not equal 0
+         * all temp(r,i) will be "set" to 0 where r>i.
+         *
+         * Note that determinant is not changed if
+         * a multiplier of one line (i in this algorithm)
+         * is added to another line (r; r>i)
+         */
+
+        /*
+         * Main part of the algorithm. An appropriate multiplier of the i.th row will be
+         * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
+         *
+         * Note: only the outer for loop (for r) will be parallelized.
+         */
+        #pragma omp parallel for default(none) shared(N, temp, i)
+        for ( size_t r=i+1; r<N; ++r )
+        {
+            /*
+             * temp(r,i) will be calculated to 0 immediately.
+             * However, its initial value is necessary to properly
+             * calculate all other elements of the r.th row
+             */
+            const T ri = temp.at(this->_pos(r, i));
+
+            for ( size_t c=i; c<N; ++c)
+            {
+                // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
+                temp.at(this->_pos(r, c)) -= temp.at(this->_pos(i, c)) * ri / temp.at(this->_pos(i, i));
+            }  // for c
+        }  // for r
+    }  // for i
+
+
+    /*
+     * Now 'temp' is an upper triangular matrix so all its diagonal
+     * elements can be multiplied.
+     */
+
+    // Coarse grained parallelism
+    T prod = static_cast<T>(1);
+
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(N, temp, prod)
+    {
+        const size_t thnr = omp_get_thread_num();
+        const size_t nthreads  = omp_get_num_threads();
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thnr;
+        const size_t iend = std::min(istart+elems_per_thread, N);
+
+        T tempProd = static_cast<T>(1);
+        for ( size_t i = istart; i<iend; ++i )
+        {
+            tempProd *= temp.at(this->_pos(i, i));
+        }
+
+        // Multiply in a thread safe manner:
+        #pragma omp critical(sqmatrix_determinant)
+        {
+            prod *= tempProd;
+        }
+    }  // omp parallel
+
+    retVal *= prod;
+
+    // temp not needed anymore, clean it
+    temp.clear();
+
+    return retVal;
+}
+
+/**
+ * Matrix inversion.
+ * R = A^(-1) if R*A = A*R = I
+ * If matrix's determinant equals 0, the matrix is not invertible
+ *
+ * @note The method is only supported for square matrices
+ * 
+ * @return inverse matrix
+ *
+ * @throw MatrixException if the matrix is not square or not invertible
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse() const throw(math::MatrixException)
+{
+    // Sanity check
+    if ( false == this->isSquare() )
+    {
+        throw math::MatrixException(math::MatrixException::NONSQUARE_MATRIX);
+    }
+
+    /*
+     * Elements of the inverse matrix can be calculated as quotients of so called
+     * "co-determinants" and determinant of the main matrix. However, this
+     * would be too complex, so a numerical Gauss - Jordan elimination algorithm
+     * will be applied:
+     * - a unit matrix is appended to the right of the matrix: [A|I].
+     * - multiples of lines are added to lines (similar as solving a set of linear
+     *   equations) until a unit matrix appears in the left half: [I|B]
+     * - B is inverse matrix of A: B = A^(-1)
+     * 
+     * This functionality is already implemented by the class LinearEquationSolverGeneric.
+     */
+
+    // prepare an identity matrix NxN...
+    math::MatrixGeneric<T> id(this->m_rows);
+    id.setUnit();
+
+    // Inverse matrix is a solution (if it exists) of the equation:
+    // this * inv = id
+    math::MatrixGeneric<T> retVal(id);
+
+    const bool succ = math::LinearEquationSolver::solveGaussJordan<T>(*this, id, retVal);
+
+    // is *this an uninvertible matrix? (determinant()=0):
+    if ( false == succ )
+    {
+        throw math::MatrixException(math::MatrixException::NON_INVERTIBLE_MATRIX);
+    }
+
+    return retVal;
+
+}
+
+
+/**
  * Matrix transpose operation
  *
  * @return this^T
@@ -732,25 +1080,61 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
 {
     /*
      * TODO: find a memory efficient method for a general matrix!!
-     *
-     * Note: as the method is not memory efficient at the moment, the function
-     * is declared as virtual, allowing a more efficient implementation at
-     * SqMatrixGeneric.
      */
 
     // If dimension of this is (n,m), dimension of its transposed matrix is (m,n)
     // T(r,c) = this(c,r)
 
-    // Until a better algorithm is implemented
-    // just use the general transpose method
-    math::MatrixGeneric<T> temp = this->transpose();
+    if ( true == this->isSquare() )
+    {
+        // A specialized algorithm for square matrices
+        // TODO: find and implement a better algorithm
 
-    // update the vector of elements:
-    math::mtcopy<T>(temp.m_elems, this->m_elems);
+        const size_t& N = this->m_rows;    // number of rows (and columns)
+        const size_t Ntr = N * (N-1) / 2;  // number of all elements to be transposed
 
-    // and swap matrix's dimensions:
-    std::swap( this->m_rows, this->m_cols );
+        /*
+         * Traverse the upper diagonal part of the matrix,
+         * no need to reach the final row and
+         * no need to transpose elements on the diagonal:
+         */
 
+        /*
+         * Notes about parallelization:
+         * As the inner loop (for c) also depends on outer loop's
+         * iterator (r), it is not possible to parallelize both loops
+         * in an elegant way. Hence only the outer loop is parallelized.
+         * As the threads' load varies, dynamic scheduling is applied.
+         */
+        std::vector<T>& els = this->m_elems;
+        #pragma omp parallel for \
+                    if(Ntr>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(els) \
+                    schedule(dynamic) shared(N)
+        for ( size_t r=0; r<N-1; ++r )
+        {
+            for ( size_t c=r+1; c<N; ++c )
+            {
+                std::swap(els.at(this->_pos(r, c)), els.at(this->_pos(c, r)));
+            }  // for c
+        }  // for r
+
+        // just to suppress a warning when OpenMP is not enabled
+        (void) Ntr;
+    }
+    else
+    {
+        // Until a better algorithm is implemented
+        // just use the general transpose method
+        math::MatrixGeneric<T> temp = this->transpose();
+
+        // update the vector of elements:
+        math::mtcopy<T>(temp.m_elems, this->m_elems);
+
+        // and swap matrix's dimensions:
+        std::swap( this->m_rows, this->m_cols );
+    }
+    
     return *this;
 }
 
@@ -768,7 +1152,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
 template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal;
+    math::MatrixGeneric<T> retVal(*this);
     math::__matrixprivate::__matconj(*this, retVal);
 
     return retVal;

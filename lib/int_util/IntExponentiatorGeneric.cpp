@@ -28,7 +28,7 @@ limitations under the License.
 #include "int_util/IntUtilGeneric.hpp"
 #include "exception/IntFactorizationException.hpp"
 
-#include "matrix/SqMatrixGeneric.hpp"
+#include "matrix/MatrixGeneric.hpp"
 #include "polynomial/PolynomialGeneric.hpp"
 
 #include <cstddef>
@@ -68,10 +68,10 @@ namespace IntExponentiator
          * @return a unit n x n square matrix where n is a dimension of 't'
          */
         template<class T>
-        math::SqMatrixGeneric<T> __getUnit(const math::SqMatrixGeneric<T>& t)
+        math::MatrixGeneric<T> __getUnit(const math::MatrixGeneric<T>& t)
         {
             const size_t N = t.nrRows();
-            math::SqMatrixGeneric<T> retVal(N);
+            math::MatrixGeneric<T> retVal(N);
             retVal.setUnit();
             return retVal;
         }

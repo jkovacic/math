@@ -49,6 +49,7 @@ struct MatrixException : public IMathException
         TOO_LARGE,                  /// Matrix is too large
         INVALID_DIMENSION,          /// Dimension is not valid for the operation
         OUT_OF_RANGE,               /// Attempt to access an element out of defined range
+        NONSQUARE_MATRIX,           /// Operation only allowed on square matrices 
         NOT_ENOUGH_ELEMENTS,        /// Not enough elements
         NON_INVERTIBLE_MATRIX,      /// Matrix cannot be inverted
     };

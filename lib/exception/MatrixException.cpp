@@ -61,6 +61,9 @@ void math::MatrixException::what(std::ostream& str) const
         case math::MatrixException::OUT_OF_RANGE :
             str << "Attempted to access elements out of valid range";
             break;
+        case math::MatrixException::NONSQUARE_MATRIX :
+            str << "The operation is only allowed on square matrices";
+            break;
         case math::MatrixException::NOT_ENOUGH_ELEMENTS :
             str << "Not enough elements";
             break;
