@@ -40,6 +40,42 @@ limitations under the License.
 namespace math {  namespace LinearEquationSolver {  namespace __private
 {
 
+
+/*
+ * In order to support both real and complex numbers, the
+ * code snippet below must be included into two separate functions.
+ * 
+ * To facilitate maintainability, the snippet will be defined as
+ * a macro, included to functions where necessary and undefined
+ * when not needed anymore.
+ */
+#define _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY   \
+    const size_t N = a.nrRows();                    \
+                                                    \
+    if ( p >= N || p >= a.nrColumns() )             \
+    {                                               \
+        return p;                                   \
+    }                                               \
+                                                    \
+    size_t r = p;                                   \
+    T maxPiv = static_cast<T>(0);                   \
+                                                    \
+    for ( size_t i=p; i<N; ++i )                    \
+    {                                               \
+        const T elabs = std::abs( a(i, p) );        \
+                                                    \
+        if ( elabs > maxPiv )                       \
+        {                                           \
+            maxPiv = elabs;                         \
+            r = i;                                  \
+        }                                           \
+    }                                               \
+                                                    \
+    return r;
+
+// end of macro definition
+
+
 /*
  * Finds the row with the highest value (by absolute value) of the
  * p.th column.
@@ -52,31 +88,11 @@ namespace math {  namespace LinearEquationSolver {  namespace __private
  * @return row number with the highest absolute value of the p.th element
  */
 template <class T>
-size_t findPivot(const math::MatrixGeneric<T>& a, const size_t p)
+size_t findPivot(
+        const math::MatrixGeneric<T>& a,
+        const size_t p )
 {
-    const size_t N = a.nrRows();
-
-    // Sanity check
-    if ( p >= N || p >= a.nrColumns() )
-    {
-        return p;
-    }
-
-    size_t r = p;
-    T maxPiv = static_cast<T>(0);
-
-    for ( size_t i=p; i<N; ++i )
-    {
-        const T elabs = std::abs( a(i, p) );
-
-        if ( elabs > maxPiv )
-        {
-            maxPiv = elabs;
-            r = i;
-        }
-    }
-
-    return r;
+    _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY
 }
 
 
@@ -88,32 +104,13 @@ size_t findPivot(const math::MatrixGeneric<T>& a, const size_t p)
 template <class T>
 size_t findPivot(
         const math::MatrixGeneric< std::complex<T> >& a,
-        const size_t p)
+        const size_t p )
 {
-    const size_t N = a.nrRows();
-
-    // Sanity check
-    if ( p >= N )
-    {
-        return p;
-    }
-
-    size_t r = p;
-    T maxPiv = static_cast<T>(0);
-
-    for ( size_t i=p; i<N; ++i )
-    {
-        const T elabs = std::abs( a(i, p) );
-
-        if ( elabs > maxPiv )
-        {
-            maxPiv = elabs;
-            r = i;
-        }
-    }
-
-    return r;
+    _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY
 }
+
+// As the macro is not needed anymore, it will be undefined
+#undef _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY
 
 }}}  // namespace math::LinearEquationsolver::__private
 
