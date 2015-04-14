@@ -26,11 +26,96 @@ limitations under the License.
 // no #include "LinearEquationSolverGeneric.hpp" !!!
 #include <cstddef>
 #include <algorithm>
+#include <cmath>
+#include <complex>
 
 #include "exception/MatrixException.hpp"
 #include "util/NumericUtil.hpp"
 #include "matrix/MatrixGeneric.hpp"
 #include "../settings/omp_settings.h"
+
+
+
+// A namespace with "private" functions:
+namespace math {  namespace LinearEquationSolver {  namespace __private
+{
+
+/*
+ * Finds the row with the highest value (by absolute value) of the
+ * p.th column.
+ *
+ * 'p' is returned immediately if it is out of a's range.
+ *
+ * @param a - a matrix of coefficients
+ * @param p - index of the desired column
+ *
+ * @return row number with the highest absolute value of the p.th element
+ */
+template <class T>
+size_t findPivot(const math::MatrixGeneric<T>& a, const size_t p)
+{
+    const size_t N = a.nrRows();
+
+    // Sanity check
+    if ( p >= N || p >= a.nrColumns() )
+    {
+        return p;
+    }
+
+    size_t r = p;
+    T maxPiv = static_cast<T>(0);
+
+    for ( size_t i=p; i<N; ++i )
+    {
+        const T elabs = std::abs( a(i, p) );
+
+        if ( elabs > maxPiv )
+        {
+            maxPiv = elabs;
+            r = i;
+        }
+    }
+
+    return r;
+}
+
+
+/*
+ * Partial "specialization" of findPivot for complex numbers.
+ * It is actually the exact copy of the general function except the
+ * function's signature.
+ */
+template <class T>
+size_t findPivot(
+        const math::MatrixGeneric< std::complex<T> >& a,
+        const size_t p)
+{
+    const size_t N = a.nrRows();
+
+    // Sanity check
+    if ( p >= N )
+    {
+        return p;
+    }
+
+    size_t r = p;
+    T maxPiv = static_cast<T>(0);
+
+    for ( size_t i=p; i<N; ++i )
+    {
+        const T elabs = std::abs( a(i, p) );
+
+        if ( elabs > maxPiv )
+        {
+            maxPiv = elabs;
+            r = i;
+        }
+    }
+
+    return r;
+}
+
+}}}  // namespace math::LinearEquationsolver::__private
 
 
 
@@ -58,7 +143,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
           math::MatrixGeneric<T>& sol
         ) throw (math::MatrixException)
 {
-    // TODO pivoting for better stability
+    // Partial pivoting is implemented
 
     // Sanity check
     if ( false == coef.isSquare() )
@@ -75,9 +160,8 @@ bool math::LinearEquationSolver::solveGaussJordan(
      */
     const size_t N = coef.nrColumns();          // Nr. of unknowns
     const size_t NT = term.nrColumns();         // Nr. of terms' columns
-    const size_t Nmax = std::max(N, NT);        // max. of both values
 
-    // Check of dimensions
+    // Check the dimensions
     if ( N != term.nrRows() )
     {
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
@@ -93,62 +177,34 @@ bool math::LinearEquationSolver::solveGaussJordan(
      */
 
     /*
-     * The first part of the algorithm will (try to) ensure there are
-     * no zeros among temp's diagonal elements. Additionally it will
-     * subtract multiples of the i.th row from all subsequent rows (r>i)
-     * so their i.th column will be equal to 0. This requires plenty of
-     * additions/subtractions of individual rows so parallelization of
-     * this for loop is not possible due to race conditions. It will be
-     * possible to parallelize certain parts of this loop, though.
+     * The first part of the algorithm will implement partial pivoting
+     * of rows. Among the remaining (N-i) rows it will find the one with
+     * highest absolute value of the row's i.th element and swap the lines
+     * (equivalent to rearranging the equations in a different order).
+     * Additionally it will subtract multiples of the i.th row from all
+     * subsequent rows (r>i) so their i.th column will be equal to 0. This
+     * requires plenty of additions/subtractions of individual rows so
+     * parallelization of this for loop is not possible due to race conditions.
+     * It will be possible to parallelize certain parts of this loop, though.
      */
     for ( size_t i=0; i<N; ++i )
     {
-        // first check if the diagonal element equals 0
-        if ( true == math::NumericUtil::isZero<T>(temp(i, i)) )
+        // Find the most appropriate row to pivot with this one
+        const size_t pr = math::LinearEquationSolver::__private::findPivot(temp, i);
+
+        // If even the highest absolute value equals 0, there is
+        // no unique solution of the system of linear equations
+        if ( true == math::NumericUtil::isZero<T>(temp(pr, i)) )
         {
-            size_t r;
+            return false;
+        }
 
-            // if it does, try to find another row r where temp(r,i)!=0
-            for ( r=0; r<N; ++r )
-            {
-                if ( r==i )
-                {
-                    // it is known in advance, that temp(i,i)==0, so skip it
-                    continue;  // for r
-                }
-
-                if ( false == math::NumericUtil::isZero<T>(temp(r, i)) )
-                {
-                    // found, no need to search further
-                    break;  // out of for r
-                }
-            }  // for r
-
-            if ( N==r )
-            {
-                // No temp(r,i)!=0 was found, the matrix 'temp' is non-invertible.
-                // Return false
-
-                return false;
-            }
-
-            // add the r.th line to the i.th one and thus prevent temp(i,i) from being 0:
-
-            #pragma omp parallel for default(none) shared(temp, sol, i, r)
-            for ( size_t c=0; c<Nmax; ++c )
-            {
-                if ( c<N )
-                {
-                    temp(i, c) += temp(r, c);
-                }
-
-                if ( c<NT )
-                {
-                    sol(i, c) += sol(r, c);
-                }
-            }
-
-        }  // if temp(i,i)==0
+        // Swap the rows of 'temp' and 'sol' if necessary
+        if ( pr != i )
+        {
+            temp.swapRows(i, pr);
+            sol.swapRows(i, pr);
+        }
 
         // Set the i.th column of all other rows (r>i) to 0 by
         // adding the appropriate multiple of the i.th row

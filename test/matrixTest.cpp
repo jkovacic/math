@@ -44,9 +44,9 @@ void matrixTest()
     try
     {
         // Create a matrix. f(1,0) should be set to 0 by constructor
-        FMatrix f(2,3);
-        f.set(0, 0, 1.0f).set(0, 1, 0.5f).set(0, 2, 4.5f);
-        /*f(1,0)=0*/    f.set(1, 1, 1.0f).set(1, 2, 0.4f);
+        Matrix f(2,3);
+        f.set(0, 0, 1.0).set(0, 1, 0.5).set(0, 2, 4.5);
+        /*f(1,0)=0*/    f.set(1, 1, 1.0).set(1, 2, 0.4);
         cout << "f:" << endl;
         f.display();
         cout << endl;
@@ -55,8 +55,8 @@ void matrixTest()
         cout << "f(4)   = " << f(4) << endl << endl;
 
         // Multiplication by a scalar
-        FMatrix res(1,1);
-        res = 3.0f * f;
+        Matrix res(1,1);
+        res = 3.0 * f;
         cout << "f multiplied by 3" << endl;
         res.display();
         cout << endl;
@@ -68,19 +68,19 @@ void matrixTest()
         cout << endl;
 
         // and scalar * matrix:
-        res = +f * 0.5f;
+        res = +f * 0.5;
         cout << "f multiplied by 0.5" << endl;
         res.display();
         cout << endl;
 
         // Test of transposing of matrices
-        FMatrix t = f.transpose();
+        Matrix t = f.transpose();
         cout << "t = f transposed:" << endl;
         t.display();
         cout << endl;
 
         // Test of matrix product
-        FMatrix prod = t*f;
+        Matrix prod = t*f;
         cout << "t * f:" << endl;
         prod.display();
         cout << endl;
@@ -92,17 +92,17 @@ void matrixTest()
         cout << endl;
 
         // test creation of a unit (diagonal) matrices
-        FMatrix a(3);
+        Matrix a(3);
         a.setUnit();
         cout << "3x3 unit matrix:" << endl;
         a.display();
         cout << endl;
 
         // row/column removal and insert operations will be tested on this matrix
-        FMatrix m1(3,4);
-        m1.set(0, 0, 1);    m1.set(0, 1, 2.4f);  m1.set(0, 2, -1.4f); m1.set(0, 3, 0);
-        m1.set(1, 0, 4.5f); m1.set(1, 1, 1);     m1.set(1, 2, 0);     m1.set(1, 3, -0.5f);
-        m1.set(2, 0, 0);    m1.set(2, 1, 1.75f); m1.set(2, 2, 1);     m1.set(2, 3, 2);
+        Matrix m1(3,4);
+        m1.set(0, 0, 1).set(0, 1, 2.4).set(0, 2, -1.4).set(0, 3, 0);
+        m1.set(1, 0, 4.5).set(1, 1, 1).set(1, 2, 0).set(1, 3, -0.5);
+        m1.set(2, 0, 0).set(2, 1, 1.75).set(2, 2, 1).set(2, 3, 2);
         cout << "m1:" << endl;
         m1.display();
         cout << endl;
@@ -133,25 +133,25 @@ void matrixTest()
 
         // Test of copy constructor
         // SqMatrix's copy constructor must accept generic matrices where rows == cols
-        FMatrix sq(2, 2);
+        Matrix sq(2, 2);
         sq.set(0,0,1).set(0,1,2);
         sq.set(1,0,3).set(1,1,4);
-        FMatrix kv(sq);
+        Matrix kv(sq);
         cout << "kv:" << endl;
         kv.display();
         cout << endl;
 
         // test of a unary operator -
-        FMatrix m3 = -kv;
+        Matrix m3 = -kv;
         cout << "-kv:" << endl;
         m3.display();
         cout << endl;
 
         // Square matrix to test determinant and inverse
-        FMatrix a1(3);
-        a1.set(0, 0, 1.0f).set(0, 1, 2.0f).set(0, 2, 3.0f);
-        a1.set(1, 0, 4.0f).set(1, 1, 5.0f).set(1, 2, 6.0f);
-        a1.set(2, 0, 7.0f).set(2, 1, 9.0f).set(2, 2, 8.0f);
+        Matrix a1(3);
+        a1.set(0, 0, 1.0).set(0, 1, 2.0).set(0, 2, 3.0);
+        a1.set(1, 0, 4.0).set(1, 1, 5.0).set(1, 2, 6.0);
+        a1.set(2, 0, 7.0).set(2, 1, 9.0).set(2, 2, 8.0);
 
         // Test calculation of the determinant
         float d = a1.determinant();
@@ -161,14 +161,14 @@ void matrixTest()
         cout << "Determinant of a1: " << d << endl << endl;;
 
         // and calculation of the inverse matrix
-        FMatrix inv = a1.inverse();
+        Matrix inv = a1.inverse();
         cout << "inv = inverse of a1:" <<endl;
         inv.display();
         cout << endl;
 
         // Test if inverse matrix was calculated properly
         // a1*inv must be a unit matrix
-        FMatrix prodUnit(inv);
+        Matrix prodUnit(inv);
         prodUnit = a1 * inv;
         cout << "a1 * inv   (must be a unit matrix):" << endl;
         prodUnit.display();
@@ -176,12 +176,12 @@ void matrixTest()
 
         // Test self transpose of a square matrix:
         cout << "inv transposed:" << endl;
-        FMatrix* pinv = &inv;
+        Matrix* pinv = &inv;
         pinv->transposed().display();
         cout << endl;
 
         cout << "Add 0.5 to inv(2, 0):" << endl;
-        inv(2, 0) += 0.5f;
+        inv(2, 0) += 0.5;
         inv.display();
         cout << endl;
 

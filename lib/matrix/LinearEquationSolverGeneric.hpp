@@ -29,8 +29,6 @@ limitations under the License.
 #ifndef _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_
 #define _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_
 
-#include <complex>
-
 #include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
 

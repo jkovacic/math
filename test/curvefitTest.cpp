@@ -40,17 +40,17 @@ void curveFittingTest()
     {
         // 1st, 2nd and 3rd degree regression polynomials, respectively,
         // of y=exp(-x) for x=0..5:
-        FPolynomialRegression fprexp1;
-        FPolynomialRegression fprexp2;
-        FPolynomialRegression fprexp3;
+        PolynomialRegression fprexp1;
+        PolynomialRegression fprexp2;
+        PolynomialRegression fprexp3;
 
         // exp(-x), points in a random order:
-        fprexp1.enterPoint(1.0f, 0.367879441f);
-        fprexp1.enterPoint(0.0f, 1.0f);
-        fprexp1.enterPoint(5.0f, 0.006737947f);
-        fprexp1.enterPoint(4.0f, 0.018315639f);
-        fprexp1.enterPoint(2.0f, 0.135335283f);
-        fprexp1.enterPoint(3.0f, 0.049787068f);
+        fprexp1.enterPoint(1.0, 0.367879441);
+        fprexp1.enterPoint(0.0, 1.0);
+        fprexp1.enterPoint(5.0, 0.006737947);
+        fprexp1.enterPoint(4.0, 0.018315639);
+        fprexp1.enterPoint(2.0, 0.135335283);
+        fprexp1.enterPoint(3.0, 0.049787068);
 
         // copy points to other classes:
         fprexp2 = fprexp1;
@@ -123,14 +123,14 @@ void curveFittingTest()
              polynomial (as this is an odd function, all its even coefficients
              equal 0) are compared.
          */
-        FPolynomialInterpolation fpitan;
-        FPolynomialRegression fprtan3;
+        PolynomialInterpolation fpitan;
+        PolynomialRegression fprtan3;
 
-        fpitan.enterPoint(-1.5f, -14.1014f);
-        fpitan.enterPoint(-0.75f, -0.931596f);
-        fpitan.enterPoint(0.0f, 0.0f);
-        fpitan.enterPoint(0.75f, 0.931596);
-        fpitan.enterPoint(1.5f, 14.1014f);
+        fpitan.enterPoint(-1.5, -14.1014);
+        fpitan.enterPoint(-0.75, -0.931596);
+        fpitan.enterPoint(0.0, 0.0);
+        fpitan.enterPoint(0.75, 0.931596);
+        fpitan.enterPoint(1.5, 14.1014);
 
         fpitan.generateCurve();
         fprtan3.copy(&fpitan);
@@ -146,8 +146,8 @@ void curveFittingTest()
              Finally compare 5th degree interpolation and regression polynomials
              for the points from the first test:
          */
-        FPolynomialRegression fprexp5;
-        FPolynomialInterpolation fpiexp;
+        PolynomialRegression fprexp5;
+        PolynomialInterpolation fpiexp;
         fprexp5.copy(&fprexp1);
         fpiexp.copy(&fprexp5);
         fprexp5.generateCurve(5);

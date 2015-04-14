@@ -41,14 +41,14 @@ void lineqSolverTest()
 {
     try
     {
-        MatrixGeneric<complex<float> > a(3);
-        MatrixGeneric<complex<float> > b(3, 1);
+        MatrixGeneric<complex<double> > a(3);
+        MatrixGeneric<complex<double> > b(3, 1);
 
-        a.set(0, 0, complex<float>(1, 1)).set(0, 1, complex<float>(2, -1)).set(0, 2, complex<float>(-1, 0.5));
-        a.set(1, 0, complex<float>(0, 1)).set(1, 1, complex<float>(0.25, 3)).set(1, 2, complex<float>(-2, -0.5));
-        a.set(2, 0, complex<float>(3, 0)).set(2, 1, complex<float>(2, -3)).set(2, 2, complex<float>(-0.5, 1));
+        a.set(0, 0, complex<double>(1, 1)).set(0, 1, complex<double>(2, -1)).set(0, 2, complex<double>(-1, 0.5));
+        a.set(1, 0, complex<double>(0, 1)).set(1, 1, complex<double>(0.25, 3)).set(1, 2, complex<double>(-2, -0.5));
+        a.set(2, 0, complex<double>(3, 0)).set(2, 1, complex<double>(2, -3)).set(2, 2, complex<double>(-0.5, 1));
 
-        b.set(0, 0, complex<float>(1, 0.2)).set(1, 0, complex<float>(-2, -1)).set(2, 0, complex<float>(1, 0));
+        b.set(0, 0, complex<double>(1, 0.2)).set(1, 0, complex<double>(-2, -1)).set(2, 0, complex<double>(1, 0));
 
         cout << "Matrix of coefficients:" << endl;
         a.display();
@@ -62,7 +62,7 @@ void lineqSolverTest()
          * Exact solution of the linear equation system a*x=b:
          * x  = [-0.6631640-0.3626125i, 0.1630189+1.050566i, -0.2240929+0.6002903i]'
          */
-        MatrixGeneric<complex<float> > x(b);
+        MatrixGeneric<complex<double> > x(b);
         if ( true == LinearEquationSolver::solveGaussJordan(a, b, x) )
         {
             cout << "Solution:" << endl;

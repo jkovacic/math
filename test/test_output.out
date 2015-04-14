@@ -178,9 +178,9 @@ inv = inverse of a1:
 0.111111	0.555556	-0.333333	
 
 a1 * inv   (must be a unit matrix):
-1	-1.19209e-07	0	
-0	1	0	
--9.53674e-07	-4.76837e-07	1	
+1	4.44089e-16	-2.22045e-16	
+-2.33147e-15	1	-8.88178e-16	
+-3.10862e-15	8.88178e-16	1	
 
 inv transposed:
 -1.55556	1.11111	0.111111	
@@ -342,12 +342,12 @@ C U R V E   F I T T I N G   T E S T
 Lower bound: 0
 Upper bound: 5
 1st degree polynomial: 0.698763 -0.174301*x
-2nd degree polynomial: 0.931323 -0.523141*x +0.0697679*x^2
-3rd degree polynomial: 0.9918 -0.799322*x +0.220962*x^2 -0.0201592*x^3
-Interpolation polynomial: 1.90735e-06 -1.47747*x +0*x^2 +4.83485*x^3
-3rd degree regression polynomial: -4.84406e-07 -1.47748*x +4.30583e-07*x^2 +4.83485*x^3
-Exp's regression polynomial: 1.00002 -0.978155*x +0.444662*x^2 -0.113354*x^3 +0.0155006*x^4 -0.000876062*x^5
-Exp's interpolation polynomial: 1 -0.976202*x +0.441309*x^2 -0.111449*x^3 +0.015063*x^4 -0.000841043*x^5
+2nd degree polynomial: 0.931323 -0.523141*x +0.069768*x^2
+3rd degree polynomial: 0.9918 -0.799319*x +0.22096*x^2 -0.020159*x^3
+Interpolation polynomial: 1.77636e-15 -1.47747*x +0*x^2 +4.83485*x^3
+3rd degree regression polynomial: 0 -1.47747*x +0*x^2 +4.83485*x^3
+Exp's regression polynomial: 1 -0.976203*x +0.441309*x^2 -0.111449*x^3 +0.015063*x^4 -0.000841043*x^5
+Exp's interpolation polynomial: 1 -0.976203*x +0.441309*x^2 -0.111449*x^3 +0.015063*x^4 -0.000841043*x^5
 
 I N T E X P O N E N T I A T O R   T E S T
 
