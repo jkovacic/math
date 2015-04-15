@@ -1358,7 +1358,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr,
 /**
  * Swaps rows in the matrix.
  *
- * @param r1 - first row number
+ * @param r1 - first row's number
  * @param r2 - second row's number
  *
  * @return a reference to itself
@@ -1388,6 +1388,60 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows(
         this->m_elems.begin() + (r1+1) * this->m_cols,
         this->m_elems.begin() + r2 * this->m_cols );
 
+
+    return *this;
+}
+
+
+/**
+ * Swaps columns in the matrix.
+ *
+ * @param c1 - first column's number
+ * @param c2 - second column's number
+ *
+ * @return a reference to itself
+ *
+ * @throw MatrixException if any input argument is out of range
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns(
+        const size_t c1,
+        const size_t c2
+      ) throw(math::MatrixException)
+{
+    // Sanity check
+    if ( c1>=this->m_cols || c2>=this->m_cols )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    // Nothing to do if both parameters are equal
+    if ( c1 == c2 )
+    {
+        return *this;
+    }
+
+    const size_t N = this->m_rows;
+
+    // Coarse grained parallelization
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none)
+    {
+        const size_t thrnr = omp_get_thread_num();
+        const size_t nthreads = omp_get_num_threads();
+
+        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
+        const size_t istart = elems_per_thread * thrnr;
+        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
+
+        for ( size_t r=istart; r<iend; ++r )
+        {
+            std::swap(
+                this->at(r, c1),
+                this->at(r, c2) );
+        }
+    }  // omp parallel
 
     return *this;
 }

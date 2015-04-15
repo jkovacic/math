@@ -204,8 +204,9 @@ public:
     MatrixGeneric<T>& insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
     MatrixGeneric<T>& insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
 
-    // Swap rows
+    // Swap rows and columns
     MatrixGeneric<T>& swapRows(const size_t r1, const size_t r2) throw(MatrixException);
+    MatrixGeneric<T>& swapColumns(const size_t c1, const size_t c2) throw(MatrixException);
 
     // These methods are only applicable for square matrices:
     MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
