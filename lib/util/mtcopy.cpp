@@ -54,15 +54,7 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(dest, first)
     {
-        // Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will copy.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         typename std::vector<T>::iterator it = dest.begin() + istart;
         for ( size_t idx = istart;
@@ -177,15 +169,7 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(dest, first)
     {
-        // Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will copy.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         // Iterator to the final element of the source block
         const typename std::vector<T>::const_iterator final = first + iend;

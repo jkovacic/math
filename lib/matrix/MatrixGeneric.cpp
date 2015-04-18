@@ -752,10 +752,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag(const T& scalar) throw(m
                 if(N2>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(N, els, scalar)
     {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = (N2 + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
+        MATH_OMP_COARSE_INIT_VARS(N2);
 
         typename std::vector<T>::iterator it = els.begin() + istart;
         for ( size_t idx = istart;
@@ -767,6 +764,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag(const T& scalar) throw(m
 
             *it = ( r==c ? scalar : static_cast<T>(0) );
         }
+
+        (void) iend;
     }  // omp parallel
 
     return *this;
@@ -941,11 +940,7 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(N, temp, prod)
     {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
-        const size_t iend = std::min(istart+elems_per_thread, N);
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         T tempProd = static_cast<T>(1);
         for ( size_t i = istart; i<iend; ++i )
@@ -1049,11 +1044,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(retVal, els, tcols)
     {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         for ( size_t idx=istart; idx<iend; ++idx )
         {
@@ -1428,12 +1419,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns(
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none)
     {
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         for ( size_t r=istart; r<iend; ++r )
         {
@@ -1929,11 +1915,7 @@ void math::__matrixprivate::__matconj(
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(dest)
     {
-        const size_t thnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
-        const size_t iend = std::min(istart + elems_per_thread, N);
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         typename std::vector<std::complex<T> >::iterator it = dest.m_elems.begin() + istart;
         for ( size_t i=istart;

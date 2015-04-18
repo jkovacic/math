@@ -114,10 +114,7 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::StatisticsExcept
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(x, retVal)
     {
-    	const size_t thnr = omp_get_thread_num();
-        const size_t nthreads  = omp_get_num_threads();
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thnr;
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         typename std::vector<F>::const_iterator it = x.begin() + istart;
         // the first value of the block is the first candidate for the local extreme
@@ -136,6 +133,8 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::StatisticsExcept
         {
             retVal = ( true==min ? std::min(retVal, temp) : std::max(retVal, temp) );
         }
+
+        (void) iend;
     }  // omp parallel
 
     return retVal;
@@ -214,20 +213,13 @@ F math::SampleStat::sum(const std::vector<F>& x)
                     default(none) shared(x) \
                     reduction(+ : sum)
     {
-        // Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will process.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t samples_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = samples_per_thread * thrnr;
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         // Calculate the sum of the assigned block...
         F partsum = static_cast<F>(0);
         typename std::vector<F>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
-              cntr<samples_per_thread && it!=x.end(); 
+              cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr )
         {
             partsum += *it;
@@ -235,6 +227,8 @@ F math::SampleStat::sum(const std::vector<F>& x)
 
         // ... and add it to the total sum in a thread safe manner.
         sum += partsum;
+
+        (void) iend;
     }  // omp parallel
 
     return sum;
@@ -359,21 +353,14 @@ F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math
                 default(none) shared(x) \
                 reduction(+ : sum, sum2)
     {
-    	// Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will process.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t samples_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = samples_per_thread * thrnr;
+        MATH_OMP_COARSE_INIT_VARS(N);
 
         // Calculate both sums of the assigned block...
         F partsum  = static_cast<F>(0);
         F partsum2 = static_cast<F>(0);
         typename std::vector<F>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
-              cntr<samples_per_thread && it!=x.end(); 
+              cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr )
         {
             const F diff = *it - K;
@@ -384,7 +371,9 @@ F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math
         // ... and add them to the total sums in a thread safe manner.
         sum  += partsum;
         sum2 += partsum2;
-    }
+
+        (void) iend;
+    }  // omp parallel
 
     return (sum2 - (sum*sum)/static_cast<F>(N)) / static_cast<F>(N - df_sub);
 }
@@ -545,14 +534,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
                 default(none) shared(x1, x2) \
                 reduction(+ : sum, sum1, sum2)
     {
-    	// Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will process.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t samples_per_thread = (N1 + nthreads - 1) / nthreads;
-        const size_t istart = samples_per_thread * thrnr;
+    	MATH_OMP_COARSE_INIT_VARS(N1);
 
         // Calculate both sums of the assigned block...
         F partsum  = static_cast<F>(0);
@@ -561,7 +543,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
         typename std::vector<F>::const_iterator it1 = x1.begin() + istart;
         typename std::vector<F>::const_iterator it2 = x2.begin() + istart;
         for ( size_t cntr = 0;
-              cntr<samples_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
+              cntr<elems_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
         {
             const F d1 = *it1 - K1;
             const F d2 = *it2 - K2;
@@ -574,6 +556,8 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
         sum  += partsum;
         sum1 += partsum1;
         sum2 += partsum2;
+
+        (void) iend;
     }
 
     return (sum - (sum1*sum2)/static_cast<F>(N1)) / static_cast<F>(N1 - df_sub);
@@ -743,20 +727,13 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
                 default(none) shared(x, n, about) \
                 reduction(+ : sum)
     {
-        // Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will process.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t samples_per_thread = (NN + nthreads - 1) / nthreads;
-        const size_t istart = samples_per_thread * thrnr;
+        MATH_OMP_COARSE_INIT_VARS(NN);
 
         F partsum = static_cast<F>(0);
 
         typename std::vector<F>::const_iterator it = x.begin() + istart;
         for ( size_t cntr = 0;
-              cntr<samples_per_thread && it!=x.end(); ++it,  ++cntr )
+              cntr<elems_per_thread && it!=x.end(); ++it,  ++cntr )
         {
             /*
              * TODO when does it make sense to calculate powers
@@ -766,6 +743,8 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
         }
 
         sum += partsum;
+
+        (void) iend;
     }  // pragma omp parallel
 
     return sum / static_cast<F>(NN);

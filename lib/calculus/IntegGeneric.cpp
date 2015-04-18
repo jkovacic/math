@@ -120,11 +120,7 @@ F __rectangle(
                     default(none) shared(f, a, N) \
                     reduction(+ : sum)
         {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr;
-            const size_t iend = std::min(istart + elems_per_thread, N);
+            MATH_OMP_COARSE_INIT_VARS(N);
 
             F tempSum = static_cast<F>(0);
             F xi = a + static_cast<F>(istart) * h;
@@ -206,16 +202,16 @@ F __closedNewtonCotes(
                     default(none) shared(f, a, coef) \
                     reduction(+ : sum)
         {
-            const size_t thnr = omp_get_thread_num();
-            const size_t nthreads  = omp_get_num_threads();
-            const size_t elems_per_thread = ((N-1) + nthreads - 1) / nthreads;
-            const size_t istart = elems_per_thread * thnr + 1;
-            const size_t iend = std::min(istart + elems_per_thread, N);
+            // In this case initialization of variables is slightly
+            // different from the implementation in MATH_OMP_COARSE_INIT_VARS
+            MATH_OMP_COARSE_INIT_VARS(N-1);
+            const size_t starti = istart + 1;
+            const size_t endi = std::min(starti + elems_per_thread, N);
 
             F tempSum = static_cast<F>(0);
-            F xi = a + static_cast<F>(istart) * h;
-            for ( size_t i=istart;
-                  i < iend;
+            F xi = a + static_cast<F>(starti) * h;
+            for ( size_t i=starti;
+                  i < endi;
                   ++i, xi += h )
             {
                 tempSum += coef[i%degree] * f(xi);
@@ -223,6 +219,8 @@ F __closedNewtonCotes(
 
             // update sum in a thread safe manner
             sum += tempSum;
+
+            (void) iend;
         }  // omp parallel
 
         // finally add the remaining two points (at 'a' and 'b'):
