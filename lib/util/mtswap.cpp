@@ -64,8 +64,8 @@ void math::mtswap(
     #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(destit, first)
-	{
-        MATH_OMP_COARSE_INIT_VARS(N);
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         // Iterator to the final element of the source block
         const typename std::vector<T>::const_iterator final = first + iend;

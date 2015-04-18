@@ -90,7 +90,7 @@ inline unsigned long int ompIdeal( const unsigned long int n )
  *
  * @param N - number of all elements to be processed by threads (must be a size_t value)
  */
-#define MATH_OMP_COARSE_INIT_VARS( N )                                        \
+#define OMP_COARSE_GRAINED_PAR_INIT_VARS( N )                                 \
     const size_t thrnr = omp_get_thread_num();                                \
     const size_t nthreads = omp_get_num_threads();                            \
     const size_t elems_per_thread = ( (N) + nthreads - 1) / nthreads;         \

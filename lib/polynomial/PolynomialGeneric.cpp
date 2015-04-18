@@ -315,7 +315,7 @@ void math::PolynomialGeneric<F>::getDesc(std::vector<F>& vec) const throw (math:
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(vec, els)
         {
-            MATH_OMP_COARSE_INIT_VARS(N);
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
             for ( size_t i=istart; i<iend; ++i )
             {
@@ -427,7 +427,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::setDesc(const std::vecto
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(cvect, me)
         {
-            MATH_OMP_COARSE_INIT_VARS(N);
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
             for ( size_t i=istart; i<iend; ++i )
             {
@@ -670,7 +670,7 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math
                 if(DEG>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(retVal, els)
     {
-        MATH_OMP_COARSE_INIT_VARS(DEG);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(DEG);
 
         typename std::vector<F>::const_iterator mit = els.begin() + istart + 1;
         typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart;
@@ -732,7 +732,7 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::integ(const F& c) const t
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(retVal, els)
     {
-        MATH_OMP_COARSE_INIT_VARS(N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<F>::const_iterator mit = els.begin() + istart;
         typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart + 1;
@@ -866,7 +866,7 @@ void math::PolynomialGeneric<F>::__polyDivision(
                     if(Np2>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(p, p2, i)
         {
-            MATH_OMP_COARSE_INIT_VARS(Np2);
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(Np2);
 
             typename std::vector<F>::iterator pit = p.begin() + istart + Nq - i;
             typename std::vector<F>::const_iterator p2it = p2.m_coef.begin() + istart;
@@ -1352,7 +1352,7 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
                     if(nmax>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(retVal, p1, p2)
         {
-            MATH_OMP_COARSE_INIT_VARS(nmax);
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(nmax);
 
             typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart;
             typename std::vector<F>::const_iterator p1it = p1.m_coef.begin() + istart;
@@ -1436,7 +1436,7 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
                     if(nmax>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(retVal, p1, p2)
         {
-            MATH_OMP_COARSE_INIT_VARS(nmax);
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(nmax);
 
             typename std::vector<F>::iterator it = retVal.m_coef.begin() + istart;
             typename std::vector<F>::const_iterator p1it = p1.m_coef.begin() + istart;

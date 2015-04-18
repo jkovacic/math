@@ -315,7 +315,7 @@ bool math::mtvectewmult(
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(dest, v1, v2, retVal)
     {
-        MATH_OMP_COARSE_INIT_VARS(N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<T>::const_iterator it1 = v1.begin() + istart;
         typename std::vector<T>::const_iterator it2 = v2.begin() + istart;

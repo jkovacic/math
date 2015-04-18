@@ -54,7 +54,7 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(dest, first)
     {
-        MATH_OMP_COARSE_INIT_VARS(N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<T>::iterator it = dest.begin() + istart;
         for ( size_t idx = istart;
@@ -169,7 +169,7 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
                     if(N>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(dest, first)
     {
-        MATH_OMP_COARSE_INIT_VARS(N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         // Iterator to the final element of the source block
         const typename std::vector<T>::const_iterator final = first + iend;

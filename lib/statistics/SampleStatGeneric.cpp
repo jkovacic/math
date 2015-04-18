@@ -114,7 +114,7 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::StatisticsExcept
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(x, retVal)
     {
-        MATH_OMP_COARSE_INIT_VARS(N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<F>::const_iterator it = x.begin() + istart;
         // the first value of the block is the first candidate for the local extreme
@@ -213,7 +213,7 @@ F math::SampleStat::sum(const std::vector<F>& x)
                     default(none) shared(x) \
                     reduction(+ : sum)
     {
-        MATH_OMP_COARSE_INIT_VARS(N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         // Calculate the sum of the assigned block...
         F partsum = static_cast<F>(0);
@@ -353,7 +353,7 @@ F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math
                 default(none) shared(x) \
                 reduction(+ : sum, sum2)
     {
-        MATH_OMP_COARSE_INIT_VARS(N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         // Calculate both sums of the assigned block...
         F partsum  = static_cast<F>(0);
@@ -534,7 +534,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
                 default(none) shared(x1, x2) \
                 reduction(+ : sum, sum1, sum2)
     {
-    	MATH_OMP_COARSE_INIT_VARS(N1);
+    	OMP_COARSE_GRAINED_PAR_INIT_VARS(N1);
 
         // Calculate both sums of the assigned block...
         F partsum  = static_cast<F>(0);
@@ -727,7 +727,7 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
                 default(none) shared(x, n, about) \
                 reduction(+ : sum)
     {
-        MATH_OMP_COARSE_INIT_VARS(NN);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(NN);
 
         F partsum = static_cast<F>(0);
 

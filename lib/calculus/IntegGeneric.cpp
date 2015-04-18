@@ -120,7 +120,7 @@ F __rectangle(
                     default(none) shared(f, a, N) \
                     reduction(+ : sum)
         {
-            MATH_OMP_COARSE_INIT_VARS(N);
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
             F tempSum = static_cast<F>(0);
             F xi = a + static_cast<F>(istart) * h;
@@ -204,7 +204,7 @@ F __closedNewtonCotes(
         {
             // In this case initialization of variables is slightly
             // different from the implementation in MATH_OMP_COARSE_INIT_VARS
-            MATH_OMP_COARSE_INIT_VARS(N-1);
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N-1);
             const size_t starti = istart + 1;
             const size_t endi = std::min(starti + elems_per_thread, N);
 
