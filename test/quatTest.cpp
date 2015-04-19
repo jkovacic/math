@@ -34,49 +34,49 @@ using namespace math;
 
 
 /*
- * Test of float quaternions
+ * Test of quaternions
  */
 void quaternionTest()
 {
     try
     {
-        FQuaternion zeroq;
-        FQuaternion q(1.0f, -0.5f, 1.2f, -2.3f);
+        Quaternion zeroq;
+        Quaternion q(1.0, -0.5, 1.2, -2.3);
 
         cout << "zero: " << zeroq << endl;
         cout << "q: " << q << endl;
         cout << "q: 1: " << q.getOne() << "   i: " << q.getI() << "   j: " << q.getJ() << "   k: " << q.getK() << endl;
         cout << "abs(q): " << abs(q) << " (expected: 2.824889)" << endl;
 
-        FQuaternion uq = q.unit();
+        Quaternion uq = q.unit();
         cout << "U(q): " << uq << "\tnorm(U(q)): " << uq.norm() << endl;
 
-        FQuaternion o(1.0f);
-        FQuaternion i;   i.setI(1.0f);
-        FQuaternion j;   j.setJ(1.0f);
-        FQuaternion k;   k.setK(1.0f);
+        Quaternion o(1.0);
+        Quaternion i;   i.setI(1.0);
+        Quaternion j;   j.setJ(1.0);
+        Quaternion k;   k.setK(1.0);
 
         cout << "i*j: " << i*j << "\tj*i: " << j*i << endl;
         cout << "j*k: " << j*k << "\tk*j: " << k*j << endl;
         cout << "k*i: " << k*i << "\ti*k: " << i*k << endl;
 
-        FQuaternion p(1.0f, 2.0f, 3.0f, 4.0f);
-        FQuaternion sum = p+q;
-        FQuaternion dif = p-q;
+        Quaternion p(1.0, 2.0, 3.0, 4.0);
+        Quaternion sum = p+q;
+        Quaternion dif = p-q;
         cout << "p: " << +p << "\tq: " << q << endl;
         cout << "p+q: " << sum << "\tp-q: " << dif << endl;
         // Must output (7.6-10.2i+6.8j+5.6k) and (7.6+13.2i+1.6j-2.2k), respectively
         cout << "p*q: " << p*q << "\tq*p: " << q*p << endl;
-        cout << "p+5: " << p+5.f << "\t3+p: " << 3.0f + p << endl;
-        cout << "p-4: " << p-4.f << "\t1-p: " << 1.0f - p << endl;
+        cout << "p+5: " << p+5. << "\t3+p: " << 3.0 + p << endl;
+        cout << "p-4: " << p-4. << "\t1-p: " << 1.0 - p << endl;
         p += 2;
         cout << "p+2: " << p;
-        p -= 2.f;
+        p -= 2.;
         cout << "\tp+2-2: " << p << endl;
 
-        FQuaternion qc = -0.5f*(q+i*q*i+j*q*j+k*q*k);
-        cout << "-0.5f*(q+i*q*i+j*q*j+k*q*k)=" << qc << "  q conj: " << qc << endl;
-        FQuaternion qrec = q.reciprocal();
+        Quaternion qc = -0.5*(q+i*q*i+j*q*j+k*q*k);
+        cout << "-0.5*(q+i*q*i+j*q*j+k*q*k)=" << qc << "  q conj: " << qc << endl;
+        Quaternion qrec = q.reciprocal();
         cout << "qrec: " << qrec << "\tq*qrec=" << q*qrec << "\tqrec*q=" << qrec*q << endl;
     } // try
     catch ( const QuaternionException& qex )
