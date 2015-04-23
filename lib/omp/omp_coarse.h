@@ -93,9 +93,17 @@ inline unsigned long int ompIdeal( const unsigned long int n )
 #define OMP_COARSE_GRAINED_PAR_INIT_VARS( N )                                 \
     const size_t thrnr = omp_get_thread_num();                                \
     const size_t nthreads = omp_get_num_threads();                            \
-    const size_t elems_per_thread = ( (N) + nthreads - 1) / nthreads;         \
+                                                                              \
+    const size_t elems_per_thread =                                           \
+          ( std::min<size_t>( (N), static_cast<size_t>(-1) - nthreads + 1 )   \
+            + nthreads - 1) / nthreads;                                       \
+                                                                              \
     const size_t istart = elems_per_thread * thrnr;                           \
-    const size_t iend = std::min<size_t>(istart + elems_per_thread, (N) );
+    const size_t iend =                                                       \
+          std::min<size_t>( ( N ),                                            \
+              ( elems_per_thread <= (static_cast<size_t>(-1)-istart) ?        \
+                istart + elems_per_thread :                                   \
+                static_cast<size_t>(-1) ) );
 
 
 #endif  /*  _OMP_COARSE_H_  */

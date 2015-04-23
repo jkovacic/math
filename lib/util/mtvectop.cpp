@@ -66,15 +66,7 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(dest, v1, v2)
     {
-        // Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will copy.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<T>::const_iterator it1 = v1.begin() + istart;
         typename std::vector<T>::const_iterator it2 = v2.begin() + istart;
@@ -133,15 +125,7 @@ void math::mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>&
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(dest, v1, scalar)
     {
-        // Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will copy.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<T>::const_iterator srcit = v1.begin() + istart;
         typename std::vector<T>::iterator destit = dest.begin() + istart;
@@ -211,15 +195,7 @@ void math::mtvectscalaradd(
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(dest, v1, scalar)
     {
-        // Depending on the number of available threads,
-        // determine the ideal nr. of samples per thread,
-        // and start and sample of a block that each thread will copy.
-        const size_t thrnr = omp_get_thread_num();
-        const size_t nthreads = omp_get_num_threads();
-
-        const size_t elems_per_thread = (N + nthreads - 1) / nthreads;
-        const size_t istart = elems_per_thread * thrnr;
-        const size_t iend = std::min<size_t>(istart + elems_per_thread, N);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<T>::const_iterator srcit = v1.begin() + istart;
         typename std::vector<T>::iterator destit = dest.begin() + istart;
