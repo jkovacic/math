@@ -149,6 +149,9 @@ F __rectangle(
  * degrees (e.g. trapezoidal, Simpson's, Boole's rule, etc.) to obtain proper
  * definite integrals.
  *
+ * @note As this is a private function, only called by other functions, it
+ *       is assumed that 'degree' is always greater than 0.
+ *
  * @param f - instance of a class with the function to integrate
  * @param a - lower bound of the integration interval
  * @param b - upper bound of the integration interval
@@ -188,8 +191,9 @@ F __closedNewtonCotes(
          * the remaining N-1 points are processed by a for loop.
          */
 
-        // N must be divisible by 'degree' !
-        const size_t N = n + ( 0!=n%degree ? degree-n%degree: 0 );
+        // N must be divisible by 'degree'.
+        // Additionally it is ensured that it is always greater than 0.
+        const size_t N = std::max<size_t>( n + ( 0!=n%degree ? degree-n%degree: 0 ), 2);
         const F h = (b-a) / static_cast<F>(N);
 
         // Do not preinitialize sum to hCoef * (f(a) + f(b)) now as it may
@@ -202,15 +206,20 @@ F __closedNewtonCotes(
                     default(none) shared(f, a, coef) \
                     reduction(+ : sum)
         {
-            // In this case initialization of variables is slightly
-            // different from the implementation in MATH_OMP_COARSE_INIT_VARS
             OMP_COARSE_GRAINED_PAR_INIT_VARS(N-1);
+
+            /*
+             * As the first point is handled separately, the interval
+             * actually starts at istart+1 and ends at iend+1.
+             * Neither of the two values can even theoretically never
+             * be greater then SIZE_T_MAX.
+             */
             const size_t starti = istart + 1;
-            const size_t endi = std::min(starti + elems_per_thread, N);
+            const size_t endi = iend + 1;
 
             F tempSum = static_cast<F>(0);
             F xi = a + static_cast<F>(starti) * h;
-            for ( size_t i=starti;
+            for ( size_t i = starti;
                   i < endi;
                   ++i, xi += h )
             {
@@ -219,8 +228,6 @@ F __closedNewtonCotes(
 
             // update sum in a thread safe manner
             sum += tempSum;
-
-            (void) iend;
         }  // omp parallel
 
         // finally add the remaining two points (at 'a' and 'b'):
