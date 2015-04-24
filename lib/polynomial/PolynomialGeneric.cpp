@@ -1454,9 +1454,9 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
                 {
                     *it -= *(p2it++);
                 }
-
-                (void) iend;
             }
+
+            (void) iend;
         }  // omp parallel
 
         retVal.__reduce();

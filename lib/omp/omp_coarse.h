@@ -60,7 +60,7 @@ inline size_t ompIdealNrThreads( const size_t n, const size_t per_thread )
  *
  * @see ompIdealNrThreads
  */
-inline unsigned long int ompIdeal( const unsigned long int n )
+inline size_t ompIdeal( const size_t n )
 {
     return ompIdealNrThreads(n, OMP_CHUNKS_PER_THREAD);
 }
