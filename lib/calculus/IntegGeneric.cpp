@@ -193,7 +193,11 @@ F __closedNewtonCotes(
 
         // N must be divisible by 'degree'.
         // Additionally it is ensured that it is always greater than 0.
-        const size_t N = std::max<size_t>( n + ( 0!=n%degree ? degree-n%degree: 0 ), 2);
+    	// It is also assumed that 'degree' will always be a small integer.
+        const size_t degrem = ( 0!=n%degree ? degree-n%degree : 0 );
+        const size_t N = std::max<size_t>( 2,
+            ( n <= (static_cast<size_t>(-1)-degrem) ? n + degrem : n - n%degree ) );
+
         const F h = (b-a) / static_cast<F>(N);
 
         // Do not preinitialize sum to hCoef * (f(a) + f(b)) now as it may
