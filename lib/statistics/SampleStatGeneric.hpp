@@ -94,6 +94,9 @@ namespace SampleStat
     template <typename F>
     F kurtosis(const std::vector<F>& x) throw(StatisticsException);
 
+    template <typename F>
+    F ecdf(const std::vector<F>& x, const F& t, const bool incl=true) throw(StatisticsException);
+
 }  // namespace SampleStat
 
 }  // namespace math

@@ -923,3 +923,66 @@ F math::SampleStat::kurtosis(const std::vector<F>& x) throw(math::StatisticsExce
 
     return m4/m2_2 - static_cast<F>(3);
 }
+
+
+/**
+ * Empirical cumulative distribution function.
+ * Returns a proportion of all elements of 'x' that
+ * are less than or possibly equal to the threshold 't'.
+ *
+ * @param x - vector of observations
+ * @param t - threshold
+ * @param incl - should the proportion include observations equal to 't' (default: TRUE)
+ *
+ * @return empirical cumulative distribution function for 't'
+ *
+ * @throw StatisticsExeption if 'x' is an empty vector
+ */
+template <typename F>
+F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) throw(math::StatisticsException)
+{
+    // Number of all observations
+    const size_t NN = x.size();
+
+    // NN must be greater than 0
+    if ( NN <= 0 )
+    {
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
+    }
+
+    // Total nr. of elements <=t or <t
+    size_t total = 0;
+
+    // Coarse grained parallelism if OpenMP is enabled
+    #pragma omp parallel num_threads(ompIdeal(NN)) \
+                if(NN>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(x, t) \
+                reduction(+ : total)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(NN);
+
+        // Nr. of all elements within this chunk being <='t' or <'t'
+        size_t partTotal = 0;
+
+        // Just traverse all elements of this chunk and count
+        // all that are below (or equal) the threshold:
+        typename std::vector<F>::const_iterator it = x.begin() + istart;
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=x.end(); ++it,  ++cntr )
+        {
+            if ( (true==incl && *it <= t) ||
+                 (false==incl && *it < t) )
+            {
+                ++partTotal;
+            }
+        }
+
+        // Update 'total' in a thread safe manner
+        total += partTotal;
+
+        (void) iend;
+    }  // pragma omp parallel
+
+    // finally evaluate the proportion
+    return static_cast<F>(total) / static_cast<F>(NN);
+}
