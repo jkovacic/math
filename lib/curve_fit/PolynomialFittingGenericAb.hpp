@@ -54,7 +54,7 @@ class PolynomialFittingGenericAb : public CurveFittingGenericAb<F>
 
 protected:
     // Curve fitting polynomial
-    PolynomialGeneric<F> poly;
+    PolynomialGeneric<F> m_poly;
 
 public:
     // get a copy of the best fitting polynomial

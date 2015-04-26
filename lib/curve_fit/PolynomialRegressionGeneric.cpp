@@ -104,11 +104,14 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
          * traversed once and the appropriate terms will be added to 
          * matrices' elements
          */
-        for ( typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->points.begin(); it!=this->points.end(); ++it )
+        for ( 
+            typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->m_points.begin(); 
+            it!=this->m_points.end(); 
+            ++it )
         {
             // initial values of summands
             F aterm = static_cast<F>(1);
-            F bterm = it->p_y;
+            F bterm = it->m_y;
 
             // i actually determines a position inside both matrices: i = r+c             
             for ( size_t i=0; i<(2*N-1); ++i )
@@ -126,7 +129,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
                     a(r, i-r) += aterm;
                 }  // for r
                 // and update 'aterm' for the next iteration of i
-                aterm *=it->p_x;
+                aterm *=it->m_x;
 
                 // do not do anything if i is out of b's range 
                 if ( i>degree )
@@ -137,7 +140,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
                 // update the b's i^th element 
                 b(i, 0) += bterm;
                 // and update 'bterm' for the next iteration of i
-                bterm *= it->p_x;
+                bterm *= it->m_x;
             }  // for i
         }  // for it
 
@@ -159,11 +162,11 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
         // And finally fill the regression polynomial
         for ( size_t i=0; i<N; ++i )
         {
-            this->poly.set(i, x(i, 0));
+            this->m_poly.set(i, x(i, 0));
         }
 
         // the curve can be marked as generated
-        this->curveGenerated = true;
+        this->m_curveGenerated = true;
     }  // try
     catch ( const math::MatrixException& mex )
     {

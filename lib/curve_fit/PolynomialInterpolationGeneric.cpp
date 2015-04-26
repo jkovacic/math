@@ -106,7 +106,7 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree)
          */
 
         // number of points
-        const size_t N = this->points.size();
+        const size_t N = this->m_points.size();
 
         // create vectors to store temporary results:
         std::vector<F> a;
@@ -125,12 +125,12 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree)
         // traverse the list only once and populate appropriate elements of a and b
         size_t idx = 0;
         for ( 
-          typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->points.begin();
-          it!=this->points.end(); 
+          typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->m_points.begin();
+          it!=this->m_points.end(); 
           ++it, ++idx )
         {
-            x.at(idx) = it->p_x;
-            a.at(idx) = it->p_y;
+            x.at(idx) = it->m_x;
+            a.at(idx) = it->m_y;
         }  // for it
         
         // Polynomials:
@@ -189,10 +189,10 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree)
         a.clear();
                 
         // The algorithm is finished, assign the interpolation polynomial to poly:
-        this->poly = sum;
+        this->m_poly = sum;
         
         // the curve can be marked as generated
-        this->curveGenerated = true;
+        this->m_curveGenerated = true;
     }  // try
     catch ( const math::PolynomialException& pex )
     {

@@ -35,12 +35,12 @@ limitations under the License.
 template <typename F>
 math::PolynomialGeneric<F> math::PolynomialFittingGenericAb<F>::getPolynomial() const throw (math::CurveFittingException)
 {
-    if ( false==this->curveGenerated )
+    if ( false==this->m_curveGenerated )
     {
         throw math::CurveFittingException(math::CurveFittingException::CURVE_NOT_GENERATED);
     }
 
-    return this->poly;
+    return this->m_poly;
 }
 
 /**
@@ -59,17 +59,17 @@ template <typename F>
 F math::PolynomialFittingGenericAb<F>::valueAt(const F& x, const bool strict) const throw (math::CurveFittingException)
 {
     // the curve must be already generated
-    if ( false==this->curveGenerated )
+    if ( false==this->m_curveGenerated )
     {
         throw math::CurveFittingException(math::CurveFittingException::CURVE_NOT_GENERATED);
     }
 
     // check if 'x' is within the definition range
-    if ( true==strict && (x<this->points.front().p_x || x>this->points.back().p_x) )
+    if ( true==strict && (x<this->m_points.front().m_x || x>this->m_points.back().m_x) )
     {
         throw math::CurveFittingException(math::CurveFittingException::OUT_OF_BOUNDS);
     }
 
     // evaluate the polynomial using the PolynomialGeneric's member function
-    return this->poly.value(x);
+    return this->m_poly.value(x);
 }

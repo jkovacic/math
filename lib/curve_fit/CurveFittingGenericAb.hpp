@@ -55,8 +55,8 @@ protected:
      */
     struct CPoint
     {
-        F p_x;          // abscissa
-        F p_y;          // ordinate
+        F m_x;          // abscissa
+        F m_y;          // ordinate
         // required by sort algorithms:
         bool operator<(const CPoint& p) const;
     };
@@ -67,10 +67,10 @@ protected:
      * may be entered and the points are going to be rearranged (sorted),
      * a linked list is the most convenient container.
      */
-    std::list<CPoint> points;
+    std::list<CPoint> m_points;
 
     // has the fitting curve been generated yet?
-    bool curveGenerated;
+    bool m_curveGenerated;
 
     // have any "duplicate" points been entered?
     bool _duplicatePoints() const;
