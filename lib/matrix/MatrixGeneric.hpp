@@ -136,7 +136,7 @@ private:
      * assignment operators etc. It s also suitable for use in derived  classes,
      * so it should be 'protected' instead of 'private'
      */
-    void __copyElems(const MatrixGeneric& orig) throw (MatrixException);
+    void __copyElems(const MatrixGeneric<T>& orig) throw (MatrixException);
 
     /*
      * A utility function that returns the position of element's "coordinates"
@@ -156,12 +156,15 @@ private:
         return ( row * this->m_cols + column );
     }
 
+    // a convenience function to extract the upper/lower triangular part
+    void __triangPart(MatrixGeneric<T>& dest, const bool upper, const bool lower, const bool diag) const;
+
 public:
     // Constructors
     MatrixGeneric(const size_t rows, const size_t columns) throw (MatrixException);
     MatrixGeneric(const size_t n) throw (MatrixException);
     // Copy constructor
-    MatrixGeneric(const MatrixGeneric& orig) throw (MatrixException);
+    MatrixGeneric(const MatrixGeneric<T>& orig) throw (MatrixException);
 
     // Number of rows and columns
     size_t nrRows() const;
@@ -207,6 +210,11 @@ public:
     // Swap rows and columns
     MatrixGeneric<T>& swapRows(const size_t r1, const size_t r2) throw(MatrixException);
     MatrixGeneric<T>& swapColumns(const size_t c1, const size_t c2) throw(MatrixException);
+
+    // Triangular parts of this one:
+    MatrixGeneric<T> upperTriangularPart(const bool inclDiag=true) const throw(MatrixException);
+    MatrixGeneric<T> lowerTriangularPart(const bool inclDiag=true) const throw(MatrixException);
+    MatrixGeneric<T> diagPart() const throw(MatrixException);
 
     // These methods are only applicable for square matrices:
     MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);

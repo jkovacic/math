@@ -132,7 +132,6 @@ void matrixTest()
         cout << endl;
 
         // Test of copy constructor
-        // SqMatrix's copy constructor must accept generic matrices where rows == cols
         Matrix sq(2, 2);
         sq.set(0,0,1).set(0,1,2);
         sq.set(1,0,3).set(1,1,4);
@@ -154,7 +153,7 @@ void matrixTest()
         a1.set(2, 0, 7.0).set(2, 1, 9.0).set(2, 2, 8.0);
 
         // Test calculation of the determinant
-        float d = a1.determinant();
+        double d = a1.determinant();
         cout << "a1:" << endl;
         a1.display();
         cout << endl;
@@ -172,6 +171,21 @@ void matrixTest()
         prodUnit = a1 * inv;
         cout << "a1 * inv   (must be a unit matrix):" << endl;
         prodUnit.display();
+        cout << endl;
+
+        cout << "Upper triangular part (incl. diag) of a1:" << endl;
+        m1 = a1.upperTriangularPart();
+        m1.display();
+        cout << endl;
+
+        cout << "Lower triangular part (excl. diag) of a1:" << endl;
+        m1 = a1.lowerTriangularPart(false);
+        m1.display();
+        cout << endl;
+
+        cout << "Diagonal part of a1:" << endl;
+        m1 = a1.diagPart();
+        m1.display();
         cout << endl;
 
         // Test self transpose of a square matrix:

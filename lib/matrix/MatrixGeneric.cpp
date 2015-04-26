@@ -708,6 +708,118 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::ewDiv(const math::MatrixGeneric<
 }
 
 
+/*
+ * Extracts the specified triangular part(s) of the matrix and
+ * assigns the result to 'dest'.
+ *
+ * @param dest - a reference to a matrix to assign the result
+ * @param upper - extract the upper triangular part (without diagonal)
+ * @param lower - extract the lower triangular part (without diagonal)
+ * @param diag - extract the diagonal
+ */
+template <class T>
+void math::MatrixGeneric<T>::__triangPart(
+    math::MatrixGeneric<T>& dest,
+    const bool upper,
+    const bool lower,
+    const bool diag) const
+{
+    // it is assumed that dest's 'm_elems' is properly allocated
+
+    const size_t N = this->m_elems.size();
+
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(dest, upper, lower, diag)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        size_t r;
+        size_t c;
+
+        // iterator to the final element of the block:
+        const typename std::vector<T>::const_iterator final = this->m_elems.begin() + iend;
+        // iterator to the first/current element of this->m_elems:
+        typename std::vector<T>::const_iterator idx = this->m_elems.begin() + istart;
+        // iterator to the current element of dest.m_elems:
+        typename std::vector<T>::iterator it = dest.m_elems.begin() + istart;
+
+        for ( size_t i = istart;
+                idx != final;
+                ++i, ++it, ++idx )
+        {
+            // row and column of the current index 'i':
+            r = i / this->m_cols;
+            c = i % this->m_cols;
+
+            // Either copy the current element or set it to 0,
+            // depending on input arguments.
+            *it = 
+                ( (r==c && true==diag) ||
+                   (r>c && true==lower) ||
+                   (r<c && true==upper) ? 
+                      *idx : static_cast<T>(0) );
+        }
+    }  // omp parallel
+}
+
+
+/**
+ * Extracts the upper triangular part of the matrix and optionally
+ * the diagonal.
+ * 
+ * @param inclDiag - should the diagonal be included as well (default: TRUE)
+ * 
+ * @return upper triangular part of the matrix
+ * 
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::upperTriangularPart(
+        const bool inclDiag
+      ) const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal(this->m_rows, this->m_cols);
+    this->__triangPart(retVal, true, false, inclDiag);
+    return retVal;
+}
+
+
+/**
+ * Extracts the lower triangular part of the matrix and optionally
+ * the diagonal.
+ * 
+ * @param inclDiag - should the diagonal be included as well (default: TRUE)
+ * 
+ * @return lower triangular part of the matrix
+ * 
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::lowerTriangularPart(
+        const bool inclDiag
+      ) const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal(this->m_rows, this->m_cols);
+    this->__triangPart(retVal, false, true, inclDiag);
+    return retVal;
+}
+
+
+/**
+ * @return the diagonal part of the matrix
+ * 
+ * @throw MatrixException if allocation of memory fails
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::diagPart() const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> retVal(this->m_rows, this->m_cols);
+    this->__triangPart(retVal, false, false, true);
+    return retVal;
+}
+
+
 /**
  * @return a logical value indicating whether the matrix is square
  */
