@@ -730,7 +730,7 @@ void math::MatrixGeneric<T>::__triangPart(
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(dest, upper, lower, diag)
+                default(none) shared(dest)
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
