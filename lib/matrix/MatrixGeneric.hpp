@@ -101,9 +101,17 @@ namespace __matrixprivate
 template <class T>
 void __matconj(const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw (MatrixException);
 
-// overloaded "specialization" complex<T>:
+// overloaded "specialization" for complex<T>:
 template <class T>
 void __matconj(const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw (MatrixException);
+
+
+template <class T>
+T __auxNorm(const MatrixGeneric<T>& m, const size_t n);
+
+// overloaded "specialization" for complex<T>
+template <class T>
+std::complex<T> __auxNorm(const MatrixGeneric<std::complex<T> >& m, const size_t n);
 
 }  // namespace __matrixprivate
 
@@ -216,6 +224,9 @@ public:
     MatrixGeneric<T> lowerTriangularPart(const bool inclDiag=true) const throw(MatrixException);
     MatrixGeneric<T> diagPart() const throw(MatrixException);
 
+    // Matrix p-norm
+    T norm(const size_t p = 2) const throw(MatrixException);
+    
     // These methods are only applicable for square matrices:
     MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
     MatrixGeneric<T>& setUnit() throw(MatrixException);
@@ -245,6 +256,8 @@ public:
     friend MatrixGeneric<T> (math::matEwDiv <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw(MatrixException);
     friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw(MatrixException);
+    friend T (math::__matrixprivate::__auxNorm <>)(const MatrixGeneric<T>& m, const size_t p);
+    friend std::complex<T> (math::__matrixprivate::__auxNorm <>) (const MatrixGeneric<std::complex<T> >& m, const size_t p);
 };
 
 // Matrices with elements of types float, double and long double

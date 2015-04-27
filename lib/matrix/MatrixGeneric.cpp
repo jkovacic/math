@@ -33,6 +33,7 @@ limitations under the License.
 
 // no #include "MatrixGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
+#include "int_util/IntExponentiatorGeneric.hpp"
 #include "exception/MatrixException.hpp"
 #include "matrix/LinearEquationSolverGeneric.hpp"
 #include "util/mtcopy.hpp"
@@ -817,6 +818,47 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::diagPart() const throw(math::Matr
     math::MatrixGeneric<T> retVal(this->m_rows, this->m_cols);
     this->__triangPart(retVal, false, false, true);
     return retVal;
+}
+
+
+/**
+ * p-norm of the matrix. If 'p' is omitted, the 2-norm
+ * (i.e. Euclidean norm) is returned.
+ *
+ * @note For complex matrices, a complex value will be returned, however,
+ *       its imaginary part will always be 0.
+ *  
+ * @param p - order of the norm (default: 2)
+ * 
+ * @return p-norm of the matrix 
+ * 
+ * @throw MatrixException if 'p' is less than 1
+ */
+template <class T>
+T math::MatrixGeneric<T>::norm(const size_t p) const throw(math::MatrixException)
+{
+    // sanity check
+    if ( p < 1 )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_ARGUMENT);
+    }
+
+    /*
+     * the p-norm of the matrix A is defined as:
+     * 
+     *             /    N        \  1
+     *             |  -----      | ---
+     *             |  \        p |  p
+     *   ||A||  =  |   >   |Ai|  |
+     *        p    |  /          |
+     *             |  -----      |
+     *             \   i=1       /
+     */
+
+    //There are different implementations for real and complex numbers,
+    // handled by the "specialization" of the function below:
+
+    return math::__matrixprivate::__auxNorm(*this, p);
 }
 
 
@@ -2037,4 +2079,143 @@ void math::__matrixprivate::__matconj(
         }
     }  // omp parallel
 
+}
+
+
+/*
+ * A "general" algorithm (for real-number types) that calculates
+ * the p-norm of the matrix 'm'.
+ * 
+ * @param m - matrix
+ * @param p - order of the norm
+ * 
+ * @return p-norm of 'm'
+ */
+template <class T>
+T math::__matrixprivate::__auxNorm(const math::MatrixGeneric<T>& m, const size_t p)
+{
+    /*
+     * Any modifications in this function should also be considered 
+     * in the overloaded version for complex numbers!
+     */
+
+    T retVal;
+
+    // Sum of all matrix elements' absolute values:
+    T sum = static_cast<T>(0);
+
+    const size_t N = m.m_elems.size();
+
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(m) \
+                reduction(+ : sum)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        // Calculate the sum of the assigned block's absolute values...
+        T partsum = static_cast<T>(0);
+        typename std::vector<T>::const_iterator it = m.m_elems.begin() + istart;
+
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=m.m_elems.end();
+              ++it, ++cntr )
+        {
+            const T term = std::abs( *it );
+            partsum += ( 1==p ? term :
+                    math::IntExponentiator::power(term, p) );
+        }
+
+        // ... and add it to the total sum in a thread safe manner.
+        sum += partsum;
+
+        (void) iend;
+    }  // pragma omp parallel
+
+    switch (p)
+    {
+    case 1 :
+        retVal = sum;
+        break;
+
+    case 2 :
+        retVal = std::sqrt(sum);
+        break;
+
+    default :
+        retVal = std::pow(sum, static_cast<T>(1)/static_cast<T>(p));
+    }
+
+    return retVal;
+}
+
+
+/*
+ * Overloading ("partial specialization") of __auxNorm
+ * for complex numbers.
+ *
+ * @note Even though the result is a real number, this function
+ *       returns a complex value, its imaginary part will always be 0.
+ * 
+ * @param m - matrix
+ * @param p - order of the norm
+ * 
+ * @return p-norm of 'm'
+ */
+template <class T>
+std::complex<T> math::__matrixprivate::__auxNorm(const math::MatrixGeneric<std::complex<T> >& m, const size_t p)
+{
+    /*
+     * Any modifications in this function should also be considered 
+     * in the "general" version (for real numbers)!
+     */
+
+    T retVal;
+
+    // Sum of all matrix elements' absolute values:
+    T sum = static_cast<T>(0);
+
+    const size_t N = m.m_elems.size();
+
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(m) \
+                reduction(+ : sum)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        // Calculate the sum of the assigned block's absolute values...
+        T partsum = static_cast<T>(0);
+        typename std::vector<std::complex<T> >::const_iterator it = m.m_elems.begin() + istart;
+
+        for ( size_t cntr = 0;
+              cntr<elems_per_thread && it!=m.m_elems.end();
+              ++it, ++cntr )
+        {
+            const T term = std::abs( *it );
+            partsum += ( 1==p ? term :
+                    math::IntExponentiator::power(term, p) );
+        }
+
+        // ... and add it to the total sum in a thread safe manner.
+        sum += partsum;
+
+        (void) iend;
+    }  // pragma omp parallel
+
+    switch (p)
+    {
+    case 1 :
+        retVal = sum;
+        break;
+
+    case 2 :
+        retVal = std::sqrt(sum);
+        break;
+
+    default :
+        retVal = std::pow(sum, static_cast<T>(1)/static_cast<T>(p));
+    }
+
+    return std::complex<T>( retVal );    
 }

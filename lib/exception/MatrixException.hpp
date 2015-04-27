@@ -52,6 +52,7 @@ struct MatrixException : public IMathException
         NONSQUARE_MATRIX,           /// Operation only allowed on square matrices 
         NOT_ENOUGH_ELEMENTS,        /// Not enough elements
         NON_INVERTIBLE_MATRIX,      /// Matrix cannot be inverted
+        INVALID_ARGUMENT,           /// Invalid input argument
     };
 
     err_codes error;     /// Type of an error
