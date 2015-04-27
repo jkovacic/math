@@ -172,10 +172,6 @@ a1:
 
 Determinant of a1: 9
 
-1-norm of a1: 45 (expected: 45)
-2-norm of a1: 16.8819 (expected: 16.812)
-3-norm of a1: 12.6515 (expected: 12.6515)
-
 inv = inverse of a1:
 -1.55556	1.22222	-0.333333	
 1.11111	-1.44444	0.666667	
@@ -228,9 +224,6 @@ c1 conjugated:
 (1,-1)	(1,2)	
 (2,3)	(2,-4)	
 
-1-norm of c1: 11.728 (expected: 11.728)
-2-norm of c1: 6.32456 (expected: 6.3246)
-5-norm of c1: 4.76627 (expected: 4.7663)
 
 R A T I O N A L   M A T R I X   T E S T
 

@@ -157,11 +157,7 @@ void matrixTest()
         cout << "a1:" << endl;
         a1.display();
         cout << endl;
-        cout << "Determinant of a1: " << d << endl << endl;
-
-        cout << "1-norm of a1: " << a1.norm(1) << " (expected: 45)" << endl;
-        cout << "2-norm of a1: " << a1.norm() << " (expected: 16.812)" << endl;
-        cout << "3-norm of a1: " << a1.norm(3) << " (expected: 12.6515)" << endl << endl;
+        cout << "Determinant of a1: " << d << endl << endl;;
 
         // and calculation of the inverse matrix
         Matrix inv = a1.inverse();
@@ -223,10 +219,6 @@ void matrixTest()
        cout << "c1 conjugated:" << endl;
        c2.display();
        cout << endl;
-
-       cout << "1-norm of c1: " << real(c1.norm(1)) << " (expected: 11.728)" << endl;
-       cout << "2-norm of c1: " << real(c1.norm()) << " (expected: 6.3246)" << endl;
-       cout << "5-norm of c1: " << real(c1.norm(5)) << " (expected: 4.7663)" << endl;
     }
     catch ( const MatrixException& ex )
     {

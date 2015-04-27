@@ -70,9 +70,6 @@ void math::MatrixException::what(std::ostream& str) const
         case math::MatrixException::NON_INVERTIBLE_MATRIX :
             str << "Matrix is not invertible";
             break;
-        case math::MatrixException::INVALID_ARGUMENT :
-            str << "Input argument is invalid";
-            break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and
