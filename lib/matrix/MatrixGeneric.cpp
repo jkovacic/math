@@ -1145,6 +1145,16 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     // Create an instance with swapped dimensions
     math::MatrixGeneric<T> retVal(this->m_cols, this->m_rows);
 
+    /*
+     * If any dimension equals 1 it is sufficient just to copy
+     * the vector 'm_elems' and swap the dimensions.
+     */
+    if ( 1==this->m_rows || 1==this->m_cols )
+    {
+        math::mtcopy<T>(this->m_elems, retVal.m_elems);
+        return retVal;
+    }
+    
     const size_t& tcols = this->m_cols;
 
     const size_t N = this->m_rows * this->m_cols;
@@ -1189,7 +1199,16 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::Matrix
     // If dimension of this is (n,m), dimension of its transposed matrix is (m,n)
     // T(r,c) = this(c,r)
 
-    if ( true == this->isSquare() )
+    if ( 1==this->m_rows || 1==this->m_cols )
+    {
+        /*
+         * If any dimension equals 1, no reallocation of elements is
+         * necessary. Instead, only the dimensions must be swapped.
+         */
+
+        std::swap(this->m_rows, this->m_cols);
+    }
+    else if ( true == this->isSquare() )
     {
         // A specialized algorithm for square matrices
         // TODO: find and implement a better algorithm

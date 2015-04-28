@@ -224,6 +224,21 @@ c1 conjugated:
 (1,-1)	(1,2)	
 (2,3)	(2,-4)	
 
+fm:
+1.1
+2.2
+3.3
+4.4
+
+fm transposed:
+1.1     2.2     3.3     4.4
+
+fm transposed transposed:
+1.1
+2.2
+3.3
+4.4
+
 
 R A T I O N A L   M A T R I X   T E S T
 

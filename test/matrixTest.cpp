@@ -209,16 +209,30 @@ void matrixTest()
         inv.display();
         cout << endl;
 
-       // Test of complex conjugation:
-       MatrixGeneric<complex<float> > c1(2, 2);
-       c1.set(0, 0, complex<float>(1.0f, 1.0f)).set(0, 1, complex<float>(1.0f, -2.0f));
-       c1.set(1, 0, complex<float>(2.0f, -3.0f)).set(1, 1, complex<float>(2.0f, 4.0f));
-       cout << "c1:" << endl;
-       c1.display();
-       MatrixGeneric<complex<float> > c2 = c1.conj();
-       cout << "c1 conjugated:" << endl;
-       c2.display();
-       cout << endl;
+        // Test of complex conjugation:
+        MatrixGeneric<complex<float> > c1(2, 2);
+        c1.set(0, 0, complex<float>(1.0f, 1.0f)).set(0, 1, complex<float>(1.0f, -2.0f));
+        c1.set(1, 0, complex<float>(2.0f, -3.0f)).set(1, 1, complex<float>(2.0f, 4.0f));
+        cout << "c1:" << endl;
+        c1.display();
+        MatrixGeneric<complex<float> > c2 = c1.conj();
+        cout << "c1 conjugated:" << endl;
+        c2.display();
+        cout << endl;
+
+        FMatrix fm(4, 1);
+        fm.set(0, 0, 1.1f).set(1, 0, 2.2f).set(2, 0, 3.3f).set(3, 0, 4.4f);
+        cout << "fm:" << endl;
+        fm.display();
+        cout << endl;
+        cout << "fm transposed:" << endl;
+        FMatrix fmt = fm.transpose();
+        fmt.display();
+        cout << endl;
+        fmt.transposed();
+        cout << "fm transposed transposed:" << endl;
+        fmt.display();
+        cout << endl;
     }
     catch ( const MatrixException& ex )
     {
