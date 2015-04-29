@@ -447,12 +447,18 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
      * Anyway, it would be nice to improve it in future.
      */
 
+    const size_t tabsPerRow = this->m_cols - 1;
+
     for ( size_t r=0; r<(this->m_rows); ++r )
     {
         // display elements of the row r, separated by tabs
         for ( size_t c=0; c<(this->m_cols); ++c )
         {
-            str << this->m_elems.at(this->__pos(r, c)) << "\t";
+            str << this->m_elems.at(this->__pos(r, c));
+            if ( c < tabsPerRow )
+            {
+                str << "\t";
+            }
         }
         // the line must be terminated by a newline
         str << std::endl;
