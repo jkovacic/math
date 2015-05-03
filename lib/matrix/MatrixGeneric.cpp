@@ -1319,7 +1319,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(const size_t rowNr) th
      */
     this->m_elems.erase(
                 this->m_elems.begin() + rowNr * this->m_cols,
-    		    this->m_elems.begin() + (rowNr+1) * this->m_cols );
+                this->m_elems.begin() + (rowNr+1) * this->m_cols );
 
     // Elements have been removed, update the number of rows
     --(this->m_rows);
