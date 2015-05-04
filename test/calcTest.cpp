@@ -86,6 +86,11 @@ void calculusTest()
             cout << "Method " << method << ": Int(f(x), 0, 5) = " <<
                      Integ::integ(f, 0., 5., 10000, static_cast<EIntegAlg::alg>(method)) << endl;
         }
+
+        // A different 'n' is required for the Romberg's method:
+        cout << "Romberg's metod: Int(f(x), 0, 5) = " <<
+                     Integ::integ(f, 0., 5., 6, EIntegAlg::ROMBERG) << endl;
+
         cout << "Expected result: 16.23780211731536" << endl;
 
 

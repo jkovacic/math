@@ -27,6 +27,8 @@ limitations under the License.
 #include <cstddef>
 #include <cmath>
 #include <algorithm>
+#include <vector>
+#include <new>
 
 #include "util/NumericUtil.hpp"
 #include "exception/FunctionException.hpp"
@@ -454,6 +456,179 @@ F __boole(
 
 
 /*
+ * Numerical integration using the Romberg's method.
+ *
+ * For more info about the method, see:
+ * https://en.wikipedia.org/wiki/Romberg%27s_method
+ *
+ * @param f - instance of a class with the function to integrate
+ * @param a - lower bound of the integration interval
+ * @param b - upper bound of the integration interval
+ * @param n - order of the Romberg's method
+ *
+ * @return definite integral of f(x) between 'a' and 'b'
+ *
+ * @throw CalculusException if function is not defined between 'a' and 'b'
+ */
+template <typename F>
+F __romberg(
+      const math::IFunctionGeneric<F>& f,
+      const F& a,
+      const F& b,
+      const size_t n
+    ) throw(math::CalculusException)
+{
+    /*
+     * The method only makes sense if 'n' is not too small
+     */
+    if ( n < 2 )
+    {
+        throw math::CalculusException(math::CalculusException::NOT_ENOUGH_STEPS);
+    }
+
+    /*
+     * On the other hand the algorithm requires that 4^n does not exceed the
+     * range of 'size_t'. Luckily, the "integer logarithm" is not difficult to
+     * find if the base is a power of 2.
+     * 
+     * If 's' denotes the size of 'size_t' in bytes, the following inequation
+     * must be satisfied:
+     * 
+     *      n      s
+     *     4  < 256
+     * 
+     *             n         s
+     *      /   2 \    /  8 \
+     *      |  2  |  < | 2  |
+     *      \     /    \    /
+     * 
+     *       2*n      8*s
+     *      2     <  2
+     * 
+     * As the exponential function of (a>1) is monotonically increasing, the
+     * inequation can be further developed to:
+     *     
+     *      2*n < 8*s   ==>  n < 4*s
+     */
+
+    if ( n >= (sizeof(size_t) * 4) )
+    {
+        throw math::CalculusException(math::CalculusException::INVALID_STEP);
+    }
+
+    /*
+     * To store intermediate results, most algorithm descriptions suggest a
+     * square n by n matrix, where the lower triangle is actually used.
+     * It turns out, the columns of the matrix can be evaluated sequentially,
+     * so a vector of length n is sufficient to store temporary results.  
+     */
+    std::vector<F> R;
+    
+    try
+    {
+        // allocate the buffer
+        R.resize(n);
+    }
+    catch ( const std::bad_alloc& bae )
+    {
+        throw math::CalculusException(math::CalculusException::ALLOC_FAILED);
+    }
+
+    // step size for each iteration
+    F hi;
+
+    /*
+     * The first column of the "matrix" is filled by trapezoidal approximations
+     * with the size 2^i
+     */
+
+    /*
+     * The very first trapezoidal approximation with exactly 1 step:
+     * 
+     *             (b-a) * (f(a) + f(b))
+     *   R(0,0) = -----------------------
+     *                      2
+     */
+
+    hi = b - a;
+    R.at(0) = (b-a) * (f(a) + f(b)) / static_cast<F>(2);
+
+    /*
+     * Fill in the remaining cells of the first column.
+     * 'p2' denotes the power of 2 for the current iteration: p2=2^(i-1)
+     */
+    for ( size_t i=1, p2=1; 
+          i < n;
+          ++i, p2<<=1 )
+    {
+        /*
+         *           b - a     h(i-1)
+         *   h(i) = ------- = --------
+         *            2^n        2
+         */
+        hi /= static_cast<F>(2);
+
+        /*
+         * Evaluation of f(x) may be costly. To prevent multiple evaluations
+         * at the same points, the previous approximations can be reduced and
+         * the function is only evaluated at new points:
+         * 
+         *                               i-1
+         *                              2
+         *                             -----
+         *            R(i-1,0)         \
+         *  R(i,0) = ---------- + hi *  >     f(a + (2*k-1) * hi)
+         *                2            /
+         *                             -----
+         *                              k=1
+         */
+
+        R.at(i) = R.at(i-1)/static_cast<F>(2);
+
+        F partsum = static_cast<F>(0);
+        // TODO this for loop could be parallelized
+        for ( size_t k=1; k<=p2; ++k )
+        {
+            partsum += f(a + static_cast<F>(2*k-1)*hi);
+        }
+
+        R.at(i) += hi * partsum;
+    }  // for n
+
+    /*
+     * The remaining iterations only require values from the previous one.
+     * Theoretically it should fill cells R(m, m:(n-1)), however this implementation
+     * will shift this vector by 'm' rows upwards and fill cells in the range
+     * R(m,0:(n-m-1)).
+     * 'p4' denotes the power of 4 for the current iteration: p4 = 4^i
+     */
+    for ( size_t m=1, p4=4;
+          m < n; 
+          ++m, p4<<=2 )
+    {
+        /*
+         *              m
+         *             4  * R(n,m-1) - R(n-1,m-1)
+         *   R(n,m) = ----------------------------
+         *                       m
+         *                      4  - 1
+         */
+
+        for ( size_t i=0; i<(n-m); ++i )
+        {
+            R.at(i) = ( static_cast<F>(p4) * R.at(i+1) - R.at(i) ) / 
+                        static_cast<F>(p4 - 1);
+        }
+    }
+
+    const F retVal = R.at(0);
+    R.clear();
+
+    return retVal;
+}
+
+
+/*
  * An interface (i.e. a pure virtual class) for classes that
  * perform integration by substitution.
  *
@@ -765,6 +940,12 @@ F math::Integ::integ(
             break;
         }
 
+        case math::EIntegAlg::ROMBERG :
+        {
+            retVal *= math::Integ::__private::__romberg<F>(f, from, to, n);
+            break;
+        }
+
         default :
             throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
     }  // switch
@@ -782,6 +963,8 @@ F math::Integ::integ(
  *
  * @note The actual size of integrating step may be slightly decreased
  *       if required by the selected algorithm.
+ * 
+ * @note This function does not support the Romberg's method.
  *
  * @param f - instance of a class with the function to integrate
  * @param a - lower bound of the integration interval
@@ -804,6 +987,13 @@ F math::Integ::integH(
         const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
+    // Algorithms with the specified integration step do not support
+    // the Romberg's method.
+    if ( math::EIntegAlg::ROMBERG == algorithm )
+    {
+        throw math::CalculusException(math::CalculusException::UNSUPPORTED_ALGORITHM);
+    }
+
     math::Integ::__private::__checkStep<F>(h);
 
     // Just obtain the (approximate) number of integrating intervals
@@ -1124,6 +1314,8 @@ F math::Integ::integImp(
  *
  * @note The actual size of integrating step may be slightly decreased
  *       if required by the selected algorithm.
+ * 
+ * @note This function does not support the Romberg's method.
  *
  * @param f - function to integrate
  * @param b - upper limit of the integration range
@@ -1223,7 +1415,9 @@ F math::Integ::integImpNegInfH(
  * integral over the entire range.
  *
  * @note the result may blow up if the finite integral of 'f' does not
- *       exist for the given range
+ *       exist for the given range.
+ * 
+ * @note This function does not support the Romberg's method.
  *
  * @param f - function to integrate
  * @param a - lower limit of the integration range
@@ -1321,7 +1515,9 @@ F math::Integ::integImpPosInfH(
  * is integrated as a proper integral.
  *
  * @note the result may blow up if the finite integral of 'f' does not
- *       exist for the given range
+ *       exist for the given range.
+ * 
+ * @note This function does not support the Romberg's method.
  *
  * @param f - function to integrate
  * @param himp - desired size of an integrating step for both "improper" parts (default: 0.0001)

@@ -61,6 +61,9 @@ void math::CalculusException::what(std::ostream& str) const
         case math::CalculusException::INVALID_BREAKPOINT :
             str << "Invalid sign of a breakpoint";
             break;
+        case math::CalculusException::ALLOC_FAILED :
+            str << "Allocation of internal buffer failed";
+            break;
         default:
             // Should not occur but handle it anyway.
             // Maybe a code was inserted into err_codes and

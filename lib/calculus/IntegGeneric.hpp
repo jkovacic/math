@@ -51,6 +51,7 @@ struct EIntegAlg
         SIMPSON,                /// Simpson's rule
         SIMPSON_3_8,            /// Simpson's 3/8 rule
         BOOLE,                  /// Boole's rule
+        ROMBERG,                /// Romberg's method
     };
 };  // struct EIntegAlg
 

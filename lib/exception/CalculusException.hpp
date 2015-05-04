@@ -50,6 +50,7 @@ struct CalculusException : public IMathException
         INVALID_STEP,           /// step size negative or too small
         UNSUPPORTED_ALGORITHM,  /// unsupported algorithm
         INVALID_BREAKPOINT,     /// invalid sign of a breakpoint
+        ALLOC_FAILED,           /// Allocation of internal buffer failed
     };
 
     err_codes error;     /// Type of an error
