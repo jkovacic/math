@@ -719,7 +719,7 @@ Method 1: Int(f(x), 0, 5) = 16.2378
 Method 2: Int(f(x), 0, 5) = 16.2378
 Method 3: Int(f(x), 0, 5) = 16.2378
 Method 4: Int(f(x), 0, 5) = 16.2378
-Romberg's metod: Int(f(x), 0, 5) = 16.2378
+Romberg's method: Int(f(x), 0, 5) = 16.2378
 Expected result: 16.23780211731536
 
 fn(x) = 0.39894228040143268 * exp(-x^2/2) :

@@ -534,12 +534,9 @@ F __romberg(
         throw math::CalculusException(math::CalculusException::ALLOC_FAILED);
     }
 
-    // step size for each iteration
-    F hi;
-
     /*
      * The first column of the "matrix" is filled by trapezoidal approximations
-     * with the size 2^i
+     * with 2^i steps
      */
 
     /*
@@ -550,8 +547,9 @@ F __romberg(
      *                      2
      */
 
-    hi = b - a;
-    R.at(0) = (b-a) * (f(a) + f(b)) / static_cast<F>(2);
+    // step size for each iteration
+    F hi = b - a;
+    R.at(0) = hi * (f(a) + f(b)) / static_cast<F>(2);
 
     /*
      * Fill in the remaining cells of the first column.
@@ -564,7 +562,7 @@ F __romberg(
         /*
          *           b - a     h(i-1)
          *   h(i) = ------- = --------
-         *            2^n        2
+         *            2^i        2
          */
         hi /= static_cast<F>(2);
 
@@ -586,14 +584,14 @@ F __romberg(
         R.at(i) = R.at(i-1)/static_cast<F>(2);
 
         F partsum = static_cast<F>(0);
-        // TODO this for loop could be parallelized
+        // TODO this for loop can be parallelized
         for ( size_t k=1; k<=p2; ++k )
         {
             partsum += f(a + static_cast<F>(2*k-1)*hi);
         }
 
         R.at(i) += hi * partsum;
-    }  // for n
+    }  // for i
 
     /*
      * The remaining iterations only require values from the previous one.
@@ -619,7 +617,7 @@ F __romberg(
             R.at(i) = ( static_cast<F>(p4) * R.at(i+1) - R.at(i) ) / 
                         static_cast<F>(p4 - 1);
         }
-    }
+    }  // for m
 
     const F retVal = R.at(0);
     R.clear();
@@ -637,13 +635,13 @@ F __romberg(
  * integration by substitution. The algorithm is derived from the
  * fundamental theorem of calculus:
  *
- *                -1
- *     b       phi  (b)
- *     /          /
- *     |f(x) dx = | f(phi(t)) * phi'(t) dt
- *     /          /
- *     a          -1
- *              phi (a)
+ *                 -1
+ *     b        phi  (b)
+ *     /           /
+ *     | f(x) dx = | f(phi(t)) * phi'(t) dt
+ *     /           /
+ *     a           -1
+ *              phi  (a)
  *
  * More details about integration by substitution:
  * https://en.wikipedia.org/wiki/Integration_by_substitution
