@@ -42,6 +42,46 @@ namespace math {  namespace LinearEquationSolver {  namespace __private
 
 
 /*
+ * A "pseudo absolute value" of 'x'.
+ * 
+ * The function is used in situations when values must be ordered by
+ * their absolute values and sometimes it is more convenient/more efficient to
+ * obtain values that are a monotonically increasing function of
+ * actual absolute values.
+ * 
+ * The general implementation returns the actual absolute value which
+ * can be obtained efficiently for most scalar types.
+ * 
+ * @param x - value whose absolute value is returned
+ * 
+ * @return absolute value of 'x' 
+ */
+template <class T>
+inline T pabs(const T& x)
+{
+    return std::abs(x);
+}
+
+
+/*
+ * Partial specialization of 'pabs' for complex numbers.
+ * 
+ * This function returns a square of the actual absolute value and is
+ * as such more efficient because no additional calculation of square root
+ * (not a fast operation) is necessary.
+ * 
+ * @param x - a complex value
+ * 
+ * @return square of the absolute value of 'x'
+ */
+template <class T>
+inline T pabs(const std::complex<T>& x)
+{
+    return std::norm(x);
+}
+
+
+/*
  * In order to support both real and complex numbers, the
  * code snippet below must be included into two separate functions.
  * 
@@ -49,28 +89,29 @@ namespace math {  namespace LinearEquationSolver {  namespace __private
  * a macro, included to functions where necessary and undefined
  * when not needed anymore.
  */
-#define _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY   \
-    const size_t N = a.nrRows();                    \
-                                                    \
-    if ( p >= N || p >= a.nrColumns() )             \
-    {                                               \
-        return p;                                   \
-    }                                               \
-                                                    \
-    size_t r = p;                                   \
-    T maxPiv = static_cast<T>(0);                   \
-                                                    \
-    for ( size_t i=p; i<N; ++i )                    \
-    {                                               \
-        const T elabs = std::abs( a(i, p) );        \
-                                                    \
-        if ( elabs > maxPiv )                       \
-        {                                           \
-            maxPiv = elabs;                         \
-            r = i;                                  \
-        }                                           \
-    }                                               \
-                                                    \
+#define _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY                      \
+    const size_t N = a.nrRows();                                       \
+                                                                       \
+    if ( p >= N || p >= a.nrColumns() )                                \
+    {                                                                  \
+        return p;                                                      \
+    }                                                                  \
+                                                                       \
+    size_t r = p;                                                      \
+    T maxPiv = static_cast<T>(0);                                      \
+                                                                       \
+    for ( size_t i=p; i<N; ++i )                                       \
+    {                                                                  \
+        const T elabs =                                                \
+            math::LinearEquationSolver::__private::pabs( a(i, p) );    \
+                                                                       \
+        if ( elabs > maxPiv )                                          \
+        {                                                              \
+            maxPiv = elabs;                                            \
+            r = i;                                                     \
+        }                                                              \
+    }                                                                  \
+                                                                       \
     return r;
 
 // end of macro definition
