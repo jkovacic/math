@@ -64,7 +64,7 @@ inline T pabs(const T& x)
 
 
 /*
- * Partial specialization of 'pabs' for complex numbers.
+ * Partial "specialization" of 'pabs' for complex numbers.
  * 
  * This function returns a square of the actual absolute value and is
  * as such more efficient because no additional calculation of square root
@@ -72,49 +72,44 @@ inline T pabs(const T& x)
  * 
  * @param x - a complex value
  * 
- * @return square of the absolute value of 'x'
+ * @return square of the absolute value of 'x', returned as a complex value with imag. part equal to 0
  */
 template <class T>
-inline T pabs(const std::complex<T>& x)
+inline std::complex<T> pabs(const std::complex<T>& x)
 {
-    return std::norm(x);
+    return std::complex<T>( std::norm(x), static_cast<T>(0) );
 }
 
 
 /*
- * In order to support both real and complex numbers, the
- * code snippet below must be included into two separate functions.
+ * A convenience function that compares two (absolute) values.
  * 
- * To facilitate maintainability, the snippet will be defined as
- * a macro, included to functions where necessary and undefined
- * when not needed anymore.
+ * @param a - first value
+ * @param b - second value
+ * 
+ * @return true if a>b, false otherwise
  */
-#define _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY                      \
-    const size_t N = a.nrRows();                                       \
-                                                                       \
-    if ( p >= N || p >= a.nrColumns() )                                \
-    {                                                                  \
-        return p;                                                      \
-    }                                                                  \
-                                                                       \
-    size_t r = p;                                                      \
-    T maxPiv = static_cast<T>(0);                                      \
-                                                                       \
-    for ( size_t i=p; i<N; ++i )                                       \
-    {                                                                  \
-        const T elabs =                                                \
-            math::LinearEquationSolver::__private::pabs( a(i, p) );    \
-                                                                       \
-        if ( elabs > maxPiv )                                          \
-        {                                                              \
-            maxPiv = elabs;                                            \
-            r = i;                                                     \
-        }                                                              \
-    }                                                                  \
-                                                                       \
-    return r;
+template <class T>
+inline bool absgt(const T& a, const T& b)
+{
+    return (a > b);
+}
 
-// end of macro definition
+
+/*
+ * Partial "specialization" of 'absgt' for complex numbers.
+ * The function compares real parts of 'a' and 'b'.
+ * 
+ * @param a - first complex value
+ * @param b - second complex value
+ * 
+ * @return true if re(a)>re(b), false otherwise
+ */
+template <class T>
+inline bool absgt(const std::complex<T>& a, const std::complex<T>& b)
+{
+    return ( std::real(a) > std::real(b) );
+}
 
 
 /*
@@ -133,25 +128,32 @@ size_t findPivot(
         const math::MatrixGeneric<T>& a,
         const size_t p )
 {
-    _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY
+    const size_t N = a.nrRows();
+
+    if ( p >= N || p >= a.nrColumns() )
+    {
+        return p;
+    }
+
+    size_t r = p;
+    T maxPiv = static_cast<T>(0);
+
+    for ( size_t i=p; i<N; ++i )
+    {
+        const T elabs =
+            math::LinearEquationSolver::__private::pabs( a(i, p) );
+
+        // actually equivalent to:
+        // if ( elabs > maxPiv )
+        if ( true == math::LinearEquationSolver::__private::absgt(elabs, maxPiv ) )
+        {
+            maxPiv = elabs;
+            r = i;
+        }
+    }
+
+    return r;
 }
-
-
-/*
- * Partial "specialization" of findPivot for complex numbers.
- * It is actually the exact copy of the general function except the
- * function's signature.
- */
-template <class T>
-size_t findPivot(
-        const math::MatrixGeneric< std::complex<T> >& a,
-        const size_t p )
-{
-    _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY
-}
-
-// As the macro is not needed anymore, it will be undefined
-#undef _MATH_LINEAREQUATIONSOLVER_FINDPIVOT_BODY
 
 }}}  // namespace math::LinearEquationsolver::__private
 
