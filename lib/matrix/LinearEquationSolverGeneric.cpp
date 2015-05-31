@@ -113,46 +113,76 @@ inline bool absgt(const std::complex<T>& a, const std::complex<T>& b)
 
 
 /*
- * Finds the row with the highest value (by absolute value) of the
- * p.th column.
+ * Finds row and (optionally) column indices of the matrix' pivot element
+ * (i.e. the one with the highest absolute value) past the p.th row and (depending
+ * on 'fullp').
  *
  * 'p' is returned immediately if it is out of a's range.
  *
- * @param a - a matrix of coefficients
- * @param p - index of the desired column
- *
- * @return row number with the highest absolute value of the p.th element
+ * @param a - matrix of coefficients
+ * @param p - index of the desired row/column to find a pivot for
+ * @param row - reference to a variable to write the pivot's row number to
+ * @param col - reference to a variable to write the pivot's column number to (not modified if 'fullp' is false)
+ * @param fullp - if true, also consider elements at columns greater than 'p' (default: FALSE)
  */
 template <class T>
-size_t findPivot(
+void findPivot(
         const math::MatrixGeneric<T>& a,
-        const size_t p )
+        const size_t p,
+        size_t& row,
+        size_t& col,
+        const bool fullp = false )
 {
+    // TODO change default value of 'fullp' to true when full pivoting is implemented
     const size_t N = a.nrRows();
+    const size_t Ncol = a.nrColumns();
 
-    if ( p >= N || p >= a.nrColumns() )
+    // dimension check
+    if ( p >= N || p >= Ncol )
     {
-        return p;
+        row = p;
+
+        if ( true == fullp )
+        {
+            col = p;
+        }
+
+        return;
     }
 
+    // initial "pivot"
     size_t r = p;
+    size_t c = p;
     T maxPiv = static_cast<T>(0);
+    
+    // the highest column number to be considered:
+    const size_t CMAX = ( true==fullp ? Ncol : p+1 );
 
     for ( size_t i=p; i<N; ++i )
     {
-        const T elabs =
-            math::LinearEquationSolver::__private::pabs( a(i, p) );
-
-        // actually equivalent to:
-        // if ( elabs > maxPiv )
-        if ( true == math::LinearEquationSolver::__private::absgt(elabs, maxPiv ) )
+        for (size_t j=p; j<CMAX; ++j )
         {
-            maxPiv = elabs;
-            r = i;
-        }
-    }
+            const T elabs =
+                math::LinearEquationSolver::__private::pabs( a(i, j) );
 
-    return r;
+            // actually equivalent to:
+            // if ( elabs > maxPiv )
+            if ( true == math::LinearEquationSolver::__private::absgt(elabs, maxPiv ) )
+            {
+                maxPiv = elabs;
+                r = i;
+                c = j;
+            }
+        }  // for j
+    }  // for i
+
+    // finally assign 'row' and optionally 'col'
+    row = r;
+
+    if ( true == fullp )
+    {
+        col = c;
+    }
 }
 
 }}}  // namespace math::LinearEquationsolver::__private
@@ -196,7 +226,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
      * multiples of coef's and term's lines are added to other lines until
      * "coef" appears as a unit matrix. In this case the modified "term" is a
      * unique solution of a system of linear equations. More details about
-     * the algorithm at: http://en.wikipedia.org/wiki/Gaussian_elimination
+     * the algorithm at: https://en.wikipedia.org/wiki/Gaussian_elimination
      */
     const size_t N = coef.nrColumns();          // Nr. of unknowns
     const size_t NT = term.nrColumns();         // Nr. of terms' columns
@@ -230,7 +260,8 @@ bool math::LinearEquationSolver::solveGaussJordan(
     for ( size_t i=0; i<N; ++i )
     {
         // Find the most appropriate row to pivot with this one
-        const size_t pr = math::LinearEquationSolver::__private::findPivot(temp, i);
+        size_t pr;
+        math::LinearEquationSolver::__private::findPivot(temp, i, pr, pr);
 
         // If even the highest absolute value equals 0, there is
         // no unique solution of the system of linear equations
