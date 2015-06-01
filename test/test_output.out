@@ -317,7 +317,12 @@ Vector of constant terms:
 (-2,-1)
 (1,0)
 
-Solution:
+Solution with full pivoting:
+(-0.663164,-0.362612)
+(0.163019,1.05057)
+(-0.224093,0.60029)
+
+Solution with partial pivoting:
 (-0.663164,-0.362612)
 (0.163019,1.05057)
 (-0.224093,0.60029)

@@ -199,9 +199,14 @@ void findPivot(
  * If unique solution does not exist (i.e. determinant of 'coef' is 0), an
  * exception will be thrown.
  * 
+ * The method performs either partial or full pivoting. While partial pivoting
+ * should be sufficient in most cases, full pivoting is usually numerically
+ * more stable, however it introduces additional overhead.
+ * 
  * @param coef - a square matrix with coefficients of the system of linear equations
  * @param term - a matrix with constant terms of the system of linear equations
  * @param sol - a reference to a matrix to be assigned the solution of equations
+ * @param fullp - should the method perform full pivoting (default: TRUE)
  * 
  * @return a logical value indicating whether a unique solution was found
  * 
@@ -211,11 +216,10 @@ template <class T>
 bool math::LinearEquationSolver::solveGaussJordan(
           const math::MatrixGeneric<T>& coef,
           const math::MatrixGeneric<T>& term,
-          math::MatrixGeneric<T>& sol
+          math::MatrixGeneric<T>& sol,
+          const bool fullp
         ) throw (math::MatrixException)
 {
-    // The function supports full pivoting
-
     // Sanity check
     if ( false == coef.isSquare() )
     {
@@ -289,19 +293,22 @@ bool math::LinearEquationSolver::solveGaussJordan(
      */
     std::vector<size_t> colidx;
 
-    try
+    if ( true == fullp )
     {
-        colidx.resize(N);
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
-    }
+        try
+        {
+            colidx.resize(N);
+        }
+        catch ( const std::bad_alloc& ba )
+        {
+            throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
+        }
 
-    for ( size_t i=0; i<N; ++i )
-    {
-        colidx.at(i) = i;
-    }
+        for ( size_t i=0; i<N; ++i )
+        {
+            colidx.at(i) = i;
+        }
+    }  // if fullp
 
 
     /*
@@ -317,8 +324,8 @@ bool math::LinearEquationSolver::solveGaussJordan(
     {
         // Find the most appropriate row and column to pivot with this one
         size_t pr;
-        size_t pc;
-        math::LinearEquationSolver::__private::findPivot(temp, i, pr, pc, true);
+        size_t pc = i;
+        math::LinearEquationSolver::__private::findPivot(temp, i, pr, pc, fullp);
 
         // If even the highest absolute value equals 0, there is
         // no unique solution of the system of linear equations
@@ -335,7 +342,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
         }
 
         // swap columns of 'temp' if necessary
-        if ( pc != i )
+        if ( true==fullp && pc!=i )
         {
             temp.swapColumns(i, pc);
             std::swap(colidx.at(i), colidx.at(pc));
@@ -452,19 +459,19 @@ bool math::LinearEquationSolver::solveGaussJordan(
      * 'i' and swap the rows of 'sol' accordingly. Additionally this swap will
      * be reflected by swapping of corresponding elements of 'colidx'.
      */
-    for ( size_t i=0; i<N; ++i )
+    if ( true == fullp )
     {
-        if ( i != colidx.at(i) )
+        for ( size_t i=0; i<N; ++i )
         {
             // find such 'j' that colidx(j) == i
-            size_t j;
+            size_t j = i;
             for ( j=i; colidx.at(j)!=i; ++j );
 
             // and swap sol's rows and colidx's elements
             sol.swapRows(i, j);
             std::swap( colidx.at(i), colidx.at(j) );
-        }
-    }
+        }  // for i
+    }  // if fullp
 
     // A unique solution has been successfully found
     return true;

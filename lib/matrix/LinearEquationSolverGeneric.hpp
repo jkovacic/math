@@ -45,7 +45,8 @@ namespace LinearEquationSolver
     bool solveGaussJordan(
               const MatrixGeneric<T>& coef,
               const MatrixGeneric<T>& term,
-              MatrixGeneric<T>& sol
+              MatrixGeneric<T>& sol,
+              const bool fullp = true
             ) throw (MatrixException);
 
 

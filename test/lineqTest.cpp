@@ -65,7 +65,19 @@ void lineqSolverTest()
         MatrixGeneric<complex<double> > x(b);
         if ( true == LinearEquationSolver::solveGaussJordan(a, b, x) )
         {
-            cout << "Solution:" << endl;
+            cout << "Solution with full pivoting:" << endl;
+            x.display();
+        }
+        else
+        {
+            cerr << "Unique solution does not exist" << endl;
+        }
+
+        cout << endl;
+
+        if ( true == LinearEquationSolver::solveGaussJordan(a, b, x, false) )
+        {
+            cout << "Solution with partial pivoting:" << endl;
             x.display();
         }
         else
