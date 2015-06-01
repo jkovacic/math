@@ -28,6 +28,8 @@ limitations under the License.
 #include <algorithm>
 #include <cmath>
 #include <complex>
+#include <vector>
+#include <new>
 
 #include "exception/MatrixException.hpp"
 #include "util/NumericUtil.hpp"
@@ -123,7 +125,7 @@ inline bool absgt(const std::complex<T>& a, const std::complex<T>& b)
  * @param p - index of the desired row/column to find a pivot for
  * @param row - reference to a variable to write the pivot's row number to
  * @param col - reference to a variable to write the pivot's column number to (not modified if 'fullp' is false)
- * @param fullp - if true, also consider elements at columns greater than 'p' (default: FALSE)
+ * @param fullp - if true, also consider elements at columns greater than 'p'
  */
 template <class T>
 void findPivot(
@@ -131,9 +133,8 @@ void findPivot(
         const size_t p,
         size_t& row,
         size_t& col,
-        const bool fullp = false )
+        const bool fullp )
 {
-    // TODO change default value of 'fullp' to true when full pivoting is implemented
     const size_t N = a.nrRows();
     const size_t Ncol = a.nrColumns();
 
@@ -213,7 +214,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
           math::MatrixGeneric<T>& sol
         ) throw (math::MatrixException)
 {
-    // Partial pivoting is implemented
+    // The function supports full pivoting
 
     // Sanity check
     if ( false == coef.isSquare() )
@@ -224,7 +225,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
     /*
      * The Gaussian elimination algorithm is implemented:
      * multiples of coef's and term's lines are added to other lines until
-     * "coef" appears as a unit matrix. In this case the modified "term" is a
+     * 'coef' appears as a unit matrix. In this case the modified 'term' is a
      * unique solution of a system of linear equations. More details about
      * the algorithm at: https://en.wikipedia.org/wiki/Gaussian_elimination
      */
@@ -240,32 +241,88 @@ bool math::LinearEquationSolver::solveGaussJordan(
     math::MatrixGeneric<T> temp(coef);
     sol = term;
 
+
     /*
+     * Summary of the entire algorithm:
+     * 
      * Try to convert the 'temp' into an identity matrix
      * by appropriately adding multiples of other lines to each line
-     * (incl. lines of 'retVal')
+     * (incl. lines of 'sol'). Apply pivoting for better numerical
+     * stability. If 'temp' is successfully converted to an identity
+     * matrix, 'sol' will become a unique solution of the system
+     * of linear equations.
      */
 
     /*
-     * The first part of the algorithm will implement partial pivoting
-     * of rows. Among the remaining (N-i) rows it will find the one with
-     * highest absolute value of the row's i.th element and swap the lines
-     * (equivalent to rearranging the equations in a different order).
+     * Notes about partial and full pivoting:
+     * 
+     * A set of linear equations A*x=b can be rewritten as:
+     * 
+     *          +       +        +       +               +       +    +     +
+     *          | a_1,1 |        | a_1,2 |               | a_1,N |    | b_1 |
+     *          | a_2,1 |        | a_2,2 |               | a_2,N |    | b_2 |
+     *     x_1  |  ...  | + x_2  |  ...  | +  ... + x_N  |  ...  | =  | ... |
+     *          | a_N,1 |        | a_N,2 |               | a_N,N |    | b_N |
+     *          +       +        +       +               +       +    +     +
+     * 
+     * If any two rows of 'A' are swapped (i.e. partial pivoting), this is
+     * equivalent to rearranging the equations in a different order. It is known
+     * that solution of a system of linear equations is independent of the order
+     * of equations. If any rearrangement of rows is performed in 'A', the same
+     * rearrangement of b's rows must be performed immediately and no
+     * rearrangement of the final matrix/vector 'sol' is necessary.
+     * 
+     * If any two columns of 'A' are swapped (i.e. full pivoting), this is
+     * equivalent to rearrangement of terms in each equation, however the order
+     * of equations remains unmodified. In this case rows of 'b' are not
+     * rearranged immediately. However, all information about rearrangements of
+     * A's columns must be noted. At the end of the algorithm (when 'b' "becomes"
+     * the solution 'x'), sol's rows must be rearranged into the original order
+     * of A's columns.
+     */
+
+    /*
+     * Full pivoting requires that all swaps of columns are kept
+     * in a separate vector. Initial values of the vector's elements
+     * are equal to their indices. If any two columns of 'temp' are swapped,
+     * the corresponding elements of 'colidx' will be swapped as well.
+     */
+    std::vector<size_t> colidx;
+
+    try
+    {
+        colidx.resize(N);
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
+    }
+
+    for ( size_t i=0; i<N; ++i )
+    {
+        colidx.at(i) = i;
+    }
+
+
+    /*
+     * The first part of the algorithm will perform pivoting.
      * Additionally it will subtract multiples of the i.th row from all
      * subsequent rows (r>i) so their i.th column will be equal to 0. This
      * requires plenty of additions/subtractions of individual rows so
      * parallelization of this for loop is not possible due to race conditions.
      * It will be possible to parallelize certain parts of this loop, though.
      */
+
     for ( size_t i=0; i<N; ++i )
     {
-        // Find the most appropriate row to pivot with this one
+        // Find the most appropriate row and column to pivot with this one
         size_t pr;
-        math::LinearEquationSolver::__private::findPivot(temp, i, pr, pr);
+        size_t pc;
+        math::LinearEquationSolver::__private::findPivot(temp, i, pr, pc, true);
 
         // If even the highest absolute value equals 0, there is
         // no unique solution of the system of linear equations
-        if ( true == math::NumericUtil::isZero<T>(temp(pr, i)) )
+        if ( true == math::NumericUtil::isZero<T>(temp(pr, pc)) )
         {
             return false;
         }
@@ -277,6 +334,13 @@ bool math::LinearEquationSolver::solveGaussJordan(
             sol.swapRows(i, pr);
         }
 
+        // swap columns of 'temp' if necessary
+        if ( pc != i )
+        {
+            temp.swapColumns(i, pc);
+            std::swap(colidx.at(i), colidx.at(pc));
+        }
+
         // Set the i.th column of all other rows (r>i) to 0 by
         // adding the appropriate multiple of the i.th row
         #pragma omp parallel for default(none) shared(temp, sol, i)
@@ -286,7 +350,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
             if ( false == math::NumericUtil::isZero<T>(temp(r, i)) )
             {
                 // Subtract a multiple of the i^th row.
-                const T el = temp.get(r, i) / temp.get(i, i);
+                const T el = temp(r, i) / temp(i, i);
 
                 // temp(r,:) = temp(r,:)-el*temp(i,:)
                 for ( size_t c=i; c<N; ++c )
@@ -315,7 +379,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
     #pragma omp parallel for default(none) shared(temp, sol)
     for ( size_t r=0; r<N; ++r )
     {
-        const T el = temp.get(r, r);
+        const T el = temp(r, r);
 
         for ( size_t c=r; c<N; ++c )
         {
@@ -377,6 +441,30 @@ bool math::LinearEquationSolver::solveGaussJordan(
             }  // if temp(r,c) != 0
         }  // for r
     }  // for c
+
+    /*
+     * If full pivoting was performed, it is likely that some columns
+     * of 'temp' have been rearranged. In this case, sol's rows must be
+     * rearranged back to the original columns of temp's columns.
+     * 
+     * The algorithm below will check if colidx(i) equqls 'i'.
+     * If it does not, it will find the index of colidx's element that does equal
+     * 'i' and swap the rows of 'sol' accordingly. Additionally this swap will
+     * be reflected by swapping of corresponding elements of 'colidx'.
+     */
+    for ( size_t i=0; i<N; ++i )
+    {
+        if ( i != colidx.at(i) )
+        {
+            // find such 'j' that colidx(j) == i
+            size_t j;
+            for ( j=i; colidx.at(j)!=i; ++j );
+
+            // and swap sol's rows and colidx's elements
+            sol.swapRows(i, j);
+            std::swap( colidx.at(i), colidx.at(j) );
+        }
+    }
 
     // A unique solution has been successfully found
     return true;
