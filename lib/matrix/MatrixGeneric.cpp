@@ -1088,12 +1088,18 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
  *
  * @note The method is only supported for square matrices
  * 
+ * @note The algorithm supports partial and full pivoting. Partial pivoting
+ *       should be sufficient in most cases however full pivoting may sometimes be
+ *       numerically more stable, on the other hand it introduces additional overhead.
+ *
+ * @param fullp - should the algorithm perform full pivoting (default: TRUE)
+ *
  * @return inverse matrix
  *
  * @throw MatrixException if the matrix is not square or not invertible
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse() const throw(math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse(const bool fullp) const throw(math::MatrixException)
 {
     // Sanity check
     if ( false == this->isSquare() )
@@ -1122,7 +1128,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse() const throw(math::Matri
     // this * inv = id
     math::MatrixGeneric<T> retVal(id);
 
-    const bool succ = math::LinearEquationSolver::solveGaussJordan<T>(*this, id, retVal);
+    const bool succ = math::LinearEquationSolver::solveGaussJordan<T>(*this, id, retVal, fullp);
 
     // is *this an uninvertible matrix? (determinant()=0):
     if ( false == succ )

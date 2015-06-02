@@ -49,7 +49,7 @@ void rationalMatrixTest()
         a.set(1, 0, Rational(3, 4));        a.set(1, 1, Rational(-1, 3));
 
         // Copy constructor should also implement cast.
-        MatrixGeneric<Rational> inv = a.inverse();
+        MatrixGeneric<Rational> inv = a.inverse(false);
 
         cout << "a:" << endl;
         a.display();

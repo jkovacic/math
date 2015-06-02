@@ -323,7 +323,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
     for ( size_t i=0; i<N; ++i )
     {
         // Find the most appropriate row and column to pivot with this one
-        size_t pr;
+        size_t pr = i;
         size_t pc = i;
         math::LinearEquationSolver::__private::findPivot(temp, i, pr, pc, fullp);
 

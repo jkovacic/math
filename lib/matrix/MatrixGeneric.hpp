@@ -220,7 +220,7 @@ public:
     MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
     MatrixGeneric<T>& setUnit() throw(MatrixException);
     T determinant() const throw(MatrixException);
-    MatrixGeneric<T> inverse() const throw(MatrixException);
+    MatrixGeneric<T> inverse(const bool fullp = true) const throw(MatrixException);
 
     bool isSquare() const;
 
