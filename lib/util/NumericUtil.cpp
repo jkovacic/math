@@ -30,6 +30,42 @@ limitations under the License.
 #include <cmath>
 
 
+namespace math { namespace NumericUtil { namespace __private {
+
+/*
+ * A class (struct) that stores the default value of 'eps'
+ * as a static member, hence the class is never instantiated.
+ * To speedup the access, the member is accessed directly
+ * as a public member, without getters and setters.
+ */
+template <class T>
+struct Eps
+{
+public:
+    static T eps;
+};
+
+// General initializer of the static member
+template <class T>
+T Eps<T>::eps = static_cast<T>(0);
+
+// A macro for specialization of the initializer for floating point types: 
+#define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL)                    \
+    template<>                                                        \
+    FDL Eps<FDL>::eps = std::numeric_limits<FDL>::epsilon();  
+// end of macro definition
+
+// Apply the macro for each floating point type:
+_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(float);
+_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(double);
+_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(long double);
+
+// _MATH_NUMERICUTIL_SPECIALIZED_INITEPS not needed anymore, #undef it
+#undef _MATH_NUMERICUTIL_SPECIALIZED_INITEPS
+
+}}}  // namespace math::NumericUtil::__private
+
+
 /**
  * @return value of 'eps' for the desired type
  */
@@ -60,11 +96,11 @@ namespace math
 namespace NumericUtil
 {
 
-#define _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(FDL) \
-template <> \
-FDL getEPS<FDL>() \
-{ \
-    return std::numeric_limits<FDL>::epsilon(); \
+#define _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(FDL)        \
+template <>                                              \
+FDL getEPS<FDL>()                                        \
+{                                                        \
+    return math::NumericUtil::__private::Eps<FDL>::eps;  \
 }
 // end of #define
 
