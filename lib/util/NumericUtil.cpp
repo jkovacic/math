@@ -48,7 +48,7 @@ public:
 };
 
 // General initializer of the static member
- template <class T>
+template <class T>
 T Eps<T>::eps = static_cast<T>(0);
 
 // A macro for specialization of the initializer for floating point types: 
@@ -69,7 +69,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(long double);
 
 
 /**
- * @return value of 'eps' for the desired type
+ * @return value of default 'eps' for the desired type
  */
 template <class T>
 T math::NumericUtil::getEPS()
@@ -85,8 +85,7 @@ T math::NumericUtil::getEPS()
 
 /*
  * Specialization of getEPS() for floating point types.
- * In this case just return the value obtained from
- * std::numeric_limits<type>::epsilon().
+ * In this case just return the value, stored in Eps<T>::eps.
  *
  * All specializations are very similar and only differ in types of the
  * returned value. For easier maintainability, the specialization will be
@@ -109,7 +108,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(float)
 _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(double)
 _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double)
 
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_GETEPS not needed anymore, #undef it:
+// the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_GETEPS
 
 }}  // namespace math::NumericUtil
@@ -244,6 +243,8 @@ inline bool math::NumericUtil::isZero(const T& value, const T& eps)
 namespace math {  namespace NumericUtil
 {
 
+// specialization of isZero for floating point types:
+
 #define _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(FDL)       \
 template <>                                                  \
 inline bool isZero(const FDL& value, const FDL& eps)         \
@@ -252,16 +253,11 @@ inline bool isZero(const FDL& value, const FDL& eps)         \
 }
 // end of #define
 
-// derive specialization for float:
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(float)
-
-// ... for double:
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(double)
-
-// ... and long double:
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(long double)
 
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG not needed anymore, #undef it:
+// the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG
 
 
@@ -280,16 +276,11 @@ inline bool isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps)
 }
 // end of #define
 
-// derive specialization for float:
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(float)
-
-// ... for double:
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(double)
-
-// ... and long double:
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(long double)
 
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG not needed anymore, #undef it:
+// the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG
 
 }}  // namepsace math::NumericUtil
@@ -329,7 +320,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG(float);
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG(double);
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG(long double);
 
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG not needed anymore, #undef it:
+// the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG
 
 // and specialization for complex numbers
@@ -346,7 +337,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG(float);
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG(double);
 _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG(long double);
 
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG not needed anymore, #undef it:
+// the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG
 
 }}  // namespace math::NumericUtil
