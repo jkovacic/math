@@ -30,6 +30,8 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
+#include "../settings/numutil_settings.h"
+
 
 namespace math { namespace NumericUtil { namespace __private
 {
@@ -86,17 +88,17 @@ template <class T>
 T Eps<T>::eps = static_cast<T>(0);
 
 // A macro for specialization of the initializer for floating point types:
-// TODO read the actual value from the "settings header" when implemented
-#define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL)                          \
+#define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL, DIR, VAL)                \
     template <>                                                             \
-    FDL Eps<FDL>::eps =                                                     \
-        math::NumericUtil::__private::__epsMult<FDL>(static_cast<FDL>(1));
+    FDL Eps<FDL>::eps = ( true == DIR ?                                     \
+        math::NumericUtil::__private::__epsDirect<FDL>(VAL) :               \
+        math::NumericUtil::__private::__epsMult<FDL>(VAL) );
 // end of macro definition
 
 // Apply the macro for each floating point type:
-_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(float);
-_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(double);
-_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(long double);
+_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(float, NUMUTIL_FLOAT_DIR, NUMUTIL_FLOAT_VAL);
+_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(double, NUMUTIL_DOUBLE_DIR, NUMUTIL_DOUBLE_VAL);
+_MATH_NUMERICUTIL_SPECIALIZED_INITEPS(long double, NUMUTIL_LONGDOUBLE_DIR, NUMUTIL_LONGDOUBLE_VAL);
 
 // the macro is no longer needed, #undef it
 #undef _MATH_NUMERICUTIL_SPECIALIZED_INITEPS
@@ -111,7 +113,7 @@ template <class T>
 T math::NumericUtil::getEPS()
 {
     /*
-     * for int and most other types, eps does not
+     * for integral types, 'eps' does not
      * make any sense, in this case just return 0.
      */
 
@@ -153,9 +155,8 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double);
  * Sets the application default value of 'eps', valid within
  * the entire unit of compilation.
  * 
- * @note For non-floating point types (float, double and long double),
- *       the function does not make any sense, hence it does not do
- *       anything in this case.
+ * @note For integral types, the function does not make any sense,
+ *       hence it does not do anything in this case.
  * 
  * @note The actual default epsilon will be set to the system specific machine
  *       epsilon if 'eps' is less than this value.
@@ -165,7 +166,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double);
 template <class T>
 void math::NumericUtil::setEPS(const T& eps = static_cast<T>(0))
 {
-    // the "general" version (for non-floating point types) of this
+    // the "general" version (for integral types) of this
     // function does not do anything
 
     (void) eps;
@@ -178,9 +179,8 @@ void math::NumericUtil::setEPS(const T& eps = static_cast<T>(0))
  * 
  * The default 'epsilon' will be valid within the entire unit of compilation.
  * 
- * @note For non-floating point types (float, double and long double),
- *       the function does not make any sense, hence it does not do
- *       anything in this case.
+ * @note For integral types, the function does not make any sense,
+ *       hence it does not do anything in this case.
  * 
  * @note The actual default epsilon will be set to the system specific machine
  *       epsilon if 'keps' is less 1.
@@ -190,7 +190,7 @@ void math::NumericUtil::setEPS(const T& eps = static_cast<T>(0))
 template <class T>
 void math::NumericUtil::setMultEPS(const T& keps)
 {
-    // the "general" version (for non-floating point types) of this
+    // the "general" version (for integral types) of this
     // function does not do anything
 
     (void) keps;
@@ -254,7 +254,7 @@ template <class T>
 inline bool math::NumericUtil::isZero(const T& value, const T& eps)
 {
     /*
-     * The implementation for integers et al. where the == operator
+     * The implementation for integral types where the == operator
      * does make sense and no comparison to EPS is necessary.
      */
 

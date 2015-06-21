@@ -111,6 +111,7 @@ DEP_OMPHEADER = $(LIBOMPDIR)omp_header.h
 DEP_OMPCOARSE = $(LIBOMPDIR)omp_coarse.h
 
 # Dependencies of other settings headers
+DEP_NUMUTIL_SETTINGS = $(SETTINGDIR)numutil_settings.h
 DEP_STAT_SETTINGS = $(SETTINGDIR)stat_settings.h
 DEP_SPECFUN_SETTINGS = $(SETTINGDIR)specfun_settings.h
 DEP_CALC_SETTINGS = $(SETTINGDIR)calc_settings.h
@@ -124,7 +125,7 @@ DEP_ROOTFIND_SETTINGS = $(SETTINGDIR)rootfind_settings.h
 #          as it will be handled later.
 #          The only exception are OMP dependencies (*.h files) that are
 #          actually not objects
-DEP_NUMUTIL = $(LIBUTILDIR)NumericUtil
+DEP_NUMUTIL = $(LIBUTILDIR)NumericUtil $(DEP_NUMUTIL_SETTINGS)
 DEP_MATHCONST = $(LIBUTILDIR)math_constant.h
 DEP_MTCOPY = $(LIBUTILDIR)mtcopy $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 DEP_MTVECTOP = $(LIBUTILDIR)mtvectop $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE) $(DEP_NUMUTIL)
