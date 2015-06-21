@@ -35,6 +35,40 @@ namespace math { namespace NumericUtil { namespace __private
 {
 
 /*
+ * Checks validity of the desired value of the application's default 'eps'.
+ * 
+ * @note The function is only applicable for floating point types.
+ * 
+ * @param val - desired default 'eps'
+ * 
+ * @return max( 'val', system specific machine epsilon )
+ */
+template <class T>
+inline T __epsDirect(const T& val)
+{
+    return std::max<T>( val, std::numeric_limits<T>::epsilon() );
+}
+
+
+/*
+ * Returns a valid value of the application's default 'eps' if a multiplier
+ * by the system specific machine epsilon is given.
+ * 
+ * @note The function is only applicable for floating point types.
+ * 
+ * @param k - multiplier
+ * 
+ * @return max( k*epsilon(), epsilon() )
+ */
+template <class T>
+inline T __epsMult(const T& k)
+{
+    return ( std::max<T>( k, static_cast<T>(1) ) * 
+             std::numeric_limits<T>::epsilon() );
+}
+
+
+/*
  * A class (struct) that stores the default value of 'eps'
  * as a static member, hence the class is never instantiated.
  * To speedup the access, the member is accessed directly
@@ -51,10 +85,12 @@ public:
 template <class T>
 T Eps<T>::eps = static_cast<T>(0);
 
-// A macro for specialization of the initializer for floating point types: 
-#define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL)                    \
-    template <>                                                       \
-    FDL Eps<FDL>::eps = std::numeric_limits<FDL>::epsilon();  
+// A macro for specialization of the initializer for floating point types:
+// TODO read the actual value from the "settings header" when implemented
+#define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL)                          \
+    template <>                                                             \
+    FDL Eps<FDL>::eps =                                                     \
+        math::NumericUtil::__private::__epsMult<FDL>(static_cast<FDL>(1));
 // end of macro definition
 
 // Apply the macro for each floating point type:
@@ -62,7 +98,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(float);
 _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(double);
 _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(long double);
 
-// _MATH_NUMERICUTIL_SPECIALIZED_INITEPS not needed anymore, #undef it
+// the macro is no longer needed, #undef it
 #undef _MATH_NUMERICUTIL_SPECIALIZED_INITEPS
 
 }}}  // namespace math::NumericUtil::__private
@@ -95,7 +131,6 @@ T math::NumericUtil::getEPS()
 namespace math {  namespace NumericUtil
 {
 
-// TODO read the actual value from the "settings header" when implemented
 #define _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(FDL)        \
 template <>                                              \
 FDL getEPS<FDL>()                                        \
@@ -104,9 +139,9 @@ FDL getEPS<FDL>()                                        \
 }
 // end of #define
 
-_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(float)
-_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(double)
-_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double)
+_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(float);
+_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(double);
+_MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double);
 
 // the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_GETEPS
@@ -172,7 +207,7 @@ template <>                                                        \
 void setEPS(const FDL& eps)                                        \
 {                                                                  \
     math::NumericUtil::__private::Eps<FDL>::eps =                  \
-       std::max<FDL>( eps, std::numeric_limits<FDL>::epsilon() );  \
+       math::NumericUtil::__private::__epsDirect<FDL>(eps);        \
 }
 // end of macro definition
 
@@ -185,13 +220,12 @@ _MATH_NUMERICUTIL_SPECIALIZED_SETEPS(long double);
 
 // Specializations of setMultEPS() for floating point types:
 
-#define _MATH_NUMERICUTIL_SPECIALIZED_SETMULTEPS(FDL)   \
-template <>                                             \
-void setMultEPS(const FDL& keps)                        \
-{                                                       \
-    math::NumericUtil::__private::Eps<FDL>::eps =       \
-        std::max<FDL>( keps, static_cast<FDL>(1) ) *    \
-        std::numeric_limits<FDL>::epsilon();            \
+#define _MATH_NUMERICUTIL_SPECIALIZED_SETMULTEPS(FDL)         \
+template <>                                                   \
+void setMultEPS(const FDL& keps)                              \
+{                                                             \
+    math::NumericUtil::__private::Eps<FDL>::eps =             \
+        math::NumericUtil::__private::__epsMult<FDL>(keps);   \
 }
 // end of macro definition
 
@@ -253,9 +287,9 @@ inline bool isZero(const FDL& value, const FDL& eps)         \
 }
 // end of #define
 
-_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(float)
-_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(double)
-_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(long double)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(float);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(double);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(long double);
 
 // the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG
@@ -276,9 +310,9 @@ inline bool isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps)
 }
 // end of #define
 
-_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(float)
-_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(double)
-_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(long double)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(float);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(double);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(long double);
 
 // the macro is no longer needed, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG
