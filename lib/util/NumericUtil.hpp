@@ -54,10 +54,19 @@ namespace NumericUtil
     template <class T>
     bool isZero(const T& value, const T& eps);
 
-    // Get the system specific epsilon for the specified type
+    // Get the 'epsilon' for the specified type
     template <class T>
     T getEPS();
-    
+
+    // Set the 'epsilon' for the given type
+    template <class T>
+    void setEPS(const T& eps = static_cast<T>(0));
+
+    // Set the 'epsilon' for the specified type as a multiple of the
+    // system specific machine epsilon for the given type 
+    template <class T>
+    void setMultEPS(const T& keps);
+
     // num's sign:
     template <class T>
     short int sign(const T& num);

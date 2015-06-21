@@ -28,6 +28,7 @@ limitations under the License.
 #include <complex>
 #include <limits>
 #include <cmath>
+#include <algorithm>
 
 
 namespace math { namespace NumericUtil { namespace __private
@@ -47,7 +48,7 @@ public:
 };
 
 // General initializer of the static member
-template <class T>
+ template <class T>
 T Eps<T>::eps = static_cast<T>(0);
 
 // A macro for specialization of the initializer for floating point types: 
@@ -95,6 +96,7 @@ T math::NumericUtil::getEPS()
 namespace math {  namespace NumericUtil
 {
 
+// TODO read the actual value from the "settings header" when implemented
 #define _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(FDL)        \
 template <>                                              \
 FDL getEPS<FDL>()                                        \
@@ -109,6 +111,97 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double)
 
 // #definition of _MATH_NUMERICUTIL_SPECIALIZED_GETEPS not needed anymore, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_GETEPS
+
+}}  // namespace math::NumericUtil
+
+
+/**
+ * Sets the application default value of 'eps', valid within
+ * the entire unit of compilation.
+ * 
+ * @note For non-floating point types (float, double and long double),
+ *       the function does not make any sense, hence it does not do
+ *       anything in this case.
+ * 
+ * @note The actual default epsilon will be set to the system specific machine
+ *       epsilon if 'eps' is less than this value.
+ * 
+ * @param eps - desired default value of 'epsilon' (default: 0)
+ */
+template <class T>
+void math::NumericUtil::setEPS(const T& eps = static_cast<T>(0))
+{
+    // the "general" version (for non-floating point types) of this
+    // function does not do anything
+
+    (void) eps;
+}
+
+
+/**
+ * Sets the application default value of 'epsilon' as the specified multiple of
+ * the system specific value of the machine epsilon.
+ * 
+ * The default 'epsilon' will be valid within the entire unit of compilation.
+ * 
+ * @note For non-floating point types (float, double and long double),
+ *       the function does not make any sense, hence it does not do
+ *       anything in this case.
+ * 
+ * @note The actual default epsilon will be set to the system specific machine
+ *       epsilon if 'keps' is less 1.
+ * 
+ * @param keps - a factor to multiply the system specific machine epsilon
+ */
+template <class T>
+void math::NumericUtil::setMultEPS(const T& keps)
+{
+    // the "general" version (for non-floating point types) of this
+    // function does not do anything
+
+    (void) keps;
+}
+    
+
+namespace math {  namespace NumericUtil
+{
+
+// Specializations of setEPS() for floating point types:
+
+#define _MATH_NUMERICUTIL_SPECIALIZED_SETEPS(FDL)                  \
+template <>                                                        \
+void setEPS(const FDL& eps)                                        \
+{                                                                  \
+    math::NumericUtil::__private::Eps<FDL>::eps =                  \
+       std::max<FDL>( eps, std::numeric_limits<FDL>::epsilon() );  \
+}
+// end of macro definition
+
+_MATH_NUMERICUTIL_SPECIALIZED_SETEPS(float);
+_MATH_NUMERICUTIL_SPECIALIZED_SETEPS(double);
+_MATH_NUMERICUTIL_SPECIALIZED_SETEPS(long double);
+
+// the macro is no longer needed
+#undef _MATH_NUMERICUTIL_SPECIALIZED_SETEPS
+
+// Specializations of setMultEPS() for floating point types:
+
+#define _MATH_NUMERICUTIL_SPECIALIZED_SETMULTEPS(FDL)   \
+template <>                                             \
+void setMultEPS(const FDL& keps)                        \
+{                                                       \
+    math::NumericUtil::__private::Eps<FDL>::eps =       \
+        std::max<FDL>( keps, static_cast<FDL>(1) ) *    \
+        std::numeric_limits<FDL>::epsilon();            \
+}
+// end of macro definition
+
+_MATH_NUMERICUTIL_SPECIALIZED_SETMULTEPS(float);
+_MATH_NUMERICUTIL_SPECIALIZED_SETMULTEPS(double);
+_MATH_NUMERICUTIL_SPECIALIZED_SETMULTEPS(long double);
+
+// the macro is no longer needed
+#undef _MATH_NUMERICUTIL_SPECIALIZED_SETMULTEPS
 
 }}  // namespace math::NumericUtil
 
