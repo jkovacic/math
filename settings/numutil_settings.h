@@ -24,7 +24,7 @@ limitations under the License.
 
 
 #ifndef _MATH_NUMUTIL_SETTINGS_H_
-#define	_MATH_NUMUTIL_SETTINGS_H_
+#define _MATH_NUMUTIL_SETTINGS_H_
 
 
 /**
