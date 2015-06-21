@@ -30,7 +30,8 @@ limitations under the License.
 #include <cmath>
 
 
-namespace math { namespace NumericUtil { namespace __private {
+namespace math { namespace NumericUtil { namespace __private
+{
 
 /*
  * A class (struct) that stores the default value of 'eps'
@@ -51,7 +52,7 @@ T Eps<T>::eps = static_cast<T>(0);
 
 // A macro for specialization of the initializer for floating point types: 
 #define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL)                    \
-    template<>                                                        \
+    template <>                                                       \
     FDL Eps<FDL>::eps = std::numeric_limits<FDL>::epsilon();  
 // end of macro definition
 
@@ -82,7 +83,7 @@ T math::NumericUtil::getEPS()
 
 
 /*
- * Specialization of getEPS() for float, double and long double.
+ * Specialization of getEPS() for floating point types.
  * In this case just return the value obtained from
  * std::numeric_limits<type>::epsilon().
  *
@@ -91,9 +92,7 @@ T math::NumericUtil::getEPS()
  * implemented only once using a parameterized #define
  */
 
-namespace math
-{
-namespace NumericUtil
+namespace math {  namespace NumericUtil
 {
 
 #define _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(FDL)        \
@@ -111,26 +110,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double)
 // #definition of _MATH_NUMERICUTIL_SPECIALIZED_GETEPS not needed anymore, #undef it:
 #undef _MATH_NUMERICUTIL_SPECIALIZED_GETEPS
 
-}  // namespace NumericUtil
-}  // namespace math
-
-
-/**
- * Does the given value equal (or is close enough to) zero?
- * Implementation depends on the type T.
- * For floating point types (float, double, long double), it checks
- * whether its absolute value is less than the system epsilon
- * for the type T.
- *
- * @param value - value to be evaluated
- *
- * @return true or false
- */
-template <class T>
-bool math::NumericUtil::isZero(const T& value)
-{
-    return math::NumericUtil::isZero(value, math::NumericUtil::getEPS<T>() );
-}
+}}  // namespace math::NumericUtil
 
 
 /**
@@ -145,21 +125,21 @@ bool math::NumericUtil::isZero(const T& value)
  * @return true or false
  */
 template <class T>
-bool math::NumericUtil::isZero(const T& value, const T& eps)
+inline bool math::NumericUtil::isZero(const T& value, const T& eps)
 {
     /*
      * The implementation for integers et al. where the == operator
      * does make sense and no comparison to EPS is necessary.
      */
 
-    return ( static_cast<T>(0)==value ? true : false );
+    return ( static_cast<T>(0) == value );
 
     (void) eps;
 }
 
 
 /*
- * Float, double and long double require specialized implementations of isZero().
+ * Floating point types require specialized implementations of isZero().
  * In case of these three types, the equality operator (==) is useless.
  * In numerical mathematics, two numbers are considered "equal", when
  * absolute value of their difference does not exceed a reasonably set EPS.
@@ -168,31 +148,28 @@ bool math::NumericUtil::isZero(const T& value, const T& eps)
  * only once using a parameterized #define
  */
 
-namespace math
+namespace math {  namespace NumericUtil
 {
 
-namespace NumericUtil
-{
-
-#define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(FDL) \
-template <> \
-bool isZero(const FDL& value, const FDL& eps) \
-{ \
-    return ( value>-eps && value<eps ? true : false ); \
+#define _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(FDL)       \
+template <>                                                  \
+inline bool isZero(const FDL& value, const FDL& eps)         \
+{                                                            \
+    return ( value>-eps && value<eps );                      \
 }
 // end of #define
 
 // derive specialization for float:
-_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(float)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(float)
 
 // ... for double:
-_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(double)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(double)
 
 // ... and long double:
-_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(long double)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG(long double)
 
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO not needed anymore, #undef it:
-#undef _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO
+// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG not needed anymore, #undef it:
+#undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_2ARG
 
 
 /*
@@ -202,28 +179,84 @@ _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO(long double)
  * Note: norm() calculates a sum of both parts' squares. It is compared to
  * the norm of 'eps'.
  */
-#define _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(FDL) \
-template <> \
-bool isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps) \
-{ \
-    return ( std::norm(value)<=std::norm(eps) ? true : false ); \
+#define _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(FDL)                   \
+template <>                                                                      \
+inline bool isZero(const std::complex<FDL>& value, const std::complex<FDL>& eps) \
+{                                                                                \
+    return ( std::norm(value) <= std::norm(eps) );                               \
 }
 // end of #define
 
 // derive specialization for float:
-_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(float)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(float)
 
 // ... for double:
-_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(double)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(double)
 
 // ... and long double:
-_MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX(long double)
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG(long double)
 
-// #definition of _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX not needed anymore, #undef it:
-#undef _MATH_NUMERICUTIL_SPECIALIZED_IS_ZERO_COMPLEX
+// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG not needed anymore, #undef it:
+#undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_2ARG
 
-}  // namepsace NumericUtil
-}  // namespace math
+}}  // namepsace math::NumericUtil
+
+
+/**
+ * Does the given value equal (or is close enough to) zero?
+ * Implementation depends on the type T.
+ * For floating point types (float, double, long double), it checks
+ * whether its absolute value is less than the system epsilon
+ * for the type T.
+ *
+ * @param value - value to be evaluated
+ *
+ * @return true or false
+ */
+template <class T>
+inline bool math::NumericUtil::isZero(const T& value)
+{
+    return ( static_cast<T>(0) == value );
+}
+
+// Specialization for floating point types
+namespace math {  namespace NumericUtil
+{
+    
+#define _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG(FDL)     \
+template <>                                                \
+inline bool isZero(const FDL& value)                       \
+{                                                          \
+    return math::NumericUtil::isZero(value,                \
+        math::NumericUtil::__private::Eps<FDL>::eps);      \
+}
+// end of macro definition
+
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG(float);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG(double);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG(long double);
+
+// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG not needed anymore, #undef it:
+#undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_1ARG
+
+// and specialization for complex numbers
+#define _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG(FDL)                  \
+template <>                                                                     \
+inline bool isZero(const std::complex<FDL>& value)                              \
+{                                                                               \
+    return math::NumericUtil::isZero(value,                                     \
+           std::complex<FDL>(math::NumericUtil::__private::Eps<FDL>::eps) );    \
+}
+// end of macro definition
+
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG(float);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG(double);
+_MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG(long double);
+
+// #definition of _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG not needed anymore, #undef it:
+#undef _MATH_NUMERICUTIL_SPECIALIZED_ISZERO_COMPLEX_1ARG
+
+}}  // namespace math::NumericUtil
 
 
 /**

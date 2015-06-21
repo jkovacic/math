@@ -791,7 +791,7 @@ F math::RationalGeneric<I>::toNum() const
  * @return true if equal to zero, false otherwise
  */
 template <typename I>
-bool math::RationalGeneric<I>::isZero() const
+inline bool math::RationalGeneric<I>::isZero() const
 {
     // just check if the numerator equals 0
     return ( static_cast<I>(0) == this->m_num );
