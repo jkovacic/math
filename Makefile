@@ -83,6 +83,7 @@ IMPL_OBJS = IMathException
 # to the final test application.
 # Unnecessary modules may be commented out
 TESTFILES =
+TESTFILES += numutilTest
 TESTFILES += calcTest
 TESTFILES += combTest
 TESTFILES += curvefitTest
@@ -183,6 +184,7 @@ DEP_POISSONDIST = $(LIBSTATDISTDIR)PoissonDistGeneric $(DEP_STAT_SETTINGS) $(DEP
 #          as it will be handled later.
 # Note #2: no problem if the same object file repeats among several test module
 #          dependencies as it will be handled later
+TEST_NUMUTIL_OBJDEP =
 TEST_MTCOPY_OBJDEP =
 TEST_QUAT_OBJDEP = QuaternionException
 TEST_RAT_OBJDEP = RationalException
@@ -207,6 +209,7 @@ TEST_STAT_OBJDEP = StatisticsException
 # module is built.
 # Note: only include DEP_* variables declared above,
 #       any duplicates will be removed later
+TEST_NUMUTIL_GENDEP = $(DEP_NUMUTIL)
 TEST_MTCOPY_GENDEP = $(DEP_MTCOPY)
 TEST_QUAT_GENDEP = $(DEP_QUATERNION)
 TEST_RAT_GENDEP = $(DEP_RAT)
@@ -233,6 +236,7 @@ TEST_STAT_GENDEP = $(DEP_MTCOPY) $(DEP_SAMPLESTAT) $(DEP_SAMPLEQUANT) $(DEP_NORM
 # Note: the first line should include implicit object files
 # that should be linked into any application.
 TEST_LINKOBJ = $(IMPL_OBJS)
+TEST_LINKOBJ += $(TEST_NUMUTIL_OBJDEP)
 TEST_LINKOBJ += $(TEST_MTCOPY_OBJDEP)
 TEST_LINKOBJ += $(TEST_QUAT_OBJDEP)
 TEST_LINKOBJ += $(TEST_RAT_OBJDEP)
@@ -396,6 +400,9 @@ $(OBJDIR)SpecFunException$(OBJSUFFIX) : $(LIBEXCPDIR)SpecFunException.cpp
 
 
 # Build rules for test modules
+$(OBJDIR)numutilTest$(OBJSUFFIX) : $(TESTDIR)numutilTest.cpp $(call gen_deps,$(TEST_NUMUTIL_GENDEP))
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
+
 $(OBJDIR)mtcopyTest$(OBJSUFFIX) : $(TESTDIR)mtcopyTest.cpp $(call gen_deps,$(TEST_MTCOPY_GENDEP))
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 

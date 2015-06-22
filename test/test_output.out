@@ -1,3 +1,15 @@
+N U M E R I C   U T I L   T E S T
+
+Default 'eps' for long double: 1.0842e-18
+Setting 'eps' to 1e-9.
+'eps' set to: 1e-09
+Setting 'eps' to 100 machine epsilons.
+'eps' set to: 1.0842e-17
+Resetting 'eps' to the system default, i.e. machine epsilon.
+'eps' set to: 1.0842e-19
+Setting 'eps' back to the original value.
+'eps' set to: 1.0842e-18
+
 M T C O P Y   T E S T
 
 Copy the entire array: 
