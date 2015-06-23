@@ -398,6 +398,38 @@ short int math::NumericUtil::sign(const T& num)
 
 
 /**
+ * "Rounds" very small values to zero.
+ * 
+ * @param val - value to be "rounded"
+ * @param eps - threshold to determine whether 'val' is close enough to 0
+ * 
+ * @return 0 if abs(val)<eps, val otherwise
+ */
+template <class T>
+inline T math::NumericUtil::smallValToZero(const T& val, const T& eps)
+{
+    return ( true==math::NumericUtil::isZero<T>(val, eps) ? 
+             static_cast<T>(0) : val );
+}
+
+
+/**
+ * "Rounds" very small values to zero.
+ * 
+ * @param val - value to be "rounded"
+ * 
+ * @return 0 if abs(val) is less than the default 'eps', 'val' otherwise
+ */
+template <class T>
+inline T math::NumericUtil::smallValToZero(const T& val)
+{
+    return
+      ( true==math::NumericUtil::isZero<T>(val, math::NumericUtil::__private::Eps<T>::eps) ? 
+        static_cast<T>(0) : val );
+}
+
+
+/**
  * Rounds a real number (of type F) to the nearest integer (of type I).
  * 
  * @note An attempt to convert a negative 'n' to an unsigned type will

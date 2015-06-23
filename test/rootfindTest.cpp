@@ -168,6 +168,8 @@ void rootFindTest()
         const D2Func d2;
         double x0;
 
+        const double EPS = 1e-11;
+
         /*
          * "Exact" numerical solution found by Maxima:
          (%i7)  find_root(f(x), x, 1, 3);
@@ -175,39 +177,39 @@ void rootFindTest()
          */
         x0 = RootFind::bisection(f, 1.0, 3.0, 1e-9, 1e-9);
         cout << "Bisection method:            x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::regulaFalsi(f, 1.0, 3.0, 1e-9, 1e-9);
         cout << "Regula falsi method:         x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::secant(f, 1.0, 3.0, 1e-9);
         cout << "Secant method:               x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::newton(f, d, 1.0, 1e-9);
         cout << "Newton's method:             x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::quasiNewton(f, 1.0, 1e-9, 0.001);
         cout << "Quasi Newton's method:       x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::halley(f, d, d2, 1.0, 1e-9);
         cout << "Halleys's method:            x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::quasiHalley(f, 1.0, 1e-9, 0.001);
         cout << "Quasi Halleys's method:      x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::halleyMod(f, d, d2, 1.0, 1e-9);
         cout << "Mod. Halleys's method:       x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         x0 = RootFind::quasiHalleyMod(f, 1.0, 1e-9, 0.001);
         cout << "Mod. quasi Halleys's method: x0 = " << x0 << "\t";
-        cout << "f(x0) = " << f(x0) << endl;
+        cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;
 
         cout << "Correct root: 1.895494267033981" << endl;
     }

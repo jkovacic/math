@@ -67,6 +67,13 @@ namespace NumericUtil
     template <class T>
     void setMultEPS(const T& keps);
 
+    // round very small numbers to 0
+    template <class T>
+    T smallValToZero(const T& val, const T& eps);
+    
+    template <class T>
+    T smallValToZero(const T& val);
+
     // num's sign:
     template <class T>
     short int sign(const T& num);
