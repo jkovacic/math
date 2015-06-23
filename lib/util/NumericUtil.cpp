@@ -88,11 +88,11 @@ template <class T>
 T Eps<T>::eps = static_cast<T>(0);
 
 // A macro for specialization of the initializer for floating point types:
-#define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL, DIR, VAL)                \
-    template <>                                                             \
-    FDL Eps<FDL>::eps = ( true == DIR ?                                     \
-        math::NumericUtil::__private::__epsDirect<FDL>(VAL) :               \
-        math::NumericUtil::__private::__epsMult<FDL>(VAL) );
+#define _MATH_NUMERICUTIL_SPECIALIZED_INITEPS(FDL, DIR, VAL)            \
+template <>                                                             \
+FDL Eps<FDL>::eps = ( true == DIR ?                                     \
+    math::NumericUtil::__private::__epsDirect<FDL>(VAL) :               \
+    math::NumericUtil::__private::__epsMult<FDL>(VAL) );
 // end of macro definition
 
 // Apply the macro for each floating point type:
