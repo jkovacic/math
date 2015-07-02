@@ -168,6 +168,9 @@ public:
     // Reciprocal quaternion (q^(-1)):
     QuaternionGeneric<F> reciprocal() const throw (QuaternionException);
 
+    // Round very small values of elements to 0
+    QuaternionGeneric<F>& roundSmallElements();
+    QuaternionGeneric<F>& roundSmallElements(const F& eps);
 
     // operators in separate functions declared as friend functions
     friend QuaternionGeneric<F> (math::operator+ <>) (const QuaternionGeneric<F>& q1, const QuaternionGeneric<F>& q2);

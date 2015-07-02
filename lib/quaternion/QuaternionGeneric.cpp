@@ -91,7 +91,7 @@ math::QuaternionGeneric<F>::QuaternionGeneric(const math::QuaternionGeneric<F>& 
  *
  * @param q - a quaternion to be copied into this one
  *
- * @return reference to this
+ * @return reference to itself
  */
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator=(const math::QuaternionGeneric<F>& q)
@@ -558,6 +558,39 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw 
             -this->m_i / nsq,
             -this->m_j / nsq,
             -this->m_k / nsq );
+}
+
+
+/**
+ * "Rounds" all small quaternion's components (with the absolute value below
+ * the default 'eps') to 0.
+ * 
+ * @return reference to itself
+ */
+template <typename F>
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements()
+{
+    return this->roundSmallElements(math::NumericUtil::getEPS<F>());
+}
+
+
+/**
+ * "Rounds" all small quaternion's components (with the absolute value below
+ * the given 'eps') to 0.
+ * 
+ * @param eps - threshold to determine whether each component is "rounded" to 0
+ * 
+ * @return reference to itself
+ */
+template <typename F>
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements(const F& eps)
+{
+    this->m_o = math::NumericUtil::smallValToZero<F>(this->m_o, eps);
+    this->m_i = math::NumericUtil::smallValToZero<F>(this->m_i, eps);
+    this->m_j = math::NumericUtil::smallValToZero<F>(this->m_j, eps);
+    this->m_k = math::NumericUtil::smallValToZero<F>(this->m_k, eps);
+
+    return *this;
 }
 
 
