@@ -201,6 +201,10 @@ public:
     virtual MatrixGeneric<T>& transposed() throw (MatrixException);
     MatrixGeneric<T> conj() const throw (MatrixException);
 
+    // Round very small elements to 0
+    MatrixGeneric<T>& roundSmallElements();
+    MatrixGeneric<T>& roundSmallElements(const T& eps);
+
     // Insert or remove rows/columns.
     MatrixGeneric<T>& removeRow(const size_t rowNr) throw (MatrixException);
     MatrixGeneric<T>& removeColumn(const size_t colNr) throw (MatrixException);

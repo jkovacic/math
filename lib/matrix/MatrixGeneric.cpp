@@ -1295,6 +1295,52 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixE
 
 
 /**
+ * "Rounds" all small elements (with the absolute value below
+ * the default 'eps') to 0.
+ * 
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements()
+{
+    return this->roundSmallElements( math::NumericUtil::getEPS<T>() );
+}
+
+
+/**
+ * "Rounds" all small elements (with the absolute value below
+ * the given 'eps') to 0.
+ * 
+ * @param eps - threshold to determine whether each component is "rounded" to 0
+ * 
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements(const T& eps)
+{
+    const size_t N = this->m_elems.size();
+
+    // Coarse grained parallelism if OpenMP is enabled
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        typename std::vector<T>::iterator it = this->m_elems.begin() + istart;
+        for ( size_t i = istart;
+              i<iend && it!=this->m_elems.end();
+              ++it, ++i )
+        {
+            *it = math::NumericUtil::smallValToZero<T>(*it, eps);
+        }
+    }  // pragma omp
+
+    return *this;
+}
+
+
+/**
  * Removes the specified row number from the matrix.
  * It also decreases the number of rows.
  *

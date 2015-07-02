@@ -190,9 +190,9 @@ inv = inverse of a1:
 0.111111	0.555556	-0.333333
 
 a1 * inv   (must be a unit matrix):
-1	-2.22045e-16	2.22045e-16
--3.33067e-16	1	0
-7.77156e-16	0	1
+1	0	0
+0	1	0
+0	0	1
 
 Upper triangular part (incl. diag) of a1:
 1	2	3
