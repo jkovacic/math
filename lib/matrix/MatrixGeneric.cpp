@@ -1323,7 +1323,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements(const T& eps)
     // Coarse grained parallelism if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none)
+                default(none) shared(eps)
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
