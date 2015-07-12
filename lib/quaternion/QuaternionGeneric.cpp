@@ -34,6 +34,7 @@ limitations under the License.
 // no #include "QuaternionGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
+#include "QuaternionGeneric.hpp"
 
 
 /*
@@ -409,12 +410,13 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const F& sc)
 
 
 /**
- * Conjugation of the quaternion.
+ * Conjugate the quaternion and write all changes into it
+ * (disregard the original quaternion).
  *
- * @return conjugation of this
+ * @return reference to itself
  */
 template <typename F>
-math::QuaternionGeneric<F> math::QuaternionGeneric<F>::conj() const
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::conj_()
 {
     /*
      * From the definition of quaternion conjugation:
@@ -426,25 +428,6 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::conj() const
      * "vector" components are negated.
      */
 
-    return math::QuaternionGeneric<F>(
-             this->m_o,
-            -this->m_i,
-            -this->m_j,
-            -this->m_k );
-}
-
-
-/**
- * Conjugate the quaternion and write all changes into it
- * (disregard the original quaternion).
- *
- * @return reference to this
- */
-template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::conjugated()
-{
-    // For a definition of quaternion conjugation, see conj().
-
     // 'm_o' remains unmodified
 
     // the other members are assigned their opposite values:
@@ -454,6 +437,20 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::conjugated()
 
     // return the reference to itself
     return *this;
+}
+
+
+/**
+ * Conjugation of the quaternion.
+ *
+ * @return conjugation of this
+ */
+template <typename F>
+math::QuaternionGeneric<F> math::QuaternionGeneric<F>::conj() const
+{
+    math::QuaternionGeneric<F> qret(*this);
+    qret.conj_();
+    return qret;
 }
 
 
@@ -483,14 +480,14 @@ F math::QuaternionGeneric<F>::norm() const throw (math::QuaternionException)
 
 
 /**
- * Transforms 'this' into a unit quaternion (its norm is equal to 1).
+ * Transforms itself into a unit quaternion (its norm is equal to 1).
  *
- * @return U(this)
+ * @return reference to itself
  *
  * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
-math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math::QuaternionException)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::unit_() throw (math::QuaternionException)
 {
     /*
      * A unit quaternion is the quaternion, divided by its norm:
@@ -509,25 +506,44 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math:
         throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
     }
 
-    return ( *this * (static_cast<F>(1)/norm) );
+    const F normrec = static_cast<F>(1) / norm;
+
+    this->m_o *= normrec;
+    this->m_i *= normrec;
+    this->m_j *= normrec;
+    this->m_k *= normrec;
+
+    return *this;
 }
 
 
 /**
- * Reciprocal quaternion (q^(-1)), satisfying the condition:
- * q * q^(-1)  =  q^(-1) * q  = 1
+ * Transforms 'this' into a unit quaternion (its norm is equal to 1).
  *
- * Note: even though reciprocal should only be defined for types T that do support norm
- * (float and type), norm's square can be calculated for many other types as well. For that
- * reason, the operation is implemented for any type. However, T must support division (operator/),
- * otherwise the class will not compile.
- *
- * @return this^(-1)
+ * @return U(this)
  *
  * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
-math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw (math::QuaternionException)
+math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math::QuaternionException)
+{
+    math::QuaternionGeneric<F> qret(*this);
+    qret.unit_();
+    return qret;
+}
+
+
+/**
+ * Transforms itself to its reciprocal quaternion (q^(-1)),
+ * satisfying the condition:
+ * q * q^(-1)  =  q^(-1) * q  = 1
+ *
+ * @return reference to itself
+ *
+ * @throw QuaternionException if 'this' is a zero-quaternion
+ */
+template <typename F>
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::reciprocal_() throw (math::QuaternionException)
 {
     /*
      * q^(-1) is a reciprocal quaternion of q if the following condition is satisfied;
@@ -545,7 +561,7 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw 
      *                            a^2 + b^2 + c^2 + d^2
      */
 
-    const F nsq = __sqsum();
+    const F nsq = this->__sqsum();
 
     // avoid possible division by zero
     if ( true == math::NumericUtil::isZero<F>(nsq) )
@@ -553,24 +569,31 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw 
         throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
     }
 
-    return math::QuaternionGeneric<F>(
-             this->m_o / nsq,
-            -this->m_i / nsq,
-            -this->m_j / nsq,
-            -this->m_k / nsq );
+    const F nsqRec = static_cast<F>(1) / nsq;
+
+    this->m_o *= nsqRec,
+    this->m_i *= -nsqRec,
+    this->m_j *= -nsqRec,
+    this->m_k *= -nsqRec;
+
+    return *this;
 }
 
 
 /**
- * "Rounds" all small quaternion's components (with the absolute value below
- * the default 'eps') to 0.
- * 
- * @return reference to itself
+ * Reciprocal quaternion (q^(-1)), satisfying the condition:
+ * q * q^(-1)  =  q^(-1) * q  = 1
+ *
+ * @return this^(-1)
+ *
+ * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements()
+math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw (math::QuaternionException)
 {
-    return this->roundSmallElements(math::NumericUtil::getEPS<F>());
+    math::QuaternionGeneric<F> qret(*this);
+    qret.reciprocal_();
+    return qret;
 }
 
 
@@ -583,7 +606,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements()
  * @return reference to itself
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements(const F& eps)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements_(const F& eps)
 {
     this->m_o = math::NumericUtil::smallValToZero<F>(this->m_o, eps);
     this->m_i = math::NumericUtil::smallValToZero<F>(this->m_i, eps);
@@ -591,6 +614,51 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements(const
     this->m_k = math::NumericUtil::smallValToZero<F>(this->m_k, eps);
 
     return *this;
+}
+
+
+/**
+ * "Rounds" all small quaternion's components (with the absolute value below
+ * the default 'eps') to 0.
+ * 
+ * @return reference to itself
+ */
+template <typename F>
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::roundSmallElements_()
+{
+    return this->roundSmallElements_(math::NumericUtil::getEPS<F>());
+}
+
+
+/**
+ * "Rounds" all small quaternion's components (with the absolute value below
+ * the given 'eps') to 0.
+ * 
+ * @param eps - threshold to determine whether each component is "rounded" to 0
+ * 
+ * @return "rounded" quaternion
+ */
+template <typename F>
+math::QuaternionGeneric<F> math::QuaternionGeneric<F>::roundSmallElements(const F& eps) const
+{
+    math::QuaternionGeneric<F> qret(*this);
+    qret.roundSmallElements_(eps);
+    return qret;
+}
+
+
+/**
+ * "Rounds" all small quaternion's components (with the absolute value below
+ * the default 'eps') to 0.
+ * 
+ * @return "rounded" quaternion
+ */
+template <typename F>
+math::QuaternionGeneric<F> math::QuaternionGeneric<F>::roundSmallElements() const
+{
+    math::QuaternionGeneric<F> qret(*this);
+    qret.roundSmallElements_();
+    return qret;
 }
 
 

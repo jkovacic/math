@@ -75,7 +75,7 @@ void quaternionTest()
         cout << "\tp+2-2: " << p << endl;
 
         Quaternion qc = -0.5*(q+i*q*i+j*q*j+k*q*k);
-        cout << "-0.5*(q+i*q*i+j*q*j+k*q*k)=" << qc << "  q conj: " << qc << endl;
+        cout << "-0.5*(q+i*q*i+j*q*j+k*q*k)=" << qc << "  q conj: " << q.conj() << endl;
         Quaternion qrec = q.reciprocal();
         cout << "qrec: " << qrec << "\tq*qrec=" << (q*qrec).roundSmallElements() 
                 << "\tqrec*q=" << (qrec*q).roundSmallElements(1e-15) << endl;
