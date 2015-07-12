@@ -34,7 +34,6 @@ limitations under the License.
 // no #include "QuaternionGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
-#include "QuaternionGeneric.hpp"
 
 
 /*
