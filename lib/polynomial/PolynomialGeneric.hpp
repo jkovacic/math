@@ -155,16 +155,18 @@ public:
     PolynomialGeneric<F>& set(const size_t pos, const F& c = static_cast<F>(0)) throw (PolynomialException);
 
     // Insert and remove coefficients
-    PolynomialGeneric<F>& insert(const size_t pos, const F& c) throw (PolynomialException);
-    PolynomialGeneric<F>& remove(const size_t pos);
+    PolynomialGeneric<F>& insert_(const size_t pos, const F& c) throw (PolynomialException);
+    PolynomialGeneric<F> insert(const size_t pos, const F& c) const throw (PolynomialException);
+    PolynomialGeneric<F>& remove_(const size_t pos);
+    PolynomialGeneric<F> remove(const size_t pos) const throw (PolynomialException);
 
     // Degree of the polynomial
     size_t degree() const;
 
     // Value of the polynomial for given x
     F value(const F& x) const;
-    // Derivative of the polynomial
 
+    // Derivative of the polynomial
     PolynomialGeneric<F> deriv() const throw (PolynomialException);
 
     // Indefinite integral of the polynomial

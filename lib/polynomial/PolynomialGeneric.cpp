@@ -476,7 +476,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const size_t pos, co
                 throw math::PolynomialException(math::PolynomialException::OUT_OF_RANGE);
             }
             
-            this->insert(pos, c);
+            this->insert_(pos, c);
         }
     }
     else
@@ -508,7 +508,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const size_t pos, co
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(const size_t pos, const F& c) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert_(const size_t pos, const F& c) throw (math::PolynomialException)
 {
     const size_t N = this->m_coef.size();
 
@@ -567,6 +567,27 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(const size_t pos,
 
 
 /**
+ * Inserts a coefficient in front of the pos^th coefficient. Degree of the polynomial is increased.
+ * If 'pos' exceeds the current polynomial's degree, the appropriate number of coefficients
+ * (their values are assigned to zero) will be appended.
+ *
+ * @param pos - the new coefficient will be inserted in front of this one
+ * @param c - value to be assigned to the inserted coefficient (default: 0)
+ *
+ * @return a new polynomial with the required coefficient inserted
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template <typename F>
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::insert(const size_t pos, const F& c) const throw (math::PolynomialException)
+{
+    math::PolynomialGeneric<F> pret(*this);
+    pret.insert_(pos, c);
+    return pret;
+}
+
+
+/**
  * Removes the desired coefficient from the polynomial.
  * If 'pos' exceeds the polynomial's degree, nothing will be done.
  *
@@ -575,7 +596,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert(const size_t pos,
  * @return reference to itself
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove(const size_t pos)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove_(const size_t pos)
 {
     // Nothing to do if 'pos' exceeds the polynomial's degree
     if ( pos >= this->m_coef.size() || this->m_coef.size() <= 1 )
@@ -593,6 +614,25 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove(const size_t pos)
     this->__reduce();
 
     return *this;
+}
+
+
+/**
+ * Removes the desired coefficient from the polynomial.
+ * If 'pos' exceeds the polynomial's degree, nothing will be done.
+ *
+ * @param pos - position of the coefficient to be removed
+ *
+ * @return a new polynomial with the required coefficient removed
+ * 
+ * @throw PolynomialException if allocation of memory for the new polynomial fails
+ */
+template <typename F>
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::remove(const size_t pos) const throw(math::PolynomialException)
+{
+    math::PolynomialGeneric<F> pret(*this);
+    pret.remove_(pos);
+    return pret;
 }
 
 

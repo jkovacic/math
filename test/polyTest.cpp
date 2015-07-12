@@ -44,9 +44,9 @@ void polynomialTest()
         FPolynomial t(a, 5);
         cout << "t(x) = " << t << endl;
         cout << "a0=" << t.get(0) << " a1=" << t.get(1) << " a2=" << t.get(2) << " a3=" << t.get(3) << endl;
-        cout << "Remove the 2nd coef. from t(x): " << t.remove(1) << endl;
-        cout << "Insert 0.2 to the 3rd pos. of t(x): " << t.insert(2, 0.2f) << endl;
-        cout << "Insert 5 to the 8th pos. of t(x): " << t.insert(7, 5.0f) << endl;
+        cout << "Remove the 2nd coef. from t(x): " << t.remove_(1) << endl;
+        cout << "Insert 0.2 to the 3rd pos. of t(x): " << t.insert_(2, 0.2f) << endl;
+        cout << "Insert 5 to the 8th pos. of t(x): " << t.insert_(7, 5.0f) << endl;
 
         cout << "t's coefficients in reverse order: ";
         vector<float> desc;
