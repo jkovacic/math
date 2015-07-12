@@ -71,10 +71,10 @@ void rationalTest()
 
         // now test regular inversion
         // should output '3/4', '4/3', '2/5', '5/2'
-        b = a.invert();
+        b = a.inv();
         c.set(2, 5);
         cout << "a = " << a << "  b = " << b << "  c = " << c;
-        c.inverse();
+        c.inv_();
         cout << "  c^(-1) = " << c << endl;
 
         // Test of operators
@@ -220,7 +220,7 @@ void rationalTest()
         // and also test one argument constructor
         Rational zero(0);
         cout << "zero = " << zero << endl;
-        zero.inverse();
+        zero.inv_();
         // the following should not be displayed
         cerr << "Something is wrong, inversion of zero succeeded" << zero << endl;
     }
@@ -244,9 +244,9 @@ void rationalTest()
         // and also one argument constructor
         Rational zero(0);
         Rational inv;
-        inv = zero.invert();
+        inv = zero.inv();
         // the following should not be displayed
-        cerr << "Something is wrong, inversion of zero succeeded: " <<inv << endl;
+        cerr << "Something is wrong, inversion of zero succeeded: " << inv << endl;
     }
     catch ( const RationalException& inversion )
     {

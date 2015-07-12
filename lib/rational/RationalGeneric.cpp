@@ -35,6 +35,7 @@ limitations under the License.
 #include <cstdio>
 #include <new>
 #include <ostream>
+#include <algorithm>
 
 //TODO some major improvements are planned!
 
@@ -831,32 +832,6 @@ bool math::RationalGeneric<I>::isNegative() const
 
 
 /**
- * Returns an inverse value (i.e. denom/num) of the fraction.
- * If the fraction's value is zero, an exception will be thrown.
- *
- * @return fraction's inverse fraction
- *
- * @throw RationalException the fraction's value is equal to zero
- */
-template <typename I>
-math::RationalGeneric<I> math::RationalGeneric<I>::invert() const throw(math::RationalException)
-{
-    // Check if the numerator is equal to 0
-    if ( static_cast<I>(0) == this->m_num )
-    {
-        // In this case, inversion cannot be done, throw an exception
-        throw math::RationalException(math::RationalException::UNINVERTIBLE);
-    }
-
-    /*
-     * inversion will be possible, return a fraction with with exchanged
-     * numerator and denominator
-     */
-    return math::RationalGeneric<I>(this->m_denom, this->m_num);
-}
-
-
-/**
  * Modifies the fraction with its inverse value (swaps the numerator and denominator).
  * If the numerator equals zero, this is not possible so an exception will be thrown.
  *
@@ -865,7 +840,7 @@ math::RationalGeneric<I> math::RationalGeneric<I>::invert() const throw(math::Ra
  * @throw RationalException if attempting to invert a fraction whose numerator equals zero
  */
 template <typename I>
-math::RationalGeneric<I>& math::RationalGeneric<I>::inverse() throw(math::RationalException)
+math::RationalGeneric<I>& math::RationalGeneric<I>::inv_() throw(math::RationalException)
 {
     // Check if inversion is possible (m_num!=0)
     if ( static_cast<I>(0) == this->m_num )
@@ -875,9 +850,26 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::inverse() throw(math::Ration
     }
 
     // inversion is possible, swap the fractions 'm_num' and 'm_denom'.
-    this->set(this->m_denom, this->m_num);
+    std::swap(this->m_num, this->m_denom);
 
     return *this;
+}
+
+
+/**
+ * Returns an inverse value (i.e. denom/num) of the fraction.
+ * If the fraction's value is zero, an exception will be thrown.
+ *
+ * @return fraction's inverse fraction
+ *
+ * @throw RationalException the fraction's value is equal to zero
+ */
+template <typename I>
+math::RationalGeneric<I> math::RationalGeneric<I>::inv() const throw(math::RationalException)
+{
+    math::RationalGeneric<I> retVal(*this);
+    retVal.inv_();
+    return retVal;
 }
 
 

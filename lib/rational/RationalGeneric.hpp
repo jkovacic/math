@@ -231,11 +231,9 @@ public:
     // Returns true if the fraction's value is strictly less than zero
     bool isNegative() const;
 
-    // Returns inverse value of the fraction
-    RationalGeneric<I> invert() const throw(RationalException);
-
-    // Inverts (i.e. modifies) the fraction
-    RationalGeneric<I>& inverse() throw(RationalException);
+    // Inverts the fraction
+    RationalGeneric<I>& inv_() throw(RationalException);
+    RationalGeneric<I> inv() const throw(RationalException);
 
 
     // Operator =, copies values of fraction's numerator and denominator
