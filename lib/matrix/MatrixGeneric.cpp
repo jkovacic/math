@@ -1572,6 +1572,80 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn_(const size_t colNr
 
 
 /**
+ * Returns a new matrix with the specified row number removed.
+ *
+ * @param rowNr - the row number to remove
+ *
+ * @return a new matrix with the specified row removed
+ *
+ * @throw MatrixException if attempting to remove the nonexistent row or if allocation of memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::removeRow(const size_t rowNr) const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.remoweRow_(rowNr);
+    return mret;
+}
+
+
+/**
+ * Returns a new matrix with the specified column removed.
+ *
+ * @param colNr - the column number to remove
+ *
+ * @return a new matrix with the specified column removed
+ *
+ * @throw MatrixException if attempting to remove the nonexistent column or if allocation of memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::removeColumn(const size_t colNr) const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.remoweColumn_(colNr);
+    return mret;
+}
+
+
+/**
+ * Returns a new matrix with a row inserted in front of the rowNr.th row.
+ *
+ * @param rowNr - a row will be inserted in front of this row. Valid values between 0 and rows
+ * @param el - value to be assigned to all inserted elements (default: 0)
+ *
+ * @return a new matrix with a row inserted in front of the rowNr.th row
+ *
+ * @throw MatrixException if invalid rowNr or if allocation of memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::insertRow(const size_t rowNr, const T& el) const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.insertRow_(rowNr, el);
+    return mret;
+}
+
+
+/**
+ * Returns a new matrix with a column inserted in front of the colNr.th column.
+ *
+ * @param colNr - a column will be inserted in front of this column. Valid values between 0 and cols
+ * @param el - value to be assigned to all inserted elements (default: 0)
+ * 
+ * @return a new matrix with a column inserted in front of the colNr.th column
+ *
+ * @throw MatrixException if invalid colNr or if allocation of memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::insertColumn(const size_t colNr, const T& el) const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.insertColumn_(colNr, el);
+    return mret;
+}
+
+
+/**
  * Swaps rows in the matrix.
  *
  * @param r1 - first row's number

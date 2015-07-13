@@ -212,6 +212,10 @@ public:
     MatrixGeneric<T>& removeColumn_(const size_t colNr) throw (MatrixException);
     MatrixGeneric<T>& insertRow_(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
     MatrixGeneric<T>& insertColumn_(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    MatrixGeneric<T> removeRow(const size_t rowNr) const throw (MatrixException);
+    MatrixGeneric<T> removeColumn(const size_t colNr) const throw (MatrixException);
+    MatrixGeneric<T> insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
+    MatrixGeneric<T> insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
 
     // Swap rows and columns
     MatrixGeneric<T>& swapRows_(const size_t r1, const size_t r2) throw(MatrixException);
