@@ -1732,6 +1732,24 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns_(
 }
 
 
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::swapRows(const size_t r1, const size_t r2) const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.swapRows_(r1, r2);
+    return mret;
+}
+
+
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::swapColumns(const size_t c1, const size_t c2) const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.swapColumns_(c1, c2);
+    return mret;
+}
+
+
 /**
  * Destructor
  */

@@ -220,6 +220,8 @@ public:
     // Swap rows and columns
     MatrixGeneric<T>& swapRows_(const size_t r1, const size_t r2) throw(MatrixException);
     MatrixGeneric<T>& swapColumns_(const size_t c1, const size_t c2) throw(MatrixException);
+    MatrixGeneric<T> swapRows(const size_t r1, const size_t r2) const throw(MatrixException);
+    MatrixGeneric<T> swapColumns(const size_t c1, const size_t c2) const throw(MatrixException);
 
     // Triangular parts of this one:
     MatrixGeneric<T> upperTriangularPart(const bool inclDiag=true) const throw(MatrixException);
