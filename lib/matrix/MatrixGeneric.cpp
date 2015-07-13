@@ -1732,6 +1732,16 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns_(
 }
 
 
+/**
+ * Returns a new matrix with the specified rows swapped.
+ *
+ * @param r1 - first row's number
+ * @param r2 - second row's number
+ *
+ * @return a new matrix with the specified rows swapped
+ *
+ * @throw MatrixException if any input argument is out of range or if allocation of memory failed
+ */
 template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::swapRows(const size_t r1, const size_t r2) const throw(math::MatrixException)
 {
@@ -1741,6 +1751,16 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::swapRows(const size_t r1, const s
 }
 
 
+/**
+ * Returns a new matrix with the specified columns swapped.
+ *
+ * @param c1 - first column's number
+ * @param c2 - second column's number
+ *
+ * @return a new matrix with the specified columns swapped
+ *
+ * @throw MatrixException if any input argument is out of range or if allocation of memory failed
+ */
 template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::swapColumns(const size_t c1, const size_t c2) const throw(math::MatrixException)
 {
