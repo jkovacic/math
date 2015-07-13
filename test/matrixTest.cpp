@@ -155,7 +155,7 @@ void matrixTest()
         // Test calculation of the determinant
         double d = a1.determinant();
         cout << "a1:" << endl;
-        a1.roundSmallElements_().display();
+        a1.roundSmallElements().display();
         cout << endl;
         cout << "Determinant of a1: " << d << endl << endl;;
 
@@ -170,7 +170,7 @@ void matrixTest()
         Matrix prodUnit(inv);
         prodUnit = a1 * inv;
         cout << "a1 * inv   (must be a unit matrix):" << endl;
-        prodUnit.roundSmallElements_(1e-15).display();
+        prodUnit.roundSmallElements(1e-15).display();
         cout << endl;
 
         cout << "Upper triangular part (incl. diag) of a1:" << endl;

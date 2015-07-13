@@ -1341,6 +1341,42 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements_(const T& eps
 
 
 /**
+ * "Rounds" all small elements (with the absolute value below
+ * the default 'eps') to 0.
+ * 
+ * @return a new matrix with "rounded" small elements
+ * 
+ * @throw MatrixException if allocation of memory for the new matrix failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::roundSmallElements() const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.roundSmallElements_();
+    return mret;
+}
+
+
+/**
+ * "Rounds" all small elements (with the absolute value below
+ * the given 'eps') to 0.
+ * 
+ * @param eps - threshold to determine whether each component is "rounded" to 0
+ * 
+ * @return a new matrix with "rounded" small elements
+ * 
+ * @throw MatrixException if allocation of memory for the new matrix failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::roundSmallElements(const T& eps) const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> mret(*this);
+    mret.roundSmallElements_(eps);
+    return mret;
+}
+
+
+/**
  * Removes the specified row number from the matrix.
  * It also decreases the number of rows.
  *

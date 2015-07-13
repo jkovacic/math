@@ -204,6 +204,8 @@ public:
     // Round very small elements to 0
     MatrixGeneric<T>& roundSmallElements_();
     MatrixGeneric<T>& roundSmallElements_(const T& eps);
+    MatrixGeneric<T> roundSmallElements() const throw(MatrixException);
+    MatrixGeneric<T> roundSmallElements(const T& eps) const throw(MatrixException);
 
     // Insert or remove rows/columns.
     MatrixGeneric<T>& removeRow_(const size_t rowNr) throw (MatrixException);
