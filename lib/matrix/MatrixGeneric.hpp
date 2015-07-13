@@ -99,11 +99,11 @@ namespace __matrixprivate
 {
     
 template <class T>
-void __matconj(const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw (MatrixException);
+void __matconj(MatrixGeneric<T>& m);
 
 // overloaded "specialization" complex<T>:
 template <class T>
-void __matconj(const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw (MatrixException);
+void __matconj(MatrixGeneric<std::complex<T> >& m);
 
 }  // namespace __matrixprivate
 
@@ -199,6 +199,7 @@ public:
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
     MatrixGeneric<T>& transpose_() throw (MatrixException);
+    MatrixGeneric<T>& conj_();
     MatrixGeneric<T> conj() const throw (MatrixException);
 
     // Round very small elements to 0
@@ -258,8 +259,8 @@ public:
     friend MatrixGeneric<T> (math::operator/ <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
     friend MatrixGeneric<T> (math::matEwMult <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
     friend MatrixGeneric<T> (math::matEwDiv <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
-    friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<T>& m, MatrixGeneric<T>& dest) throw(MatrixException);
-    friend void (math::__matrixprivate::__matconj <>) (const MatrixGeneric<std::complex<T> >& m, MatrixGeneric<std::complex<T> >& dest) throw(MatrixException);
+    friend void (math::__matrixprivate::__matconj <>) (MatrixGeneric<T>& m);
+    friend void (math::__matrixprivate::__matconj <>) (MatrixGeneric<std::complex<T> >& m);
 };
 
 // Matrices with elements of types float, double and long double

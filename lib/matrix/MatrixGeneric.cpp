@@ -1314,22 +1314,36 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transpose_() throw (math::Matrix
 
 
 /**
- * Conjugation of  all matrix's elements.
+ * Conjugation of  all matrix' elements.
+ * For complex types, elements' imaginary parts are reversed
+ * their signs. For all other types, nothing is done.
+ * 
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::conj_()
+{
+    math::__matrixprivate::__matconj(*this);
+    return *this;
+}
+
+
+/**
+ * Conjugation of  all matrix' elements.
  * For complex types, elements' imaginary parts are reversed
  * their signs. For all other types, a copy of *this
  * is returned.
  * 
- * @return *this conjugated
+ * @return a new matrix with conjugated elements of *this
  * 
  * @throw MatrixException if allocation of memory fails
  */
 template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(*this);
-    math::__matrixprivate::__matconj(*this, retVal);
-
-    return retVal;
+    math::MatrixGeneric<T> mret(*this);
+    mret.conj_();
+    return mret;
 }
 
 
@@ -2246,56 +2260,45 @@ math::MatrixGeneric<T> math::matEwDiv(
 /*
  * Conjugation of all matrix elements.
  * The general version (for non complex types)
- * just copies the input matrix.
+ * does not modify 'm'
  *
  * @param m - matrix to conjugate
- * @param dest - a reference to a matrix to fill with elements of 'm' conjugated
- *
- * @throw MatrixException if allocation of memory fails
  */
 template <class T>
-void math::__matrixprivate::__matconj(
-           const math::MatrixGeneric<T>& m,
-           math::MatrixGeneric<T>& dest
-        ) throw(math::MatrixException)
+void math::__matrixprivate::__matconj( math::MatrixGeneric<T>& m )
 {
-    dest = m;
+    // nothing to do if 'T' is not a complex type
+    return;
+    (void) m;
 }
 
 
 /*
- * Overloading (partial "specialization") of _matconj
- * for complex numbers. It actually conjugates each element.
+ * Overloading (partial "specialization") of __matconj
+ * for complex numbers. It actually conjugates each element of 'm'
  *
- * @param m - matrix to conjugate
- * @param dest - a reference to a matrix to fill with elements of 'm' conjugated
- *
- * @throw MatrixException if allocation of memory fails
+ * @param m - matrix to conjugate and write conjugated elements to
  */
 template <class T>
-void math::__matrixprivate::__matconj(
-           const math::MatrixGeneric<std::complex<T> >& m,
-           math::MatrixGeneric<std::complex<T> >& dest
-        ) throw(math::MatrixException)
+void math::__matrixprivate::__matconj( math::MatrixGeneric<std::complex<T> >& m )
 {
     /*
      * Specialization into another templated class implemented
      * as suggested here:
      * http://www.cplusplus.com/forum/general/68298/
      */
-    dest = m;
-    const size_t N = dest.nrRows() * dest.nrColumns();
+    const size_t N = m.m_elems.size();
 
     //Coarse grained parallelization
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(dest)
+                default(none)
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-        typename std::vector<std::complex<T> >::iterator it = dest.m_elems.begin() + istart;
+        typename std::vector<std::complex<T> >::iterator it = m.m_elems.begin() + istart;
         for ( size_t i=istart;
-              i<iend && it!=dest.m_elems.end(); ++it, ++i )
+              i<iend && it!=m.m_elems.end(); ++it, ++i )
         {
             *it = std::conj(*it);
         }
