@@ -72,7 +72,7 @@ namespace IntExponentiator
         {
             const size_t N = t.nrRows();
             math::MatrixGeneric<T> retVal(N);
-            retVal.setUnit();
+            retVal.setUnit_();
             return retVal;
         }
 

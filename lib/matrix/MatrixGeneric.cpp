@@ -849,7 +849,7 @@ bool math::MatrixGeneric<T>::isSquare() const
  * @throw MatrixException if the matrix is not square
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag(const T& scalar) throw(math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag_(const T& scalar) throw(math::MatrixException)
 {
     // Sanity check
     if ( false == this->isSquare() )
@@ -900,11 +900,11 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag(const T& scalar) throw(m
  * @throw MatrixException if the matrix is not square
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::setUnit() throw(math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::setUnit_() throw(math::MatrixException)
 {
     // Actually this is a diagonal matrix with units (ones)
     // on its diagonal
-    this->setDiag(static_cast<T>(1));
+    this->setDiag_(static_cast<T>(1));
 
     return *this;
 }
@@ -1122,7 +1122,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse(const bool fullp) const t
 
     // prepare an identity matrix NxN...
     math::MatrixGeneric<T> id(this->m_rows);
-    id.setUnit();
+    id.setUnit_();
 
     // Inverse matrix is a solution (if it exists) of the equation:
     // this * inv = id
@@ -1202,7 +1202,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
  * @throw MatrixException if not enough memory to perform the operation
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::transposed() throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::transpose_() throw (math::MatrixException)
 {
     /*
      * TODO: find a memory efficient method for a general matrix!!
@@ -1301,9 +1301,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::conj() const throw (math::MatrixE
  * @return reference to itself
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements()
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements_()
 {
-    return this->roundSmallElements( math::NumericUtil::getEPS<T>() );
+    return this->roundSmallElements_( math::NumericUtil::getEPS<T>() );
 }
 
 
@@ -1316,7 +1316,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements()
  * @return reference to itself
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements(const T& eps)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements_(const T& eps)
 {
     const size_t N = this->m_elems.size();
 
@@ -1351,7 +1351,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements(const T& eps)
  * @throw MatrixException if attempting to remove the nonexistent row
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(const size_t rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow_(const size_t rowNr) throw (math::MatrixException)
 {
     /*
      * Check of input arguments.
@@ -1391,7 +1391,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow(const size_t rowNr) th
  * @throw MatrixException if attempting to remove the nonexistent column
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(const size_t colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn_(const size_t colNr) throw (math::MatrixException)
 {
     /*
      * Checking of input arguments. The matrix must contain at least 2 columns
@@ -1438,7 +1438,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn(const size_t colNr)
   * @throw MatrixException if invalid rowNr or if reallocation fails
   */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(const size_t rowNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow_(const size_t rowNr, const T& el) throw (math::MatrixException)
 {
     // a valid rowNr value is between 0 and m_rows (incl.)
     if ( rowNr > this->m_rows )
@@ -1487,7 +1487,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow(const size_t rowNr, co
   * @throw MatrixException if invalid colNr or if reallocation fails
   */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn_(const size_t colNr, const T& el) throw (math::MatrixException)
 {
     // A valid colNr is between 0 and m_cols (incl.)
     if ( colNr > this->m_cols )
@@ -1546,7 +1546,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn(const size_t colNr,
  * @throw MatrixException if any input argument is out of range
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows(
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows_(
         const size_t r1,
         const size_t r2
       ) throw(math::MatrixException)
@@ -1584,7 +1584,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows(
  * @throw MatrixException if any input argument is out of range
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns(
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns_(
         const size_t c1,
         const size_t c2
       ) throw(math::MatrixException)

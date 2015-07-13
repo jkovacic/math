@@ -198,22 +198,22 @@ public:
 
     // Transpose the matrix
     MatrixGeneric<T> transpose() const throw (MatrixException);
-    virtual MatrixGeneric<T>& transposed() throw (MatrixException);
+    MatrixGeneric<T>& transpose_() throw (MatrixException);
     MatrixGeneric<T> conj() const throw (MatrixException);
 
     // Round very small elements to 0
-    MatrixGeneric<T>& roundSmallElements();
-    MatrixGeneric<T>& roundSmallElements(const T& eps);
+    MatrixGeneric<T>& roundSmallElements_();
+    MatrixGeneric<T>& roundSmallElements_(const T& eps);
 
     // Insert or remove rows/columns.
-    MatrixGeneric<T>& removeRow(const size_t rowNr) throw (MatrixException);
-    MatrixGeneric<T>& removeColumn(const size_t colNr) throw (MatrixException);
-    MatrixGeneric<T>& insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
-    MatrixGeneric<T>& insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    MatrixGeneric<T>& removeRow_(const size_t rowNr) throw (MatrixException);
+    MatrixGeneric<T>& removeColumn_(const size_t colNr) throw (MatrixException);
+    MatrixGeneric<T>& insertRow_(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    MatrixGeneric<T>& insertColumn_(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
 
     // Swap rows and columns
-    MatrixGeneric<T>& swapRows(const size_t r1, const size_t r2) throw(MatrixException);
-    MatrixGeneric<T>& swapColumns(const size_t c1, const size_t c2) throw(MatrixException);
+    MatrixGeneric<T>& swapRows_(const size_t r1, const size_t r2) throw(MatrixException);
+    MatrixGeneric<T>& swapColumns_(const size_t c1, const size_t c2) throw(MatrixException);
 
     // Triangular parts of this one:
     MatrixGeneric<T> upperTriangularPart(const bool inclDiag=true) const throw(MatrixException);
@@ -221,8 +221,8 @@ public:
     MatrixGeneric<T> diagPart() const throw(MatrixException);
 
     // These methods are only applicable for square matrices:
-    MatrixGeneric<T>& setDiag(const T& scalar) throw(MatrixException);
-    MatrixGeneric<T>& setUnit() throw(MatrixException);
+    MatrixGeneric<T>& setDiag_(const T& scalar) throw(MatrixException);
+    MatrixGeneric<T>& setUnit_() throw(MatrixException);
     T determinant() const throw(MatrixException);
     MatrixGeneric<T> inverse(const bool fullp = true) const throw(MatrixException);
 

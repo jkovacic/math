@@ -337,14 +337,14 @@ bool math::LinearEquationSolver::solveGaussJordan(
         // Swap the rows of 'temp' and 'sol' if necessary
         if ( pr != i )
         {
-            temp.swapRows(i, pr);
-            sol.swapRows(i, pr);
+            temp.swapRows_(i, pr);
+            sol.swapRows_(i, pr);
         }
 
         // swap columns of 'temp' if necessary
         if ( true==fullp && pc!=i )
         {
-            temp.swapColumns(i, pc);
+            temp.swapColumns_(i, pc);
             std::swap(colidx.at(i), colidx.at(pc));
         }
 
@@ -468,7 +468,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
             for ( j=i; colidx.at(j)!=i; ++j );
 
             // and swap sol's rows and colidx's elements
-            sol.swapRows(i, j);
+            sol.swapRows_(i, j);
             std::swap( colidx.at(i), colidx.at(j) );
         }  // for i
     }  // if fullp

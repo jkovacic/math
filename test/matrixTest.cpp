@@ -93,7 +93,7 @@ void matrixTest()
 
         // test creation of a unit (diagonal) matrices
         Matrix a(3);
-        a.setUnit();
+        a.setUnit_();
         cout << "3x3 unit matrix:" << endl;
         a.display();
         cout << endl;
@@ -107,28 +107,28 @@ void matrixTest()
         m1.display();
         cout << endl;
 
-        m1.removeColumn(2);
+        m1.removeColumn_(2);
         cout << "removed the 3rd column:" << endl;
         m1.display();
         cout << endl;
 
-        m1.insertColumn(1);
+        m1.insertColumn_(1);
         cout << "inserted a column (zeroes) between the 1st and the 2nd column:" << endl;
         m1.display();
         cout << endl;
 
-        m1.removeRow(1);
+        m1.removeRow_(1);
         cout << "removed the 2nd row" << endl;
         m1.display();
         cout << endl;
 
-        m1.insertRow(1);
+        m1.insertRow_(1);
         cout << "inserted a row (zeroes) between the 1st and 2nd row:" << endl;
         m1.display();
         cout << endl;
 
         cout << "transposed the previous matrix:" << endl;
-        m1.transposed().display();
+        m1.transpose_().display();
         cout << endl;
 
         // Test of copy constructor
@@ -155,7 +155,7 @@ void matrixTest()
         // Test calculation of the determinant
         double d = a1.determinant();
         cout << "a1:" << endl;
-        a1.roundSmallElements().display();
+        a1.roundSmallElements_().display();
         cout << endl;
         cout << "Determinant of a1: " << d << endl << endl;;
 
@@ -170,7 +170,7 @@ void matrixTest()
         Matrix prodUnit(inv);
         prodUnit = a1 * inv;
         cout << "a1 * inv   (must be a unit matrix):" << endl;
-        prodUnit.roundSmallElements(1e-15).display();
+        prodUnit.roundSmallElements_(1e-15).display();
         cout << endl;
 
         cout << "Upper triangular part (incl. diag) of a1:" << endl;
@@ -191,7 +191,7 @@ void matrixTest()
         // Test self transpose of a square matrix:
         cout << "inv transposed:" << endl;
         Matrix* pinv = &inv;
-        pinv->transposed().display();
+        pinv->transpose_().display();
         cout << endl;
 
         cout << "Add 0.5 to inv(2, 0):" << endl;
@@ -200,12 +200,12 @@ void matrixTest()
         cout << endl;
 
         cout << "Swap the 2nd and the 3rd row:" << endl;
-        inv.swapRows(1, 2);
+        inv.swapRows_(1, 2);
         inv.display();
         cout << endl;
 
         cout << "Swap the 2nd and the 3rd column:" << endl;
-        inv.swapColumns(1, 2);
+        inv.swapColumns_(1, 2);
         inv.display();
         cout << endl;
 
@@ -229,7 +229,7 @@ void matrixTest()
         FMatrix fmt = fm.transpose();
         fmt.display();
         cout << endl;
-        fmt.transposed();
+        fmt.transpose_();
         cout << "fm transposed transposed:" << endl;
         fmt.display();
         cout << endl;
