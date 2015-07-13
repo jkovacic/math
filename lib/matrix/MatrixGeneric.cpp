@@ -716,27 +716,23 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::ewDiv(const math::MatrixGeneric<
 
 /*
  * Extracts the specified triangular part(s) of the matrix and
- * assigns the result to 'dest'.
+ * assigns the result to itself.
  *
- * @param dest - a reference to a matrix to assign the result
  * @param upper - extract the upper triangular part (without diagonal)
  * @param lower - extract the lower triangular part (without diagonal)
  * @param diag - extract the diagonal
  */
 template <class T>
 void math::MatrixGeneric<T>::__triangPart(
-    math::MatrixGeneric<T>& dest,
     const bool upper,
     const bool lower,
-    const bool diag) const
+    const bool diag)
 {
-    // it is assumed that dest's 'm_elems' is properly allocated
-
     const size_t N = this->m_elems.size();
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(dest)
+                default(none)
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
@@ -746,27 +742,70 @@ void math::MatrixGeneric<T>::__triangPart(
         // iterator to the final element of the block:
         const typename std::vector<T>::const_iterator final = this->m_elems.begin() + iend;
         // iterator to the first/current element of this->m_elems:
-        typename std::vector<T>::const_iterator idx = this->m_elems.begin() + istart;
-        // iterator to the current element of dest.m_elems:
-        typename std::vector<T>::iterator it = dest.m_elems.begin() + istart;
+        typename std::vector<T>::iterator it = this->m_elems.begin() + istart;
 
         for ( size_t i = istart;
-                idx != final;
-                ++i, ++it, ++idx )
+                it != final;
+                ++i, ++it )
         {
             // row and column of the current index 'i':
             r = i / this->m_cols;
             c = i % this->m_cols;
 
-            // Either copy the current element or set it to 0,
-            // depending on input arguments.
-            *it = 
-                ( (r==c && true==diag) ||
-                   (r>c && true==lower) ||
-                   (r<c && true==upper) ? 
-                      *idx : static_cast<T>(0) );
+            // Set the current element to 0, if specified by the input arguments
+            if ( !( (r==c && true==diag) ||
+                    (r>c && true==lower) ||
+                    (r<c && true==upper) ) )
+            {
+                *it = static_cast<T>(0);
+            }
         }
     }  // omp parallel
+}
+
+
+/**
+ * Transforms itself into the upper triangular matrix, optionally including
+ * the diagonal.
+ * 
+ * @param inclDiag - should the diagonal be included as well (default: TRUE)
+ * 
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::upperTriangularPart_(const bool inclDiag)
+{
+    this->__triangPart(true, false, inclDiag);
+    return *this;
+}
+
+
+/**
+ * Transforms itself into the lower triangular matrix, optionally including
+ * the diagonal.
+ * 
+ * @param inclDiag - should the diagonal be included as well (default: TRUE)
+ * 
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::lowerTriangularPart_(const bool inclDiag)
+{
+    this->__triangPart(false, true, inclDiag);
+    return *this;
+}
+
+
+/**
+ * Transforms itself into the diagonal matrix.
+ * 
+ * @return reference to itself
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::diagPart_()
+{
+    this->__triangPart(false, false, true);
+    return *this;
 }
 
 
@@ -785,9 +824,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::upperTriangularPart(
         const bool inclDiag
       ) const throw(math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(this->m_rows, this->m_cols);
-    this->__triangPart(retVal, true, false, inclDiag);
-    return retVal;
+    math::MatrixGeneric<T> mret(*this);
+    mret.upperTriangularPart_(inclDiag);
+    return mret;
 }
 
 
@@ -806,9 +845,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::lowerTriangularPart(
         const bool inclDiag
       ) const throw(math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(this->m_rows, this->m_cols);
-    this->__triangPart(retVal, false, true, inclDiag);
-    return retVal;
+    math::MatrixGeneric<T> mret(*this);
+    mret.lowerTriangularPart_(inclDiag);
+    return mret;
 }
 
 
@@ -820,9 +859,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::lowerTriangularPart(
 template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::diagPart() const throw(math::MatrixException)
 {
-    math::MatrixGeneric<T> retVal(this->m_rows, this->m_cols);
-    this->__triangPart(retVal, false, false, true);
-    return retVal;
+    math::MatrixGeneric<T> mret(*this);
+    mret.diagPart_();
+    return mret;
 }
 
 

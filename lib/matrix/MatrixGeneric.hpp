@@ -157,7 +157,7 @@ private:
     }
 
     // a convenience function to extract the upper/lower triangular part
-    void __triangPart(MatrixGeneric<T>& dest, const bool upper, const bool lower, const bool diag) const;
+    void __triangPart(const bool upper, const bool lower, const bool diag);
 
 public:
     // Constructors
@@ -224,6 +224,9 @@ public:
     MatrixGeneric<T> swapColumns(const size_t c1, const size_t c2) const throw(MatrixException);
 
     // Triangular parts of this one:
+    MatrixGeneric<T>& upperTriangularPart_(const bool inclDiag=true);
+    MatrixGeneric<T>& lowerTriangularPart_(const bool inclDiag=true);
+    MatrixGeneric<T>& diagPart_();
     MatrixGeneric<T> upperTriangularPart(const bool inclDiag=true) const throw(MatrixException);
     MatrixGeneric<T> lowerTriangularPart(const bool inclDiag=true) const throw(MatrixException);
     MatrixGeneric<T> diagPart() const throw(MatrixException);
