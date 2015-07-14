@@ -2292,7 +2292,7 @@ void math::__matrixprivate::__matconj( math::MatrixGeneric<std::complex<T> >& m 
     //Coarse grained parallelization
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none)
+                default(none) shared(m)
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
