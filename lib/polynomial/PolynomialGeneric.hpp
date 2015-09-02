@@ -172,6 +172,12 @@ public:
     // Indefinite integral of the polynomial
     PolynomialGeneric<F> integ(const F& c = static_cast<F>(0)) const throw (PolynomialException);
 
+    // Round very small coefficients to 0
+    PolynomialGeneric<F>& roundSmallCoefficients_();
+    PolynomialGeneric<F>& roundSmallCoefficients_(const F& eps);
+    PolynomialGeneric<F> roundSmallCoefficients() const throw(PolynomialException);
+    PolynomialGeneric<F> roundSmallCoefficients(const F& eps) const throw(PolynomialException);
+
     // Display the polynomial
     void display(const char arg = 'x', std::ostream& str = std::cout) const;
 

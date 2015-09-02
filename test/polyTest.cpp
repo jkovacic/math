@@ -62,6 +62,8 @@ void polynomialTest()
         trev.setDesc(desc);
         cout << "t reversed: " << trev << endl;
 
+        cout << "Round all t's coefficients below 0.75 to 0: " << t.roundSmallCoefficients(0.75f) << endl;;
+
         FPolynomial z(true, 4);
         z.set(3, 0.0f);
         cout << "Zero polynomial: " << z << endl;

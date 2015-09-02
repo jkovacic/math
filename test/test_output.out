@@ -348,6 +348,7 @@ Insert 0.2 to the 3rd pos. of t(x): 2.1 -0.72*x +0.2*x^2 +1*x^3
 Insert 5 to the 8th pos. of t(x): 2.1 -0.72*x +0.2*x^2 +1*x^3 +0*x^4 +0*x^5 +0*x^6 +5*x^7
 t's coefficients in reverse order: 5 0 0 0 1 0.2 -0.72 2.1 
 t reversed: 5 +0*x +0*x^2 +0*x^3 +1*x^4 +0.2*x^5 -0.72*x^6 +2.1*x^7
+Round all t's coefficients below 0.75 to 0: 2.1 +0*x +0*x^2 +1*x^3 +0*x^4 +0*x^5 +0*x^6 +5*x^7
 Zero polynomial: 0
 p(x)=2 +3*x -4*x^2 -7*x^3 +2*x^4 +1*x^5
 q(x)=-1 +5*x -3*x^2 +1*x^3

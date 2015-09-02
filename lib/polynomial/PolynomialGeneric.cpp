@@ -670,6 +670,90 @@ F math::PolynomialGeneric<F>::value(const F& x) const
 
 
 /**
+ * "Rounds" all small coefficients (with the absolute value below
+ * the default 'eps') to 0.
+ *
+ * @return reference to itself
+ */
+template <typename F>
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::roundSmallCoefficients_()
+{
+    return this->roundSmallCoefficients_( math::NumericUtil::getEPS<F>() );
+}
+
+
+/**
+ * "Rounds" all small coefficients (with the absolute value below
+ * the given 'eps') to 0.
+ *
+ * @param eps - threshold to determine whether each coefficient is "rounded" to 0
+ *
+ * @return reference to itself
+ */
+template <typename F>
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::roundSmallCoefficients_(const F& eps)
+{
+    const size_t N = this->m_coef.size();
+
+    // Coarse grained parallelism if OpenMP is enabled
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(eps)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        typename std::vector<F>::iterator it = this->m_coef.begin() + istart;
+        for ( size_t i = istart;
+              i<iend && it!=this->m_coef.end();
+              ++it, ++i )
+        {
+            *it = math::NumericUtil::smallValToZero<F>(*it, eps);
+        }
+    }  // pragma omp
+
+    this->__reduce();
+
+    return *this;
+}
+
+
+/**
+ * "Rounds" all small coefficients (with the absolute value below
+ * the default 'eps') to 0.
+ *
+ * @return a new polynomial with "rounded" small coefficients
+ *
+ * @throw PolynomialException if allocation of memory for the new polynomial failed
+ */
+template <typename F>
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients() const throw(math::PolynomialException)
+{
+    math::PolynomialGeneric<F> pret(*this);
+    pret.roundSmallCoefficients_();
+    return pret;
+}
+
+
+/**
+ * "Rounds" all small coefficients (with the absolute value below
+ * the given 'eps') to 0.
+ *
+ * @param eps - threshold to determine whether each component is "rounded" to 0
+ *
+ * @return a new polynomial with "rounded" small coefficients
+ *
+ * @throw PolynomialException if allocation of memory for the new polynomial failed
+ */
+template <typename F>
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients(const F& eps) const throw(math::PolynomialException)
+{
+    math::PolynomialGeneric<F> pret(*this);
+    pret.roundSmallCoefficients_(eps);
+    return pret;
+}
+
+
+/**
  * Derivation of the polynomial.
  *
  * If p(x) = c0 + c1*x + c2*x^2 + ... + cn*x^n
