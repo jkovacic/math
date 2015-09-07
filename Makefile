@@ -24,13 +24,13 @@ TOOLCHAIN =
 # Compiler commands.
 # The commands are set for the GCC compiler.
 # If any other compiler is used, the commands must be modified appropriately.
-CC = $(TOOLCHAIN)gcc
+#CC = $(TOOLCHAIN)gcc
 CPP = $(TOOLCHAIN)g++
-FC = $(TOOLCHAIN)gfortran
+#FC = $(TOOLCHAIN)gfortran
 LINKER = $(TOOLCHAIN)g++
-AS = $(TOOLCHAIN)as
-OBJCOPY = $(TOOLCHAIN)objcopy
-AR = $(TOOLCHAIN)ar
+#AS = $(TOOLCHAIN)as
+#OBJCOPY = $(TOOLCHAIN)objcopy
+#AR = $(TOOLCHAIN)ar
 
 # Typical file suffixes
 OBJSUFFIX = .o
