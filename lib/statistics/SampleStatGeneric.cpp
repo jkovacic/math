@@ -615,15 +615,20 @@ F math::SampleStat::cor(const std::vector<F>& x1, const std::vector<F>& x2) thro
 
     // Apply the population covariance and standard deviations to
     // allow smaller samples (at least one observation each):
-    return math::SampleStat::cov<F>(x1, x2, false) /
-           ( math::SampleStat::stdev<F>(x1, false) * math::SampleStat::stdev<F>(x2, false) );
+    const F cv = math::SampleStat::cov<F>(x1, x2, false);
+
+    // prevent possible division by 0
+    return ( true==math::NumericUtil::isZero<F>(cv) ? 
+             static_cast<F>(0) :
+             cv / ( math::SampleStat::stdev<F>(x1, false) * math::SampleStat::stdev<F>(x2, false) ) );
 }
 
 
 /**
  * Coefficient of determination a.k.a. "r squared".
- *
- *     r^2 = cor(X1, X2)^2
+ * 
+ *      2              2
+ *     r  = cor(X1, X2)
  *
  * @param x1 - first vector of observations
  * @param x2 - second vector of observations
@@ -654,8 +659,10 @@ F math::SampleStat::r2(const std::vector<F>& x1, const std::vector<F>& x2) throw
 
     const F cv = math::SampleStat::cov<F>(x1, x2, false);
 
-    return (cv * cv) / 
-           ( math::SampleStat::var<F>(x1, false) * math::SampleStat::var<F>(x2, false) );
+    // prevent possible division by 0
+    return ( true==math::NumericUtil::isZero<F>(cv) ?
+             static_cast<F>(0) :
+             (cv * cv) / ( math::SampleStat::var<F>(x1, false) * math::SampleStat::var<F>(x2, false) ) );
 }
 
 
