@@ -89,10 +89,10 @@ namespace SampleStat
     F centralMoment(const std::vector<F>& x, const I& n) throw(StatisticsException);
 
     template <typename F>
-    F skewness(const std::vector<F>& x) throw(StatisticsException);
+    F skewness(const std::vector<F>& x, const bool samplesd=false) throw(StatisticsException);
 
     template <typename F>
-    F kurtosis(const std::vector<F>& x) throw(StatisticsException);
+    F kurtosis(const std::vector<F>& x, const bool excess=false, const bool samplesd=false) throw(StatisticsException);
 
     template <typename F>
     F ecdf(const std::vector<F>& x, const F& t, const bool incl=true) throw(StatisticsException);

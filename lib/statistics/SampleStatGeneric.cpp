@@ -846,13 +846,14 @@ F math::SampleStat::centralMoment(const std::vector<F>& x, const I& n) throw(mat
  * Sample skewness
  *
  * @param x - vector of observations
+ * @param samplesd - apply Bessel's correction at standard deviation (default: FALSE)
  *
  * @return skewness of observations in 'x'
  *
  * @throw StatisticsExcpetion if 'x' is empty or all observations are equal
  */
 template <typename F>
-F math::SampleStat::skewness(const std::vector<F>& x) throw(math::StatisticsException)
+F math::SampleStat::skewness(const std::vector<F>& x, const bool samplesd) throw(math::StatisticsException)
 {
     /*
      * Sample skewness is defined as:
@@ -862,14 +863,14 @@ F math::SampleStat::skewness(const std::vector<F>& x) throw(math::StatisticsExce
      *          sd^3
      *
      * where 'm3' denotes the sample's 3rd central moment and
-     * and 'sd' denotes the sample'sstandard deviation, with Bessel's correction.
+     * and 'sd' denotes the sample's standard deviation.
      *
      * More details:
-     * https://en.wikipedia.org/wiki/Skewness
+     * http://www.itl.nist.gov/div898/handbook/eda/section3/eda35b.htm
      */
 
     const F m3 = math::SampleStat::centralMoment<F>(x, 3);
-    const F sd = math::SampleStat::stdev<F>(x, true);
+    const F sd = math::SampleStat::stdev<F>(x, samplesd);
 
     const F sd3 = sd * sd * sd;
 
@@ -880,6 +881,7 @@ F math::SampleStat::skewness(const std::vector<F>& x) throw(math::StatisticsExce
     if ( true == math::NumericUtil::isZero<F>(sd3) )
     {
         // By convention, skewness equals 0 in such cases
+        // TODO should throw an exception instead?
         return static_cast<F>(0);
     }
 
@@ -888,47 +890,54 @@ F math::SampleStat::skewness(const std::vector<F>& x) throw(math::StatisticsExce
 
 
 /**
- * Sample excess kurtosis
+ * Sample (excess) kurtosis
  *
  * @param x - vector of observations
+ * @param excess - return excess kurtosis (default: FALSE)
+ * @param samplesd - apply Bessel's correction at standard deviation (default: FALSE)
  *
  * @return kurtosis of observations in 'x'
  *
  * @throw StatisticsExcpetion if 'x' is empty or all observations are equal
  */
 template <typename F>
-F math::SampleStat::kurtosis(const std::vector<F>& x) throw(math::StatisticsException)
+F math::SampleStat::kurtosis(const std::vector<F>& x, const bool excess, const bool samplesd) throw(math::StatisticsException)
 {
     /*
      * Sample's excess kurtosis is defined as:
      *
      *          m4
-     *   g2 = ------ - 3
+     *   g2 = ------
      *         m2^2
+     *
+     * If excess kurtosis is requested, 3 must be subtracted
+     * from the expression above.
      *
      * where 'm4' denotes the 4th central moment and
      * 'm2' denotes the 2nd central moment a.k.a.
-     * the sample's variance w/o Bessel's correction.
+     * the sample's variance, typically w/o Bessel's correction.
      *
      * More details:
-     * https://en.wikipedia.org/wiki/Kurtosis
+     * http://www.itl.nist.gov/div898/handbook/eda/section3/eda35b.htm
      */
 
     const F m4 = math::SampleStat::centralMoment<F>(x, 4);
-    const F m2 = math::SampleStat::var<F>(x, false);
+    const F m2 = math::SampleStat::var<F>(x, samplesd);
     const F m2_2 = m2 * m2;
 
-    /*
-     * Prevent very unlikely division by zero
-     * (when all observations in 'x' are equal)
-     */
-    if ( true == math::NumericUtil::isZero<F>(m2_2) )
+    // Prevent possible division by zero.
+    // TODO: should throw an exception instead?
+    F kappa = ( true==math::NumericUtil::isZero<F>(m2_2) ?
+                static_cast<F>(0) :
+                m4 / m2_2 );
+
+    // Subtract 3 if excess kurtosis is requested
+    if ( true == excess )
     {
-        // By convention, kurtosis equals 0 in such cases
-        return static_cast<F>(0);
+        kappa -= static_cast<F>(3);
     }
 
-    return m4/m2_2 - static_cast<F>(3);
+    return kappa;
 }
 
 

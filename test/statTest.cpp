@@ -123,11 +123,14 @@ void statisticsTest()
            [1] 3466.479
            moment(mtcars$mpg, order=4, central=FALSE)
            [1] 262350.3
+           skewness(mtcars$mpg)
+           [1] 0.6404399
            skewness(mtcars$mpg)*((n-1)/n)^(3/2)
            [1] 0.610655
            kurtosis(mtcars$mpg)-3
            [1] -0.2005332
-
+           kurtosis(mtcars$mpg)
+           [1] 2.799467
            sum(mtcars$mpg <= 26) / length(mtcars$mpg)
            [1] 0.84375
            sum(mtcars$mpg < 26) / length(mtcars$mpg)
@@ -142,8 +145,10 @@ void statisticsTest()
         cout << "Population standard deviation (w/o Bessel's correction): " << SampleStat::stdev(vmpgs, false) << " (expected: 5.93203)" << endl;
         cout << "4th central moment about the mean: " << SampleStat::centralMoment(vmpgs, 4) << " (expected: 3466.479)" << endl;
         cout << "4th moment about the origin: " << SampleStat::moment(vmpgs, 4) << " (expected: 262350.3)" << endl;
-        cout << "Sample skewness: " << SampleStat::skewness(vmpgs) << " (expected: 0.610655)" << endl;
-        cout << "Sample kurtosis: " << SampleStat::kurtosis(vmpgs) << " (expected: -0.2005332)" << endl;
+        cout << "Sample skewness: " << SampleStat::skewness(vmpgs) << " (expected: 0.6404399)" << endl;
+        cout << "Sample skewness (with sample sd): " << SampleStat::skewness(vmpgs, true) << " (expected: 0.610655)" << endl;
+        cout << "Sample kurtosis: " << SampleStat::kurtosis(vmpgs) << " (expected: 2.799467)" << endl;
+        cout << "Sample excess kurtosis: " << SampleStat::kurtosis(vmpgs, true) << " (expected: -0.2005332)" << endl;
         cout << "Sample ecdf(<=26): " << SampleStat::ecdf(vmpgs, 26.0) << " (expected: 0.84375)" << endl;
         cout << "Sample ecdf(<26):  " << SampleStat::ecdf(vmpgs, 26.0, false) << " (expected: 0.8125)" << endl;
 
