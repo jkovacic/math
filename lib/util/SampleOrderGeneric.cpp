@@ -45,7 +45,7 @@ template <typename F>
 class IndexCmp
 {
 private:
-	const std::vector<F>* m_pvec;   // pointer to a vector of sample elements
+    const std::vector<F>* m_pvec;   // pointer to a vector of sample elements
     bool m_asc;                     // should order in ascending order?
 
 public:
@@ -77,15 +77,11 @@ public:
      */
     bool operator()(const size_t a, const size_t b)
     {
-        if ( true == this->m_asc )
-        {
-            return ( this->m_pvec->at(a) < this->m_pvec->at(b) );
-        }
-        else
-        {
-        	// Sorting algorithms only require that F defines the operator '<'
-        	return ( -this->m_pvec->at(a) < -this->m_pvec->at(b) );
-        }
+        // Note that sorting algorithms only require that F defines the operator '<'
+
+        return ( true == this->m_asc ?
+                 ( this->m_pvec->at(a) < this->m_pvec->at(b) ) :
+                 ( -this->m_pvec->at(a) < -this->m_pvec->at(b) )  );
     }
 
 };  // class IndexCmp
@@ -114,7 +110,7 @@ public:
 template <typename F>
 std::vector<size_t> math::SampleOrder::order(const std::vector<F>& x, const bool asc) throw(math::SampleOrderException)
 {
-	std::vector<size_t> idx;
+    std::vector<size_t> idx;
 
     try
     {
