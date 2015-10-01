@@ -30,6 +30,7 @@ limitations under the License.
 // Declaration of functions implemented in other files
 extern void numutilTest();
 extern void mtcopyTest();
+extern void sampleOrderTest();
 extern void quaternionTest();
 extern void rationalTest();
 extern void matrixTest();
@@ -61,6 +62,9 @@ int main(int argc, const char* argv[])
 
     cout << endl << "M T C O P Y   T E S T" << endl << endl;
     mtcopyTest();
+
+    cout << endl << "S A M P L E   O R D E R   T E S T" << endl << endl;
+    sampleOrderTest();
 
     cout << endl << "Q U A T E R N I O N   T E S T" << endl << endl;
     quaternionTest();

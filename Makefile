@@ -84,6 +84,7 @@ IMPL_OBJS = IMathException
 # Unnecessary modules may be commented out
 TESTFILES =
 TESTFILES += numutilTest
+TESTFILES += sampleorderTest
 TESTFILES += calcTest
 TESTFILES += combTest
 TESTFILES += curvefitTest
@@ -132,6 +133,8 @@ DEP_MTCOPY = $(LIBUTILDIR)mtcopy $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCO
 DEP_MTVECTOP = $(LIBUTILDIR)mtvectop $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE) $(DEP_NUMUTIL)
 DEP_MTSWAP = $(LIBUTILDIR)mtswap $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 DEP_IFUNCTION = $(LIBUTILDIR)IFunctionGeneric
+
+DEP_SAMPLEORDER = $(LIBUTILDIR)SampleOrderGeneric
 
 DEP_QUATERNION = $(LIBQUATDIR)QuaternionGeneric $(DEP_NUMUTIL) $(DEP_OMPSETTINGS)
 
@@ -186,6 +189,7 @@ DEP_POISSONDIST = $(LIBSTATDISTDIR)PoissonDistGeneric $(DEP_STAT_SETTINGS) $(DEP
 #          dependencies as it will be handled later
 TEST_NUMUTIL_OBJDEP =
 TEST_MTCOPY_OBJDEP =
+TEST_SAMPLEORDER_OBJDEP = SampleOrderException
 TEST_QUAT_OBJDEP = QuaternionException
 TEST_RAT_OBJDEP = RationalException
 TEST_MATRIX_OBJDEP = MatrixException
@@ -211,6 +215,7 @@ TEST_STAT_OBJDEP = StatisticsException
 #       any duplicates will be removed later
 TEST_NUMUTIL_GENDEP = $(DEP_NUMUTIL)
 TEST_MTCOPY_GENDEP = $(DEP_MTCOPY)
+TEST_SAMPLEORDER = $(DEP_MTCOPY) $(DEP_SAMPLEORDER)
 TEST_QUAT_GENDEP = $(DEP_QUATERNION)
 TEST_RAT_GENDEP = $(DEP_RAT)
 TEST_MATRIX_GENDEP = $(DEP_MATRIX)
@@ -238,6 +243,7 @@ TEST_STAT_GENDEP = $(DEP_MTCOPY) $(DEP_SAMPLESTAT) $(DEP_SAMPLEQUANT) $(DEP_NORM
 TEST_LINKOBJ = $(IMPL_OBJS)
 TEST_LINKOBJ += $(TEST_NUMUTIL_OBJDEP)
 TEST_LINKOBJ += $(TEST_MTCOPY_OBJDEP)
+TEST_LINKOBJ += $(TEST_SAMPLEORDER_OBJDEP)
 TEST_LINKOBJ += $(TEST_QUAT_OBJDEP)
 TEST_LINKOBJ += $(TEST_RAT_OBJDEP)
 TEST_LINKOBJ += $(TEST_MATRIX_OBJDEP)
@@ -361,6 +367,9 @@ _openmp_flags :
 $(OBJDIR)IMathException$(OBJSUFFIX) : $(LIBEXCPDIR)IMathException.cpp
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
+$(OBJDIR)SampleOrderException$(OBJSUFFIX) : $(LIBEXCPDIR)SampleOrderException.cpp
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
+
 $(OBJDIR)MatrixException$(OBJSUFFIX) : $(LIBEXCPDIR)MatrixException.cpp
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
@@ -404,6 +413,9 @@ $(OBJDIR)numutilTest$(OBJSUFFIX) : $(TESTDIR)numutilTest.cpp $(call gen_deps,$(T
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)mtcopyTest$(OBJSUFFIX) : $(TESTDIR)mtcopyTest.cpp $(call gen_deps,$(TEST_MTCOPY_GENDEP))
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
+
+$(OBJDIR)sampleorderTest$(OBJSUFFIX) : $(TESTDIR)sampleorderTest.cpp $(call gen_deps,$(TEST_SAMPLEORDER_GENDEP))
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 $(OBJDIR)quatTest$(OBJSUFFIX) : $(TESTDIR)quatTest.cpp $(call gen_deps,$(TEST_QUAT_GENDEP))
