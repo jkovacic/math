@@ -56,7 +56,7 @@ public:
              *  x->0    x
              *
              *  Recheck the limit in Maxima:
-               (%i1)  f(x) := sin(x)/x$
+               (%i1)  f(x) := sin(x)/x - 1/2$
                (%i2)  limit(sin(x)/x, x, 0);
                (%o2)  1
              */
@@ -77,7 +77,7 @@ public:
     {
         /*
          * Derivation of the function f, defined above.
-         * Note that the subtrahend 0.5 is cancelled out by differentiation:
+         * Note that the subtrahend 0.5 is canceled out by differentiation:
          *
          *  df(x)     cos(x)     sin(x)
          * ------- = -------- - --------
@@ -119,7 +119,7 @@ public:
     {
         /*
          * 2nd order derivation of the function f, defined above.
-         * Note that the subtrahend 0.5 is cancelled out by differentiation:
+         * Note that the subtrahend 0.5 is canceled out by differentiation:
          *
          *   2
          *  d f(x)       sin(x)     2 * cos(x)     2 * sin(x)
@@ -129,7 +129,7 @@ public:
          *
          * Verified in Maxima:
            (%i5)  d2(x) := ''(diff(f(x), x, 2));
-           (%o5)  d2(x):=−sin(x)/x+(2*sin(x))/x^3−(2*cos(x))/x^2
+           (%o5)  d2(x):=-sin(x)/x+(2*sin(x))/x^3-(2*cos(x))/x^2
          */
 
         if ( true == NumericUtil::isZero<double>(x) )
@@ -143,7 +143,7 @@ public:
              *
              * Verified in Maxima:
              (%i6)  limit(d2(x), x, 0);
-             (%o6)  −1/3
+             (%o6)  -1/3
              */
 
             return 1.0 / 3.0;
