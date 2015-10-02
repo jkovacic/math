@@ -68,7 +68,7 @@ namespace math {  namespace SpecFun {  namespace __private
  * @return 'true' if Re(x)<=0, 'false' otherwise
  */
 template <class T>
-bool __leftHalfPlane(const T& x)
+inline bool __leftHalfPlane(const T& x)
 {
     // left half plane conveniently includes anything less than EPS
     return ( x < math::NumericUtil::getEPS<T>() );
@@ -86,7 +86,7 @@ bool __leftHalfPlane(const T& x)
  * @return 'true' if Re(x)<=0, 'false' otherwise
  */
 template <class T>
-bool __leftHalfPlane(const std::complex<T>& x)
+inline bool __leftHalfPlane(const std::complex<T>& x)
 {
     return ( std::real(x) < math::NumericUtil::getEPS<T>() );
 }
@@ -101,7 +101,7 @@ bool __leftHalfPlane(const std::complex<T>& x)
  * @return 'true' if 0<Re(x)<1, 'false' otherwise
  */
 template <class T>
-bool __midSegment(const T& x)
+inline bool __midSegment(const T& x)
 {
     return ( x > math::NumericUtil::getEPS<T>() &&
              x < static_cast<T>(1) );
@@ -119,7 +119,7 @@ bool __midSegment(const T& x)
  * @return 'true' if 0<Re(x)<1, 'false' otherwise
  */
 template <class T>
-bool __midSegment(const std::complex<T>& x)
+inline bool __midSegment(const std::complex<T>& x)
 {
     return ( std::real(x) > math::NumericUtil::getEPS<T>() &&
              std::real(x) < static_cast<T>(1) );
@@ -185,7 +185,7 @@ T __lnGamma(const T& x)
     // Chosen parameter 'g' casted to T:
     const T g = static_cast<T>(LANCZOS_G);
 
-    // A handy macro to cast Lancos coefficients to T:
+    // A handy macro to cast Lanczos coefficients to T:
     #define GEN_CAST_COEF(COEF)             static_cast<T>(COEF),
 
      // An array with Lanczos coefficients casted to T:
@@ -1528,7 +1528,7 @@ namespace math {  namespace SpecFun {  namespace __private {
 /*
  * Implementation of the formula 26.2.22 in [Abramowitz & Stegun].
  *
- * Unlike the original formula,this function accepts 'p' being
+ * Unlike the original formula, this function accepts 'p' being
  * greater than 0.5.
  *
  * @note This "private" function expects that p is greater than 0
