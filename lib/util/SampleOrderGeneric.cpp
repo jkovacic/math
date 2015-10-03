@@ -29,6 +29,10 @@ limitations under the License.
 #include <algorithm>
 #include <new>
 
+#include "omp/omp_header.h"
+#include "../settings/omp_settings.h"
+#include "omp/omp_coarse.h"
+
 #include "exception/SampleOrderException.hpp"
 
 
@@ -126,11 +130,23 @@ std::vector<size_t> math::SampleOrder::order(const std::vector<F>& x, const bool
         /*
          * Assign 'idx' with initial positions.
          */
-        // TODO parallelization of this loop
-        for ( size_t i=0; i<N; ++i )
+        #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(idx)
         {
-            idx.at(i) = i;
-        }
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+            typename std::vector<size_t>::iterator it = idx.begin() + istart;
+            size_t i = istart;
+            for ( size_t cntr=0;
+                  cntr<elems_per_thread && it!=idx.end();
+                  ++cntr, ++i, ++it )
+            {
+                *it = i;
+            }
+
+            (void) iend;
+        }  // omp parallel
 
         math::SampleOrder::__private::IndexCmp<F> idxCmp(&x, asc);
 
