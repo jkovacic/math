@@ -88,6 +88,7 @@ limitations under the License.
  ? sqrt(2)/2
  %9 = 0.70710678118654752440084436210484903929
 
+ * See also scripts/lib/math.constant.gp
  */
 
 

@@ -1,0 +1,56 @@
+/*
+ * A Maxima script that reproduces coefficients for the Lanczos
+ * approximation of the gamma function in arbitrary precision (25 digits).
+ + The coefficients are used in 'lib/specfun/lanczos_coef.h'.
+ * 
+ * The coefficients can be calculated by applying the Paul Godfrey's
+ * algorithm as described at:
+ * http://mrob.com/pub/ries/lanczos-gamma.html.
+ *
+ * The code below is slightly modified code available from the address
+ * above (author: Raymond Toy).
+ * 
+ * From a shell, run the script as:
+ *   maxima -b lanczos_coef.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("lanczos_coef.mac")
+ */
+
+
+load("diag")$
+
+Dc(n) := diag(makelist(2*double_factorial(2*k-1), k, 0, n))$
+
+cmatrix_element[row, col]:=
+   if is(col>row) then 0
+   elseif row=1 and col=1 then 1/2
+   else (-1)^(row+col) * 4^(col-1) * (row-1) * (row+col-3)! / (row-col)! / (2*col-2)!$
+
+C(n) := genmatrix(cmatrix_element, n+1)$
+
+f(g, n):=sqrt(2) * (%e / (2 * (n+g)+1))^(n+1/2)$
+
+Dr(k) := diag(append([1], makelist(-(2*n+2)! / (2*n! * (n+1)!), n, 0, k-1)))$
+
+bmatrix_element[row, col] :=
+    if row = 1 then 1
+    elseif is(row > col) then 0
+    else (-1)^(col-row) * binomial(col+row-3, 2*row-3)$
+
+B(k) := genmatrix(bmatrix_element, k+1)$
+
+lanczos_coeff(g, n) :=
+    block([M : (Dr(n) . B(n)) . (C(n) . Dc(n)),
+            f : transpose(matrix(makelist(f(g,k), k, 0, n)))],
+        (M . f))$
+
+tlg(g, n) := lanczos_coeff(g, n-1) * exp(g) / sqrt(2*%pi)$
+
+fpprec : 25$
+
+/* Selected Lanczos G parameter and number of coefficients: */
+G : 1.428456135094165802001953125;
+N : 6;
+
+bfloat(tlg(G, N));
