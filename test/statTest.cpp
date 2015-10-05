@@ -24,6 +24,11 @@ limitations under the License.
  */
 
 
+/*
+ * Note: results are reproduced in 'scripts/test/stat.R'.
+ */
+
+
 #include <iostream>
 #include <cstddef>
 #include <vector>

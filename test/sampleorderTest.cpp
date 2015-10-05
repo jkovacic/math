@@ -23,6 +23,11 @@ limitations under the License.
  */
 
 
+/*
+ * Note: results are reproduced in 'scripts/test/sampleorder.R'.
+ */
+
+
 #include <cstddef>
 #include <iostream>
 #include <vector>

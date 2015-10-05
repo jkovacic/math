@@ -22,6 +22,12 @@ limitations under the License.
  * (PolynomialInterpolationGeneric, PolynomialRegressionGeneric)
  */
 
+
+/*
+ * Note: results are reproduced in 'scripts/test/curvefit.R'.
+ */
+
+
 #include <iostream>
 
 #include "PolynomialRegressionGeneric.h"
