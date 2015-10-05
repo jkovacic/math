@@ -18,7 +18,7 @@ data(mtcars)
 cat('Min. weight: ', min(mtcars$wt), '\n')
 cat('Max. weight: ', max(mtcars$wt), '\n')
 
-cat('Sum of all mpgs: ', sum(mtcars$mpg))
+cat('Sum of all mpgs: ', sum(mtcars$mpg), '\n')
 cat('Mean mpg: ', mean(mtcars$mpg), '\n')
 cat('Variance of mpg: ', var(mtcars$mpg), '\n')
 cat('Standard deviation of mpg: ', sd(mtcars$mpg), '\n')
@@ -29,8 +29,8 @@ cat('4th central moment of mpg about the mean: ', moment(mtcars$mpg, order=4, ce
 cat('4th moment of mpg about the origin:', moment(mtcars$mpg, order=4, central=FALSE), '\n')
 cat('Skewness of mpg: ', skewness(mtcars$mpg), '\n')
 cat('Skewness of mpg (w/ sample sd): ', skewness(mtcars$mpg)*((n-1)/n)^(3/2), '\n')
-cat('Kurtosis of mpg: ', kurtosis(mtcars$mpg) - 3, '\n')
-cat('Excess kurtosis of mpg: ', kurtosis(mtcars$mpg), '\n')
+cat('Kurtosis of mpg: ', kurtosis(mtcars$mpg), '\n')
+cat('Excess kurtosis of mpg: ', kurtosis(mtcars$mpg) - 3, '\n')
 cat('Proportion of mpgs <=26: ', sum(mtcars$mpg <= 26) / length(mtcars$mpg), '\n')
 cat('Proportion of mpgs <26: ', sum(mtcars$mpg < 26) / length(mtcars$mpg), '\n')
 
@@ -41,7 +41,7 @@ cat('Pearson\'s r (correlation) of mpg and wt: ', cor(mtcars$mpg, mtcars$wt), '\
 cat('r^2 of mpg and wt: ', cor(mtcars$mpg, mtcars$wt)^2, '\n')
 
 cat('\nNormal distribution:\n')
-cat('N(2,3): z for x=6.7', (6.7 - 2) / 3, '\n')
+cat('N(2,3): z for x=6.7: ', (6.7 - 2) / 3, '\n')
 cat('N(2,3): x for z = -1.3: ', 2 - 1.3 * 3, '\n')
 cat('N(2,3) at x=4.5: ', dnorm(4.5, mean=2, sd=3), '\n')
 cat('N(2,3): P(X<1.72): ', pnorm(1.72, mean=2, sd=3), '\n')
