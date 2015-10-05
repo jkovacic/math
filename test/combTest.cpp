@@ -22,6 +22,12 @@ limitations under the License.
  * (PermutationGeneric, CombinationGeneric)
  */
 
+
+/*
+ * Note: results are reproduced in 'scripts/test/comb.py'.
+ */
+
+
 #include <iostream>
 #include <cstddef>
 #include <vector>
