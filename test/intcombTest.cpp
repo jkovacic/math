@@ -23,6 +23,11 @@ limitations under the License.
  */
 
 
+/*
+ * Note: results are reproduced in 'scripts/test/intcomb.mac'.
+ */
+
+
 #include <iostream>
 
 #include "IntCombinatoricsGeneric.h"

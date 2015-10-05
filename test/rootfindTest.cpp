@@ -23,6 +23,11 @@ limitations under the License.
  */
 
 
+/*
+ * Note: results are reproduced in 'scripts/test/rootfind.mac'.
+ */
+
+
 #include <iostream>
 #include <cmath>
 

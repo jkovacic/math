@@ -23,6 +23,11 @@ limitations under the License.
  */
 
 
+/*
+ * Note: results are reproduced in 'scripts/test/calc.mac'.
+ */
+
+
 #include <iostream>
 #include <cmath>
 

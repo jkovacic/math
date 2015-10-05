@@ -1,0 +1,35 @@
+/*
+ * A Maxima script that reproduces expected results of the test module
+ * 'test/intcombTest.cpp'.
+ *
+ * From a shell, run the script as:
+ *   maxima -b /path/to/intcomb.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("/path/to/intcomb.mac")
+ */
+
+load(orthopoly)$
+
+5!;
+20!;
+15! / 5!;
+
+10! / (10-4)!;
+12! / (12-8)!;
+
+pochhammer(5, 6);
+pochhammer(16, 10);
+
+multif(n, k) := if (n<k) then 1 else n*multif(n-k, k)$
+multif(18, 3);
+multif(19, 3);
+multif(20, 3);
+multif(21, 3);
+15!!;
+22!!;
+27!!;
+
+binomial(14, 4);
+binomial(14, 10);
+binomial(50, 41);

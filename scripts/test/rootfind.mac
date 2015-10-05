@@ -1,0 +1,23 @@
+/*
+ * A Maxima script that reproduces expected results of the test module
+ * 'test/rootfindTest.cpp'.
+ *
+ * From a shell, run the script as:
+ *   maxima -b /path/to/rootfind.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("/path/to/rootfind.mac")
+ */
+
+f(x) := sin(x)/x - 1/2$
+limit(sin(x)/x, x, 0);
+
+d(x) := ''(diff(f(x), x));
+
+limit(d(x), x, 0);
+
+d2(x) := ''(diff(f(x), x, 2));
+
+limit(d2(x), x, 0);
+
+find_root(f(x), x, 1, 3);

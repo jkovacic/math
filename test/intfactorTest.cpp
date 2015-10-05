@@ -22,6 +22,12 @@ limitations under the License.
  * in the namespace IntFactorization
  */
 
+
+/*
+ * Note: results are reproduced in 'scripts/test/intfactor.mac'.
+ */
+
+
 #include <iostream>
 #include <map>
 #include <set>

@@ -1,0 +1,58 @@
+/*
+ * A Maxima script that reproduces expected results of the test module
+ * 'test/intfactorTest.cpp'.
+ *
+ * From a shell, run the script as:
+ *   maxima -b /path/to/intfactor.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("/path/to/intfactor.mac")
+ */
+
+load("functs")$
+
+floor(sqrt(12));
+floor(sqrt(100));
+floor(sqrt(37423));
+
+primep(3);  next_prime(3);
+primep(6);  next_prime(6);
+primep(15);  next_prime(15);
+primep(37);  next_prime(37);
+primep(257);  next_prime(257);
+primep(703);  next_prime(703);
+primep(907);  next_prime(907);
+primep(101861);  next_prime(101861);
+primep(102601);  next_prime(102601);
+primep(104597);  next_prime(104597);
+
+ifactors(245);  divisors(245);
+ifactors(6784);  divisors(6784);
+ifactors(21737);  divisors(21737);
+ifactors(195327);  divisors(195327);
+ifactors(3428543);  divisors(3428543);
+
+gcd(500, 1000);
+lcm(500, 1000);
+gcd(500, 1000) * lcm(500, 1000);
+500 * 1000;
+
+gcd(85, 3428543);
+lcm(85, 3428543);
+gcd(85, 3428543) * lcm(85, 3428543);
+85 * 3428543;
+
+gcd(15, 100);
+lcm(15, 100);
+gcd(15, 100) * lcm(15, 100);
+15 * 100;
+
+gcd(3, 57);
+lcm(3, 57);
+gcd(3, 57) * lcm(3, 57);
+3 * 57;
+
+gcd(234, 7643);
+lcm(234, 7643);
+gcd(234, 7643) * lcm(234, 7643);
+234 * 7643;

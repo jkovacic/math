@@ -1,0 +1,32 @@
+/*
+ * A Maxima script that reproduces expected results of the test module
+ * 'test/calcTest.cpp'.
+ *
+ * From a shell, run the script as:
+ *   maxima -b /path/to/calc.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("/path/to/calc.mac")
+ */
+
+f(x):=0.7*exp(-(x-3)^2)+1*x+0.5$
+float(integrate(f(x), x, 0, 5));
+
+fn(x) := 0.39894228040143268 * exp(-x^2/2)$
+float(integrate(fn(x), x, 1, inf));
+float(integrate(fn(x), x, 1.3, inf));
+float(integrate(fn(x), x, -2, inf));
+float(integrate(fn(x), x, -1.8, inf));
+float(integrate(fn(x), x, -inf, -2));
+float(integrate(fn(x), x, -inf, -1.7));
+float(integrate(fn(x), x, -inf, 1));
+float(integrate(fn(x), x, -inf, 0.5));
+float(integrate(fn(x), x, -inf, inf));
+float(integrate(fn(x), x, -inf, inf));
+
+df(x) := ''(diff(f(x), x))$
+float(df(4));
+
+d2f(x) := ''(diff(f(x), x, 2))$
+float(d2f(2));
+           
