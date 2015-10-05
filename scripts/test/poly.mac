@@ -1,0 +1,64 @@
+/*
+ * A Maxima script that reproduces expected results of the test module
+ * 'test/polyTest.cpp'.
+ *
+ * From a shell, run the script as:
+ *   maxima -b /path/to/poly.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("/path/to/poly.mac")
+ */
+
+t(x) := 2.1 + 1.0*x - 0.72*x^2 + 1.0*x^3 + 0.0*x^4;
+coeff(t(x), x, 0);  coeff(t(x), x, 1);  coeff(t(x), x, 2);  coeff(t(x), x, 3); 
+t(x) := 2.1 - 0.72*x + 1*x^2;
+t(x) := 2.1 - 0.72*x + 0.2*x^2 + 1*x^3;
+t(x) := 2.1 - 0.72*x + 0.2*x^2 + 1*x^3 + 5*x^7;
+
+desc : makelist( coeff( t(x), x, hipow(t(x),x )-i ), i, 0, hipow(t(x),x ) );
+trev(x) := sum(desc[i] * x^(i-1), i, 1, length(desc))$
+trev(x);
+tr(x) := sum( (if abs(coeff(t(x),x,i))<0.75 then 0 else coeff(t(x),x,i)) * x^i, i, 0, hipow(t(x), x))$
+tr(x);
+z(x) := 0;
+
+p(x) := 2 + 3*x - 4*x^2 - 7*x^3 + 2*x^4 + 1*x^5;
+q(x) := -1 + 5*x - 3*x^2 + 1*x^3;
+p(-1.2);
+q(0.7);
+p(x) + q(x);
+q(x) + p(x);
+p(x) - q(x);
+q(x) - p(x);
+expand(p(x) * q(x));
+expand(q(x) * p(x));
+
+expand(0.3 * p(x));
+expand(0.5 * q(x));
+p(x) + 2;
+2 + p(x);
+q(x) - 3;
+4 - q(x);
+p1 : p(x) + 10;
+p2 : p1 - 10;
+
+diff(p(x), x);
+qint(x) := ''(integrate(q(x), x));
+diff(qint(x), x);
+
+expand(divide(q(x), 5));
+divide(2, q(x));
+
+divide(q(x), 2);
+
+p(x) := -1 + 0*x + 1*x^2 + 2*x^3 - 1*x^4 + 4*x^5;
+q(x) := 1 + 0*x + 1*x^2;
+divide(p(x), q(x));
+
+p(x) := -4 + 0*x -2*x^2 + 1*x^3;
+q(x) := -3 + 1*x;
+divide(p(x), q(x));
+
+p(x) := -5 + 3*x + 0*x^2 - 6*x^3 + 4*x^4;
+q(x) := -1 + 2*x;
+divide(p(x), q(x));

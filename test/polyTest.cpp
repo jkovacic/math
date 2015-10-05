@@ -23,6 +23,11 @@ limitations under the License.
  */
 
 
+/*
+ * Note: results are reproduced in 'scripts/test/poly.mac'.
+ */
+
+
 #include <iostream>
 #include <vector>
 
