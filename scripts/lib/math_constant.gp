@@ -4,7 +4,7 @@
  * arbitrary precision. PARI/GP default is 38 characters.
  *
  * From a shell, run the script as:
- *   gp </path/tomath_constant.gp
+ *   gp </path/to/math_constant.gp
  */
 
 print("Pi")
