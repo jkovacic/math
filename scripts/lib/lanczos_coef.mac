@@ -11,10 +11,10 @@
  * above (author: Raymond Toy).
  * 
  * From a shell, run the script as:
- *   maxima -b lanczos_coef.mac
+ *   maxima -b /path/to/lanczos_coef.mac
  *
  * From Maxima/wxMaxima, the script can be run as:
- *   batch("lanczos_coef.mac")
+ *   batch("/path/to/lanczos_coef.mac")
  */
 
 
