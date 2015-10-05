@@ -22,6 +22,12 @@ limitations under the License.
  * of linear equations (namespace LinearEquationSolver).
  */
 
+
+/*
+ * Note: results are reproduced in 'scripts/test/lineq.m'.
+ */
+
+
 #include <iostream>
 #include <complex>
 

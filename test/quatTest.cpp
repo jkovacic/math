@@ -23,6 +23,11 @@ limitations under the License.
  */
 
 
+/*
+ * Note: results are reproduced in 'scripts/test/quat.m'.
+ */
+
+
 #include <iostream>
 
 #include "QuaternionGeneric.h"
