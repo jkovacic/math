@@ -22,6 +22,12 @@ limitations under the License.
  * (Rational)
  */
 
+
+/*
+ * Note: results are reproduced in 'scripts/test/rational.jl'.
+ */
+
+
 #include <iostream>
 
 #include "RationalGeneric.h"
