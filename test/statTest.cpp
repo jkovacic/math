@@ -132,10 +132,10 @@ void statisticsTest()
            [1] 0.6404399
            skewness(mtcars$mpg)*((n-1)/n)^(3/2)
            [1] 0.610655
-           kurtosis(mtcars$mpg)-3
-           [1] -0.2005332
            kurtosis(mtcars$mpg)
            [1] 2.799467
+           kurtosis(mtcars$mpg)-3
+           [1] -0.2005332
            sum(mtcars$mpg <= 26) / length(mtcars$mpg)
            [1] 0.84375
            sum(mtcars$mpg < 26) / length(mtcars$mpg)
