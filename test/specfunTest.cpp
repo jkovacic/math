@@ -22,6 +22,13 @@ limitations under the License.
  * implemented in the namespace SpecFun.
  */
 
+
+/*
+ * Note: results are reproduced in 'scripts/test/specfun.mac'
+ *       and 'scripts/test/specfun.py'.
+ */
+
+
 #include <iostream>
 #include <complex>
 
@@ -159,23 +166,23 @@ void specfunTest()
         /*
          * Unit test results obtained by SciPy (Python's scientific library):
          *
-         >>> import scipy.special as sp
-         >>> sp.gammaincinv(0.2, 0.3)
-         0.0015877907243441165
-         >>> sp.gammaincinv(3.0, 0.7)
-         3.6155676658659912
-         >>> sp.gammainccinv(0.3, 0.4)
-         0.14125250363107111
-         >>> sp.gammainccinv(5.2, 0.82)
-         3.1296773937114928
-         >>> sp.gammaincinv(0.24, 0.94/sp.gamma(0.24))
-         0.0020243626374425194
-         >>> sp.gammaincinv(2.8, 0.17/sp.gamma(2.8))
-         0.98739187202809553
-         >>> sp.gammainccinv(0.65, 0.86/sp.gamma(0.65))
-         0.21736651483075647
-         >>> sp.gammainccinv(3.5, 0.43/sp.gamma(3.5))
-         5.6090136314893515
+          >>> import scipy.special as sp
+          >>> sp.gammaincinv(0.2, 0.3)
+          0.0015877907243441165
+          >>> sp.gammaincinv(3.0, 0.7)
+          3.6155676658659912
+          >>> sp.gammainccinv(0.3, 0.4)
+          0.14125250363107111
+          >>> sp.gammainccinv(5.2, 0.82)
+          3.1296773937114928
+          >>> sp.gammaincinv(0.24, 0.94/sp.gamma(0.24))
+          0.0020243626374425194
+          >>> sp.gammaincinv(2.8, 0.17/sp.gamma(2.8))
+          0.98739187202809553
+          >>> sp.gammainccinv(0.65, 0.86/sp.gamma(0.65))
+          0.21736651483075647
+          >>> sp.gammainccinv(3.5, 0.43/sp.gamma(3.5))
+          5.6090136314893515
          */
         cout << endl;
         cout << "Inverse of reg. lower inc. gamma(0.2, 0.3):  " << SpecFun::incGammaLowerRegInv(0.2, 0.3) << " (expected: 0.0015877907243441165)" << endl;
@@ -191,23 +198,23 @@ void specfunTest()
         /*
          * Unit test results obtained by SciPy (Python's scientific library):
          *
-         >>> import scipy.special as sp
-         >>> sp.betaincinv(0.3, 0.2, 0.7)
-         0.97855341496201675
-         >>> sp.betaincinv(2.4, 3.5, 0.6)
-         0.4494282880364161
-         >>> sp.betaincinv(0.9, 1.5, 1-0.7)
-         0.18163313417789329
-         >>> sp.betaincinv(1.9, 2.7, 1-0.25)
-         0.56482998094684855
-         >>> sp.betaincinv(2.8, 0.3, 2/sp.beta(2.8, 0.3))
-         0.99973356680513126
-         >>> sp.betaincinv(1.1, 1.3, 0.4/sp.beta(1.1, 1.3))
-         0.51901101120350224
-         >>> sp.betaincinv(0.4, 0.5, 1-1.8/sp.beta(0.4, 0.5))
-         0.41086943388574249
-         >>> sp.betaincinv(1.7, 1.1, 1-0.2/sp.beta(1.7, 1.1))
-         0.72055257197528588
+          >>> import scipy.special as sp
+          >>> sp.betaincinv(0.3, 0.2, 0.7)
+          0.97855341496201675
+          >>> sp.betaincinv(2.4, 3.5, 0.6)
+          0.4494282880364161
+          >>> sp.betaincinv(0.9, 1.5, 1-0.7)
+          0.18163313417789329
+          >>> sp.betaincinv(1.9, 2.7, 1-0.25)
+          0.56482998094684855
+          >>> sp.betaincinv(2.8, 0.3, 2/sp.beta(2.8, 0.3))
+          0.99973356680513126
+          >>> sp.betaincinv(1.1, 1.3, 0.4/sp.beta(1.1, 1.3))
+          0.51901101120350224
+          >>> sp.betaincinv(0.4, 0.5, 1-1.8/sp.beta(0.4, 0.5))
+          0.41086943388574249
+          >>> sp.betaincinv(1.7, 1.1, 1-0.2/sp.beta(1.7, 1.1))
+          0.72055257197528588
          */
 
         cout << endl;
@@ -222,32 +229,30 @@ void specfunTest()
 
 
         /*
-         (%i33)  erf(-1.2);
-         (%o33)  -0.91031397822963
-         (%i34)  erf(0.7);
-         (%o34)  0.67780119383741
-         (%i35)  erfc(0.2);
-         (%o35)  0.77729741078952
+          >>> sp.erf(-1.2)
+          -0.91031397822963545
+          >>> sp.erf(0.7)
+          0.67780119383741833
+          >>> sp.erfc(0.2)
+          0.77729741078952153
          */
         
         cout << endl;
-        cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: -0.91031397822963)" << endl;
-        cout << "erf(0.7):   " << SpecFun::erf(0.7) << " (expected: 0.67780119383741)" <<endl;
-        cout << "erfc(0.2):  " << SpecFun::erfc(0.2) << " (expected: 0.77729741078952)" << endl;
+        cout << "erf(-1.2):  " << SpecFun::erf(-1.2) << " (expected: -0.91031397822963545)" << endl;
+        cout << "erf(0.7):   " << SpecFun::erf(0.7) << " (expected: 0.67780119383741833)" <<endl;
+        cout << "erfc(0.2):  " << SpecFun::erfc(0.2) << " (expected: 0.77729741078952153)" << endl;
 
 
         /*
-         * Unit test results obtained by SciPy (Python's scientific library):
-         *
-         >>> import scipy.special as sp
-         >>> sp.erfinv(-0.12)
-         -0.1067513560281844
-         >>> sp.erfinv(0.34)
-         0.31106558258078482
-         >>> sp.erfcinv(1.7)
-         -0.73286907795921696
-         >>> sp.erfcinv(0.65)
-         0.32085832171518158
+          >>> import scipy.special as sp
+          >>> sp.erfinv(-0.12)
+          -0.1067513560281844
+          >>> sp.erfinv(0.34)
+          0.31106558258078482
+          >>> sp.erfcinv(1.7)
+          -0.73286907795921696
+          >>> sp.erfcinv(0.65)
+          0.32085832171518158
          */
 
         cout << endl;
