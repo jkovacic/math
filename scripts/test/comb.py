@@ -4,11 +4,10 @@
 # From a shell, run the script as:
 #   python /path/to/comb.py
 #
-# From Python, the script can be run as:
+# From Python 2.x, the script can be run as:
 #   execfile("/path/to/comb.py")
-# from Python 2 or
+# From Python 3.x, the script can be run as:
 #   exec(open("/path/to/comb.py").read())
-# from Python 3
 
 
 from __future__ import print_function
