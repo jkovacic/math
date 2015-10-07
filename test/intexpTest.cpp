@@ -22,6 +22,13 @@ limitations under the License.
  * (IntExponentiator)
  */
 
+
+/*
+ * Note: results are reproduced in 'scripts/test/intexp.m',
+ *       'scripts/test/intexp.jl' and 'scripts/test/intexp.mac'.
+ */
+
+
 #include <iostream>
 
 #include "IntExponentiatorGeneric.h"

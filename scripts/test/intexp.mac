@@ -1,0 +1,19 @@
+/*
+ * A Maxima script that reproduces the third part of expected results of
+ * the test module 'test/intexpTest.cpp'.
+ * The other parts are performed in 'scripts/test/intexp.m' and
+ * 'scripts/test/intexp.jl'.
+ *
+ * From a shell, run the script as:
+ *   maxima -b /path/to/intexp.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("/path/to/intexp.mac")
+ */
+ 
+ /* continued from test cases in 'intexp.jl' */
+ 
+ p(x) := x^2 -0.5*x +0.2;
+ expand(p(x)^0);
+ expand(p(x)^6);
+ 
