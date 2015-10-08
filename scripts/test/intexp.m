@@ -33,7 +33,9 @@ printf('\n');
 q = quaternion(1, -0.8, 1.2, -1.5)
 printf('q^0 = ');
 q^0
-printf('q^10 = ');
-q^10
+
+q10 = q^10; 
+printf('q^10 = %f %+fi %+fj %+fk\n', ...
+    get(q10, 'w'), get(q10, 'x'), get(q10, 'y'), get(q10, 'z'));
 
 % test cases continue in 'intexp.jl'.
