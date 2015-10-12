@@ -10,6 +10,10 @@
 # From Python 3.x, the script can be run as:
 #   exec(open("/path/to/specfun.py").read())
 
+# The test cases are performed in two scripts because neither Python
+# (SciPy) nor Maxima fully support special functions.
+
+
 # Note: the script requires the library 'scipy'.
 
 from __future__ import print_function

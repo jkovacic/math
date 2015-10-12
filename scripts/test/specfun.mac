@@ -10,6 +10,13 @@
  *   batch("/path/to/specfun.mac")
  */
 
+
+/*
+ * The test cases are performed in two scripts because neither Maxima
+ * nor Python (SciPy) fully support special functions.
+ */
+
+
 float(gamma(3));
 gamma(4.2);
 gamma(0.51);

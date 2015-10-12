@@ -9,6 +9,12 @@
 % From Octave, the script can be run as:
 %   intexp
 
+
+# The test cases are performed in three scripts because each mathematical
+# structure is (natively) supported by one programming language/mathematical
+# software better than by the others.
+
+
 % Note: the script requires the library 'quaternion'.
 % It is available at:
 % http://octave.sourceforge.net/quaternion/

@@ -9,6 +9,12 @@
 # From Julia, the script can be run as:
 #   include("path/to/intexp.jl")
 
+
+# The test cases are performed in three scripts because each mathematical
+# structure is (natively) supported by one programming language/mathematical
+# software better than by the others.
+
+
 # continued from test cases in 'intexp.m'
 
 f = -3//4

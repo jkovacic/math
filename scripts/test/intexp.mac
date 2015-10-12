@@ -10,10 +10,16 @@
  * From Maxima/wxMaxima, the script can be run as:
  *   batch("/path/to/intexp.mac")
  */
+
+
+/*
+ * The test cases are performed in three scripts because each mathematical
+ * structure is (natively) supported by one programming language/mathematical
+ * software better than by the others.
+ */
+
+/* continued from test cases in 'intexp.jl' */
  
- /* continued from test cases in 'intexp.jl' */
- 
- p(x) := x^2 -0.5*x +0.2;
- expand(p(x)^0);
- expand(p(x)^6);
- 
+p(x) := x^2 -0.5*x +0.2;
+expand(p(x)^0);
+expand(p(x)^6);
