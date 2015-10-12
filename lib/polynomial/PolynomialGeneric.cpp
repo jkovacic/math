@@ -37,6 +37,29 @@ limitations under the License.
 #include <algorithm>
 
 
+/*
+ * A utility function that assigns a single term polynomial,
+ * i.e. resizes the m_coef to 1 element and assigns it to sc.
+ *
+ * @param sc - scalar to assign to the polynomial
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template <typename F>
+void math::PolynomialGeneric<F>::__set1Term(const F& sc) throw(math::PolynomialException)
+{
+    try
+    {
+        this->m_coef.resize(1);
+        this->m_coef.at(0) = sc;
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        // Memory allocation failed
+        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
+    }
+}
+
 /**
  * Constructor.
  *
@@ -70,16 +93,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const std::vector<F>& cvect) throw
 template <typename F>
 math::PolynomialGeneric<F>::PolynomialGeneric(const F& c0) throw (math::PolynomialException)
 {
-    try
-    {
-        this->m_coef.resize(1);
-        this->m_coef.at(0) = c0;
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        // Memory allocation failed
-        throw math::PolynomialException(math::PolynomialException::OUT_OF_MEMORY);
-    }
+    this->__set1Term(c0);
 }
 
 
@@ -237,8 +251,8 @@ void math::PolynomialGeneric<F>::__reduce()
     if ( f<N )
     {
         this->m_coef.erase(
-                this->m_coef.begin() + f + 1,
-                this->m_coef.end() );
+        this->m_coef.begin() + f + 1,
+        this->m_coef.end() );
     }
 }
 
@@ -266,6 +280,24 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const math::Po
 
     // 'poly' is supposed to be already reduced, so no need to call reduce()
 
+    return *this;
+}
+
+
+/**
+ * Assignment operator (=) that "converts" a scalar value to
+ * a single term polynomial.
+ *
+ * @param sc - scalar to be converted to polynomial
+ *
+ * @return reference to itself
+ *
+ * @throw PolynomialException if allocation of memory fails
+ */
+template <typename F>
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const F& sc) throw (math::PolynomialException)
+{
+    this->__set1Term(sc);
     return *this;
 }
 

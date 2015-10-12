@@ -118,6 +118,10 @@ private:
      */
     std::vector<F> m_coef;
 
+
+    // A utility function that assigns a single term polynomial
+    void __set1Term(const F& sc) throw (PolynomialException);
+
     // A utility function that copies vector's coefficients
     void __copyCoefs(const std::vector<F>& cvect) throw (PolynomialException);
 
@@ -183,6 +187,7 @@ public:
 
     // Assignment operator
     PolynomialGeneric<F>& operator=(const PolynomialGeneric<F>& poly) throw (PolynomialException);
+    PolynomialGeneric<F>& operator=(const F& sc) throw (PolynomialException);
 
     // Operators
     PolynomialGeneric<F>& operator+=(const PolynomialGeneric<F>& poly) throw (PolynomialException);

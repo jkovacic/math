@@ -25,7 +25,8 @@ b = a
 c = Rational(0)
 print("b = ", b, "    c = ", c)
 c = a
-println("    c = ", c)
+c1 = Rational(-7)
+println("    c = ", c, "   c = ", c1)
 
 println()
 b = inv(a)

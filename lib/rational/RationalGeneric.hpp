@@ -238,6 +238,7 @@ public:
 
     // Operator =, copies values of fraction's numerator and denominator
     RationalGeneric<I>& operator=(const RationalGeneric<I>& fraction);
+    RationalGeneric<I>& operator=(const I& sc);
 
     // Binary operations are implemented as separate friend functions,
     // the following operators remain that actually modify instance of the class:

@@ -45,6 +45,9 @@ void polynomialTest()
 {
     try
     {
+        FPolynomial pol1(-4.1f);
+        cout << "pol1 = " << pol1 << endl;
+
         float a[] = { 2.1f, 1.0f, -0.72f, 1.0f, 0.0f };
         FPolynomial t(a, 5);
         cout << "t(x) = " << t << endl;
@@ -67,7 +70,10 @@ void polynomialTest()
         trev.setDesc(desc);
         cout << "t reversed: " << trev << endl;
 
-        cout << "Round all t's coefficients below 0.75 to 0: " << t.roundSmallCoefficients(0.75f) << endl;;
+        cout << "Round all t's coefficients below 0.75 to 0: " << t.roundSmallCoefficients(0.75f) << endl;
+
+        t = 78.12f;
+        cout << "t = " << t << endl;
 
         FPolynomial z(true, 4);
         z.set(3, 0.0f);

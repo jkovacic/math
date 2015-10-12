@@ -9,6 +9,7 @@
  *   batch("/path/to/poly.mac")
  */
 
+pol1(x) := -4.1;
 t(x) := 2.1 + 1.0*x - 0.72*x^2 + 1.0*x^3 + 0.0*x^4;
 coeff(t(x), x, 0);  coeff(t(x), x, 1);  coeff(t(x), x, 2);  coeff(t(x), x, 3); 
 t(x) := 2.1 - 0.72*x + 1*x^2;
@@ -20,6 +21,7 @@ trev(x) := sum(desc[i] * x^(i-1), i, 1, length(desc))$
 trev(x);
 tr(x) := sum( (if abs(coeff(t(x),x,i))<0.75 then 0 else coeff(t(x),x,i)) * x^i, i, 0, hipow(t(x), x))$
 tr(x);
+t(x) := 78.12;
 z(x) := 0;
 
 p(x) := 2 + 3*x - 4*x^2 - 7*x^3 + 2*x^4 + 1*x^5;

@@ -70,9 +70,11 @@ void rationalTest()
         // Test of copy constructors, operator= and operator<<:
         Rational b(a);
         Rational c;
-        // should output '3/4', '0/1' and '3/4';
+        // should output '3/4', '0/1', '3/4' and '-7/1';
         cout << "b = " << b << "  c = " << c;
         c = a;
+        cout << "  c = " << c;
+        c = -7;
         cout << "  c = " << c << endl;
 
         // now test regular inversion

@@ -61,7 +61,8 @@ printf('Swap the 2nd and the 3rd row:\n');
 invv([2, 3], :) = invv([3, 2], :)
 printf('Swap the 2nd and the 3rd column:\n');
 invv(:, [2, 3]) = invv(:, [3, 2])
-
+a1 = 5.5
+printf('\n');
 
 c1 = [1+i, 1-2i; 2-3i, 2+4i]
 printf('c1 conjugated:\n');

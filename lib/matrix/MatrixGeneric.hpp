@@ -184,14 +184,15 @@ public:
     void display(std::ostream& str = std::cout) const throw (MatrixException);
 
     // Matrix arithmetics operators
-    MatrixGeneric<T>& operator= (const MatrixGeneric<T>& m) throw (MatrixException);
-    MatrixGeneric<T>& operator+= (const MatrixGeneric<T>& m) throw (MatrixException);
-    MatrixGeneric<T>& operator-= (const MatrixGeneric<T>& m) throw (MatrixException);
-    MatrixGeneric<T>& operator*= (const MatrixGeneric<T>&m ) throw (MatrixException);
-    MatrixGeneric<T>& operator*= (const T& scalar);
-    MatrixGeneric<T>& operator+= (const T& scalar);
-    MatrixGeneric<T>& operator-= (const T& scalar);
-    MatrixGeneric<T>& operator/= (const T& scalar) throw (MatrixException);
+    MatrixGeneric<T>& operator=(const MatrixGeneric<T>& m) throw(MatrixException);
+    MatrixGeneric<T>& operator=(const T& scalar) throw(MatrixException);
+    MatrixGeneric<T>& operator+=(const MatrixGeneric<T>& m) throw(MatrixException);
+    MatrixGeneric<T>& operator-=(const MatrixGeneric<T>& m) throw(MatrixException);
+    MatrixGeneric<T>& operator*=(const MatrixGeneric<T>&m ) throw(MatrixException);
+    MatrixGeneric<T>& operator*=(const T& scalar);
+    MatrixGeneric<T>& operator+=(const T& scalar);
+    MatrixGeneric<T>& operator-=(const T& scalar);
+    MatrixGeneric<T>& operator/=(const T& scalar) throw(MatrixException);
 
     MatrixGeneric<T>& ewMult(const MatrixGeneric<T>& m) throw (MatrixException);
     MatrixGeneric<T>& ewDiv(const MatrixGeneric<T>& m) throw (MatrixException);

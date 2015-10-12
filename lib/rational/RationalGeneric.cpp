@@ -876,6 +876,8 @@ math::RationalGeneric<I> math::RationalGeneric<I>::inv() const throw(math::Ratio
 /**
  * Assignment operator, copies frac's numerator and denominator.
  *
+ * @param frac - rational to copy to itself
+ *
  * @return reference to itself
  */
 template <typename I>
@@ -893,6 +895,24 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator=(
         this->m_num = frac.m_num;
         this->m_denom = frac.m_denom;
     }
+
+    return *this;
+}
+
+
+/**
+ * Assignment operator, copies the scalar to the numerator
+ * and assigns the denominator to 1.
+ *
+ * @aparam sc - scalar value to be converted to the rational number
+ *
+ * @return reference to itself
+ */
+template <typename I>
+math::RationalGeneric<I>& math::RationalGeneric<I>::operator=(const I& sc)
+{
+    this->m_num = sc;
+    this->m_denom = static_cast<I>(1);
 
     return *this;
 }

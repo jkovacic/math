@@ -472,12 +472,12 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
  *
  * @param orig - a matrix to be copied into this one
  *
- * @return reference to this
+ * @return reference to itself
  *
  * @throw MatrixException if memory allocation fails
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGeneric<T>& orig) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator=(const math::MatrixGeneric<T>& orig) throw(math::MatrixException)
 {
     // Nothing to do, if attempting to assign itself
     if ( this == &orig )
@@ -486,6 +486,26 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGen
     }
 
     this->__copyElems(orig);
+
+    return *this;
+}
+
+
+/**
+ * Assignment operator (=) that assigns the scalar value
+ * to the only field of a 1x1 matrix.
+ *
+ * @param scalar - a scalar to be assigned to the only field of the matrix
+ *
+ * @return reference to itself
+ *
+ * @throw MatrixException if memory allocation fails
+ */
+template <class T>
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator=(const T& scalar) throw(math::MatrixException)
+{
+    this->__init(1, 1);
+    this->m_elems.at(0) = scalar;
 
     return *this;
 }
@@ -502,7 +522,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator= (const math::MatrixGen
  * @throw MatrixException if dimensions do not match
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGeneric<T>& m) throw(math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+=(const math::MatrixGeneric<T>& m) throw(math::MatrixException)
 {
     // Check if dimensions of both matrices match
     if ( this->m_rows != m.m_rows || this->m_cols != m.m_cols )
@@ -528,7 +548,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator+= (const math::MatrixGe
  * @throw MatrixException if dimensions do not match
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-= (const math::MatrixGeneric<T>& matrix) throw(math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-=(const math::MatrixGeneric<T>& matrix) throw(math::MatrixException)
 {
     // Check if dimensions of both matrices match
     if ( this->m_rows != matrix.m_rows || this->m_cols != matrix.m_cols )
@@ -590,7 +610,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator-=(const T& scalar)
  * @throw MatrixException if dimensions do not match or if allocation of memory fails
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*= (const math::MatrixGeneric<T>& m) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::operator*=(const math::MatrixGeneric<T>& m) throw(math::MatrixException)
 {
     // for a definition of matrix multiplication, see operator*
 

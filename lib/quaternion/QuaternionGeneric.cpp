@@ -114,6 +114,27 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator=(const math::Qu
 
 
 /**
+ * Assignment operator (=) that copies the scalar to
+ * the "real" component and assigns the other 3 "complex"
+ * components to 0.
+ *
+ * @param sc - scalar to assign to the quaternion
+ *
+ * @return reference to itself
+ */
+template <typename F>
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator=(const F& sc)
+{
+    this->m_o = sc;
+    this->m_i = static_cast<F>(0);
+    this->m_j = static_cast<F>(0);
+    this->m_k = static_cast<F>(0);
+
+    return *this;
+}
+
+
+/**
  * @return scalar component ('1') of the quaternion
  */
 template <typename F>

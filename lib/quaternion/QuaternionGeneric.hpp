@@ -148,6 +148,7 @@ public:
 
     // Quaternion arithmetics operators:
     QuaternionGeneric<F>& operator=(const QuaternionGeneric<F>& q);
+    QuaternionGeneric<F>& operator=(const F& sc);
     QuaternionGeneric<F>& operator+=(const QuaternionGeneric<F>& q);
     QuaternionGeneric<F>& operator-=(const QuaternionGeneric<F>& q);
     QuaternionGeneric<F>& operator*=(const QuaternionGeneric<F>& q);

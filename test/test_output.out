@@ -43,6 +43,7 @@ q: (1-0.5i+1.2j-2.3k)
 q: 1: 1   i: -0.5   j: 1.2   k: -2.3
 abs(q): 2.82489 (expected: 2.824889)
 U(q): (0.353996-0.176998i+0.424795j-0.814191k)	norm(U(q)): 1
+uq = (2.3+0i+0j+0k)
 i*j: (0+0i+0j+1k)	j*i: (0+0i+0j-1k)
 j*k: (0+1i+0j+0k)	k*j: (0-1i+0j+0k)
 k*i: (0+0i+1j+0k)	i*k: (0+0i-1j+0k)
@@ -65,7 +66,7 @@ s = 3.5|167 = 17566/4995	expected 17566/4995
 abs(17566/4995) = 17566/4995	expected 17566/4995
 
 a = 3/4 = 60/80
-b = 3/4  c = 0/1  c = 3/4
+b = 3/4  c = 0/1  c = 3/4  c = -7/1
 a = 3/4  b = 4/3  c = 2/5  c^(-1) = 5/2
 1/3 + 1/2 = 5/6 = 0.833333
 5/6 - 1/4 = 7/12 = 0.583333
@@ -237,6 +238,9 @@ Swap the 2nd and the 3rd column:
 0.166667	-0.333333	0.666667
 1.22222	0.555556	-1.44444
 
+a1:
+5.5
+
 c1:
 (1,1)	(1,-2)
 (2,-3)	(2,4)
@@ -349,6 +353,7 @@ Solution with partial pivoting:
 
 P O L Y N O M I A L   T E S T
 
+pol1 = -4.1
 t(x) = 2.1 +1*x -0.72*x^2 +1*x^3
 a0=2.1 a1=1 a2=-0.72 a3=1
 Remove the 2nd coef. from t(x): 2.1 -0.72*x +1*x^2
@@ -357,6 +362,7 @@ Insert 5 to the 8th pos. of t(x): 2.1 -0.72*x +0.2*x^2 +1*x^3 +0*x^4 +0*x^5 +0*x
 t's coefficients in reverse order: 5 0 0 0 1 0.2 -0.72 2.1 
 t reversed: 5 +0*x +0*x^2 +0*x^3 +1*x^4 +0.2*x^5 -0.72*x^6 +2.1*x^7
 Round all t's coefficients below 0.75 to 0: 2.1 +0*x +0*x^2 +1*x^3 +0*x^4 +0*x^5 +0*x^6 +5*x^7
+t = 78.12
 Zero polynomial: 0
 p(x)=2 +3*x -4*x^2 -7*x^3 +2*x^4 +1*x^5
 q(x)=-1 +5*x -3*x^2 +1*x^3

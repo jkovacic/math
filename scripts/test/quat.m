@@ -22,6 +22,7 @@ printf('abs(q): %f\n', abs(q));
 qu = unit(q);
 printf('Unit quaternion of q: ');  qu
 printf('norm(qu): %f\n', norm(qu));
+qu = quaternion(2.3)
 
 o = quaternion(1);
 i = qi();

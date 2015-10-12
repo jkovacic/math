@@ -55,6 +55,8 @@ void quaternionTest()
 
         Quaternion uq = q.unit();
         cout << "U(q): " << uq << "\tnorm(U(q)): " << uq.norm() << endl;
+        uq = 2.3;
+        cout << "uq = " << uq << endl;
 
         Quaternion o(1.0);
         Quaternion i;   i.setI(1.0);
