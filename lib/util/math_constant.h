@@ -51,7 +51,7 @@ limitations under the License.
 /* sqrt( 1/(2*pi) ) */
 #define MATH_CONST_SQRT_INV_2_PI    ( 0.39894228040143267793994605993438186848L )
 
-/* ln( 2*pi ) */
+/* ln( sqrt(2*pi) ) */
 #define MATH_CONST_LOG_SQRT_2_PI    ( 0.91893853320467274178032973640561763986L )
 
 
