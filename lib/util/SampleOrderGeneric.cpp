@@ -19,7 +19,8 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * Implementation of functions within the namespace SampleOrder
- * that sort indices of the given vector.
+ * that return indices of the given vector's elements in a stably
+ * sorted vector.
  */
 
 
@@ -95,7 +96,7 @@ public:
 
 
 /**
- * Stable sort of indices of input vector's elements.
+ * Returns indices of each element in the stably sorted vector.
  * In case of ties, the order of indices remains unmodified.
  *
  * @note The input vector 'x' is not modified.
@@ -105,41 +106,45 @@ public:
  * @note The function is equivalent to the function 'order' in R.
  *
  * @param x - vector of elements
+ * @param dest - reference to a vector to write indices of elements of 'x' in the sorted vector
  * @param asc - logical value indicating whether to sort in ascending order or not (default: TRUE)
  *
- * @return a vector of integers with indices of the ordered elements of 'x'
+ * @return reference to 'dest'
  *
  * @throw SampleOrderException if allocation of the return vector fails
  */
 template <typename F>
-std::vector<size_t> math::SampleOrder::order(const std::vector<F>& x, const bool asc) throw(math::SampleOrderException)
+std::vector<size_t>& math::SampleOrder::order(
+        const std::vector<F>& x,
+        std::vector<size_t>& dest,
+        const bool asc
+      ) throw(math::SampleOrderException)
 {
-    std::vector<size_t> idx;
-
     try
     {
         const size_t N = x.size();
 
+        dest.resize(N);
+
         if ( 0 == N )
         {
-            return idx;
+            return dest;
         }
 
-        idx.resize(N);
 
         /*
-         * Assign 'idx' with initial positions.
+         * Assign 'dest' with initial positions.
          */
         #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(idx)
+                    default(none) shared(dest)
         {
             OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-            typename std::vector<size_t>::iterator it = idx.begin() + istart;
+            typename std::vector<size_t>::iterator it = dest.begin() + istart;
             size_t i = istart;
             for ( size_t cntr=0;
-                  cntr<elems_per_thread && it!=idx.end();
+                  cntr<elems_per_thread && it!=dest.end();
                   ++cntr, ++i, ++it )
             {
                 *it = i;
@@ -154,7 +159,7 @@ std::vector<size_t> math::SampleOrder::order(const std::vector<F>& x, const bool
          * Performs stable sort of indices, assuring that order
          * of indices remains unmodified in case of ties.
          */
-        std::stable_sort(idx.begin(), idx.end(), idxCmp);
+        std::stable_sort(dest.begin(), dest.end(), idxCmp);
 
     }
     catch ( const std::bad_alloc& ba )
@@ -162,5 +167,5 @@ std::vector<size_t> math::SampleOrder::order(const std::vector<F>& x, const bool
         throw math::SampleOrderException(math::SampleOrderException::OUT_OF_MEMORY);
     }
 
-    return idx;
+    return dest;
 }

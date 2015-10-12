@@ -22,7 +22,8 @@ limitations under the License.
  * @headername{SampleOrderGeneric.h}
  *
  * Declaration of functions within the namespace SampleOrder
- * that sort indices of the given vector.
+ * that return indices of the given vector's elements in a stably
+ * sorted vector.
  */
 
 #ifndef _MATH_SAMPLEORDERGENERIC_HPP_
@@ -39,14 +40,18 @@ namespace math
 
 
 /**
- * @brief A namespace with functions that perform index sorting
- * functionality of a given vector.
+ * @brief A namespace with functions that search indices of
+ *        stably sorted vectors of elements.
  */
 namespace SampleOrder
 {
 
     template <typename F>
-    std::vector<size_t> order(const std::vector<F>& x, const bool asc=true) throw(SampleOrderException);
+    std::vector<size_t>& order(
+            const std::vector<F>& x,
+            std::vector<size_t>& dest,
+            const bool asc=true
+          ) throw(SampleOrderException);
 
 }  // namespace SampleOrder
 }  // namespace math

@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * A test module to test functionality in namespaces that perform
- * ordering indices of samples' elements (SampleOrder).
+ * searching of elements' indices in stably sorted vectors (SampleOrder).
  */
 
 
@@ -63,7 +63,7 @@ void printIndices(const vector<size_t>& vi)
 
 
 /*
- * Test of functions that sort indices of a sample vector
+ * Test of functions that search indices of a sorted sample vector
  */
 void sampleOrderTest()
 {
@@ -99,12 +99,12 @@ void sampleOrderTest()
 
         vector<size_t> idx;
 
-        idx = SampleOrder::order(vmpgs);
+        SampleOrder::order(vmpgs, idx);
         cout << "Indices in ascending order:" << endl;
         printIndices(idx);
 
         cout << endl << "Indices in descending order:" << endl;
-        idx = SampleOrder::order(vmpgs, false);
+        SampleOrder::order(vmpgs, idx, false);
         printIndices(idx);
 
     }

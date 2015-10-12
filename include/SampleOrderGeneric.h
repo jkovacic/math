@@ -21,7 +21,8 @@ limitations under the License.
  * A public header, may be directly included into applications.
  *
  * Declaration of functions within the namespace SampleOrder
- * that sort indices of the given vector.
+ * that return indices of the given vector's elements in a stably
+ * sorted vector.
  */
 
 
