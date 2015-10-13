@@ -34,6 +34,7 @@ limitations under the License.
 // no #include "QuaternionGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
 #include "../settings/omp_settings.h"
+#include "QuaternionGeneric.hpp"
 
 
 /*
@@ -412,7 +413,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const math::Q
  * Multiplication operator (*=) that multiplies a quaternion by a scalar
  * and assigns the product to itself.
  * 
- * @param scalar
+ * @param sc - scalar
  *
  * @return reference to itself
  */
@@ -424,6 +425,37 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const F& sc)
     this->m_i *= sc;
     this->m_j *= sc;
     this->m_k *= sc;
+
+    return *this;
+}
+
+
+/**
+ * Division operator (/=) that divides the quaternion by a scalar
+ * and assigns the quotient to itself.
+ * 
+ * @param scalar
+ * 
+ * @return reference to itself
+ *  
+ * @throw QuaternionException if attempting to divide by zero
+ */
+template <typename F>
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator/=(
+        const F& scalar
+      ) throw(math::QuaternionException)
+{
+    if ( true == math::NumericUtil::isZero<F>(scalar) )
+    {
+        throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
+    }
+
+    const F rec = static_cast<F>(1) / scalar;
+
+    this->m_o *= rec;
+    this->m_i *= rec;
+    this->m_j *= rec;
+    this->m_k *= rec;
 
     return *this;
 }
@@ -468,19 +500,12 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const math::Quater
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const F& sc) throw(math::QuaternionException)
 {
-    if ( true == math::NumericUtil::isZero<F>(sc) )
-    {
-        throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
-    }
-
-    *this *= static_cast<F>(1) / sc;
-
-    return *this;
+    return this->operator/=(sc);
 }
 
 
 /**
- * Right division "operator" that performs left division of 'this'
+ * Left division "operator" that performs left division of 'this'
  * (rec(q) * this) and assigns the quotient to itself.
  *
  * @param q - quaternion to divide 'this'
@@ -492,12 +517,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const F& sc) throw
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const math::QuaternionGeneric<F>& q) throw(math::QuaternionException)
 {
-    if ( true == math::NumericUtil::isZero<F>(q.__sqsum()) )
-    {
-        throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
-    }
-
-    math::QuaternionGeneric<F> lquot = q.reciprocal() * (*this);
+    math::QuaternionGeneric<F> lquot = math::ldiv(*this, q);
 
     this->m_o = lquot.m_o;
     this->m_i = lquot.m_i;
@@ -523,8 +543,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const math::Quater
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const F& sc) throw(math::QuaternionException)
 {
-    // Left division by a scalar is actually equivalent to right division
-    return this->rdiv_(sc);
+    return this->operator/=(sc);
 }
 
 
@@ -1025,6 +1044,53 @@ math::QuaternionGeneric<F> math::operator*(const F& scalar, const math::Quaterni
 
 
 /**
+ * Division operator (/) that divides a quaternion by a scalar.
+ * 
+ * @param q - dividend (quaternion)
+ * @param sc - divisor (scalar)
+ * 
+ * @return q / sc
+ * 
+ * @throw QuaternionException if attempting to divide by zero
+ */
+template <typename F>
+math::QuaternionGeneric<F> math::operator/(
+        const math::QuaternionGeneric<F>&q,
+        const F& sc
+      ) throw(math::QuaternionException)
+{
+    math::QuaternionGeneric<F> retVal(q);
+    retVal /= sc;
+    return retVal;
+}
+
+
+/**
+ * Division operator (/) that divides a scalar by a quaternion
+ * 
+ * @param sc - dividend (scalar)
+ * @param q - divisor (quaternion)
+ * 
+ * @return sc / q = sc * rec(q)
+ * 
+ * @throw QuaternionException if attempting to divide by zero
+ */
+template <typename F>
+math::QuaternionGeneric<F> math::operator/(
+        const F& sc,
+        const math::QuaternionGeneric<F>& q
+      ) throw(math::QuaternionException)
+{
+    if ( true == math::NumericUtil::isZero<F>(q.__sqsum()) )
+    {
+        throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
+    }
+
+    return q.reciprocal() * sc;
+}
+
+
+/**
  * Right division "operator" (q1 * rec(q2))
  *
  * @param q1 - dividend quaternion
@@ -1063,10 +1129,7 @@ math::QuaternionGeneric<F> math::rdiv(
         const F& sc
       ) throw(math::QuaternionException)
 {
-    math::QuaternionGeneric<F> retVal(q);
-    retVal.rdiv_(sc);
-
-    return retVal;
+    return q / sc;
 }
 
 
@@ -1106,10 +1169,12 @@ math::QuaternionGeneric<F> math::ldiv(
         const math::QuaternionGeneric<F>& q2
       ) throw(math::QuaternionException)
 {
-    math::QuaternionGeneric<F> retVal = q1;
-    retVal.ldiv_(q2);
+    if ( true == math::NumericUtil::isZero<F>(q2.__sqsum()) )
+    {
+        throw math::QuaternionException(math::QuaternionException::DIVIDE_BY_ZERO);
+    }
 
-    return retVal;
+    return q2.reciprocal() * q1;
 }
 
 
@@ -1129,10 +1194,7 @@ math::QuaternionGeneric<F> math::ldiv(
         const F& sc
       ) throw(math::QuaternionException)
 {
-    math::QuaternionGeneric<F> retVal(q);
-    retVal.ldiv_(sc);
-
-    return retVal;
+    return q / sc;
 }
 
 
@@ -1152,7 +1214,7 @@ math::QuaternionGeneric<F> math::ldiv(
         const math::QuaternionGeneric<F>& q
       ) throw(math::QuaternionException)
 {
-    return math::rdiv(math::QuaternionGeneric<F>(sc), q);
+    return math::ldiv(math::QuaternionGeneric<F>(sc), q);
 }
 
 
