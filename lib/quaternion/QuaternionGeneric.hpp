@@ -72,6 +72,24 @@ QuaternionGeneric<F> operator+(const QuaternionGeneric<F>& q);
 template <typename F>
 QuaternionGeneric<F> operator-(const QuaternionGeneric<F>& q);
 
+template <typename F>
+QuaternionGeneric<F> rdiv(const QuaternionGeneric<F>& q1, const QuaternionGeneric<F>& q2) throw(QuaternionException);
+
+template <typename F>
+QuaternionGeneric<F> rdiv(const QuaternionGeneric<F>& q, const F& sc) throw(QuaternionException);
+
+template <typename F>
+QuaternionGeneric<F> rdiv(const F& sc, const QuaternionGeneric<F>& q) throw(QuaternionException);
+
+template <typename F>
+QuaternionGeneric<F> ldiv(const QuaternionGeneric<F>& q1, const QuaternionGeneric<F>& q2) throw(QuaternionException);
+
+template <typename F>
+QuaternionGeneric<F> ldiv(const QuaternionGeneric<F>& q, const F& sc) throw(QuaternionException);
+
+template <typename F>
+QuaternionGeneric<F> ldiv(const F& sc, const QuaternionGeneric<F>& q) throw(QuaternionException);
+
 // and its friend << operator:
 template <typename F>
 std::ostream& operator<<(std::ostream& output, const QuaternionGeneric<F>& q);
@@ -155,6 +173,10 @@ public:
     QuaternionGeneric<F>& operator*=(const F& scalar);
     QuaternionGeneric<F>& operator+=(const F& scalar);
     QuaternionGeneric<F>& operator-=(const F& scalar);
+    QuaternionGeneric<F>& rdiv_(const QuaternionGeneric<F>& q) throw(QuaternionException);
+    QuaternionGeneric<F>& rdiv_(const F& sc) throw(QuaternionException);
+    QuaternionGeneric<F>& ldiv_(const QuaternionGeneric<F>& q) throw(QuaternionException);
+    QuaternionGeneric<F>& ldiv_(const F& sc) throw(QuaternionException);
 
     // Conjugate the quaternion:
     QuaternionGeneric<F>& conj_();
@@ -189,6 +211,12 @@ public:
     friend QuaternionGeneric<F> (math::operator- <>) (const F& scalar, const QuaternionGeneric<F>& q);
     friend QuaternionGeneric<F> (math::operator+ <>) (const QuaternionGeneric<F>& q);
     friend QuaternionGeneric<F> (math::operator- <>) (const QuaternionGeneric<F>& q);
+    friend QuaternionGeneric<F> (math::rdiv <>) (const QuaternionGeneric<F>& q1, const QuaternionGeneric<F>& q2) throw(QuaternionException);
+    friend QuaternionGeneric<F> (math::rdiv <>) (const QuaternionGeneric<F>& q, const F& sc) throw(QuaternionException);
+    friend QuaternionGeneric<F> (math::rdiv <>) (const F& sc, const QuaternionGeneric<F>& q) throw(QuaternionException);
+    friend QuaternionGeneric<F> (math::ldiv <>) (const QuaternionGeneric<F>& q1, const QuaternionGeneric<F>& q2) throw(QuaternionException);
+    friend QuaternionGeneric<F> (math::ldiv <>) (const QuaternionGeneric<F>& q, const F& sc) throw(QuaternionException);
+    friend QuaternionGeneric<F> (math::ldiv <>) (const F& sc, const QuaternionGeneric<F>& q) throw(QuaternionException);
 
     // a friend function to overload the operator << (used by std::cout and std::cerr)
     friend std::ostream& (math::operator<< <>) (std::ostream& output, const QuaternionGeneric<F>& q);

@@ -47,6 +47,14 @@ printf('p-4: ');  p - 4
 printf('1-p: ');  1 - p
 printf('p+2: ');  p += 2
 printf('p+2-2: ');  p -= 2
+qinv = inv(q);
+pinv = inv(p);
+printf('p rdiv q: ');  p * qinv
+printf('p ldiv q: ');  qinv * p
+printf('p rdiv 1.5: ');  p / 1.5
+printf('q ldiv 2.5: ');  q / 2.5
+printf('5 rdiv p: ');  5 * pinv
+printf('3 ldiv q: ');  qinv * 3
 
 qc = -0.5 * (q +i*q*i + j*q*j + k*q*k);
 printf('-0.5*(q+i*q*i+j*q*j+k*q*k): ');  qc
