@@ -44,7 +44,7 @@ math::StatisticsException::StatisticsException(const math::StatisticsException::
  */
 void math::StatisticsException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::StatisticsException::SAMPLE_EMPTY :
             str << "The sample is empty.";

@@ -44,7 +44,7 @@ math::FunctionException::FunctionException(const math::FunctionException::err_co
  */
 void math::FunctionException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::FunctionException::UNDEFINED :
             str << "Function undefined at the given input";

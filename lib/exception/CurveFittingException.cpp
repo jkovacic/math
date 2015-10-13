@@ -43,7 +43,7 @@ math::CurveFittingException::CurveFittingException(const math::CurveFittingExcep
  */
 void math::CurveFittingException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::CurveFittingException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory";

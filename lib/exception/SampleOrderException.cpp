@@ -44,7 +44,7 @@ math::SampleOrderException::SampleOrderException(const math::SampleOrderExceptio
  */
 void math::SampleOrderException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::SampleOrderException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory.";

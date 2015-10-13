@@ -45,7 +45,7 @@ math::CombinatoricsException::CombinatoricsException(const math::CombinatoricsEx
  */
 void math::CombinatoricsException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::CombinatoricsException::OUT_OF_RANGE:
             str << "Result of the operation is out of the integer range.";

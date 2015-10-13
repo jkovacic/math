@@ -44,7 +44,7 @@ math::SpecFunException::SpecFunException(const math::SpecFunException::err_codes
  */
 void math::SpecFunException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::SpecFunException::UNDEFINED :
             str << "Function undefined for the given input argument.";

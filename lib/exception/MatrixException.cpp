@@ -44,7 +44,7 @@ math::MatrixException::MatrixException(const math::MatrixException::err_codes er
  */
 void math::MatrixException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::MatrixException::FORBIDDEN :
             str << "Forbidden operation";

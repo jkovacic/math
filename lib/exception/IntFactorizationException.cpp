@@ -45,7 +45,7 @@ math::IntFactorizationException::IntFactorizationException(const math::IntFactor
  */
 void math::IntFactorizationException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::IntFactorizationException::OUT_OF_RANGE :
             str << "Result of the operation is out of the integer range.";

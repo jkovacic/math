@@ -44,7 +44,7 @@ math::RootFindException::RootFindException(const math::RootFindException::err_co
  */
 void math::RootFindException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::RootFindException::UNDEFINED :
             str << "Encountered a point where the function is not defined";

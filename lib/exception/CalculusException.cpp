@@ -44,7 +44,7 @@ math::CalculusException::CalculusException(const math::CalculusException::err_co
  */
 void math::CalculusException::what(std::ostream& str) const
 {
-    switch (error)
+    switch (this->error)
     {
         case math::CalculusException::UNDEFINED :
             str << "Function undefined at the given input";
