@@ -86,6 +86,18 @@ void quaternionTest()
         cout << "q ldiv 2.5: " << ldiv(q, 2.5) << endl;
         cout << "5 rdiv p: " << rdiv(5.0, p) << endl;
         cout << "3 ldiv q: " << ldiv(3.0, q) << endl;
+        cout << "p / 2.2: " << p / 2.2 << endl;
+        cout << "7.2 / q: " << 7.2 / q << endl;
+        p /= -4.5;
+        cout << "p /= -4.5: " << p << endl;
+        p.rdiv_(q);
+        cout << "p rdiv= q: " << p << endl;
+        p.rdiv_(0.4);
+        cout << "p rdiv= 0.4: " << p << endl;
+        p.ldiv_(q);
+        cout << "p ldiv= q: " << p << endl;
+        p.ldiv_(0.8);
+        cout << "p ldiv= 0.8: " << p << endl;
 
         Quaternion qc = -0.5*(q+i*q*i+j*q*j+k*q*k);
         cout << "-0.5*(q+i*q*i+j*q*j+k*q*k)=" << qc << "  q conj: " << q.conj() << endl;

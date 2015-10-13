@@ -55,6 +55,13 @@ printf('p rdiv 1.5: ');  p / 1.5
 printf('q ldiv 2.5: ');  q / 2.5
 printf('5 rdiv p: ');  5 * pinv
 printf('3 ldiv q: ');  qinv * 3
+printf('p / 2.2: ');  p / 2.2
+printf('7.2 / p: ');  7.2 / q
+printf('p /= (-4.5): ');  p /= -4.5
+printf('p rdiv= q: ');  p =  p * qinv
+printf('p rdiv= 0.4: ');  p /= 0.4
+printf('p ldiv= q: ');  p = qinv * p
+printf('pldiv= 0.8: ');  p /= 0.8
 
 qc = -0.5 * (q +i*q*i + j*q*j + k*q*k);
 printf('-0.5*(q+i*q*i+j*q*j+k*q*k): ');  qc
