@@ -15,9 +15,6 @@
 library(moments)
 data(mtcars)
 
-cat('Min. weight: ', min(mtcars$wt), '\n')
-cat('Max. weight: ', max(mtcars$wt), '\n')
-
 cat('Sum of all mpgs: ', sum(mtcars$mpg), '\n')
 cat('Mean mpg: ', mean(mtcars$mpg), '\n')
 cat('Variance of mpg: ', var(mtcars$mpg), '\n')

@@ -47,12 +47,6 @@ namespace SampleStat
 {
 
     template <typename F>
-    F min(const std::vector<F>& x) throw(StatisticsException);
-
-    template <typename F>
-    F max(const std::vector<F>& x) throw(StatisticsException);
-
-    template <typename F>
     F sum(const std::vector<F>& x);
 
     template <typename F>

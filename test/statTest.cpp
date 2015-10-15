@@ -91,19 +91,6 @@ void statisticsTest()
         mtcopy(ampgs, LEN, vmpgs);
         mtcopy(awts, LEN, vwts);
 
-
-        /*
-           min(mtcars$wt)
-           [1] 1.513
-           max(mtcars$wt)
-           [1] 5.424
-         */
-
-        cout << "min(wt): " << SampleStat::min(vwts) << " (expected: 1.513)" << endl;
-        cout << "max(wt): " << SampleStat::max(vwts) << " (expected: 5.424)" << endl;
-        cout << endl;
-
-
         /*
          * Please note, that the additional R library 'moments' must be installed
          * to support some R functions

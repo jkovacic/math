@@ -49,6 +49,9 @@ void math::SampleOrderException::what(std::ostream& str) const
         case math::SampleOrderException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory.";
             break;
+        case math::SampleOrderException::SAMPLE_EMPTY :
+            str << "The sample is empty.";
+            break;
 
         default:
             // Should not occur but handle it anyway.

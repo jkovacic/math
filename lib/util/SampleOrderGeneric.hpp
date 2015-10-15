@@ -53,6 +53,12 @@ namespace SampleOrder
             const bool asc=true
           ) throw(SampleOrderException);
 
+    template <typename F>
+    F min(const std::vector<F>& x) throw(SampleOrderException);
+
+    template <typename F>
+    F max(const std::vector<F>& x) throw(SampleOrderException);
+
 }  // namespace SampleOrder
 }  // namespace math
 

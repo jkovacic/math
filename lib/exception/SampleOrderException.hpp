@@ -45,6 +45,7 @@ struct SampleOrderException : public IMathException
     enum err_codes
     {
         OUT_OF_MEMORY,                  /// allocation of memory failed
+        SAMPLE_EMPTY,                   /// empty sample
     };
 
     err_codes error;    /// type of an error

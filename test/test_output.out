@@ -36,6 +36,9 @@ Indices in ascending order:
 Indices in descending order:
 19 17 18 27 25 26 7 2 8 20 3 31 0 1 29 9 24 4 5 10 12 11 28 21 13 22 30 16 6 23 14 15 
 
+min(mpg): 10.4 (expected: 10.4)
+max(mpg): 33.9 (expected: 33.9)
+
 Q U A T E R N I O N   T E S T
 
 zero: (0+0i+0j+0k)
@@ -802,9 +805,6 @@ Mod. quasi Halleys's method: x0 = 1.89549	f(x0) ~= 0
 Correct root: 1.895494267033981
 
 S T A T I S T I C S   T E S T
-
-min(wt): 1.513 (expected: 1.513)
-max(wt): 5.424 (expected: 5.424)
 
 Sum of all elements: 642.9 (expected: 642.9)
 Sample mean: 20.0906 (expected: 20.09062)

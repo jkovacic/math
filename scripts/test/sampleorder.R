@@ -14,3 +14,7 @@ print(order(mtcars$mpg) - 1)
 
 cat("\nOrder of mpgs' indices in descending order:\n")
 print(order(mtcars$mpg, decreasing=TRUE) - 1)
+
+cat('\n')
+cat('Min. mpg: ', min(mtcars$mpg), '\n')
+cat('Max. mpg: ', max(mtcars$mpg), '\n')

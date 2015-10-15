@@ -106,6 +106,17 @@ void sampleOrderTest()
         cout << endl << "Indices in descending order:" << endl;
         SampleOrder::order(vmpgs, idx, false);
         printIndices(idx);
+        cout << endl;
+
+        /*
+           min(mtcars$wt)
+           [1] 10.4
+           max(mtcars$wt)
+           [1] 33.9
+         */
+
+        cout << "min(mpg): " << SampleOrder::min(vmpgs) << " (expected: 10.4)" << endl;
+        cout << "max(mpg): " << SampleOrder::max(vmpgs) << " (expected: 33.9)" << endl;
 
     }
     catch ( const SampleOrderException& ex )
