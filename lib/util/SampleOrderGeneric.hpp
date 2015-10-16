@@ -59,6 +59,12 @@ namespace SampleOrder
     template <typename F>
     F max(const std::vector<F>& x) throw(SampleOrderException);
 
+    template <typename F>
+    size_t whichMin(const std::vector<F>& x) throw(SampleOrderException);
+
+    template <typename F>
+    size_t whichMax(const std::vector<F>& x) throw(SampleOrderException);
+
 }  // namespace SampleOrder
 }  // namespace math
 

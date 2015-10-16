@@ -38,6 +38,8 @@ Indices in descending order:
 
 min(mpg): 10.4 (expected: 10.4)
 max(mpg): 33.9 (expected: 33.9)
+Index of the smallest mpg: 14 (expected: 14)
+Index of the largest mpg:  19 (expected: 19)
 
 Q U A T E R N I O N   T E S T
 

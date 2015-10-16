@@ -109,14 +109,20 @@ void sampleOrderTest()
         cout << endl;
 
         /*
-           min(mtcars$wt)
+           min(mtcars$mpg)
            [1] 10.4
-           max(mtcars$wt)
+           max(mtcars$mpg)
            [1] 33.9
+           which.min(mtcars$mpg) - 1
+           [1] 14
+           which.max(mtcars$mpg) - 1
+           [1] 19
          */
 
         cout << "min(mpg): " << SampleOrder::min(vmpgs) << " (expected: 10.4)" << endl;
         cout << "max(mpg): " << SampleOrder::max(vmpgs) << " (expected: 33.9)" << endl;
+        cout << "Index of the smallest mpg: " << SampleOrder::whichMin(vmpgs) << " (expected: 14)" << endl;
+        cout << "Index of the largest mpg:  " << SampleOrder::whichMax(vmpgs) << " (expected: 19)" << endl;
 
     }
     catch ( const SampleOrderException& ex )

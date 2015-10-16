@@ -99,7 +99,7 @@ public:
  * @param x - vector of observations
  * @param min - a logical value indicating whether minimum or maximum value should be returned
  *
- * @return
+ * @return sample's minimum/maximum observation
  *
  * @throw SampleOrdersException if 'x' is empty
  */
@@ -146,6 +146,84 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::SampleOrderExcep
     }  // omp parallel
 
     return retVal;
+}
+
+
+/*
+ * Finds index of sample's minimum or maximum observation, depending
+ * on 'min'. In case of ties, the smallest index is returned.
+ *
+ * @param x - vector of observations
+ * @param min - a logical value indicating whether minimum or maximum value should be returned
+ *
+ * @return the smallest index of sample's minimum/maximum observation
+ *
+ * @throw SampleOrdersException if 'x' is empty
+ */
+template <typename F>
+F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SampleOrderException)
+{
+    const size_t N = x.size();
+
+    // sanity check
+    if ( 0 == N )
+    {
+        throw math::SampleOrderException(math::SampleOrderException::SAMPLE_EMPTY);
+    }
+
+    // the first observation is the first candidate for the extreme value...
+    F extVal = x.at(0);
+    F extIdx = 0;
+
+    // Coarse grained parallelism:
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(x, extVal, extIdx)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        typename std::vector<F>::const_iterator it = x.begin() + istart;
+        size_t i = istart;
+
+        // the first value of the block is the first candidate for the local extreme
+        F temp = *it;
+        size_t idx = istart;
+
+        for ( size_t cntr=0;
+              cntr<elems_per_thread && it!=x.end();
+              ++it, ++cntr, ++i )
+        {
+            // compare the current element with 'temp' and
+            // update 'temp' and 'idx' if necessary
+            if ( ( true==min && *it<temp ) ||
+                 ( false==min && *it>temp ) )
+            {
+                temp = *it;
+                idx = i;
+            }
+        }
+
+        // prevent possible race condition when updating 'extVal' and 'extIdx'
+        #pragma omp critical(sampleordergeneric_whichminmax)
+        {
+            /*
+             * Compare each thread's extreme to the current global extreme.
+             *
+             * Note: this rather complicated combination of conditions ensures
+             * that the smallest index will be returned in case of ties
+             */
+            if ( ( true==min && (temp<extVal || (temp==extVal && idx<extIdx) ) ) ||
+                ( false==min && (temp>extVal || (temp==extVal && idx<extIdx) ) ) )
+            {
+                extVal = temp;
+                extIdx = idx;
+            }
+        }
+
+        (void) iend;
+    }  // omp parallel
+
+    return extIdx;
 }
 
 }}}  // namespace math::SampleOrder::__private
@@ -253,4 +331,32 @@ template <typename F>
 F math::SampleOrder::max(const std::vector<F>& x) throw(math::SampleOrderException)
 {
     return math::SampleOrder::__private::__minmax<F>(x, false);
+}
+
+
+/**
+ * @param x - vector of observations
+ *
+ * @return the smallest zero based index of the minimum observation of the sample
+ *
+ * @throw SampleOrderException if 'x' is empty
+ */
+template <typename F>
+size_t math::SampleOrder::whichMin(const std::vector<F>& x) throw(math::SampleOrderException)
+{
+    return math::SampleOrder::__private::__whichMinMax(x, true);
+}
+
+
+/**
+ * @param x - vector of observations
+ *
+ * @return the smallest zero based index of the maximum observation of the sample
+ *
+ * @throw SampleOrderException if 'x' is empty
+ */
+template <typename F>
+size_t math::SampleOrder::whichMax(const std::vector<F>& x) throw(SampleOrderException)
+{
+	return math::SampleOrder::__private::__whichMinMax(x, false);
 }
