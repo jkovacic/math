@@ -358,5 +358,5 @@ size_t math::SampleOrder::whichMin(const std::vector<F>& x) throw(math::SampleOr
 template <typename F>
 size_t math::SampleOrder::whichMax(const std::vector<F>& x) throw(SampleOrderException)
 {
-	return math::SampleOrder::__private::__whichMinMax(x, false);
+    return math::SampleOrder::__private::__whichMinMax(x, false);
 }
