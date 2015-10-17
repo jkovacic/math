@@ -482,7 +482,7 @@ public:
     // b(x,i) = x - a + 1 + 2*i
     T fb(const T& x, const size_t i) const throw (math::FunctionException)
     {
-        return x - this->m_a + static_cast<T>(1) + static_cast<T>(2*i);
+        return x - this->m_a + static_cast<T>(1) + static_cast<T>(2) * static_cast<T>(i);
     }
 };  // class __CtdFIncGamma
 
@@ -547,13 +547,13 @@ public:
         {
             // 'i' is odd, i.e i=2*m+1
             ai = -(this->m_a + static_cast<T>(m)) * (this->m_a + this->m_b + static_cast<T>(m)) * x /
-                  ( (this->m_a + static_cast<T>(2*m)) * (this->m_a + static_cast<T>(2*m) + static_cast<T>(1)) );
+                  ( (this->m_a + static_cast<T>(i) - static_cast<T>(1) ) * (this->m_a + static_cast<T>(i) ) );
         }
         else
         {
             // 'i' is even, i.e i=2*m
             ai = static_cast<T>(m) * (this->m_b - static_cast<T>(m)) * x /
-                 ( (this->m_a + static_cast<T>(2*m) - static_cast<T>(1)) * (this->m_a + static_cast<T>(2*m)) );
+                 ( (this->m_a + static_cast<T>(i) - static_cast<T>(1)) * (this->m_a + static_cast<T>(i)) );
         }
 
         return ai;
