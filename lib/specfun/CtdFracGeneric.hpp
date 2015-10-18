@@ -54,23 +54,22 @@ namespace  CtdFrac
  * You must derive a class from this one and implement the
  * pure virtual functions
  *
- *   T fa(const T& x, size_t i) const throw(FunctionException)
+ *   T fa(const size_t i) const throw(FunctionException)
  *
  * and
  *
- *   T fb(const T& x, size_t i) const throw(FunctionException)
+ *   T fb(const size_t i) const throw(FunctionException)
  *
- * that return values of 'a_i' and 'b_i', respectively, optionally
- * depending on 'x'. The functions are expected to throw
- * FunctionException::UNDEFINED if the value is not defined for the
- * given input argument 'x'.
+ * that return values of 'a_i' and 'b_i', respectively. 
+ * The functions are expected to throw FunctionException::UNDEFINED if
+ * the value is not defined at any combination of 'i' and/or 'x'.
  *
  * The instance of the derived class is then passed to the function
  * math::CtdFrac::ctdFrac() that actually evaluates the continued
  * fraction and calls fa() and fb() as applicable.
  *
  * @note 'fa' and 'fb' should not be stateful, their return values
- * should only depend on 'x' and 'i'.
+ * should only depend on i'.
  *
  * It is possible to parameterize the class by introducing additional
  * properties that can be set via setter methods.
@@ -83,37 +82,35 @@ public:
 
     /*
      * An interface for the function that returns the i^th coefficient
-     * 'a_i' (may also depend on 'x'). This is a pure virtual function
-     * and must be implemented in the derived class.
+     * 'a_i'. This is a pure virtual function and must be implemented
+     * in the derived class.
      *
      * The function should not be stateful, i.e. its output should
-     * only depend on 'x' and 'i'.
+     * only depend on 'i'.
      *
-     * @param x - input argument
      * @param i - number of the coefficient 'a'
      *
-     * @return a_i(x)
+     * @return a_i(i)
      *
-     * @throw FunctionExcpetion::UNDEFINED if the function is not defined at given 'x'
+     * @throw FunctionExcpetion::UNDEFINED if the function is not defined
      */
-    virtual T fa(const T& x, const size_t i) const throw (FunctionException) = 0;
+    virtual T fa(const size_t i) const throw (FunctionException) = 0;
 
     /*
      * An interface for the function that returns the i^th coefficient
-     * 'b_i' (may also depend on 'x'). This is a pure virtual function
-     * and must be implemented in the derived class.
+     * 'b_i'. This is a pure virtual function and must be implemented
+     * in the derived class.
      *
      * The function should not be stateful, i.e. its output should
-     * only depend on 'x' and 'i'.
+     * only depend on 'i'.
      *
-     * @param x - input argument
      * @param i - number of the coefficient 'b'
      *
-     * @return b_i(x)
+     * @return b_i(i)
      *
-     * @throw FunctionExcpetion::UNDEFINED if the function is not defined at given 'x'
+     * @throw FunctionExcpetion::UNDEFINED if the function is not defined
      */
-    virtual T fb(const T& x, const size_t i) const throw (FunctionException) = 0;
+    virtual T fb(const size_t i) const throw (FunctionException) = 0;
 
     virtual ~ICtdFracFuncGeneric();
 
@@ -125,7 +122,6 @@ public:
 template <class T>
 T ctdFrac(
            const ICtdFracFuncGeneric<T>& ctdf,
-           const T& x,
            const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
          ) throw(SpecFunException);
 

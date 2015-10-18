@@ -56,20 +56,18 @@ math::CtdFrac::ICtdFracFuncGeneric<T>::~ICtdFracFuncGeneric()
  *                    b2 + ----------
  *                          b3 + ...
  *
- * where ai and bi are functions of the argument 'x' and 'i'.
+ * where ai and bi are functions of 'i'.
  *
  * @param ctdf - instance of a class ICtdFracFuncGeneric that returns values of 'a_i' and 'b_i'
- * @param x - input argument
  * @param tol - tolerance (default: 1e-6)
  *
  * @return the value of the continued fraction, specified by terms 'ai' and 'bi'
  *
- * @throw SpecFunException if 'ctdf.fa' or 'ctdf.fb' is undefined for any combination of 'x' and 'i'
+ * @throw SpecFunException if 'ctdf.fa' or 'ctdf.fb' is undefined for any 'i'
  */
 template <class T>
 T math::CtdFrac::ctdFrac(
            const math::CtdFrac::ICtdFracFuncGeneric<T>& ctdf,
-           const T& x,
            const T& tol
          ) throw (math::SpecFunException)
 {
@@ -102,7 +100,7 @@ T math::CtdFrac::ctdFrac(
     try
     {
         // f0 = b0
-        T f = ctdf.fb(x, 0);
+        T f = ctdf.fb(0);
 
         // adjust f0 to eps if necessary
         if ( true == math::NumericUtil::isZero<T>(f) )
@@ -125,8 +123,8 @@ T math::CtdFrac::ctdFrac(
               ++j )
         {
             // obtain 'aj' and 'bj'
-            const T a = ctdf.fa(x, j);
-            const T b = ctdf.fb(x, j);
+            const T a = ctdf.fa(j);
+            const T b = ctdf.fb(j);
 
             // dj = bj + aj * d_j-1
             d = b + a * d;

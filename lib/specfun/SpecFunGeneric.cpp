@@ -451,7 +451,7 @@ namespace math {  namespace SpecFun {  namespace __private {
  * * a(x,i) = - i * (i-a)
  * * b(x,i) = x - a + 1 + 2*i
  * 
- * 'a' is the class' internal parameter
+ * 'a' and 'x' are the class' internal parameters
  */
 template< class T>
 class __CtdFIncGamma : public math::CtdFrac::ICtdFracFuncGeneric<T>
@@ -459,30 +459,32 @@ class __CtdFIncGamma : public math::CtdFrac::ICtdFracFuncGeneric<T>
 
 private:
     const T m_a;      // parameter 'a'
+    const T m_x;      // input argument to the incomplete gamma function ('x') 
 
 public:
     /*
      * Constructor, sets value of 'm_a'
      *
      * @param a - parameter 'a' from the definition of incomplete gamma function
+     * @param x - input argument to the incomplete gamma function
      */
-    __CtdFIncGamma(const T& a) : m_a(a)
+    __CtdFIncGamma(const T& a, const T& x) : m_a(a), m_x(x)
     {
         // nothing else to do
     }
 
     // a(x,i) = -i * (i-a)
-    T fa(const T& x, const size_t i) const throw (math::FunctionException)
+    T fa(const size_t i) const throw (math::FunctionException)
     {
-        (void) x;
         const T f = static_cast<T>(i);
         return -f * (f - this->m_a);
     }
 
     // b(x,i) = x - a + 1 + 2*i
-    T fb(const T& x, const size_t i) const throw (math::FunctionException)
+    T fb(const size_t i) const throw (math::FunctionException)
     {
-        return x - this->m_a + static_cast<T>(1) + static_cast<T>(2) * static_cast<T>(i);
+        return this->m_x - this->m_a + static_cast<T>(1) + 
+                    static_cast<T>(2) * static_cast<T>(i);
     }
 };  // class __CtdFIncGamma
 
@@ -512,7 +514,7 @@ public:
  * *           |   ---------------------       <== i = 2*m
  * *           \    (a+2*m-1) * (a+2*m)
  * 
- * 'a' and 'b' are the class' internal parameters
+ * 'a', 'b' and 'c' are the class' internal parameters
  */
 template <class T>
 class __CtdFIncBeta : public math::CtdFrac::ICtdFracFuncGeneric<T>
@@ -521,6 +523,7 @@ private:
 
     const T m_a;      // parameter 'a'
     const T m_b;      // parameter 'b'
+    const T m_x;      // input argument to the incomplete beta function ('x')
 
 public:
     /*
@@ -528,8 +531,9 @@ public:
      *
      * @param a - parameter 'a' from the definition of the incomplete beta function
      * @param b - parameter 'b' from the definition of the incomplete beta function
+     * @param x - input argument to the incomplete beta function
      */
-    __CtdFIncBeta(const T& a, const T& b) : m_a(a), m_b(b)
+    __CtdFIncBeta(const T& a, const T& b, const T& x) : m_a(a), m_b(b), m_x(x)
     {
         // nothing else to do
     }
@@ -538,7 +542,7 @@ public:
      * a(x,i) = -(a+m)*(a+b+m)*x / ( (a+2m)*(a+2m+1) )   when i=2*m+1
      * a(x,i) = m*(b-m)*x / ( (a+2m-1)*(a+2m) )          when i=2*m
      */
-    T fa(const T& x, const size_t i) const throw(math::FunctionException)
+    T fa(const size_t i) const throw(math::FunctionException)
     {
         const size_t m = i / 2;
         T ai = static_cast<T>(0);
@@ -546,13 +550,13 @@ public:
         if ( 1 == i%2 )
         {
             // 'i' is odd, i.e i=2*m+1
-            ai = -(this->m_a + static_cast<T>(m)) * (this->m_a + this->m_b + static_cast<T>(m)) * x /
+            ai = -(this->m_a + static_cast<T>(m)) * (this->m_a + this->m_b + static_cast<T>(m)) * this->m_x /
                   ( (this->m_a + static_cast<T>(i) - static_cast<T>(1) ) * (this->m_a + static_cast<T>(i) ) );
         }
         else
         {
             // 'i' is even, i.e i=2*m
-            ai = static_cast<T>(m) * (this->m_b - static_cast<T>(m)) * x /
+            ai = static_cast<T>(m) * (this->m_b - static_cast<T>(m)) * this->m_x /
                  ( (this->m_a + static_cast<T>(i) - static_cast<T>(1)) * (this->m_a + static_cast<T>(i)) );
         }
 
@@ -560,9 +564,8 @@ public:
     }
 
     // b(x,i) = 1
-    T fb(const T& x, const size_t i) const throw(math::FunctionException)
+    T fb(const size_t i) const throw(math::FunctionException)
     {
-        (void) x;
         (void) i;
         return static_cast<T>(1);
     }
@@ -591,7 +594,7 @@ T __incGamma(
                ) throw(math::SpecFunException)
 {
     // An instance of __CtdFIncGamma that implements 'fa' and 'fb':
-    const math::SpecFun::__private::__CtdFIncGamma<T> coef(a);
+    const math::SpecFun::__private::__CtdFIncGamma<T> coef(a, x);
 
     // sanity check:
     if ( a < math::NumericUtil::getEPS<T>() ||
@@ -664,7 +667,7 @@ T __incGamma(
             static_cast<T>(0) : 
             math::SpecFun::gamma<T>(a) );
 
-        ginc /=  math::CtdFrac::ctdFrac<T>(coef, x);
+        ginc /=  math::CtdFrac::ctdFrac<T>(coef);
 
         /*
          * Apply properties of the incomplete gamma function
@@ -926,7 +929,7 @@ T __incBeta(
         static_cast<T>(0) );
 
     // An instance of __CtdFIncBeta that implements 'fa' and 'fb':
-    const math::SpecFun::__private::__CtdFIncBeta<T> coef(an, bn);
+    const math::SpecFun::__private::__CtdFIncBeta<T> coef(an, bn, xn);
 
     T binc;
 
@@ -944,7 +947,7 @@ T __incBeta(
         // 'x' is somewhere between 0 and 1, apply the algorithm described above
 
         binc = std::pow(xn, an) * std::pow(static_cast<T>(1)-xn, bn) / an;
-        binc /= math::CtdFrac::ctdFrac<T>(coef, xn, tol);
+        binc /= math::CtdFrac::ctdFrac<T>(coef, tol);
     }
 
     /*
@@ -1867,7 +1870,7 @@ T __invIncBeta(
 
     /*
      * There is no known direct series or continued fraction to evaluate
-     * an inverse of the incomplete betaa function. On the other hand
+     * an inverse of the incomplete beta function. On the other hand
      * there are known algorithms that estimate this value quite well.
      * This algorithm implements approximation method proposed by the
      * [Numerical Recipes], section 6.4 and [Abramowitz & Stegun],
