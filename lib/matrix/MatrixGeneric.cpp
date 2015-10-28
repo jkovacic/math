@@ -34,7 +34,7 @@ limitations under the License.
 // no #include "MatrixGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
 #include "exception/MatrixException.hpp"
-#include "matrix/LinearEquationSolverGeneric.hpp"
+#include "matrix/PivotGeneric.hpp"
 #include "util/mtcopy.hpp"
 #include "util/mtvectop.hpp"
 #include "util/mtswap.hpp"
@@ -976,12 +976,14 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setUnit_() throw(math::MatrixExc
  *
  * @note The method is only supported for square matrices
  * 
+ * @param fullp - should the algorithm perform full pivoting (default: TRUE)
+ * 
  * @return determinant of the matrix
  *
  * @throw MatrixException if the matrix is not square or if allocation of memory for auxiliary variables fails
  */
 template <class T>
-T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
+T math::MatrixGeneric<T>::determinant(const bool fullp) const throw(math::MatrixException)
 {
     // Sanity check
     if ( false == this->isSquare() )
@@ -989,155 +991,7 @@ T math::MatrixGeneric<T>::determinant() const throw(math::MatrixException)
         throw math::MatrixException(math::MatrixException::NONSQUARE_MATRIX);
     }
 
-    /*
-     * The following properties of determinant will be utilized:
-     *
-     * - addition of one line with a multiple of another line does not affect
-     *   the determinant
-     * - swapping of two lines negates the determinant
-     * - if a matrix is "converted" into an upper or lower triangle
-     *   (all elements above/below the diagonal are 0), the determinant
-     *   is a product of all diagonal elements
-     */
-
-    // Initial value. It will be negated each time two lines need to be swapped.
-    // At the end of the algorithm it will be multiplied by all diagonal elements
-    T retVal = static_cast<T>(1);
-
-    /*
-     * We do not want to modify the matrix, therefore its vector of
-     * elements will be copied into a temporary one where any modifications
-     * are permitted
-     */
-    std::vector<T> temp;
-    math::mtcopy(this->m_elems, temp);
-    const size_t& N = this->m_rows;  // number of rows (and columns)
-
-    /*
-     * First part of the algorithm just finds the first occurrence of a
-     * row where A(i,i) does not equal 0. As such, this part is not
-     * suitable for parallelization.
-     */
-    for ( size_t i=0; i<N-1; ++i )
-    {
-        /*
-         * if temp(i,i) equals zero, swap the i^th line with
-         * another one (r; r>i) satisfying temp(r,i)!=0
-         * Each swap multiplies the determinant by -1
-         */
-
-        if ( true == math::NumericUtil::isZero<T>(temp.at(this->__pos(i, i))) )
-        {
-            size_t r;
-
-            /*
-             * Line swap will be necessary.
-             * Find the r^th line meeting the criteria above
-             * If not found, the determinant will be 0.
-             */
-
-            for ( r=i+1; r<N; ++r )
-            {
-                if ( false == NumericUtil::isZero<T>(temp.at(this->__pos(r, i))) )
-                {
-                    // Found, no need to search further,
-                    // so end the for (r) loop
-                    break;  // out of for (r)
-                }
-            }  // for r
-
-            // if no appropriate row r was found, the determinant will be 0
-            // and the method is finished
-            if ( N == r )
-            {
-                return static_cast<T>(0);
-            }
-
-            // otherwise swap the lines one element by one
-
-            // swap i.th and r.th line by replacing elements one by one
-
-            // However the swapping part might conditionally be suitable for parallelization
-            #pragma omp parallel for \
-                        if((N-i)>OMP_CHUNKS_PER_THREAD) \
-                        default(none) shared(temp, r, i)
-            for ( size_t c=this->__pos(i,i); c<this->__pos(i+1, 0); ++c )
-            {
-                std::swap(temp.at(c), temp.at(this->__pos(r, c)));
-            }
-
-            // finally, if two lines are swapped, det = -det
-            retVal = -retVal;
-        } // if temp(i,i) equals 0
-
-        /*
-         * Now temp(i,i) definitely does not equal 0
-         * all temp(r,i) will be "set" to 0 where r>i.
-         *
-         * Note that determinant is not changed if
-         * a multiplier of one line (i in this algorithm)
-         * is added to another line (r; r>i)
-         */
-
-        /*
-         * Main part of the algorithm. An appropriate multiplier of the i.th row will be
-         * added to each row 'r' (r>i) so that temp(r,i) will be equal to zero.
-         *
-         * Note: only the outer for loop (for r) will be parallelized.
-         */
-        #pragma omp parallel for default(none) shared(N, temp, i)
-        for ( size_t r=i+1; r<N; ++r )
-        {
-            /*
-             * temp(r,i) will be calculated to 0 immediately.
-             * However, its initial value is necessary to properly
-             * calculate all other elements of the r.th row
-             */
-            const T ri = temp.at(this->__pos(r, i));
-
-            for ( size_t c=i; c<N; ++c)
-            {
-                // temp(r,c) = temp(r,c) - temp(i,c) * temp(r,i) / temp(i,i)
-                temp.at(this->__pos(r, c)) -= 
-                    temp.at(this->__pos(i, c)) * ri / temp.at(this->__pos(i, i));
-            }  // for c
-        }  // for r
-    }  // for i
-
-
-    /*
-     * Now 'temp' is an upper triangular matrix so all its diagonal
-     * elements can be multiplied.
-     */
-
-    // Coarse grained parallelism
-    T prod = static_cast<T>(1);
-
-    #pragma omp parallel num_threads(ompIdeal(N)) \
-                if(N>OMP_CHUNKS_PER_THREAD) \
-                default(none) shared(N, temp, prod)
-    {
-        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
-
-        T tempProd = static_cast<T>(1);
-        for ( size_t i = istart; i<iend; ++i )
-        {
-            tempProd *= temp.at(this->__pos(i, i));
-        }
-
-        // Multiply in a thread safe manner:
-        #pragma omp critical(sqmatrix_determinant)
-        {
-            prod *= tempProd;
-        }
-    }  // omp parallel
-
-    retVal *= prod;
-
-    // temp not needed anymore, clean it
-    temp.clear();
-
-    return retVal;
+    return math::Pivot::getDeterminant(*this, fullp);
 }
 
 /**
@@ -1187,7 +1041,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse(const bool fullp) const t
     // this * inv = id
     math::MatrixGeneric<T> retVal(id);
 
-    const bool succ = math::LinearEquationSolver::solveGaussJordan<T>(*this, id, retVal, fullp);
+    const bool succ = math::Pivot::solveGaussJordan<T>(*this, id, retVal, fullp);
 
     // is *this an uninvertible matrix? (determinant()=0):
     if ( false == succ )

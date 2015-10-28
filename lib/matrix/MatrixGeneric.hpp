@@ -236,7 +236,7 @@ public:
     // These methods are only applicable for square matrices:
     MatrixGeneric<T>& setDiag_(const T& scalar) throw(MatrixException);
     MatrixGeneric<T>& setUnit_() throw(MatrixException);
-    T determinant() const throw(MatrixException);
+    T determinant(const bool fullp = true) const throw(MatrixException);
     MatrixGeneric<T> inverse(const bool fullp = true) const throw(MatrixException);
 
     bool isSquare() const;
