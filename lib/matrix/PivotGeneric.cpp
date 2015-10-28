@@ -408,7 +408,7 @@ void __pivot(
 
         // Set the i.th column of all other rows (r>i) to 0 by
         // adding the appropriate multiple of the i.th row
-        #pragma omp parallel for default(none) shared(A, pB, i)
+        #pragma omp parallel for default(none) shared(A, i)
         for ( size_t r=i+1; r<NR; r++ )
         {
             // Nothing to do if temp(r,i) is already 0.
@@ -446,7 +446,7 @@ void __pivot(
      * Normalizing of each row is independent from other rows so it is
      * perfectly safe to parallelize the task by rows.
      */
-    #pragma omp parallel for default(none) shared(A, pB)
+    #pragma omp parallel for default(none) shared(A)
     for ( size_t r=0; r<NR; ++r )
     {
         const T el = A(r, r);
@@ -511,7 +511,7 @@ void __pivot(
              */
             #pragma omp parallel for \
                         default(none) \
-                        shared(A, pB, c) \
+                        shared(A, c) \
                         schedule(dynamic)
             for ( size_t r=0; r<c; ++r )
             {
