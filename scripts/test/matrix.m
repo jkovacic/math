@@ -17,6 +17,7 @@ printf('f multiplied by 0.5:\n');  f * 0.5
 
 printf('t = f transposed:\n');
 t = f'
+printf('rank(t): %f\n', rank(t));
 
 printf('t * f:\n');  t * f
 printf('f * t:\n');  f * t

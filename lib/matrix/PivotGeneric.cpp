@@ -438,8 +438,8 @@ void __pivot(
     }  // for i
 
     /*
-     * Set the diag elements of 'A' and 'b' to 1 by dividing the
-     * whole row by temp(r,r). Columns smaller than 'r' are already equal to 0.
+     * Set the diag elements of 'A' to 1 by dividing the
+     * whole row by A(r,r). Columns smaller than 'r' are already equal to 0.
      */
 
     /*
@@ -447,7 +447,7 @@ void __pivot(
      * perfectly safe to parallelize the task by rows.
      */
     #pragma omp parallel for default(none) shared(A)
-    for ( size_t r=0; r<NR; ++r )
+    for ( size_t r=0; r<N; ++r )
     {
         const T el = A(r, r);
 

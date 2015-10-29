@@ -83,6 +83,7 @@ void matrixTest()
         cout << "t = f transposed:" << endl;
         t.display();
         cout << endl;
+        cout << "rank: " << t.rank() << endl << endl;
 
         // Test of matrix product
         Matrix prod = t*f;
