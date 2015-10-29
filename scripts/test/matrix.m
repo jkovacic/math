@@ -24,6 +24,7 @@ printf('f * t:\n');  f * t
 printf('3x3 unit matrix:\n')
 a = eye(3)
 m1 = [1, 2.4, -1.4, 0; 4.5, 1, 0, -0.5; 0, 1.75, 1, 2]
+printf('rank(m1): %f\n', rank(m1));
 printf('removed the 3rd column from m1:\n');
 m1(:, 3) = []
 printf('inserted a column of zeros between the 1st and the 2nd column of m1:\n');
@@ -32,6 +33,7 @@ printf('removed the 2nd row of m1\n');
 m1(2, :) = []
 printf('\inserted a row (zeroes) between the 1st and 2nd row of m1\n');
 m1 = [m1(1:1, :); zeros(1, 4); m1(2:end, :)]
+printf('rank: %f\n', rank(m1));
 printf('previous matrix transposed:\n');
 m1'
 
@@ -42,6 +44,7 @@ m3 = -kv;
 
 a1 = [1, 2, 3; 4, 5, 6; 7, 9, 8]
 printf('Determinant of a1: %f\n', det(a1));
+printf('Rank of a1: %f\n', rank(a1));
 printf('\ninverse of a1:\n');
 invv = inv(a1)
 printf('a1 * inv   (must be a unit matrix):\n');  a1 * invv

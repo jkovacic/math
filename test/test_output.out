@@ -171,6 +171,8 @@ m1:
 4.5	1	0	-0.5
 0	1.75	1	2
 
+rank(m1): 3
+
 removed the 3rd column:
 1	2.4	0
 4.5	1	-0.5
@@ -189,6 +191,8 @@ inserted a row (zeroes) between the 1st and 2nd row:
 1	0	2.4	0
 0	0	0	0
 0	0	1.75	2
+
+rank: 2
 
 transposed the previous matrix:
 1	0	0
@@ -210,6 +214,7 @@ a1:
 7	9	8
 
 Determinant of a1: 9
+Rank of a1: 3
 
 inv = inverse of a1:
 -1.55556	1.22222	-0.333333

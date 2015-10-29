@@ -28,6 +28,8 @@ limitations under the License.
 #ifndef _MATH_PIVOTGENERIC_HPP_
 #define _MATH_PIVOTGENERIC_HPP_
 
+#include <cstddef>
+
 #include "matrix/MatrixGeneric.hpp"
 #include "exception/MatrixException.hpp"
 
@@ -50,6 +52,10 @@ bool solveGaussJordan(
 
 template <class T>
 T getDeterminant(const MatrixGeneric<T>& A, const bool fullp) throw(MatrixException);
+
+
+template <class T>
+size_t getRank(const MatrixGeneric<T>& A) throw(MatrixException);
 
 }  // namespace Pivot
 

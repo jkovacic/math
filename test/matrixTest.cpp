@@ -111,6 +111,7 @@ void matrixTest()
         cout << "m1:" << endl;
         m1.display();
         cout << endl;
+        cout << "rank(m1): " << m1.rank() << endl << endl;
 
         m1.removeColumn_(2);
         cout << "removed the 3rd column:" << endl;
@@ -131,6 +132,7 @@ void matrixTest()
         cout << "inserted a row (zeroes) between the 1st and 2nd row:" << endl;
         m1.display();
         cout << endl;
+        cout << "rank: " << m1.rank() << endl << endl;
 
         cout << "transposed the previous matrix:" << endl;
         m1.transpose_().display();
@@ -162,7 +164,8 @@ void matrixTest()
         cout << "a1:" << endl;
         a1.roundSmallElements().display();
         cout << endl;
-        cout << "Determinant of a1: " << d << endl << endl;;
+        cout << "Determinant of a1: " << d << endl;
+        cout << "Rank of a1: " << a1.rank() << endl << endl;
 
         // and calculation of the inverse matrix
         Matrix inv = a1.inverse();

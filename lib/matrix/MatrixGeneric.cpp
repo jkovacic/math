@@ -994,6 +994,21 @@ T math::MatrixGeneric<T>::determinant(const bool fullp) const throw(math::Matrix
     return math::Pivot::getDeterminant(*this, fullp);
 }
 
+
+/*
+ * Calculates rank of a matrix.
+ *
+ * @return rank of the matrix
+ *
+ * @throw MatrixException if internal allocation of memory failed
+ */
+template <class T>
+size_t math::MatrixGeneric<T>::rank() const throw(math::MatrixException)
+{
+    return math::Pivot::getRank(*this);
+}
+
+
 /**
  * Matrix inversion.
  * R = A^(-1) if R*A = A*R = I

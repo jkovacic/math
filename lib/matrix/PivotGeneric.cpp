@@ -409,7 +409,7 @@ void __pivot(
         // Set the i.th column of all other rows (r>i) to 0 by
         // adding the appropriate multiple of the i.th row
         #pragma omp parallel for default(none) shared(A, i)
-        for ( size_t r=i+1; r<NR; r++ )
+        for ( size_t r=i+1; r<NR; ++r )
         {
             // Nothing to do if temp(r,i) is already 0.
             if ( false == math::NumericUtil::isZero<T>( A(r, i)) )
@@ -458,7 +458,7 @@ void __pivot(
 
         if ( NULL != pB )
         {
-            math::MatrixGeneric<T>& B = * pB;
+            math::MatrixGeneric<T>& B = *pB;
 
             for ( size_t c=0; c<NT; ++c )
             {
@@ -637,7 +637,7 @@ bool math::Pivot::solveGaussJordan(
 }
 
 
-/**
+/*
  * Calculates determinant of a square matrix.
  * 
  * @param A - a matrix to calculate its determinant
@@ -665,4 +665,27 @@ T math::Pivot::getDeterminant(
     math::Pivot::__private::__pivot<T>(temp, fullp, false, NULL, NULL, &det);
 
     return det;
+}
+
+
+/*
+ * Calculates rank of a matrix.
+ *
+ * @param A - a matrix to calculate its rank
+ *
+ * @return rank of 'A'
+ *
+ * @throw MatrixException if internal allocation of memory failed
+ */
+template <class T>
+size_t math::Pivot::getRank(
+        const math::MatrixGeneric<T>& A
+      ) throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> temp(A);
+    size_t rank;
+
+    math::Pivot::__private::__pivot<T>(temp, true, false, NULL, &rank, NULL);
+
+    return rank;
 }

@@ -240,6 +240,7 @@ public:
     MatrixGeneric<T> inverse(const bool fullp = true) const throw(MatrixException);
 
     bool isSquare() const;
+    size_t rank() const throw(MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();
