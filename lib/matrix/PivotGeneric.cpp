@@ -437,41 +437,6 @@ void __pivot(
         }  // for r
     }  // for i
 
-    /*
-     * Set the diag elements of 'A' to 1 by dividing the
-     * whole row by A(r,r). Columns smaller than 'r' are already equal to 0.
-     */
-
-    /*
-     * Normalizing of each row is independent from other rows so it is
-     * perfectly safe to parallelize the task by rows.
-     */
-    #pragma omp parallel for default(none) shared(A)
-    for ( size_t r=0; r<N; ++r )
-    {
-        const T el = A(r, r);
-
-        for ( size_t c=r; c<NC; ++c )
-        {
-            A(r, c) /= el;
-        }
-
-        if ( NULL != pB )
-        {
-            math::MatrixGeneric<T>& B = *pB;
-
-            for ( size_t c=0; c<NT; ++c )
-            {
-                B(r, c) /= el;
-            }
-        }
-    }
-
-    /*
-     * 'A' is now an upper diagonal matrix with ones on the diagonal.
-     * No additional processing of 'A' and 'b' is necessary if 'fullm' is false.
-     */
-
     // If this point is reached, A is a full rank matrix (rank=min(NR, NC)):
     if ( NULL != pRank )
     {
@@ -484,10 +449,49 @@ void __pivot(
      * swaps of rows and columns is odd. For more details,
      * see properties of the determinant in the notes above.
      */
-    if ( NULL!=pDet && true==oddSwaps)
+    if ( NULL!=pDet && true==oddSwaps )
     {
         *pDet = -(*pDet);
     }
+
+
+    /*
+     * Set the diagonal elements of 'A' to 1 by dividing the
+     * whole row by A(r,r). Columns smaller than 'r' are already equal to 0.
+     * This operation only makes sense when a system of linear equations is
+     * being solved, i.e. when 'b' is provided.
+     */
+
+    if ( NULL != pB )
+    {
+        math::MatrixGeneric<T>& B = *pB;
+
+        /*
+         * Normalizing of each row is independent from other rows so it is
+         * perfectly safe to parallelize the task by rows.
+         */
+        #pragma omp parallel for default(none) shared(A, B)
+        for ( size_t r=0; r<N; ++r )
+        {
+            const T el = A(r, r);
+
+            for ( size_t c=r; c<NC; ++c )
+            {
+                A(r, c) /= el;
+            }
+
+            for ( size_t c=0; c<NT; ++c )
+            {
+                B(r, c) /= el;
+            }
+        }  // for r
+    }  // if pb!=NULL
+
+    /*
+     * 'A' is now an upper diagonal matrix with ones on the diagonal.
+     * No additional processing of 'A' and 'b' is necessary if 'fullm' is false.
+     */
+
 
     /*
      * Now the lower triangle (below diag excl.) is 0, the diagonal consists of 1,
