@@ -144,7 +144,7 @@ public:
     // Constructors
     PolynomialGeneric(const std::vector<F>& cvect) throw (PolynomialException);
     PolynomialGeneric(const F& c0 = static_cast<F>(0)) throw (PolynomialException);
-    PolynomialGeneric(const F* carray, const size_t n) throw (PolynomialException);
+    PolynomialGeneric(const F* const carray, const size_t n) throw (PolynomialException);
     PolynomialGeneric(const bool ignored, const size_t n = 1) throw (PolynomialException);
     PolynomialGeneric(const PolynomialGeneric<F>& poly) throw (PolynomialException);
 
