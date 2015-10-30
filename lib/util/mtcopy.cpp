@@ -41,12 +41,12 @@ limitations under the License.
  * @param dest - reference to a vector where the selected range will be copied to
  */
 template <class T>
-void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
+void math::mtcopy(const T* const first, const T* const last, std::vector<T>& dest)
 {
     // Number of elements in the range
     const size_t N = last - first;
 
-    // Preallocate the dest. vector
+    // Preallocate the destination vector
     dest.resize(N);
 
     // Coarse grained parallelism, if OpenMP is enabled
@@ -77,7 +77,7 @@ void math::mtcopy(const T* first, const T* last, std::vector<T>& dest)
  * @param dest - reference to a vector where the selected range will be copied to
  */
 template <class T>
-void math::mtcopy(const T* first, const size_t len, std::vector<T>& dest)
+void math::mtcopy(const T* const first, const size_t len, std::vector<T>& dest)
 {
     math::mtcopy<T>(first, first+len, dest);
 }
@@ -117,7 +117,7 @@ void math::mtcopy(const std::vector<T>&src,
     // First make sure that "first+len" does not exceed size_t's range
     const size_t lenlim = std::min<size_t>(len, static_cast<size_t>(-1)-first);
 
-    // Then take care that the range does not exceed
+    // Then ensure that the range does not exceed
     // the actual src's range:
     math::mtcopy<T>(src.begin() + first,
                     src.begin() + std::min<size_t>( first+lenlim, src.size() ),

@@ -43,11 +43,11 @@ namespace math
 {
 
 template <class T>
-void mtcopy(const T* first, const T* last, std::vector<T>& dest);
+void mtcopy(const T* const first, const T* const last, std::vector<T>& dest);
 
 
 template <class T>
-void mtcopy(const T* first, const size_t len, std::vector<T>& dest);
+void mtcopy(const T* const first, const size_t len, std::vector<T>& dest);
 
 
 template <class T>
