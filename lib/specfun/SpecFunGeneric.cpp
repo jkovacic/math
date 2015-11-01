@@ -1764,6 +1764,8 @@ T __invIncGamma(
      * Verified by Maxima:
      (%i1)  diff(gamma_incomplete_regularized(a, x), x);
      (%o1)  (x^a−1*%e^−x)/gamma(a)
+     * 
+     * See also 'scripts/lib/specfun.mac'
      */
 
     T xn;
@@ -1990,6 +1992,8 @@ T __invIncBeta(
      * Verified by Maxima:
      (%i1) diff(beta_incomplete_regularized(a, b, x), x);
      (%o1) ((1−x)^b−1*x^a−1)/beta(a,b)
+     * 
+     * See also 'scripts/lib/specfun.mac'
      */
 
     T xn;

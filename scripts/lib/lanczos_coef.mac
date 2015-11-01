@@ -1,7 +1,7 @@
 /*
  * A Maxima script that reproduces coefficients for the Lanczos
  * approximation of the gamma function in arbitrary precision (25 digits).
- + The coefficients are used in 'lib/specfun/lanczos_coef.h'.
+ * The coefficients are used in 'lib/specfun/lanczos_coef.h'.
  * 
  * The coefficients can be calculated by applying the Paul Godfrey's
  * algorithm as described at:

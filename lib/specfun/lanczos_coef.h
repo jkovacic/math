@@ -85,7 +85,7 @@ limitations under the License.
           [  3.802685303772964895033826b-3 ]
           [ -1.117185821247582043028556b-3 ]
  *
- * See also scripts/lib/lanczos.coef.mac
+ * See also scripts/lib/lanczos_coef.mac
  */
 
 

@@ -1,0 +1,16 @@
+/*
+ * A Maxima script that obtains derivatives of incomplete
+ * gamma and beta functions, necessary to evaluate
+ * their inverse functions. The derivatives are used in
+ * 'lib/specfun/SpecFunGeneric.cpp'.
+ * 
+ * From a shell, run the script as:
+ *   maxima -b /path/to/specfun.mac
+ *
+ * From Maxima/wxMaxima, the script can be run as:
+ *   batch("/path/to/specfun.mac")
+ */
+
+diff(gamma_incomplete_regularized(a, x), x);
+
+diff(beta_incomplete_regularized(a, b, x), x);
