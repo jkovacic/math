@@ -139,13 +139,13 @@ void findPivot(
         size_t& col,
         const bool fullp )
 {
-    const size_t N = a.nrRows();
+    const size_t Nrow = a.nrRows();
     const size_t Ncol = a.nrColumns();
 
     // dimension check
-    if ( p >= N || p >= Ncol )
+    if ( p >= Nrow || p >= Ncol )
     {
-        row = p;
+        row = std::min(p, Nrow);
 
         if ( true == fullp )
         {
@@ -163,9 +163,9 @@ void findPivot(
     // the highest column number to be considered:
     const size_t CMAX = ( true==fullp ? Ncol : p+1 );
 
-    for ( size_t i=p; i<N; ++i )
+    for ( size_t i=p; i<Nrow; ++i )
     {
-        for (size_t j=p; j<CMAX; ++j )
+        for ( size_t j=p; j<CMAX; ++j )
         {
             const T elabs =
                 math::Pivot::__private::pabs( a(i, j) );
