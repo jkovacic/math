@@ -142,7 +142,7 @@ void findPivot(
     const size_t Nrow = a.nrRows();
     const size_t Ncol = a.nrColumns();
 
-    // dimension check
+    // check of dimensions
     if ( p >= Nrow || p >= Ncol )
     {
         row = std::min(p, Nrow);
@@ -155,39 +155,62 @@ void findPivot(
         return;
     }
 
-    // initial "pivot"
-    size_t r = p;
-    size_t c = p;
-    T maxPiv = static_cast<T>(0);
-    
-    // the highest column number to be considered:
-    const size_t CMAX = ( true==fullp ? Ncol : p+1 );
+    // the number of rows and columns to be considered:
+    const size_t ROWS = Nrow - p;
+    const size_t COLS = ( true==fullp ? Ncol-p: 1 );
 
-    for ( size_t i=p; i<Nrow; ++i )
+    // initial absolute value of "pivot"
+    T globMax = math::Pivot::__private::pabs( a(p, p) );
+
+    // as we are searching within a subset of a matrix,
+    // N should never be out of site_t's range
+    const size_t N = ROWS * COLS;
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(a, globMax, row, col)
     {
-        for ( size_t j=p; j<CMAX; ++j )
-        {
-            const T elabs =
-                math::Pivot::__private::pabs( a(i, j) );
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-            // actually equivalent to:
-            // if ( elabs > maxPiv )
-            if ( true == math::Pivot::__private::absgt(elabs, maxPiv ) )
+        // indices of the highest absolute value within the assigned block
+        size_t r = p + istart / COLS;
+        size_t c = p + istart % COLS;
+        T localMax = math::Pivot::__private::pabs( a(r, c) );
+
+        for ( size_t it=istart; it<iend; ++it )
+        {
+            // current indices
+            const size_t i = p + it / COLS;
+            const size_t j = p + it % COLS;
+
+            const T elabs = math::Pivot::__private::pabs( a(i, j) );
+
+            if ( true == math::Pivot::__private::absgt(elabs, localMax) )
             {
-                maxPiv = elabs;
+                localMax = elabs;
                 r = i;
                 c = j;
             }
-        }  // for j
-    }  // for i
+        }  // for it
 
-    // finally assign 'row' and optionally 'col'
-    row = r;
+        // prevent possible race condition when updating 'row' and 'col'
+        #pragma omp critical(pivotgeneric_findpivot)
+        {
+        	// Check if the local (i.e. within the assigned block ) highest
+        	// absolute value is greter than the global one
+            if ( true == math::Pivot::__private::absgt(localMax, globMax) )
+            {
+                globMax = localMax;
+                row = r;
 
-    if ( true == fullp )
-    {
-        col = c;
-    }
+                // 'col' can only be modified when 'fullp' equals true
+                if ( true == fullp )
+                {
+                    col = c;
+                }
+            }
+        }  // omp critical
+    }  // omp parallel
+
 }
 
 
