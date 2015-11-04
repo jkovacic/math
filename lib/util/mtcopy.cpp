@@ -52,7 +52,7 @@ void math::mtcopy(const T* const first, const T* const last, std::vector<T>& des
     // Coarse grained parallelism, if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(N)) \
                     if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(dest, first)
+                    default(none) shared(dest)
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
