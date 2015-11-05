@@ -256,6 +256,8 @@ void pivot(
     const size_t N = std::min(NR, NC);  // the actual nr. of rows and columns to process
     const size_t NT = ( NULL!=pB ? pB->nrColumns() : 0 );
 
+    const bool detRequired = ( NULL != pDet );
+
     /*
      * Bookkeeping of swapped columns is only necessary when 'pB' is provided
      * and full pivoting is requested. More details follow later.
@@ -360,11 +362,6 @@ void pivot(
 
     // Is the total number of row/column swaps odd or even?
     bool oddSwaps = false;
-    if ( NULL != pDet )
-    {
-        // initial value of the determinant
-        *pDet = static_cast<T>(1);
-    }
 
     for ( size_t i=0; i<N; ++i )
     {
@@ -384,7 +381,7 @@ void pivot(
             }
 
             // ... and the determinant will be zero
-            if ( NULL != pDet )
+            if ( true == detRequired )
             {
                 *pDet = static_cast<T>(0);
             }
@@ -417,16 +414,6 @@ void pivot(
             {
                 std::swap(colidx.at(i), colidx.at(pc));
             }
-        }
-
-        /*
-         * The entire row will be divided by A(i,i) later.
-         * According to one of properties of the determinant (see notes above),
-         * the current 'det' will be multiplied by A(i,i) now.
-         */
-        if ( NULL != pDet )
-        {
-            *pDet *= A(i, i);
         }
 
         // Set the i.th column of all other rows (r>i) to 0 by
@@ -467,48 +454,85 @@ void pivot(
     }
 
     /*
-     * Calculation of the determinant is almost complete.
-     * Additionally it must be negated if the total number of
-     * swaps of rows and columns is odd. For more details,
-     * see properties of the determinant in the notes above.
+     * Initialize the determinant to 1 if applicable.
+     * Later it will be multiplied by diagonal elements of 'A'.
+     * If the number of all row and column swaps is odd,
+     * the sign of the determinant will be reversed, hence
+     * the initial determinant will be set to -1 in this case.
      */
-    if ( NULL!=pDet && true==oddSwaps )
+    if ( true == detRequired )
     {
-        *pDet = -(*pDet);
+        *pDet = ( false==oddSwaps ? static_cast<T>(1) : static_cast<T>(-1) );
     }
 
 
     /*
      * Set the diagonal elements of 'A' to 1 by dividing the
      * whole row by A(r,r). Columns smaller than 'r' are already equal to 0.
+     * If applicable, the determinant is also calculated by this loop.
      * This operation only makes sense when a system of linear equations is
-     * being solved, i.e. when 'b' is provided.
+     * being solved, i.e. when 'b' is provided or a determinant is required.
      */
 
-    if ( NULL != pB )
+    if ( NULL!=pB || true==detRequired )
     {
-        math::MatrixGeneric<T>& B = *pB;
+        // If pB is NULL, B will be assigned to A and will be never modified
+        math::MatrixGeneric<T>& B = ( NULL!=pB ? *pB : A );
+
+        // The ideal number of threads depends on the actual task
+        // that can be deducted from availability of 'B'
+        const size_t NTHR = ( NULL!=pB ? N : ompIdeal(N) );
 
         /*
          * Normalizing of each row is independent from other rows so it is
          * perfectly safe to parallelize the task by rows.
          */
-        #pragma omp parallel for default(none) shared(A, B)
-        for ( size_t r=0; r<N; ++r )
+        #pragma omp parallel num_threads(NTHR) default(none) shared(A, B)
         {
-            const T el = A(r, r);
+            // Product of diagonal elements of rows assigned to the thread
+        	T diagProd = static_cast<T>(1);
 
-            for ( size_t c=r; c<NC; ++c )
+            #pragma omp for
+            for ( size_t r=0; r<N; ++r )
             {
-                A(r, c) /= el;
+                const T el = A(r, r);
+
+                // Normalization of rows is actually only necessary
+                // when 'B' is provided
+                if ( NULL != pB )
+                {
+                    for ( size_t c=r; c<NC; ++c )
+                    {
+                        A(r, c) /= el;
+                    }
+
+                    for ( size_t c=0; c<NT; ++c )
+                    {
+                        B(r, c) /= el;
+                    }
+                }
+
+                // (partial) product of diagonal elements when applicable
+                if ( NULL != pDet )
+                {
+                    diagProd *= el;
+                }
+            }  // for r
+
+            // If determinant is required multiply *pDet by all diagProds.
+            // Note that this operation must be reduced to prevent race conditions.
+            if ( true == detRequired )
+            {
+                #pragma omp critical(pivotgeneric_detmult)
+                {
+                    *pDet *= diagProd;
+                }
             }
 
-            for ( size_t c=0; c<NT; ++c )
-            {
-                B(r, c) /= el;
-            }
-        }  // for r
-    }  // if pb!=NULL
+        }  // omp parallel
+
+        (void) NTHR;
+    }  // if pb!=NULL || detRequired
 
     /*
      * 'A' is now an upper diagonal matrix with ones on the diagonal.
