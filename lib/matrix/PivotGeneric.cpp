@@ -490,7 +490,7 @@ void pivot(
         #pragma omp parallel num_threads(NTHR) default(none) shared(A, B)
         {
             // Product of diagonal elements of rows assigned to the thread
-        	T diagProd = static_cast<T>(1);
+            T diagProd = static_cast<T>(1);
 
             #pragma omp for
             for ( size_t r=0; r<N; ++r )
