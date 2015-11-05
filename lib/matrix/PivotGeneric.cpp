@@ -195,8 +195,8 @@ void findPivot(
         // prevent possible race condition when updating 'row' and 'col'
         #pragma omp critical(pivotgeneric_findpivot)
         {
-        	// Check if the local (i.e. within the assigned block ) highest
-        	// absolute value is greter than the global one
+            // Check if the local (i.e. within the assigned block ) highest
+            // absolute value is greter than the global one
             if ( true == math::Pivot::__private::absgt(localMax, globMax) )
             {
                 globMax = localMax;
@@ -235,7 +235,7 @@ void findPivot(
  * @throw MatrixException if any argument is invalid or allocation of a column bookkeeping vector fails
  */
 template <class T>
-void __pivot(
+void pivot(
         math::MatrixGeneric<T>& A,
         const bool fullp,
         const bool fullm,
@@ -326,7 +326,7 @@ void __pivot(
         }
 
         /*
-         * Assign 'colidx' with initial positions.
+         * Fill 'colidx' with initial positions.
          */
         #pragma omp parallel num_threads(ompIdeal(NC)) \
                     if(NC>OMP_CHUNKS_PER_THREAD) \
@@ -656,7 +656,7 @@ bool math::Pivot::solveGaussJordan(
     
     size_t rank;
 
-    math::Pivot::__private::__pivot<T>(temp, fullp, true, &x, &rank, NULL);
+    math::Pivot::__private::pivot<T>(temp, fullp, true, &x, &rank, NULL);
 
     // if rank(A) equals N, the system of lin. equations has a unique solution
 
@@ -689,7 +689,7 @@ T math::Pivot::getDeterminant(
     math::MatrixGeneric<T> temp(A);
     T det;
 
-    math::Pivot::__private::__pivot<T>(temp, fullp, false, NULL, NULL, &det);
+    math::Pivot::__private::pivot<T>(temp, fullp, false, NULL, NULL, &det);
 
     return det;
 }
@@ -712,7 +712,7 @@ size_t math::Pivot::getRank(
     math::MatrixGeneric<T> temp(A);
     size_t rank;
 
-    math::Pivot::__private::__pivot<T>(temp, true, false, NULL, &rank, NULL);
+    math::Pivot::__private::pivot<T>(temp, true, false, NULL, &rank, NULL);
 
     return rank;
 }
