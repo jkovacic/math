@@ -880,7 +880,7 @@ math::QuaternionGeneric<F> math::operator*(const math::QuaternionGeneric<F>& q1,
      * http://mind.cog.jhu.edu/courses/680/octave/Installers/Octave/Octave.OSX10.6/Applications/MATLAB_R2009b.app/toolbox/aero/aero/quatmultiply.m
      */
 
-	math::QuaternionGeneric<F> retVal;
+    math::QuaternionGeneric<F> retVal;
 
     // Calculation of the product can be parallelized into 4 mutually independent sections:
     #pragma omp parallel sections if (OMP_QUAT_PARALLELIZE!=0)
@@ -1296,4 +1296,4 @@ F abs(const math::QuaternionGeneric<F>& q)
     return q.norm();
 }
 
-}
+}  // namespace std
