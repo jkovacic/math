@@ -196,7 +196,7 @@ void findPivot(
         #pragma omp critical(pivotgeneric_findpivot)
         {
             // Check if the local (i.e. within the assigned block ) highest
-            // absolute value is greter than the global one
+            // absolute value is greater than the global one
             if ( true == math::Pivot::__private::absgt(localMax, globMax) )
             {
                 globMax = localMax;
@@ -615,7 +615,8 @@ void pivot(
 
         for ( size_t i=0; i<NR; ++i )
         {
-            // find such 'j' that colidx(j) == i
+            // find such 'j' that satisfies: colidx(j) == i
+            // TODO: does it make any sense to parallelize this simple operation?
             size_t j = i;
             for ( j=i; colidx.at(j)!=i; ++j );
 
