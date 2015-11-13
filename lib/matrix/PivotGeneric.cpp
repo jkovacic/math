@@ -615,14 +615,17 @@ void pivot(
 
         for ( size_t i=0; i<NR; ++i )
         {
-            // find such 'j' that satisfies: colidx(j) == i
+            // find such 'newIdx' that satisfies: colidx(newIdx) == i
             // TODO: does it make any sense to parallelize this simple operation?
-            size_t j = i;
-            for ( j=i; colidx.at(j)!=i; ++j );
+            size_t newIdx = i;
+            for ( newIdx=i; colidx.at(newIdx)!=i; ++newIdx );
 
-            // and swap sol's rows and colidx's elements
-            B.swapRows_(i, j);
-            std::swap( colidx.at(i), colidx.at(j) );
+            // and swap sol's rows and colidx's elements if necessary
+            if ( i != newIdx )
+            {
+                B.swapRows_(i, newIdx);
+                std::swap( colidx.at(i), colidx.at(newIdx) );
+            }
         }  // for i
     }  // if needColidx
 }
