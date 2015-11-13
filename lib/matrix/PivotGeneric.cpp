@@ -620,6 +620,56 @@ void pivot(
             size_t newIdx = i;
             for ( newIdx=i; colidx.at(newIdx)!=i; ++newIdx );
 
+#if 0
+            /*
+             * Experimental code that parallelizes searching within 'colidx'.
+             *
+             * It replaces one simple line (above) and any potential
+             * benefits of this "complication" have not been researched yet.
+             * Until then the code will be "commented out" and will remain within
+             * the #if 0 block for possible future reconsideration.
+             */
+
+            // Do not parallelize if only a handful of candidates remain
+            if ( (NR-i) < OMP_CHUNKS_PER_THREAD )
+            {
+                for ( newIdx=i; colidx.at(newIdx)!=i; ++newIdx );
+            }
+            else
+            {
+                /*
+                 * Note that this flag will be updated exactly once
+                 * hence no "synchronization" (e.g. critical section)
+                 * is necessary.
+                 */
+                volatile bool foundFlag = false;
+
+                #pragma omp parallel num_threads(ompIdeal(NC)) \
+                    default(none) shared(colidx, foundFlag, i, newIdx)
+                {
+                    OMP_COARSE_GRAINED_PAR_INIT_VARS(NC);
+
+                    typename std::vector<size_t>::const_iterator it = colidx.begin() + istart;
+                    for ( size_t cntr=istart;
+                          false==foundFlag && cntr<iend && it!=colidx.end();
+                          ++it, ++cntr )
+                    {
+                        if ( *it == i )
+                        {
+                            newIdx = cntr;
+                            foundFlag = true;
+                            #pragma omp flush(foundFlag)
+
+                            break;  // out of for it
+                        }
+
+                        // Maybe another thread has updated the flag...
+                        #pragma omp flush(foundFlag)
+                    }
+                }  // omp parallel
+            }
+#endif
+
             // and swap sol's rows and colidx's elements if necessary
             if ( i != newIdx )
             {
