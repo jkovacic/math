@@ -613,12 +613,12 @@ void pivot(
     {
         math::MatrixGeneric<T>& B = *pB;
 
-        for ( size_t i=0; i<NR; ++i )
+        for ( size_t idx=0; idx<NR; ++idx )
         {
-            // find such 'newIdx' that satisfies: colidx(newIdx) == i
+            // find such 'newIdx' that satisfies: colidx(newIdx) == idx
             // TODO: does it make any sense to parallelize this simple operation?
-            size_t newIdx = i;
-            for ( newIdx=i; colidx.at(newIdx)!=i; ++newIdx );
+            size_t newIdx = idx;
+            for ( newIdx=idx; colidx.at(newIdx)!=idx; ++newIdx );
 
 #if 0
             /*
@@ -631,9 +631,9 @@ void pivot(
              */
 
             // Do not parallelize if only a handful of candidates remain
-            if ( (NR-i) < OMP_CHUNKS_PER_THREAD )
+            if ( (NC-idx) < OMP_CHUNKS_PER_THREAD )
             {
-                for ( newIdx=i; colidx.at(newIdx)!=i; ++newIdx );
+                for ( newIdx=idx; colidx.at(newIdx)!=idx; ++newIdx );
             }
             else
             {
@@ -644,19 +644,21 @@ void pivot(
                  */
                 volatile bool foundFlag = false;
 
-                #pragma omp parallel num_threads(ompIdeal(NC)) \
-                    default(none) shared(colidx, foundFlag, i, newIdx)
+                #pragma omp parallel num_threads(ompIdeal(NC-idx)) \
+                    default(none) shared(colidx, foundFlag, idx, newIdx)
                 {
-                    OMP_COARSE_GRAINED_PAR_INIT_VARS(NC);
+                    OMP_COARSE_GRAINED_PAR_INIT_VARS(NC-idx);
 
-                    typename std::vector<size_t>::const_iterator it = colidx.begin() + istart;
-                    for ( size_t cntr=istart;
-                          false==foundFlag && cntr<iend && it!=colidx.end();
-                          ++it, ++cntr )
+                    const size_t idxStart = istart + idx;
+                    const size_t idxEnd = iend + idx;
+                    typename std::vector<size_t>::const_iterator it = colidx.begin() + idxStart;
+                    for ( size_t currIdx=idxStart;
+                          false==foundFlag && currIdx<idxEnd && it!=colidx.end();
+                          ++it, ++currIdx )
                     {
-                        if ( *it == i )
+                        if ( *it == idx )
                         {
-                            newIdx = cntr;
+                            newIdx = currIdx;
                             foundFlag = true;
                             #pragma omp flush(foundFlag)
 
@@ -671,10 +673,10 @@ void pivot(
 #endif
 
             // and swap sol's rows and colidx's elements if necessary
-            if ( i != newIdx )
+            if ( idx != newIdx )
             {
-                B.swapRows_(i, newIdx);
-                std::swap( colidx.at(i), colidx.at(newIdx) );
+                B.swapRows_(idx, newIdx);
+                std::swap( colidx.at(idx), colidx.at(newIdx) );
             }
         }  // for i
     }  // if needColidx
