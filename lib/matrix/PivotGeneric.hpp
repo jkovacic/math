@@ -29,6 +29,7 @@ limitations under the License.
 #define _MATH_PIVOTGENERIC_HPP_
 
 #include <cstddef>
+#include <vector>
 
 #include "matrix/MatrixGeneric.hpp"
 #include "exception/MatrixException.hpp"
@@ -39,6 +40,14 @@ namespace math
 
 namespace Pivot
 {
+
+
+void fillVectorsWithInitialPos(
+        const size_t N,
+        std::vector<size_t>& v1,
+        std::vector<size_t>& v2,
+        const bool bothVectors
+      ) throw(MatrixException);
 
 
 template <class T>
