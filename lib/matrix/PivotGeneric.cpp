@@ -48,6 +48,67 @@ namespace math {  namespace Pivot {  namespace __private
 
 
 /*
+ * Preallocates and fills vectors 'v1' and optionally 'v2' with consecutive
+ * values between 0 and N-1.
+ * 
+ * @param N - size of vector(s)
+ * @param v1 - first vector
+ * @param v2 - second vector (ignored if 'bothVectors' is false)
+ * @param bothVectors - if false, only 'v1' is preallocated and filled with initial positions
+ * 
+ * @throw MatrixException if allocation of memory for vector(s) fails
+ */
+void fillVectorsWithInitialPos(
+        const size_t N,
+        std::vector<size_t>& v1,
+        std::vector<size_t>& v2,
+        const bool bothVectors
+      ) throw(math::MatrixException)
+{
+    try
+    {
+        v1.resize(N);
+
+        if ( true == bothVectors )
+        {
+            v2.resize(N);
+        }
+        
+        /*
+         * Fill 'v1' and optionally 'v2' with initial positions.
+         */
+        #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(v1, v2)
+        {
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+            typename std::vector<size_t>::iterator it1 = v1.begin() + istart;
+            typename std::vector<size_t>::iterator it2 = v2.begin() + istart;
+            size_t i = istart;
+            for ( size_t cntr=0;
+                  cntr<elems_per_thread && it1!=v1.end();
+                  ++cntr, ++i, ++it1 )
+            {
+                *it1 = i;
+                if ( true == bothVectors )
+                {
+                    *it2 = i;
+                    ++it2;
+                }
+            }
+
+            (void) iend;
+        }  // omp parallel
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
+    }
+}
+
+
+/*
  * A "pseudo absolute value" of 'x'.
  * 
  * The function is used in situations when values must be ordered by
@@ -318,7 +379,8 @@ void pivot(
 
     if ( true == needColidx )
     {
-        math::Pivot::fillVectorsWithInitialPos(NC, colidx, colidx, false);
+        math::Pivot::__private::fillVectorsWithInitialPos(
+            NC, colidx, colidx, false );
     }
 
 
@@ -655,67 +717,6 @@ void pivot(
 
 }}}  // namespace math::Pivot::__private
 
-
-
-/**
- * Preallocates and fills vectors 'v1' and optionally 'v2' with consecutive
- * values between 0 and N-1.
- * 
- * @param N - size of vector(s)
- * @param v1 - first vector
- * @param v2 - second vector (ignored if 'bothVectors' is false)
- * @param bothVectors - if false, only 'v1' is preallocated and filled with initial positions
- * 
- * @throw MatrixException if allocation of memory for vector(s) fails
- */
-void math::Pivot::fillVectorsWithInitialPos(
-        const size_t N,
-        std::vector<size_t>& v1,
-        std::vector<size_t>& v2,
-        const bool bothVectors
-      ) throw(math::MatrixException)
-{
-    try
-    {
-        v1.resize(N);
-
-        if ( true == bothVectors )
-        {
-            v2.resize(N);
-        }
-        
-        /*
-         * Fill 'v1' and optionally 'v2' with initial positions.
-         */
-        #pragma omp parallel num_threads(ompIdeal(N)) \
-                    if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(v1, v2)
-        {
-            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
-
-            typename std::vector<size_t>::iterator it1 = v1.begin() + istart;
-            typename std::vector<size_t>::iterator it2 = v2.begin() + istart;
-            size_t i = istart;
-            for ( size_t cntr=0;
-                  cntr<elems_per_thread && it1!=v1.end();
-                  ++cntr, ++i, ++it1 )
-            {
-                *it1 = i;
-                if ( true == bothVectors )
-                {
-                    *it2 = i;
-                    ++it2;
-                }
-            }
-
-            (void) iend;
-        }  // omp parallel
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
-    }
-}
 
 
 /*

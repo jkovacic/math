@@ -42,14 +42,6 @@ namespace Pivot
 {
 
 
-void fillVectorsWithInitialPos(
-        const size_t N,
-        std::vector<size_t>& v1,
-        std::vector<size_t>& v2,
-        const bool bothVectors
-      ) throw(MatrixException);
-
-
 template <class T>
 bool solveGaussJordan(
         const MatrixGeneric<T>& A,
