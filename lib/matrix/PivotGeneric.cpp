@@ -27,13 +27,12 @@ limitations under the License.
 // no #include "PivotGeneric.hpp" !!!
 #include <cstddef>
 #include <algorithm>
-#include <complex>
-#include <cmath>
 #include <vector>
 #include <new>
 
 #include "matrix/MatrixGeneric.hpp"
 #include "util/NumericUtil.hpp"
+#include "util/PseudoFunctionGeneric.hpp"
 
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
@@ -109,73 +108,19 @@ void fillVectorsWithInitialPos(
 
 
 /*
- * A "pseudo absolute value" of 'x'.
+ * Returns either 'i' or the i'th element of 'v' if 'v' is provided,
+ * i.e. it is not NULL.
  * 
- * The function is used in situations when values must be ordered by
- * their absolute values and sometimes it is more convenient/more efficient to
- * obtain values that are a monotonically increasing function of
- * actual absolute values.
+ * @note It is assumed that 'i' will alway be less than size of 'v' (if provided)
  * 
- * The general implementation returns the actual absolute value which
- * can be obtained efficiently for most scalar types.
+ * @param v - pointer to a vector of permuted indices (must be NULL if not relevant)
+ * @param i - position of the desired element in 'v'
  * 
- * @param x - value whose absolute value is returned
- * 
- * @return absolute value of 'x' 
+ * @return 'i' or v[i] if 'v' is provided
  */
-template <class T>
-inline T pabs(const T& x)
+inline size_t __index(const std::vector<size_t>* const v, const size_t i)
 {
-    return std::abs(x);
-}
-
-
-/*
- * Partial "specialization" of 'pabs' for complex numbers.
- * 
- * This function returns a square of the actual absolute value and is
- * as such more efficient because no additional calculation of square root
- * (not a fast operation) is necessary.
- * 
- * @param x - a complex value
- * 
- * @return square of the absolute value of 'x', returned as a complex value with imag. part equal to 0
- */
-template <class T>
-inline std::complex<T> pabs(const std::complex<T>& x)
-{
-    return std::complex<T>( std::norm(x), static_cast<T>(0) );
-}
-
-
-/*
- * A convenience function that compares two (absolute) values.
- * 
- * @param a - first value
- * @param b - second value
- * 
- * @return true if a>b, false otherwise
- */
-template <class T>
-inline bool absgt(const T& a, const T& b)
-{
-    return (a > b);
-}
-
-
-/*
- * Partial "specialization" of 'absgt' for complex numbers.
- * The function compares real parts of 'a' and 'b'.
- * 
- * @param a - first complex value
- * @param b - second complex value
- * 
- * @return true if re(a)>re(b), false otherwise
- */
-template <class T>
-inline bool absgt(const std::complex<T>& a, const std::complex<T>& b)
-{
-    return ( std::real(a) > std::real(b) );
+    return ( NULL==v ? i : v->at(i) );
 }
 
 
@@ -183,11 +128,17 @@ inline bool absgt(const std::complex<T>& a, const std::complex<T>& b)
  * Finds row and (optionally) column indices of the matrix' pivot element
  * (i.e. the one with the highest absolute value) past the p.th row and (depending
  * on 'fullp').
+ * 
+ * @note If 'prows' and/or 'pcols' is provided, returned 'row' and/or 'col'
+ *       will satisfy: abs( a(prows(row, pcols(col) ) = max
+ *       given that row>=p and col>=p 
  *
- * 'p' is returned immediately if it is out of a's range.
+ * @note 'p' is returned immediately if it is out of a's range.
  *
  * @param a - matrix of coefficients
  * @param p - index of the desired row/column to find a pivot for
+ * @param prows - pointer to the vector of row indices (may be NULL)
+ * @param pcols - pointer to the vector of column indices (may be NULL) 
  * @param row - reference to a variable to write the pivot's row number to
  * @param col - reference to a variable to write the pivot's column number to (not modified if 'fullp' is false)
  * @param fullp - if true, also consider elements at columns greater than 'p'
@@ -196,6 +147,8 @@ template <class T>
 void findPivot(
         const math::MatrixGeneric<T>& a,
         const size_t p,
+        const std::vector<size_t>* const prows,
+        const std::vector<size_t>* const pcols,
         size_t& row,
         size_t& col,
         const bool fullp )
@@ -221,7 +174,9 @@ void findPivot(
     const size_t COLS = ( true==fullp ? Ncol-p: 1 );
 
     // initial absolute value of "pivot"
-    T globMax = math::Pivot::__private::pabs( a(p, p) );
+    T globMax = math::PseudoFunction::pabs( 
+        a( math::Pivot::__private::__index(prows, p),
+           math::Pivot::__private::__index(pcols, p)) );
 
     // as we are searching within a subset of a matrix,
     // N should never be out of site_t's range
@@ -235,7 +190,9 @@ void findPivot(
         // indices of the highest absolute value within the assigned block
         size_t r = p + istart / COLS;
         size_t c = p + istart % COLS;
-        T localMax = math::Pivot::__private::pabs( a(r, c) );
+        T localMax = math::PseudoFunction::pabs( 
+            a( math::Pivot::__private::__index(prows, r),
+               math::Pivot::__private::__index(pcols, c) ) );
 
         for ( size_t it=istart; it<iend; ++it )
         {
@@ -243,9 +200,11 @@ void findPivot(
             const size_t i = p + it / COLS;
             const size_t j = p + it % COLS;
 
-            const T elabs = math::Pivot::__private::pabs( a(i, j) );
+            const T elabs = math::PseudoFunction::pabs( 
+              a( math::Pivot::__private::__index(prows, i),
+                 math::Pivot::__private::__index(pcols, j) ) );
 
-            if ( true == math::Pivot::__private::absgt(elabs, localMax) )
+            if ( true == math::PseudoFunction::absgt(elabs, localMax) )
             {
                 localMax = elabs;
                 r = i;
@@ -258,7 +217,7 @@ void findPivot(
         {
             // Check if the local (i.e. within the assigned block ) highest
             // absolute value is greater than the global one
-            if ( true == math::Pivot::__private::absgt(localMax, globMax) )
+            if ( true == math::PseudoFunction::absgt(localMax, globMax) )
             {
                 globMax = localMax;
                 row = r;
@@ -401,7 +360,7 @@ void pivot(
         // Find the most appropriate row and column to pivot with this one
         size_t pr = i;
         size_t pc = i;
-        math::Pivot::__private::findPivot(A, i, pr, pc, fullp);
+        math::Pivot::__private::findPivot(A, i, NULL, NULL, pr, pc, fullp);
 
         // If even the highest absolute value equals 0, there is
         // no unique solution of the system of linear equations
@@ -717,6 +676,68 @@ void pivot(
 
 }}}  // namespace math::Pivot::__private
 
+
+
+/*
+ * Tries to permute rows and columns of the matrix 'A' to obtain
+ * a diagonally dominant matrix, i.e. with diagonal elements as
+ * large as possible (by absolute values). Permutations of rows
+ * and columns are written into 'rows' and 'cols'.
+ * 
+ * @note It is not necessary to initialize 'rows' and 'columns' as
+ *       the function takes care of it.
+ * 
+ * @param A - a matrix to be "converted" to diagonally dominant matrix
+ * @param rows - reference to vector to write permutations of A's rows to
+ * @param cols - reference to vector to write permutations of A's columns to
+ * 
+ * @return logical value indicating whether all "diagonal" elements are non-zero
+ * 
+ * @throw MatrixException if 'A' is not a square matrix
+ */
+template <class T>
+bool math::Pivot::getDiagonallyDominantMatrix(
+        const math::MatrixGeneric<T>& A,
+        std::vector<size_t>& rows,
+        std::vector<size_t>& cols
+      ) throw (math::MatrixException)
+{
+    // sanity check
+    if ( false == A.isSquare() )
+    {
+        throw math::MatrixException(math::MatrixException::NONSQUARE_MATRIX);
+    }
+
+    const size_t N = A.nrRows();
+
+    math::Pivot::__private::fillVectorsWithInitialPos(N, rows, cols, true);
+
+    for ( size_t i=0; i<(N-1); ++i )
+    {
+        size_t pr;
+        size_t pc;
+
+        math::Pivot::__private::findPivot(A, i, &rows, &cols, pr, pc, true);
+
+        // Is the pivot by absolute value greater than 0?
+        if ( true == math::NumericUtil::isZero(A(rows.at(pr)), cols.at(pc)) )
+        {
+            return false;
+        }
+
+        if ( i != pr )
+        {
+            std::swap( rows.at(i), rows.at(pr) );
+        }
+
+        if ( i != pc )
+        {
+            std::swap( cols.at(i), cols.at(pc) );
+        }
+    }
+
+    return true;
+}
 
 
 /*

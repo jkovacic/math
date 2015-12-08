@@ -43,6 +43,14 @@ namespace Pivot
 
 
 template <class T>
+bool getDiagonallyDominantMatrix(
+        const MatrixGeneric<T>& A,
+        std::vector<size_t>& rows,
+        std::vector<size_t>& cols
+      ) throw (MatrixException);
+
+
+template <class T>
 bool solveGaussJordan(
         const MatrixGeneric<T>& A,
         const MatrixGeneric<T>& b,
