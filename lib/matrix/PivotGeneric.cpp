@@ -179,7 +179,7 @@ void findPivot(
            math::Pivot::__private::__index(pcols, p)) );
 
     // as we are searching within a subset of a matrix,
-    // N should never be out of site_t's range
+    // N should never be out of size_t's range
     const size_t N = ROWS * COLS;
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
