@@ -720,7 +720,7 @@ bool math::Pivot::getDiagonallyDominantMatrix(
         math::Pivot::__private::findPivot(A, i, &rows, &cols, pr, pc, true);
 
         // Is the pivot by absolute value greater than 0?
-        if ( true == math::NumericUtil::isZero(A(rows.at(pr)), cols.at(pc)) )
+        if ( true == math::NumericUtil::isZero( A(rows.at(pr), cols.at(pc)) ) )
         {
             return false;
         }
