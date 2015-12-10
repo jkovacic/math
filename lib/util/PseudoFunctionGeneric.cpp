@@ -98,3 +98,37 @@ inline bool math::PseudoFunction::absgt(const std::complex<T>& a, const std::com
 {
     return ( std::real(a) > std::real(b) );
 }
+
+
+/*
+ * Converts pseudo absolute value into the actual one.
+ * 
+ * @param x - pseudo absolute value
+ *
+ * @return actual absolute value
+ */
+template <class T>
+inline T math::PseudoFunction::pabs2abs(const T& x)
+{
+    // for non-complex types, the 'x' already is the actual abs. value
+    return x;
+}
+
+
+/*
+ * Partial "specialization" of 'pabs2abs' for complex types.
+ * 
+ * @param x - pseudo absolute value
+ *
+ * @return actual absolute value
+ */
+template <class T>
+inline std::complex<T> math::PseudoFunction::pabs2abs(const std::complex<T>& x)
+{
+    /*
+     * For complex types, the real part of 'x' is actually a norm of the
+     * absolute value. Hence its square root must be calculated.
+     */
+
+    return std::complex<T>(std::sqrt(std::real(x)) , static_cast<T>(0));
+}

@@ -53,6 +53,12 @@ template <class T>
 inline bool absgt(const std::complex<T>& a, const std::complex<T>& b);
 
 
+template <class T>
+inline T pabs2abs(const T& x);
+
+template <class T>
+inline std::complex<T> pabs2abs(const std::complex<T>& x);
+
 }  // namespace PseudoFunction
 
 }  // namespace math
