@@ -29,6 +29,7 @@ limitations under the License.
 #ifndef _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_
 #define _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_
 
+#include "../settings/lineq_settings.h"
 #include "exception/MatrixException.hpp"
 #include "matrix/MatrixGeneric.hpp"
 
@@ -47,6 +48,27 @@ namespace LinearEquationSolver
               const MatrixGeneric<T>& term,
               MatrixGeneric<T>& sol,
               const bool fullp = true
+            ) throw (MatrixException);
+
+
+    template <class T>
+    bool solveSOR(
+              const MatrixGeneric<T>& coef,
+              const MatrixGeneric<T>& term,
+              MatrixGeneric<T>& sol,
+              const T& w,
+              const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
+              const size_t maxiter = LINEQ_MAX_ITER
+            ) throw (MatrixException);
+
+
+    template <class T>
+    bool solveGaussSeidel(
+              const MatrixGeneric<T>& coef,
+              const MatrixGeneric<T>& term,
+              MatrixGeneric<T>& sol,
+              const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
+              const size_t maxiter = LINEQ_MAX_ITER
             ) throw (MatrixException);
 
 

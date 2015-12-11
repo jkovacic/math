@@ -45,9 +45,16 @@ namespace Pivot
 template <class T>
 bool getDiagonallyDominantMatrix(
         const MatrixGeneric<T>& A,
+        MatrixGeneric<T>* const pB,
         std::vector<size_t>& rows,
         std::vector<size_t>& cols
       ) throw (MatrixException);
+
+
+template <class T>
+void rearrangeMatrixRows(
+        MatrixGeneric<T>& x,
+        std::vector<size_t>& cols );
 
 
 template <class T>

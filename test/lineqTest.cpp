@@ -90,6 +90,82 @@ void lineqSolverTest()
         {
             cerr << "Unique solution does not exist" << endl;
         }
+
+        cout << endl;
+
+        /*
+         * Two systems of linear equations with diagonally dominant
+         * coefficient matrices to test iterative methods. One system's
+         * coefficient matrix ('ad') is real numbered, the other one ('ac')
+         * is complex numbered.
+         */
+        Matrix ad(3, 3);
+        ad.set(0, 0, 4.0).set(0, 1, -1.0).set(0, 2, -1.0);
+        ad.set(1, 0, -1.0).set(1, 1, 1.0).set(1, 2, 7.0);
+        ad.set(2, 0, -2.0).set(2, 1, 6.0).set(2, 2, 1.0);
+
+        Matrix bd(3, 2);
+        bd.set(0, 0, 3.0).set(1, 0, -6.0).set(2, 0, 9.0);
+        bd.set(0, 1, 1.0).set(1, 1, 7.0).set(2, 1, -3.0);
+
+        MatrixGeneric<complex<double> > ac(4, 4);
+        ac.set(0, 0, complex<double>(0.4, 0.4)).set(0, 1, complex<double>(1.0, -0.7));
+        ac.set(0, 2, complex<double>(5.0, 3.0)).set(0, 3, complex<double>(2.0, -1.0));
+        ac.set(1, 0, complex<double>(6.0, -1.0)).set(1, 1, complex<double>(0.5, 0.3));
+        ac.set(1, 2, complex<double>(-0.1, 2.0)).set(1, 3, complex<double>(1.0, -0.7));
+        ac.set(2, 0, complex<double>(0.5, 0.4)).set(2, 1, complex<double>(0.2, -0.3));
+        ac.set(2, 2, complex<double>(-1.0, 0.3)).set(2, 3, complex<double>(6.0, -4.0));
+        ac.set(3, 0, complex<double>(-0.5, 1.0)).set(3, 1, complex<double>(-7.0, -2.0));
+        ac.set(3, 2, complex<double>(0.7, 0.3)).set(3, 3, complex<double>(2.0, -1.0));
+
+        MatrixGeneric<complex<double> > bc(4, 2);
+        bc.set(0, 0, complex<double>(2.0, -1.0)).set(0, 1, complex<double>(1.6, 2.4));
+        bc.set(1, 0, complex<double>(3.0, 3.0)).set(1, 1, complex<double>(2.7, -1.2));
+        bc.set(2, 0, complex<double>(-2.0, -4.0)).set(2, 1, complex<double>(-0.8, -3.1));
+        bc.set(3, 0, complex<double>(-1.0, 5.0)).set(3, 1, complex<double>(-1.1, 0.4));
+
+        cout << "Matrix with real coefficients:" << endl;
+        ad.display();
+        cout << endl;
+
+        cout << "Two vectors of constant terms:" << endl;
+        bd.display();
+        cout << endl;
+
+        cout << "Matrix with complex coefficients:" << endl;
+        ac.display();
+        cout << endl;
+
+        cout << "Two vectors of constant terms:" << endl;
+        bc.display();
+        cout << endl;
+
+        Matrix xd(bd);
+        MatrixGeneric<complex<double> > xc(bc);
+
+        if ( true == LinearEquationSolver::solveSOR(ad, bd, xd, 1.5) )
+        {
+            cout << "Solution of the real-numbered system using the SOR method:" << endl;
+            xd.display();
+        }
+        else
+        {
+            cerr << "SOR method did not converge." << endl;
+        }
+
+        cout << endl;
+
+        if ( true == LinearEquationSolver::solveGaussSeidel(ac, bc, xc) )
+        {
+            cout << "Solution of the complex-numbered system using the Gauss-Seidel method:" << endl;
+            xc.display();
+        }
+        else
+        {
+            cerr << "Gauss-Seidel method did not converge." << endl;
+        }
+
+        cout << endl;
     }
     catch ( const MatrixException& mex )
     {

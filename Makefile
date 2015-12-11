@@ -118,6 +118,7 @@ DEP_STAT_SETTINGS = $(SETTINGDIR)stat_settings.h
 DEP_SPECFUN_SETTINGS = $(SETTINGDIR)specfun_settings.h
 DEP_CALC_SETTINGS = $(SETTINGDIR)calc_settings.h
 DEP_ROOTFIND_SETTINGS = $(SETTINGDIR)rootfind_settings.h
+DEP_LINEQ_SETTINGS = $(SETTINGDIR)lineq_settings.h
 
 # Object dependencies of templated classes
 # Note #1: Some dependencies may repeat several times.
@@ -158,7 +159,7 @@ DEP_PIVOT = $(LIBMATRIXDIR)PivotGeneric $(DEP_NUMUTIL) $(DEP_PSEUDOFUNC) $(DEP_O
 DEP_MATRIX = $(LIBMATRIXDIR)MatrixGeneric $(DEP_PIVOT) \
              $(DEP_MTCOPY) $(DEP_MTVECTOP) $(DEP_MTSWAP) $(DEP_OMPSETTINGS) \
              $(DEP_OMPHEADER) $(DEP_OMPCOARSE) $(DEP_NUMUTIL)
-DEP_LINEQ = $(LIBMATRIXDIR)LinearEquationSolverGeneric $(DEP_NUMUTIL) $(DEP_MATRIX) $(DEP_PIVOT)
+DEP_LINEQ = $(LIBMATRIXDIR)LinearEquationSolverGeneric $(DEP_NUMUTIL) $(DEP_PSEUDOFUNC) $(DEP_MATRIX) $(DEP_PIVOT) $(DEP_LINEQ_SETTINGS)
 
 DEP_CURVEFITAB = $(LIBCURVEFITDIR)CurveFittingGenericAb $(DEP_NUMUTIL)
 DEP_CURVEFITPOLY = $(LIBCURVEFITDIR)PolynomialFittingGenericAb $(DEP_CURVEFITAB) $(DEP_POLYNOMIAL)

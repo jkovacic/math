@@ -603,74 +603,7 @@ void pivot(
 
     if ( true==needColidx && NR==NC )
     {
-        math::MatrixGeneric<T>& B = *pB;
-
-        for ( size_t idx=0; idx<NR; ++idx )
-        {
-            // find such 'newIdx' that satisfies: colidx(newIdx) == idx
-            // TODO: does it make any sense to parallelize this simple operation?
-            size_t newIdx = idx;
-            for ( newIdx=idx; colidx.at(newIdx)!=idx; ++newIdx );
-
-#if 0
-            /*
-             * Experimental code that parallelizes searching within 'colidx'.
-             *
-             * It replaces one simple line (above) and any potential
-             * benefits of this "complication" have not been researched yet.
-             * Until then the code will be "commented out" and will remain within
-             * the #if 0 block for possible future reconsideration.
-             */
-
-            // Do not parallelize if only a handful of candidates remain
-            if ( (NC-idx) < OMP_CHUNKS_PER_THREAD )
-            {
-                for ( newIdx=idx; colidx.at(newIdx)!=idx; ++newIdx );
-            }
-            else
-            {
-                /*
-                 * Note that this flag will be updated exactly once
-                 * hence no "synchronization" (e.g. critical section)
-                 * is necessary.
-                 */
-                volatile bool foundFlag = false;
-
-                #pragma omp parallel num_threads(ompIdeal(NC-idx)) \
-                    default(none) shared(colidx, foundFlag, idx, newIdx)
-                {
-                    OMP_COARSE_GRAINED_PAR_INIT_VARS(NC-idx);
-
-                    const size_t idxStart = istart + idx;
-                    const size_t idxEnd = iend + idx;
-                    typename std::vector<size_t>::const_iterator it = colidx.begin() + idxStart;
-                    for ( size_t currIdx=idxStart;
-                          false==foundFlag && currIdx<idxEnd && it!=colidx.end();
-                          ++it, ++currIdx )
-                    {
-                        if ( *it == idx )
-                        {
-                            newIdx = currIdx;
-                            foundFlag = true;
-                            #pragma omp flush(foundFlag)
-
-                            break;  // out of for it
-                        }
-
-                        // Maybe another thread has updated the flag...
-                        #pragma omp flush(foundFlag)
-                    }
-                }  // omp parallel
-            }
-#endif
-
-            // and swap sol's rows and colidx's elements if necessary
-            if ( idx != newIdx )
-            {
-                B.swapRows_(idx, newIdx);
-                std::swap( colidx.at(idx), colidx.at(newIdx) );
-            }
-        }  // for i
+        math::Pivot::rearrangeMatrixRows(*pB, colidx);
     }  // if needColidx
 }
 
@@ -684,20 +617,25 @@ void pivot(
  * large as possible (by absolute values). Permutations of rows
  * and columns are written into 'rows' and 'cols'.
  * 
+ * If 'pB' is not NULL, its rows will be permuted according to
+ * the permutation vector 'rows'.
+ * 
  * @note It is not necessary to initialize 'rows' and 'columns' as
  *       the function takes care of it.
  * 
  * @param A - a matrix to be "converted" to diagonally dominant matrix
+ * @param pB - pointer to a matrix to permute its rows according to 'rows' (may be NULL if not required)
  * @param rows - reference to vector to write permutations of A's rows to
  * @param cols - reference to vector to write permutations of A's columns to
  * 
  * @return logical value indicating whether all "diagonal" elements are non-zero
  * 
- * @throw MatrixException if 'A' is not a square matrix
+ * @throw MatrixException if 'A' is not a square matrix or nr. of rows of 'B' is invalid
  */
 template <class T>
 bool math::Pivot::getDiagonallyDominantMatrix(
         const math::MatrixGeneric<T>& A,
+        math::MatrixGeneric<T>* const pB,
         std::vector<size_t>& rows,
         std::vector<size_t>& cols
       ) throw (math::MatrixException)
@@ -709,6 +647,11 @@ bool math::Pivot::getDiagonallyDominantMatrix(
     }
 
     const size_t N = A.nrRows();
+
+    if ( NULL!=pB && pB->nrRows()!=N )
+    {
+        throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+    }
 
     math::Pivot::__private::fillVectorsWithInitialPos(N, rows, cols, true);
 
@@ -728,6 +671,10 @@ bool math::Pivot::getDiagonallyDominantMatrix(
         if ( i != pr )
         {
             std::swap( rows.at(i), rows.at(pr) );
+            if ( NULL != pB )
+            {
+                pB->swapRows_(i, pr);
+            }
         }
 
         if ( i != pc )
@@ -737,6 +684,98 @@ bool math::Pivot::getDiagonallyDominantMatrix(
     }
 
     return true;
+}
+
+
+/*
+ * Rearranges the matrix' rows to the order, required
+ * by full pivoting.
+ * 
+ * @note The function also rearranges elements of 'cols'.
+ * 
+ * @param x - the matrix to rearrange its rows
+ * @param cols - permutation vector of columns
+ */
+template <class T>
+void math::Pivot::rearrangeMatrixRows(
+        math::MatrixGeneric<T>& x,
+        std::vector<size_t>& cols )
+{
+    /*
+     * The algorithm below will check if cols(i) equals 'i'.
+     * If it does not, it will find the index of cols' element that does equal
+     * 'i' and swap the rows of 'x' accordingly. Additionally this swap will
+     * be reflected by swapping of corresponding elements of 'cols'.
+     */
+
+    const size_t N = x.nrRows();
+
+    for ( size_t idx=0; idx<N; ++idx )
+    {
+        // find such 'colIdx' that satisfies: cols(colIdx) == idx
+        // TODO: does it make any sense to parallelize this simple operation?
+        size_t colIdx;
+        for ( colIdx=idx; cols.at(colIdx)!=idx; ++colIdx );
+
+#if 0
+        /*
+         * Experimental code that parallelizes searching within 'cols'.
+         *
+         * It replaces one simple line (above) and any potential
+         * benefits of this "complication" have not been researched yet.
+         * Until then the code will be "commented out" and will remain within
+         * the #if 0 block for possible future reconsideration.
+         */
+
+        // Do not parallelize if only a handful of candidates remain
+        if ( (N-idx) < OMP_CHUNKS_PER_THREAD )
+        {
+            for ( colIdx=idx; cols.at(colIdx)!=idx; ++colIdx );
+        }
+        else
+        {
+            /*
+             * Note that this flag will be updated exactly once
+             * hence no "synchronization" (e.g. critical section)
+             * is necessary.
+             */
+            volatile bool foundFlag = false;
+ 
+            #pragma omp parallel num_threads(ompIdeal(N-idx)) \
+                    default(none) shared(cols, foundFlag, idx, colIdx)
+            {
+                OMP_COARSE_GRAINED_PAR_INIT_VARS(N-idx);
+
+                const size_t idxStart = istart + idx;
+                const size_t idxEnd = iend + idx;
+                typename std::vector<size_t>::const_iterator it = cols.begin() + idxStart;
+                for ( size_t currIdx=idxStart;
+                      false==foundFlag && currIdx<idxEnd && it!=cols.end();
+                      ++it, ++currIdx )
+                {
+                    if ( *it == idx )
+                    {
+                        colIdx = currIdx;
+                        foundFlag = true;
+                        #pragma omp flush(foundFlag)
+
+                        break;  // out of for it
+                    }
+
+                    // Maybe another thread has updated the flag...
+                    #pragma omp flush(foundFlag)
+                }
+            }  // omp parallel
+        }
+#endif
+
+        // and swap x's rows and cols' elements if necessary
+        if ( colIdx != idx )
+        {
+            x.swapRows_(idx, colIdx);
+            std::swap(cols.at(idx), cols.at(colIdx));
+        }
+    }  // for idx
 }
 
 
