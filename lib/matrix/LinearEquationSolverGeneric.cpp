@@ -166,7 +166,9 @@ bool math::LinearEquationSolver::solveSOR(
         maxInfNorm = static_cast<T>(0);
 
         // for each column of term...
-        // TODO this for loop can be parallelized
+        //   (note that each column is processed independently from the others)
+        #pragma omp paralel for default(none) \
+                shared(maxInfNorm, sol, term, rows, cols, w)
         for ( size_t c=0; c<NC; ++c )
         {
             // These variables will store column's maximum abs. value and increment
@@ -275,10 +277,14 @@ bool math::LinearEquationSolver::solveSOR(
                 resInfNorm = Dmax / Xmax;
             }
 
-            // finally update the maximum residual inf. norm across all columns
-            if ( true == math::PseudoFunction::absgt(resInfNorm, maxInfNorm) )
+            // Finally update the maximum residual inf. norm across all columns
+            // Note that the update must be reduced to prevent possible race conditions
+            #pragma omp critical(lineqgeneric_maxinfnorm)
             {
-                maxInfNorm = resInfNorm;
+                if ( true == math::PseudoFunction::absgt(resInfNorm, maxInfNorm) )
+                {
+                    maxInfNorm = resInfNorm;
+                }
             }
         }  // for c
     }  // for cnt
