@@ -210,16 +210,16 @@ bool math::LinearEquationSolver::solveSOR(
                     OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
                     T tempSum = static_cast<T>(0);
-					for ( size_t j=istart; j<iend; ++j )
-					{
+                    for ( size_t j=istart; j<iend; ++j )
+                    {
 
-						if ( j == i )
-						{
-							continue;  // for j
-						}
+                        if ( j == i )
+                        {
+                            continue;  // for j
+                        }
 
-						tempSum += coef(rows.at(i), cols.at(j)) * sol(j, c);
-					}  // for j
+                        tempSum += coef(rows.at(i), cols.at(j)) * sol(j, c);
+                    }  // for j
 
                     // Note that "omp reduction" does not support complex types...
                     #pragma omp critical(lineqgeneric_reduce_sum_s)
