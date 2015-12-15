@@ -27,6 +27,10 @@ limitations under the License.
 #include <cstddef>
 #include <vector>
 
+#include "omp/omp_header.h"
+#include "../settings/omp_settings.h"
+#include "omp/omp_coarse.h"
+
 #include "util/PseudoFunctionGeneric.hpp"
 #include "util/NumericUtil.hpp"
 #include "matrix/MatrixGeneric.hpp"
@@ -199,16 +203,30 @@ bool math::LinearEquationSolver::solveSOR(
                  *        j<i                    j>i
                  */
                 T s = static_cast<T>(0);
-                for ( size_t j=0; j<N; ++j )
+                #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(s, rows, cols, sol, coef, i, c)
                 {
-                    // TODO it is possible to parallelize this for loop
-                    if ( j == i )
-                    {
-                        continue;  // for j
-                    }
+                    OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-                    s += coef(rows.at(i), cols.at(j)) * sol(j, c);
-                }  // for j
+                    T tempSum = static_cast<T>(0);
+					for ( size_t j=istart; j<iend; ++j )
+					{
+
+						if ( j == i )
+						{
+							continue;  // for j
+						}
+
+						tempSum += coef(rows.at(i), cols.at(j)) * sol(j, c);
+					}  // for j
+
+                    // Note that "omp reduction" does not support complex types...
+                    #pragma omp critical(lineqgeneric_reduce_sum_s)
+                    {
+                        s += tempSum;
+                    }
+                }  // omp parallel
 
                 /*
                  * Update the x_i:
