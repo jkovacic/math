@@ -337,9 +337,8 @@ void pivot(
     std::vector<size_t> colidx;
     std::vector<size_t> rowidx;
 
-    // init rowidx regardless of 'needColidx'
-    // Note: when 'colidx' is actually required, NR is always equal to NC
-    math::Pivot::__private::fillVectorsWithInitialPos(NR, rowidx, colidx, needColidx);
+    math::Pivot::__private::fillVectorsWithInitialPos(NR, rowidx, rowidx, false);
+    math::Pivot::__private::fillVectorsWithInitialPos(NC, colidx, colidx, false);
 
 
     /*
@@ -359,11 +358,11 @@ void pivot(
         // Find the most appropriate row and column to pivot with this one
         size_t pr = i;
         size_t pc = i;
-        math::Pivot::__private::findPivot(A, i, &rowidx, NULL, pr, pc, fullp);
+        math::Pivot::__private::findPivot(A, i, &rowidx, &colidx, pr, pc, fullp);
 
         // If even the highest absolute value equals 0, there is
         // no unique solution of the system of linear equations
-        if ( true == math::NumericUtil::isZero<T>( A(rowidx.at(pr), pc)) )
+        if ( true == math::NumericUtil::isZero<T>(A(rowidx.at(pr), colidx.at(pc)) ) )
         {
             // in this case , the rank will be equal to the current 'i'...
             if ( NULL != pRank )
@@ -398,30 +397,25 @@ void pivot(
         if ( true==fullp && pc!=i )
         {
             oddSwaps = !oddSwaps;
-            A.swapColumns_(i, pc);
 
-            // and note the column swap in 'colidx'
-            if ( true == needColidx )
-            {
-                std::swap(colidx.at(i), colidx.at(pc));
-            }
+            std::swap( colidx.at(i), colidx.at(pc) );
         }
 
         // Set the i.th column of all other rows (r>i) to 0 by
         // adding the appropriate multiple of the i.th row
-        #pragma omp parallel for default(none) shared(A, i, rowidx)
+        #pragma omp parallel for default(none) shared(A, i, rowidx, colidx)
         for ( size_t r=i+1; r<NR; ++r )
         {
             // Nothing to do if temp(r,i) is already 0.
-            if ( false == math::NumericUtil::isZero<T>( A(rowidx.at(r), i)) )
+            if ( false == math::NumericUtil::isZero<T>( A(rowidx.at(r), colidx.at(i))) )
             {
                 // Subtract a multiple of the i^th row.
-                const T el = A(rowidx.at(r), i) / A(rowidx.at(i), i);
+                const T el = A(rowidx.at(r), colidx.at(i)) / A(rowidx.at(i), colidx.at(i));
 
                 // A(r,:) = A(r,:) - el*A(i,:)
                 for ( size_t c=i; c<NC; ++c )
                 {
-                    A(rowidx.at(r), c) -= el * A(rowidx.at(i), c);
+                    A(rowidx.at(r), colidx.at(c)) -= el * A(rowidx.at(i), colidx.at(c));
                 }
 
                 // b(r,:) = b(r,:) - el*b(i,:)
@@ -478,7 +472,7 @@ void pivot(
          * Normalizing of each row is independent from other rows so it is
          * perfectly safe to parallelize the task by rows.
          */
-        #pragma omp parallel num_threads(NTHR) default(none) shared(A, B, rowidx)
+        #pragma omp parallel num_threads(NTHR) default(none) shared(A, B, rowidx, colidx)
         {
             // Product of diagonal elements of rows assigned to the thread
             T diagProd = static_cast<T>(1);
@@ -486,7 +480,7 @@ void pivot(
             #pragma omp for
             for ( size_t r=0; r<N; ++r )
             {
-                const T el = A(rowidx.at(r), r);
+                const T el = A(rowidx.at(r), colidx.at(r));
 
                 // Normalization of rows is actually only necessary
                 // when 'B' is provided
@@ -494,7 +488,7 @@ void pivot(
                 {
                     for ( size_t c=r; c<NC; ++c )
                     {
-                        A(rowidx.at(r), c) /= el;
+                        A(rowidx.at(r), colidx.at(c)) /= el;
                     }
 
                     for ( size_t c=0; c<NT; ++c )
@@ -553,12 +547,12 @@ void pivot(
              */
             #pragma omp parallel for \
                         default(none) \
-                        shared(A, c, rowidx) \
+                        shared(A, c, rowidx, colidx) \
                         schedule(dynamic)
             for ( size_t r=0; r<c; ++r )
             {
                 // Nothing to do if A(r,c) already equals 0
-                if ( false == math::NumericUtil::isZero<T>( A(rowidx.at(r), c)) )
+                if ( false == math::NumericUtil::isZero<T>( A(rowidx.at(r), colidx.at(c))) )
                 {
                     /*
                      * To set A(r,c) to 0 it is a good idea to add the c.th row to it.
@@ -566,12 +560,12 @@ void pivot(
                      * and A(c,c) is already 1.
                      */
 
-                    const T el = A(rowidx.at(r), c);
+                    const T el = A(rowidx.at(r), colidx.at(c));
 
                     // A(r,:) = A(r,:) - el*A(c,:)
                     for ( size_t i=c; i<NC; ++i )
                     {
-                        A(rowidx.at(r), i) -= el * A(rowidx.at(c), i);
+                        A(rowidx.at(r), colidx.at(i)) -= el * A(rowidx.at(c), colidx.at(i));
                     }
 
                     // b(r,:) = b(r,:) - el*b(c,:)
