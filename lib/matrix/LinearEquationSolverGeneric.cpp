@@ -39,6 +39,87 @@ limitations under the License.
 
 
 
+
+namespace math {  namespace LinearEquationSolver {  namespace __private
+{
+
+
+/*
+ * Dot product of the a's currentRow.th row and the x's currentCol.th
+ * column, excluding the currentRow.th element in both vectors.
+ *
+ * @note The function assumes that dimensions of all matrices and vectors
+ *       are correct.
+ *
+ * @param a - a square matrix of coefficients (N*N)
+ * @param x - a matrix of solutions (with N rows)
+ * @param currentRow - the requested row of 'a'
+ * @param currentCol - the requested column of 'x'
+ * @param rows - permutation vector of a's rows
+ * @param cols - permutation vector of a's columns
+ *
+ * @return dot product of a's currentRow.th row and x's currentCol.th column
+ */
+template <class T>
+T incSumProd(
+    const math::MatrixGeneric<T>& a,
+    const math::MatrixGeneric<T>& x,
+    const size_t currentRow,
+    const size_t currentCol,
+    const std::vector<size_t>& rows,
+    const std::vector<size_t>& cols )
+{
+    /*
+     * Calculates the following sum:
+     *
+     *                 N
+     *               -----  /               \
+     *               \      |               |
+     *   sumprod  =   >     | a     *  x    |
+     *               /      |  i,j      j,c |
+     *               -----  \               /
+     *                j=1
+     *                j!=i
+     *
+     * where 'i' is actually equals 'currentRow' and
+     * 'c' actually equals 'currentCol'.
+     */
+
+    const size_t N = a.nrRows();
+    T sumProd = static_cast<T>(0);
+
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+            if(N>OMP_CHUNKS_PER_THREAD) \
+            default(none) shared(sumProd, rows, cols, a, x)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        T tempSum = static_cast<T>(0);
+        for ( size_t j=istart; j<iend; ++j )
+        {
+
+            if ( currentRow == j )
+            {
+                continue;  // for j
+	        }
+
+            tempSum += a(rows.at(currentRow), cols.at(j)) * x(j, currentCol);
+        }  // for j
+
+        // Note that "omp reduction" does not support complex types...
+        #pragma omp critical(lineqgeneric_reduce_sumprod)
+        {
+            sumProd += tempSum;
+        }
+    }  // omp parallel
+
+    return sumProd;
+}
+
+}}}  // namespace math::LinearEquationsolver::__private
+
+
+
 /**
  * Solves the system of linear equations using the Gauss - Jordan elimination
  * method and returns its unique solution if it exists.
@@ -219,31 +300,9 @@ bool math::LinearEquationSolver::solveSOR(
                  *       -----                  -----
                  *        j<i                    j>i
                  */
-                T s = static_cast<T>(0);
-                #pragma omp parallel num_threads(ompIdeal(N)) \
-                    if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(s, rows, cols, sol, coef, i, c)
-                {
-                    OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-                    T tempSum = static_cast<T>(0);
-                    for ( size_t j=istart; j<iend; ++j )
-                    {
-
-                        if ( j == i )
-                        {
-                            continue;  // for j
-                        }
-
-                        tempSum += coef(rows.at(i), cols.at(j)) * sol(j, c);
-                    }  // for j
-
-                    // Note that "omp reduction" does not support complex types...
-                    #pragma omp critical(lineqgeneric_reduce_sum_s)
-                    {
-                        s += tempSum;
-                    }
-                }  // omp parallel
+                T s = math::LinearEquationSolver::__private::incSumProd(
+                           coef, sol, i, c, rows, cols );
 
                 /*
                  * Update the x_i:
