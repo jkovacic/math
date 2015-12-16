@@ -108,7 +108,21 @@ void fillVectorsWithInitialPos(
 
 
 /*
- * Returns either 'i' or the i'th element of 'v' if 'v' is provided,
+ * Preallocates and fills vector 'v' with consecutive  values between 0 and N-1.
+ * 
+ * @param N - size of vector
+ * @param v1 - vector to fill
+ *
+ * @throw MatrixException if allocation of memory for the vector fails
+ */
+void fillVectorWithInitialPos(const size_t N, std::vector<size_t>& v) throw(math::MatrixException)
+{
+    math::Pivot::__private::fillVectorsWithInitialPos(N, v, v, false);
+}
+
+
+/*
+ * Returns either 'i' or the i.th element of 'v' if 'v' is provided,
  * i.e. it is not NULL.
  * 
  * @note It is assumed that 'i' will alway be less than size of 'v' (if provided)
@@ -337,8 +351,8 @@ void pivot(
     std::vector<size_t> colidx;
     std::vector<size_t> rowidx;
 
-    math::Pivot::__private::fillVectorsWithInitialPos(NR, rowidx, rowidx, false);
-    math::Pivot::__private::fillVectorsWithInitialPos(NC, colidx, colidx, false);
+    math::Pivot::__private::fillVectorWithInitialPos(NR, rowidx);
+    math::Pivot::__private::fillVectorWithInitialPos(NC, colidx);
 
 
     /*
