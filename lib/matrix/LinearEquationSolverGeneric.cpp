@@ -90,18 +90,23 @@ bool math::LinearEquationSolver::solveGaussJordan(
  * (SOR) iterative method and returns its unique solution if it exists.
  * 
  * 'coef' must be a square matrix and 'term' must have the same number of
- * rows as 'coef'.
+ * rows as 'coef'. If 'solInitialized' equals TRUE, 'sol' must have the same
+ * dimension as 'term'.
  * 
+ * @note The method typically converges when it is possible to permute
+ * rows and columns of 'coef' into a diagonally dominant matrix.
+ *
  * @param coef - a square matrix with coefficients of the system of linear equations
  * @param term - a matrix with constant terms of the system of linear equations
  * @param sol - a reference to a matrix to be assigned the solution of equations
  * @param w - relaxation factor (omega)
+ * @param solInitialized - is 'sol' prefilled with the initial solution? (default: FALSE)
  * @param tol - infinity norm of the maximum residual of tolerance (default: 1e-6)
  * @param maxiter - maximum number of iterations (default: 10000)
  * 
  * @return a logical value indicating whether a unique solution was found
  * 
- * @throw MatrixException if dimensions of 'coef' and 'term' are invalid or internal allocation of memory failed
+ * @throw MatrixException if dimensions of 'coef' and 'term' (and possibly 'sol') are invalid or internal allocation of memory failed
  */
 template <class T>
 bool math::LinearEquationSolver::solveSOR(
@@ -109,6 +114,7 @@ bool math::LinearEquationSolver::solveSOR(
           const math::MatrixGeneric<T>& term,
           math::MatrixGeneric<T>& sol,
           const T& w,
+          const bool solInitialized,
           const T& tol,
           const size_t maxiter
         ) throw (math::MatrixException)
@@ -138,9 +144,20 @@ bool math::LinearEquationSolver::solveSOR(
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    // Initially set all unknowns to zeros: 
-    sol = term;
-    sol *= static_cast<T>(0);
+    // if 'sol' is not initialized, fill it with the initial solution (zeros)...
+    if ( false == solInitialized )
+    {
+        sol = term;
+        sol *= static_cast<T>(0);
+    }
+    else
+    {
+        // otherwise just check its dimensions
+        if ( N != sol.nrRows() || NC != sol.nrColumns() )
+        {
+            throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
+        }
+    }
 
     // Vectors of permutations of rows and columns, respectively
     std::vector<size_t> rows;
@@ -325,23 +342,29 @@ bool math::LinearEquationSolver::solveSOR(
  * method and returns its unique solution if it exists.
  * 
  * 'coef' must be a square matrix and 'term' must have the same number of
- * rows as 'coef'.
+ * rows as 'coef'. If 'solInitialized' equals TRUE, 'sol' must have the same
+ * dimension as 'term'.
  * 
+ * @note The method typically converges when it is possible to permute
+ * rows and columns of 'coef' into a diagonally dominant matrix.
+ *
  * @param coef - a square matrix with coefficients of the system of linear equations
  * @param term - a matrix with constant terms of the system of linear equations
  * @param sol - a reference to a matrix to be assigned the solution of equations
+ * @param solInitialized - is 'sol' prefilled with the initial solution? (default: FALSE)
  * @param tol - infinity norm of the maximum residual of tolerance (default: 1e-6)
  * @param maxiter - maximum number of iterations (default: 10000)
  * 
  * @return a logical value indicating whether a unique solution was found
  * 
- * @throw MatrixException if dimensions of 'coef' and 'term' are invalid or internal allocation of memory failed
+ * @throw MatrixException if dimensions of 'coef' and 'term' (and possibly 'sol') are invalid or internal allocation of memory failed
  */
 template <class T>
 bool math::LinearEquationSolver::solveGaussSeidel(
           const math::MatrixGeneric<T>& coef,
           const math::MatrixGeneric<T>& term,
           math::MatrixGeneric<T>& sol,
+          const bool solInitialized,
           const T& tol,
           const size_t maxiter
         ) throw (math::MatrixException)
@@ -355,5 +378,5 @@ bool math::LinearEquationSolver::solveGaussSeidel(
      */
 
     return math::LinearEquationSolver::solveSOR(
-            coef, term, sol, static_cast<T>(1), tol, maxiter );
+            coef, term, sol, static_cast<T>(1), solInitialized, tol, maxiter );
 }
