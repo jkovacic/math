@@ -69,7 +69,7 @@ void lineqSolverTest()
          * x  = [-0.6631640-0.3626125i, 0.1630189+1.050566i, -0.2240929+0.6002903i]'
          */
         MatrixGeneric<complex<double> > x(b);
-        if ( true == LinearEquationSolver::solveGaussJordan(a, b, x) )
+        if ( true == LinearEquationSolver::solveGaussJordan(a, b, x, true, true) )
         {
             cout << "Solution with full pivoting:" << endl;
             x.display();
@@ -81,7 +81,7 @@ void lineqSolverTest()
 
         cout << endl;
 
-        if ( true == LinearEquationSolver::solveGaussJordan(a, b, x, false) )
+        if ( true == LinearEquationSolver::solveGaussJordan(a, b, x, false, true) )
         {
             cout << "Solution with partial pivoting:" << endl;
             x.display();

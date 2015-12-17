@@ -977,13 +977,14 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setUnit_() throw(math::MatrixExc
  * @note The method is only supported for square matrices
  * 
  * @param fullp - should the algorithm perform full pivoting (default: TRUE)
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements (default: FALSE)
  * 
  * @return determinant of the matrix
  *
  * @throw MatrixException if the matrix is not square or if allocation of memory for auxiliary variables fails
  */
 template <class T>
-T math::MatrixGeneric<T>::determinant(const bool fullp) const throw(math::MatrixException)
+T math::MatrixGeneric<T>::determinant(const bool fullp, const bool physSwap) const throw(math::MatrixException)
 {
     // Sanity check
     if ( false == this->isSquare() )
@@ -991,21 +992,23 @@ T math::MatrixGeneric<T>::determinant(const bool fullp) const throw(math::Matrix
         throw math::MatrixException(math::MatrixException::NONSQUARE_MATRIX);
     }
 
-    return math::Pivot::getDeterminant(*this, fullp);
+    return math::Pivot::getDeterminant(*this, fullp, physSwap);
 }
 
 
 /*
  * Calculates rank of a matrix.
  *
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements (default: FALSE)
+ *
  * @return rank of the matrix
  *
  * @throw MatrixException if internal allocation of memory failed
  */
 template <class T>
-size_t math::MatrixGeneric<T>::rank() const throw(math::MatrixException)
+size_t math::MatrixGeneric<T>::rank(const bool physSwap) const throw(math::MatrixException)
 {
-    return math::Pivot::getRank(*this);
+    return math::Pivot::getRank(*this, physSwap);
 }
 
 
@@ -1021,13 +1024,14 @@ size_t math::MatrixGeneric<T>::rank() const throw(math::MatrixException)
  *       numerically more stable, on the other hand it introduces additional overhead.
  *
  * @param fullp - should the algorithm perform full pivoting (default: TRUE)
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements (default: FALSE)
  *
  * @return inverse matrix
  *
  * @throw MatrixException if the matrix is not square or not invertible
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse(const bool fullp) const throw(math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse(const bool fullp, const bool physSwap) const throw(math::MatrixException)
 {
     // Sanity check
     if ( false == this->isSquare() )
@@ -1056,7 +1060,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::inverse(const bool fullp) const t
     // this * inv = id
     math::MatrixGeneric<T> retVal(id);
 
-    const bool succ = math::Pivot::solveGaussJordan<T>(*this, id, retVal, fullp);
+    const bool succ = math::Pivot::solveGaussJordan<T>(*this, id, retVal, fullp, physSwap);
 
     // is *this an uninvertible matrix? (determinant()=0):
     if ( false == succ )

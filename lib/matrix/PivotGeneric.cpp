@@ -264,7 +264,8 @@ void findPivot(
  * @param fullm - logical value indicating whether 'A' should be converted into identity matrix
  * @param pB - pointer to a matrix of terms (may be NULL if not necessary)
  * @param pRank - pointer to a variable to assign A's rank (may be NULL if not required) 
- * @param pDet - pointer to a variable to assign A's determinant (may be NULL if not required) 
+ * @param pDet - pointer to a variable to assign A's determinant (may be NULL if not required)
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements
  * 
  * @throw MatrixException if any argument is invalid or allocation of a column bookkeeping vector fails
  */
@@ -275,7 +276,8 @@ void pivot(
         const bool fullm,
         math::MatrixGeneric<T>* const pB,
         size_t* const pRank,
-        T* const pDet
+        T* const pDet,
+        const bool physSwap
       ) throw(math::MatrixException)
 {
     // sanity check
@@ -293,10 +295,10 @@ void pivot(
     const bool detRequired = ( NULL != pDet );
 
     /*
-     * Bookkeeping of swapped columns is only necessary when 'pB' is provided
-     * and full pivoting is requested. More details follow later.
+     * Bookkeeping of swapped columns is necessary regardless of 'physSwap' when
+     * 'pB' is provided and full pivoting is requested. More details follow later.
      */
-    const bool needColidx = (NULL != pB) && (true==fullp);
+    const bool fullPB = (NULL != pB) && (true==fullp);
 
 
     /*
@@ -351,9 +353,19 @@ void pivot(
     std::vector<size_t> colidx;
     std::vector<size_t> rowidx;
 
-    math::Pivot::__private::fillVectorWithInitialPos(NR, rowidx);
-    math::Pivot::__private::fillVectorWithInitialPos(NC, colidx);
+    if ( false == physSwap )
+    {
+        math::Pivot::__private::fillVectorWithInitialPos(NR, rowidx);
+    }
 
+    if ( false == physSwap || true == fullPB )
+    {
+        math::Pivot::__private::fillVectorWithInitialPos(NC, colidx);
+    }
+
+    // pointers to vectors above, required by __index()
+    std::vector<size_t>* const pRows = ( false==physSwap ? &rowidx : NULL );
+    std::vector<size_t>* const pCols = ( false==physSwap ? &colidx : NULL );
 
     /*
      * The first part of the algorithm will perform pivoting.
@@ -372,11 +384,13 @@ void pivot(
         // Find the most appropriate row and column to pivot with this one
         size_t pr = i;
         size_t pc = i;
-        math::Pivot::__private::findPivot(A, i, &rowidx, &colidx, pr, pc, fullp);
+        math::Pivot::__private::findPivot(A, i, pRows, pCols, pr, pc, fullp);
 
         // If even the highest absolute value equals 0, there is
         // no unique solution of the system of linear equations
-        if ( true == math::NumericUtil::isZero<T>(A(rowidx.at(pr), colidx.at(pc)) ) )
+        if ( true == math::NumericUtil::isZero<T>(
+             A( math::Pivot::__private::__index(pRows, pr),
+                math::Pivot::__private::__index(pCols, pc) ) ) )
         {
             // in this case , the rank will be equal to the current 'i'...
             if ( NULL != pRank )
@@ -400,7 +414,15 @@ void pivot(
             // additionally update the "counter" of row/column swaps
             oddSwaps = !oddSwaps;
 
-            std::swap( rowidx.at(i), rowidx.at(pr) );
+            if ( false == physSwap )
+            {
+                std::swap( rowidx.at(i), rowidx.at(pr) );
+            }
+            else
+            {
+                A.swapRows_(i, pr);
+            }
+
             if ( NULL != pB )
             {
                 pB->swapRows_(i, pr);
@@ -412,24 +434,36 @@ void pivot(
         {
             oddSwaps = !oddSwaps;
 
-            std::swap( colidx.at(i), colidx.at(pc) );
+            if ( true == physSwap )
+            {
+                A.swapColumns_(i, pc);
+            }
+
+            if ( false==physSwap || true==fullPB )
+            {
+            	std::swap( colidx.at(i), colidx.at(pc) );
+            }
         }
 
         // Set the i.th column of all other rows (r>i) to 0 by
         // adding the appropriate multiple of the i.th row
-        #pragma omp parallel for default(none) shared(A, i, rowidx, colidx)
+        #pragma omp parallel for default(none) shared(A, i)
         for ( size_t r=i+1; r<NR; ++r )
         {
             // Nothing to do if temp(r,i) is already 0.
-            if ( false == math::NumericUtil::isZero<T>( A(rowidx.at(r), colidx.at(i))) )
+            const T& Ari = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, i));
+            if ( false == math::NumericUtil::isZero<T>(Ari) )
             {
-                // Subtract a multiple of the i^th row.
-                const T el = A(rowidx.at(r), colidx.at(i)) / A(rowidx.at(i), colidx.at(i));
+                // Subtract a multiple of the i.th row.
+                const T& Aii = A(math::Pivot::__private::__index(pRows, i), math::Pivot::__private::__index(pCols, i));
+                const T el = Ari / Aii;
 
                 // A(r,:) = A(r,:) - el*A(i,:)
                 for ( size_t c=i; c<NC; ++c )
                 {
-                    A(rowidx.at(r), colidx.at(c)) -= el * A(rowidx.at(i), colidx.at(c));
+                    T& Arc = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, c));
+                    const T& Aic = A(math::Pivot::__private::__index(pRows, i), math::Pivot::__private::__index(pCols, c));
+                    Arc -= el * Aic;
                 }
 
                 // b(r,:) = b(r,:) - el*b(i,:)
@@ -486,7 +520,7 @@ void pivot(
          * Normalizing of each row is independent from other rows so it is
          * perfectly safe to parallelize the task by rows.
          */
-        #pragma omp parallel num_threads(NTHR) default(none) shared(A, B, rowidx, colidx)
+        #pragma omp parallel num_threads(NTHR) default(none) shared(A, B)
         {
             // Product of diagonal elements of rows assigned to the thread
             T diagProd = static_cast<T>(1);
@@ -494,7 +528,7 @@ void pivot(
             #pragma omp for
             for ( size_t r=0; r<N; ++r )
             {
-                const T el = A(rowidx.at(r), colidx.at(r));
+                const T el = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, r));
 
                 // Normalization of rows is actually only necessary
                 // when 'B' is provided
@@ -502,7 +536,8 @@ void pivot(
                 {
                     for ( size_t c=r; c<NC; ++c )
                     {
-                        A(rowidx.at(r), colidx.at(c)) /= el;
+                        T& Arc = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, c));
+                        Arc /= el;
                     }
 
                     for ( size_t c=0; c<NT; ++c )
@@ -561,12 +596,13 @@ void pivot(
              */
             #pragma omp parallel for \
                         default(none) \
-                        shared(A, c, rowidx, colidx) \
+                        shared(A, c) \
                         schedule(dynamic)
             for ( size_t r=0; r<c; ++r )
             {
                 // Nothing to do if A(r,c) already equals 0
-                if ( false == math::NumericUtil::isZero<T>( A(rowidx.at(r), colidx.at(c))) )
+                const T& Arc = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, c));
+                if ( false == math::NumericUtil::isZero<T>(Arc) )
                 {
                     /*
                      * To set A(r,c) to 0 it is a good idea to add the c.th row to it.
@@ -574,12 +610,14 @@ void pivot(
                      * and A(c,c) is already 1.
                      */
 
-                    const T el = A(rowidx.at(r), colidx.at(c));
+                    const T el = Arc;
 
                     // A(r,:) = A(r,:) - el*A(c,:)
                     for ( size_t i=c; i<NC; ++i )
                     {
-                        A(rowidx.at(r), colidx.at(i)) -= el * A(rowidx.at(c), colidx.at(i));
+                        T& Ari = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, i));
+                        const T& Aci = A(math::Pivot::__private::__index(pRows, c), math::Pivot::__private::__index(pCols, i));
+                        Ari -= el * Aci;
                     }
 
                     // b(r,:) = b(r,:) - el*b(c,:)
@@ -608,10 +646,10 @@ void pivot(
      * be reflected by swapping of corresponding elements of 'colidx'.
      */
 
-    if ( true==needColidx && NR==NC )
+    if ( true==fullPB && NR==NC )
     {
         math::Pivot::rearrangeMatrixRows(*pB, colidx);
-    }  // if needColidx
+    }  // if fullPB
 }
 
 }}}  // namespace math::Pivot::__private
@@ -804,6 +842,7 @@ void math::Pivot::rearrangeMatrixRows(
  * @param b - a matrix with constant terms of the system of linear equations
  * @param x - a reference to a matrix to be assigned the solution of equations
  * @param fullp - should the algorithm perform full pivoting?
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements
  * 
  * @return a logical value indicating whether a unique solution was found
  * 
@@ -814,7 +853,8 @@ bool math::Pivot::solveGaussJordan(
         const math::MatrixGeneric<T>& A,
         const math::MatrixGeneric<T>& b,
         math::MatrixGeneric<T>& x,
-        const bool fullp
+        const bool fullp,
+        const bool physSwap
       ) throw(math::MatrixException)
 {
     // sanity check
@@ -836,7 +876,7 @@ bool math::Pivot::solveGaussJordan(
     
     size_t rank;
 
-    math::Pivot::__private::pivot<T>(temp, fullp, true, &x, &rank, NULL);
+    math::Pivot::__private::pivot<T>(temp, fullp, true, &x, &rank, NULL, physSwap);
 
     // if rank(A) equals N, the system of lin. equations has a unique solution
 
@@ -849,6 +889,7 @@ bool math::Pivot::solveGaussJordan(
  * 
  * @param A - a matrix to calculate its determinant
  * @param fullp - should the algorithm perform full pivoting?
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements
  * 
  * @return determinant of 'A'
  * 
@@ -857,7 +898,8 @@ bool math::Pivot::solveGaussJordan(
 template <class T>
 T math::Pivot::getDeterminant(
         const math::MatrixGeneric<T>& A,
-        const bool fullp
+        const bool fullp,
+        const bool physSwap
       ) throw(math::MatrixException)
 {
     // sanity check
@@ -869,7 +911,7 @@ T math::Pivot::getDeterminant(
     math::MatrixGeneric<T> temp(A);
     T det;
 
-    math::Pivot::__private::pivot<T>(temp, fullp, false, NULL, NULL, &det);
+    math::Pivot::__private::pivot<T>(temp, fullp, false, NULL, NULL, &det, physSwap);
 
     return det;
 }
@@ -879,6 +921,7 @@ T math::Pivot::getDeterminant(
  * Calculates rank of a matrix.
  *
  * @param A - a matrix to calculate its rank
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements
  *
  * @return rank of 'A'
  *
@@ -886,13 +929,14 @@ T math::Pivot::getDeterminant(
  */
 template <class T>
 size_t math::Pivot::getRank(
-        const math::MatrixGeneric<T>& A
+        const math::MatrixGeneric<T>& A,
+		const bool physSwap
       ) throw(math::MatrixException)
 {
     math::MatrixGeneric<T> temp(A);
     size_t rank;
 
-    math::Pivot::__private::pivot<T>(temp, true, false, NULL, &rank, NULL);
+    math::Pivot::__private::pivot<T>(temp, true, false, NULL, &rank, NULL, physSwap);
 
     return rank;
 }

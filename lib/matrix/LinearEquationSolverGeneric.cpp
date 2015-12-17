@@ -135,6 +135,7 @@ T incSumProd(
  * @param term - a matrix with constant terms of the system of linear equations
  * @param sol - a reference to a matrix to be assigned the solution of equations
  * @param fullp - should the method perform full pivoting (default: TRUE)
+ * @param physSwap - should the internal algorithm perform physical swapping of matrix elements (default: FALSE)
  * 
  * @return a logical value indicating whether a unique solution was found
  * 
@@ -145,7 +146,8 @@ bool math::LinearEquationSolver::solveGaussJordan(
           const math::MatrixGeneric<T>& coef,
           const math::MatrixGeneric<T>& term,
           math::MatrixGeneric<T>& sol,
-          const bool fullp
+          const bool fullp,
+          const bool physSwap
         ) throw (math::MatrixException)
 {
     // Sanity check
@@ -162,7 +164,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    return math::Pivot::solveGaussJordan(coef, term, sol, fullp);
+    return math::Pivot::solveGaussJordan(coef, term, sol, fullp, physSwap);
 }
 
 

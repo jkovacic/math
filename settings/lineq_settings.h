@@ -43,4 +43,14 @@ limitations under the License.
 #define LINEQ_TOL_CONV_DEN            ( 1000000 )
 
 
+/**
+ * Default setting, specifying whether the internal pivoting
+ * implementation for the Gauss - Jordan method should internally
+ * physically swap elements of the coefficient matrix when pivoting
+ * rows and/or columns. When set to TRUE, the algorithm requires
+ * less additional storage for book keeping of swaps.
+ */
+#define LINEQ_MODIFY_COEF_MATRIX      ( false )
+
+
 #endif 	/* _MATH_LINEQ_SETTINGS_H_ */

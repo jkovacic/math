@@ -62,16 +62,24 @@ bool solveGaussJordan(
         const MatrixGeneric<T>& A,
         const MatrixGeneric<T>& b,
         MatrixGeneric<T>& x,
-        const bool fullp
+        const bool fullp,
+        const bool physSwap
       ) throw(MatrixException);
 
 
 template <class T>
-T getDeterminant(const MatrixGeneric<T>& A, const bool fullp) throw(MatrixException);
+T getDeterminant(
+        const MatrixGeneric<T>& A,
+        const bool fullp,
+        const bool physSwap
+      ) throw(MatrixException);
 
 
 template <class T>
-size_t getRank(const MatrixGeneric<T>& A) throw(MatrixException);
+size_t getRank(
+        const MatrixGeneric<T>& A,
+        const bool physSwap
+      ) throw(MatrixException);
 
 }  // namespace Pivot
 

@@ -47,7 +47,8 @@ namespace LinearEquationSolver
               const MatrixGeneric<T>& coef,
               const MatrixGeneric<T>& term,
               MatrixGeneric<T>& sol,
-              const bool fullp = true
+              const bool fullp = true,
+              const bool physSwap = LINEQ_MODIFY_COEF_MATRIX
             ) throw (MatrixException);
 
 

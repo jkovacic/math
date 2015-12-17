@@ -33,6 +33,7 @@ limitations under the License.
 #include <cstddef>
 #include <complex>
 
+#include "../settings/matrix_settings.h"
 #include "exception/MatrixException.hpp"
 
 namespace math
@@ -236,11 +237,11 @@ public:
     // These methods are only applicable for square matrices:
     MatrixGeneric<T>& setDiag_(const T& scalar) throw(MatrixException);
     MatrixGeneric<T>& setUnit_() throw(MatrixException);
-    T determinant(const bool fullp = true) const throw(MatrixException);
-    MatrixGeneric<T> inverse(const bool fullp = true) const throw(MatrixException);
+    T determinant(const bool fullp=true, const bool physSwap=MATRIX_MODIFY_COEF_MATRIX) const throw(MatrixException);
+    MatrixGeneric<T> inverse(const bool fullp=true, const bool physSwap=MATRIX_MODIFY_COEF_MATRIX) const throw(MatrixException);
 
     bool isSquare() const;
-    size_t rank() const throw(MatrixException);
+    size_t rank(const bool physSwap=MATRIX_MODIFY_COEF_MATRIX) const throw(MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();
