@@ -18,13 +18,22 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Default settings for implemented algorithms for
- * solving systems of linear equations.
+ * Default settings for implemented algorithms that compute
+ * various matrix properties, such as inverse, determinat or rank.
  */
 
 #ifndef _MATH_MATRIX_SETTINGS_H_
 #define	_MATH_MATRIX_SETTINGS_H_
 
+
+/*
+ * Default settings, specifying whether internal pivoting
+ * implementation for the Gauss - Jordan algorithm based operations
+ * performs full pivoting. Note that full pivoting is more complex
+ * but numerically more stable.
+ */
+#define MATRIX_INVERSE_FULL_PIVOT             ( true )
+#define MATRIX_DET_FULL_PIVOT                 ( true )
 
 /**
  * Default setting, specifying whether the internal pivoting
@@ -34,7 +43,7 @@ limitations under the License.
  * and/or columns. When set to TRUE, the algorithm requires less
  * additional storage for book keeping of swaps.
  */
-#define MATRIX_MODIFY_COEF_MATRIX        ( false )
+#define MATRIX_PHYSSWAP_COEF                  ( false )
 
 
 #endif  /* _MATH_MATRIX_SETTINGS_H_ */

@@ -237,11 +237,11 @@ public:
     // These methods are only applicable for square matrices:
     MatrixGeneric<T>& setDiag_(const T& scalar) throw(MatrixException);
     MatrixGeneric<T>& setUnit_() throw(MatrixException);
-    T determinant(const bool fullp=true, const bool physSwap=MATRIX_MODIFY_COEF_MATRIX) const throw(MatrixException);
-    MatrixGeneric<T> inverse(const bool fullp=true, const bool physSwap=MATRIX_MODIFY_COEF_MATRIX) const throw(MatrixException);
+    T determinant(const bool fullp=MATRIX_DET_FULL_PIVOT, const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
+    MatrixGeneric<T> inverse(const bool fullp=MATRIX_INVERSE_FULL_PIVOT, const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
 
     bool isSquare() const;
-    size_t rank(const bool physSwap=MATRIX_MODIFY_COEF_MATRIX) const throw(MatrixException);
+    size_t rank(const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();
