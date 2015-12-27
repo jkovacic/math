@@ -573,7 +573,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
              * Each unknown will be updated iteratively...
              */
             #pragma omp parallel for default(none) \
-                    shared(coef, term, rows, cols, xk, xk_1, Xpmax, c, w)
+                    shared(coef, term, rows, cols, xk, xk_1, Xpmax, Dpmax, c, w)
             for ( size_t i=0; i<N; ++i )
             {
                 /*
