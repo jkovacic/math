@@ -166,6 +166,33 @@ void lineqSolverTest()
         }
 
         cout << endl;
+
+        xd = bd;
+        xc = bc;
+
+        if ( true == LinearEquationSolver::solveWeightedJacobi(ac, bc, xc, complex<double>(2.0/3.0)) )
+        {
+            cout << "Solution of the complex-numbered system using the weighted Jacobi method:" << endl;
+            xc.display();
+        }
+        else
+        {
+            cerr << "Weighted Jacobi method did not converge." << endl;
+        }
+
+        cout << endl;
+
+        if ( true == LinearEquationSolver::solveJacobi(ad, bd, xd) )
+        {
+            cout << "Solution of the real-numbered system using the Jacobi method:" << endl;
+            xd.display();
+        }
+        else
+        {
+            cerr << "Jacobi method did not converge." << endl;
+        }
+
+        cout << endl;
     }
     catch ( const MatrixException& mex )
     {

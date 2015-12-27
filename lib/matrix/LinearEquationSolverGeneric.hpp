@@ -75,6 +75,28 @@ namespace LinearEquationSolver
             ) throw (MatrixException);
 
 
+    template <class T>
+    bool solveWeightedJacobi(
+              const MatrixGeneric<T>& coef,
+              const MatrixGeneric<T>& term,
+              MatrixGeneric<T>& sol,
+              const T& w,
+              const bool solInitialized = false,
+              const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
+              const size_t maxiter = LINEQ_MAX_ITER
+            ) throw (MatrixException);
+
+
+    template <class T>
+    bool solveJacobi(
+              const MatrixGeneric<T>& coef,
+              const MatrixGeneric<T>& term,
+              MatrixGeneric<T>& sol,
+              const bool solInitialized = false,
+              const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
+              const size_t maxiter = LINEQ_MAX_ITER
+            ) throw (MatrixException);
+
 }  // namespace LinearEquationSolver
 
 }  // namespace math
