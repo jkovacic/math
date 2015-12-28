@@ -47,6 +47,8 @@ namespace math {  namespace LinearEquationSolver {  namespace __private
 /*
  * Dot product of the a's currentRow.th row and the x's currentCol.th
  * column, excluding the currentRow.th element in both vectors.
+ * Permutations of a's rows and columns are taken into account by
+ * vectors 'rows' and 'cols', respectively.
  *
  * @note The function assumes that dimensions of all matrices and vectors
  *       are correct.
@@ -101,7 +103,7 @@ T incSumProd(
             if ( currentRow == j )
             {
                 continue;  // for j
-	        }
+            }
 
             tempSum += a(rows.at(currentRow), cols.at(j)) * x(j, currentCol);
         }  // for j
@@ -303,7 +305,7 @@ bool math::LinearEquationSolver::solveSOR(
                  *        j<i                    j>i
                  */
 
-                T s = math::LinearEquationSolver::__private::incSumProd(
+                const T s = math::LinearEquationSolver::__private::incSumProd(
                            coef, sol, i, c, rows, cols );
 
                 /*
@@ -326,7 +328,7 @@ bool math::LinearEquationSolver::solveSOR(
                  * However, evaluation of the inf. norm will require the increment
                  * to be calculated first:
                  */
-                T dx = w * ( (term(rows.at(i), c) - s)/coef(rows.at(i), cols.at(i)) - sol(i, c) );
+                const T dx = w * ( (term(rows.at(i), c) - s)/coef(rows.at(i), cols.at(i)) - sol(i, c) );
 
                 // then update x_i
                 sol(i, c) += dx;
@@ -587,7 +589,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
                  *          j!=i
                  */
 
-                T s = math::LinearEquationSolver::__private::incSumProd(
+                const T s = math::LinearEquationSolver::__private::incSumProd(
                            coef, xk, i, c, rows, cols );
 
                 /*
@@ -610,7 +612,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
                  * However, evaluation of the inf. norm will require the increment
                  * to be calculated first:
                  */
-                T dx = w * ( (term(rows.at(i), c) - s)/coef(rows.at(i), cols.at(i)) - xk(i, c) );
+                const T dx = w * ( (term(rows.at(i), c) - s)/coef(rows.at(i), cols.at(i)) - xk(i, c) );
 
                 // then update x_i
                 xk_1(i, c) = xk(i, c) + dx;
