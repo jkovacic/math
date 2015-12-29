@@ -274,7 +274,7 @@ bool math::LinearEquationSolver::solveSOR(
         // for each column of term...
         //   (note that each column is processed independently from the others)
         #pragma omp paralel for default(none) \
-                shared(maxInfNorm, sol, term, rows, cols, w)
+                shared(maxInfNorm, sol, coef, term, rows, cols, w)
         for ( size_t c=0; c<NC; ++c )
         {
             // These variables will store column's maximum abs. value and increment
@@ -564,7 +564,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
         // for each column of term...
         //   (note that each column is processed independently from the others)
         #pragma omp paralel for default(none) \
-                shared(maxInfNorm, xk, xk_1, term, rows, cols, w)
+                shared(maxInfNorm, xk, xk_1, coef, term, rows, cols, w)
         for ( size_t c=0; c<NC; ++c )
         {
             // These variables will store column's maximum abs. value and increment
