@@ -28,7 +28,19 @@ limitations under the License.
 #ifndef _OMP_COARSE_H_
 #define _OMP_COARSE_H_
 
-#include <stddef.h>
+
+/*
+ * Includes the "proper" header's file and "properly" defines the type size_t,
+ * depending whether this header has been included into C or C++ code.
+ */
+#ifdef __cplusplus
+  #include <cstddef>
+  typedef std::size_t OMPC_SIZE_T;
+#else
+  #include <stddef.h>
+  typedef size_t OMPC_SIZE_T;
+#endif
+
 
 #include "../settings/omp_settings.h"
 
@@ -43,7 +55,7 @@ limitations under the License.
  *
  * @return ideal number of threads
  */
-inline size_t ompIdealNrThreads( const size_t n, const size_t per_thread )
+inline OMPC_SIZE_T ompIdealNrThreads( const OMPC_SIZE_T n, const OMPC_SIZE_T per_thread )
 {
     return (n / per_thread) + ( 0 == (n % per_thread) ? 0 : 1 );
 }
@@ -60,7 +72,7 @@ inline size_t ompIdealNrThreads( const size_t n, const size_t per_thread )
  *
  * @see ompIdealNrThreads
  */
-inline size_t ompIdeal( const size_t n )
+inline OMPC_SIZE_T ompIdeal( const OMPC_SIZE_T n )
 {
     return ompIdealNrThreads(n, OMP_CHUNKS_PER_THREAD);
 }
@@ -90,20 +102,20 @@ inline size_t ompIdeal( const size_t n )
  *
  * @param N - number of all elements to be processed by threads (must be a size_t value)
  */
-#define OMP_COARSE_GRAINED_PAR_INIT_VARS( N )                                 \
-    const size_t thrnr = omp_get_thread_num();                                \
-    const size_t nthreads = omp_get_num_threads();                            \
-                                                                              \
-    const size_t elems_per_thread =                                           \
-          ( std::min<size_t>( (N), static_cast<size_t>(-1) - nthreads + 1 )   \
-            + nthreads - 1) / nthreads;                                       \
-                                                                              \
-    const size_t istart = elems_per_thread * thrnr;                           \
-    const size_t iend =                                                       \
-          std::min<size_t>( ( N ),                                            \
-              ( elems_per_thread <= (static_cast<size_t>(-1)-istart) ?        \
-                istart + elems_per_thread :                                   \
-                static_cast<size_t>(-1) ) );
+#define OMP_COARSE_GRAINED_PAR_INIT_VARS( N )                                         \
+    const OMPC_SIZE_T thrnr = omp_get_thread_num();                                   \
+    const OMPC_SIZE_T nthreads = omp_get_num_threads();                               \
+                                                                                      \
+    const OMPC_SIZE_T elems_per_thread =                                              \
+          ( std::min<OMPC_SIZE_T>( (N), static_cast<OMPC_SIZE_T>(-1) - nthreads + 1 ) \
+            + nthreads - 1) / nthreads;                                               \
+                                                                                      \
+    const OMPC_SIZE_T istart = elems_per_thread * thrnr;                              \
+    const OMPC_SIZE_T iend =                                                          \
+          std::min<OMPC_SIZE_T>( ( N ),                                               \
+              ( elems_per_thread <= (static_cast<OMPC_SIZE_T>(-1)-istart) ?           \
+                istart + elems_per_thread :                                           \
+                static_cast<OMPC_SIZE_T>(-1) ) );
 
 
 #endif  /*  _OMP_COARSE_H_  */
