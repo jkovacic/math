@@ -43,7 +43,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::vector<T>& el) throw 
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         
         if ( 0==N )
         {
@@ -74,7 +74,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::list<T>& el) throw (m
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         if ( 0==N )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
@@ -105,7 +105,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::set<T>& el) throw (ma
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         if ( 0==N )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
@@ -136,7 +136,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         if ( 0==N )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
@@ -167,7 +167,7 @@ math::PermutationGeneric<T>::PermutationGeneric(const std::deque<T>& el) throw (
  * @throw CombinatoricsException if input arguments are invalid or if allocation of memory fails
  */
 template <class T>
-math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, const size_t len) throw (math::CombinatoricsException)
+math::PermutationGeneric<T>::PermutationGeneric(const T* elarray, const std::size_t len) throw (math::CombinatoricsException)
 {
     try
     {
@@ -209,7 +209,7 @@ void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
         // Initially 'addr' is filled by consecutive integers from 0 to N-1
         this->addr.clear();
         this->addr.reserve( this->N_len );
-        for ( size_t i=0; i<this->N_len; ++i )
+        for ( std::size_t i=0; i<this->N_len; ++i )
         {
             this->addr.push_back(i);
         }
@@ -239,7 +239,7 @@ void math::PermutationGeneric<T>::__init() throw (math::CombinatoricsException)
  * @throw CombinatoricsException if 'n' is invalid or if allocation of memory fails
  */
 template <class T>
-void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const size_t n) throw (math::CombinatoricsException)
+void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const std::size_t n) throw (math::CombinatoricsException)
 {
     /*
      * The algorithm is based on code, available at
@@ -250,7 +250,7 @@ void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const size
     {
         // N_len is used frequently inside this function. As it is intended to
         // remain constant, a const ref. is used to prevent unintentional modifications.
-        const size_t& N = this->N_len;
+        const std::size_t& N = this->N_len;
 
         // sanity check
         if ( n>=ret.max_size() )
@@ -262,7 +262,7 @@ void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const size
         ret.clear();
         
         // At maximum 'n' permutations will be returned
-        for ( size_t cnt=0; true==this->morePermutations && cnt<n; ++cnt )
+        for ( std::size_t cnt=0; true==this->morePermutations && cnt<n; ++cnt )
         {
             /*
              * The first permutation ('elems' in unmodified order) 
@@ -302,23 +302,23 @@ void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const size
             bool pfound = false;
             
             // Permutate from the current 'addr' to the smallest possible left
-            for ( size_t i=N-1; i>0; --i )
+            for ( std::size_t i=N-1; i>0; --i )
             {
                 // if the 'addr' is greater than the previous one
                 if ( this->addr.at(i) > this->addr.at(i-1) )
                 {
                     // Find the smallest 'addr' larger than current one and 
                     // still behind the current one
-                    size_t k = N - 1;
+                    std::size_t k = N - 1;
                     for ( k=N-1; this->addr.at(i-1)>this->addr.at(k); --k );
                     // swap the addresses
-                    size_t swap = this->addr.at(i-1);
+                    std::size_t swap = this->addr.at(i-1);
                     this->addr.at(i-1) = this->addr.at(k);
                     this->addr.at(k) = swap;
                     
                     // revert the order behind i-1 
-                    size_t start;
-                    size_t end;
+                    std::size_t start;
+                    std::size_t end;
                     for ( start=i, end=N-1; start<end; ++start, --end )
                     {
                         std::swap(this->addr.at(start), this->addr.at(end));
@@ -333,7 +333,7 @@ void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const size
                     // clear it (just in case):
                     l.clear();
                     
-                    for ( size_t j=0; j<N; ++j )
+                    for ( std::size_t j=0; j<N; ++j )
                     {
                         l.push_back(this->elems.at(this->addr.at(j)));
                     }

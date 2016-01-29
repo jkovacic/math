@@ -210,7 +210,7 @@ T __lnGamma(const T& x)
      *              i=1
      */
     T lg = c[0];
-    for ( size_t i=1; i<NR_LANCZOS_COEF; ++i )
+    for ( std::size_t i=1; i<NR_LANCZOS_COEF; ++i )
     {
         lg += c[i] / ( x + static_cast<T>(i) - static_cast<T>(1) );
     }
@@ -474,14 +474,14 @@ public:
     }
 
     // a(x,i) = -i * (i-a)
-    T fa(const size_t i) const throw (math::FunctionException)
+    T fa(const std::size_t i) const throw (math::FunctionException)
     {
         const T f = static_cast<T>(i);
         return -f * (f - this->m_a);
     }
 
     // b(x,i) = x - a + 1 + 2*i
-    T fb(const size_t i) const throw (math::FunctionException)
+    T fb(const std::size_t i) const throw (math::FunctionException)
     {
         return this->m_x - this->m_a + static_cast<T>(1) + 
                     static_cast<T>(2) * static_cast<T>(i);
@@ -542,9 +542,9 @@ public:
      * a(x,i) = -(a+m)*(a+b+m)*x / ( (a+2m)*(a+2m+1) )   when i=2*m+1
      * a(x,i) = m*(b-m)*x / ( (a+2m-1)*(a+2m) )          when i=2*m
      */
-    T fa(const size_t i) const throw(math::FunctionException)
+    T fa(const std::size_t i) const throw(math::FunctionException)
     {
-        const size_t m = i / 2;
+        const std::size_t m = i / 2;
         T ai = static_cast<T>(0);
 
         if ( 1 == i%2 )
@@ -564,7 +564,7 @@ public:
     }
 
     // b(x,i) = 1
-    T fb(const size_t i) const throw(math::FunctionException)
+    T fb(const std::size_t i) const throw(math::FunctionException)
     {
         (void) i;
         return static_cast<T>(1);
@@ -702,7 +702,7 @@ T __incGamma(
 
         // Proceed the Taylor series for i = 1, 2, 3... until it converges:
         T at = a;
-        size_t i = 1;
+        std::size_t i = 1;
         for ( i = 1; 
               false==math::NumericUtil::isZero<T>(term, tol) && i<SPECFUN_MAX_ITER; 
               ++i )
@@ -802,7 +802,7 @@ std::complex<T> __incGamma(
     std::complex<T> term = ginc;
 
     // proceed the series until it converges
-    size_t i = 0;
+    std::size_t i = 0;
     for ( i = 0;
           false == math::NumericUtil::isZero<std::complex<T> >(term, tol) &&
             i < SPECFUN_MAX_ITER;
@@ -1054,7 +1054,7 @@ std::complex<T> __incBeta(
     std::complex<T> bt = -b;
  
     // proceed the series until it converges
-    size_t i = 1;
+    std::size_t i = 1;
     for ( i = 1;
           false == math::NumericUtil::isZero<std::complex<T> >(term, tol) &&
                 i <= SPECFUN_MAX_ITER;
@@ -1770,7 +1770,7 @@ T __invIncGamma(
 
     T xn;
     T f = math::SpecFun::incGammaLowerReg<T>(a, x, tol) - p;
-    size_t i = 0;
+    std::size_t i = 0;
     for ( i = 0;
           false==math::NumericUtil::isZero<T>(f, tol) && i<SPECFUN_MAX_ITER;
           ++i )
@@ -1998,7 +1998,7 @@ T __invIncBeta(
 
     T xn;
     T f = math::SpecFun::incBetaLowerReg<T>(a, b, x, tol) - p;
-    size_t i = 0;
+    std::size_t i = 0;
     for ( i = 0;
           false==math::NumericUtil::isZero<T>(f, tol) && i<SPECFUN_MAX_ITER;
           ++i )

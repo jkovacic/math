@@ -115,7 +115,7 @@ T math::CtdFrac::ctdFrac(
         // Initially Delta should not be equal to 1
         T Delta = static_cast<T>(0);
 
-        size_t j = 1;
+        std::size_t j = 1;
         for ( 
               j=1; 
               false == math::NumericUtil::isZero<T>(Delta-static_cast<T>(1), tol) &&

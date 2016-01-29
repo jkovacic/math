@@ -116,8 +116,8 @@ class MatrixGeneric
 {
 
 private:
-    size_t m_rows;      /// Number of rows
-    size_t m_cols;      /// Number of columns
+    std::size_t m_rows;      /// Number of rows
+    std::size_t m_cols;      /// Number of columns
 
     /*
      * STL Vector has several advantages over arrays, allocated by new[],
@@ -130,7 +130,7 @@ private:
 
 
     // Initializes a new matrix
-    void __init(const size_t rows, const size_t cols) throw (MatrixException);
+    void __init(const std::size_t rows, const std::size_t cols) throw (MatrixException);
 
     /*
      * Copy elements from one matrix into another. Used at copy constructors,
@@ -152,7 +152,7 @@ private:
      * function are usually passed directly to std::vector.at() which throws
      * an exception if 'pos' is out of the vector's range.
      */
-    inline size_t __pos(const size_t row, const size_t column) const
+    inline std::size_t __pos(const std::size_t row, const std::size_t column) const
     {
         return ( row * this->m_cols + column );
     }
@@ -162,24 +162,24 @@ private:
 
 public:
     // Constructors
-    MatrixGeneric(const size_t rows, const size_t columns) throw (MatrixException);
-    MatrixGeneric(const size_t n) throw (MatrixException);
+    MatrixGeneric(const std::size_t rows, const std::size_t columns) throw (MatrixException);
+    MatrixGeneric(const std::size_t n) throw (MatrixException);
     // Copy constructor
     MatrixGeneric(const MatrixGeneric<T>& orig) throw (MatrixException);
 
     // Number of rows and columns
-    size_t nrRows() const;
-    size_t nrColumns() const;
+    std::size_t nrRows() const;
+    std::size_t nrColumns() const;
 
     // Get and set the element of the specified row and column
-    T get(const size_t row, const size_t column) const throw (MatrixException);
-    T& at(const size_t row, const size_t column) throw (MatrixException);
-    const T& at(const size_t row, const size_t column) const throw(MatrixException);
-    T& operator()(const size_t row, const size_t column) throw(MatrixException);
-    const T& operator()(const size_t row, const size_t column) const throw(MatrixException);
-    T& operator()(const size_t idx) throw(MatrixException);
-    const T& operator()(const size_t idx) const throw(MatrixException);
-    MatrixGeneric<T>& set(const size_t row, const size_t column, const T& element) throw (MatrixException);  
+    T get(const std::size_t row, const std::size_t column) const throw (MatrixException);
+    T& at(const std::size_t row, const std::size_t column) throw (MatrixException);
+    const T& at(const std::size_t row, const std::size_t column) const throw(MatrixException);
+    T& operator()(const std::size_t row, const std::size_t column) throw(MatrixException);
+    const T& operator()(const std::size_t row, const std::size_t column) const throw(MatrixException);
+    T& operator()(const std::size_t idx) throw(MatrixException);
+    const T& operator()(const std::size_t idx) const throw(MatrixException);
+    MatrixGeneric<T>& set(const std::size_t row, const std::size_t column, const T& element) throw (MatrixException);  
 
     // Display elements of the matrix
     void display(std::ostream& str = std::cout) const throw (MatrixException);
@@ -211,20 +211,20 @@ public:
     MatrixGeneric<T> roundSmallElements(const T& eps) const throw(MatrixException);
 
     // Insert or remove rows/columns.
-    MatrixGeneric<T>& removeRow_(const size_t rowNr) throw (MatrixException);
-    MatrixGeneric<T>& removeColumn_(const size_t colNr) throw (MatrixException);
-    MatrixGeneric<T>& insertRow_(const size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
-    MatrixGeneric<T>& insertColumn_(const size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
-    MatrixGeneric<T> removeRow(const size_t rowNr) const throw (MatrixException);
-    MatrixGeneric<T> removeColumn(const size_t colNr) const throw (MatrixException);
-    MatrixGeneric<T> insertRow(const size_t rowNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
-    MatrixGeneric<T> insertColumn(const size_t colNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
+    MatrixGeneric<T>& removeRow_(const std::size_t rowNr) throw (MatrixException);
+    MatrixGeneric<T>& removeColumn_(const std::size_t colNr) throw (MatrixException);
+    MatrixGeneric<T>& insertRow_(const std::size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    MatrixGeneric<T>& insertColumn_(const std::size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
+    MatrixGeneric<T> removeRow(const std::size_t rowNr) const throw (MatrixException);
+    MatrixGeneric<T> removeColumn(const std::size_t colNr) const throw (MatrixException);
+    MatrixGeneric<T> insertRow(const std::size_t rowNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
+    MatrixGeneric<T> insertColumn(const std::size_t colNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
 
     // Swap rows and columns
-    MatrixGeneric<T>& swapRows_(const size_t r1, const size_t r2) throw(MatrixException);
-    MatrixGeneric<T>& swapColumns_(const size_t c1, const size_t c2) throw(MatrixException);
-    MatrixGeneric<T> swapRows(const size_t r1, const size_t r2) const throw(MatrixException);
-    MatrixGeneric<T> swapColumns(const size_t c1, const size_t c2) const throw(MatrixException);
+    MatrixGeneric<T>& swapRows_(const std::size_t r1, const std::size_t r2) throw(MatrixException);
+    MatrixGeneric<T>& swapColumns_(const std::size_t c1, const std::size_t c2) throw(MatrixException);
+    MatrixGeneric<T> swapRows(const std::size_t r1, const std::size_t r2) const throw(MatrixException);
+    MatrixGeneric<T> swapColumns(const std::size_t c1, const std::size_t c2) const throw(MatrixException);
 
     // Triangular parts of this one:
     MatrixGeneric<T>& upperTriangularPart_(const bool inclDiag=true);
@@ -241,7 +241,7 @@ public:
     MatrixGeneric<T> inverse(const bool fullp=MATRIX_INVERSE_FULL_PIVOT, const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
 
     bool isSquare() const;
-    size_t rank(const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
+    std::size_t rank(const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
 
     // Destructor
     virtual ~MatrixGeneric();

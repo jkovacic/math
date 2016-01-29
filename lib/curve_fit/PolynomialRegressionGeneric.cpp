@@ -53,7 +53,7 @@ math::PolynomialRegressionGeneric<F>::PolynomialRegressionGeneric()
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
 template <typename F>
-void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) throw (math::CurveFittingException)
+void math::PolynomialRegressionGeneric<F>::generateCurve(const std::size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
     this->_curveGenerationCheck();
@@ -88,13 +88,13 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
     
     try
     {
-        if ( degree>=(std::numeric_limits<size_t>::max()/2-1) )
+        if ( degree>=(std::numeric_limits<std::size_t>::max()/2-1) )
         {
             throw math::CurveFittingException(math::CurveFittingException::CURVE_GENERATION_FAILED);    
         }
         
         // number of polynomial's coefficients
-        const size_t N = degree + 1;
+        const std::size_t N = degree + 1;
 
         math::MatrixGeneric<F> a(N);
         math::MatrixGeneric<F> b(N, 1);
@@ -114,11 +114,11 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
             F bterm = it->m_y;
 
             // i actually determines a position inside both matrices: i = r+c             
-            for ( size_t i=0; i<(2*N-1); ++i )
+            for ( std::size_t i=0; i<(2*N-1); ++i )
             {
                 // find all possible rows satisfying the condition above
-                const size_t Rmax = ( i<=degree ? i : degree );
-                for ( size_t r=0; r<=Rmax; ++r )
+                const std::size_t Rmax = ( i<=degree ? i : degree );
+                for ( std::size_t r=0; r<=Rmax; ++r )
                 {
                     // do not update anything if any element 
                     // is out of matrix's range
@@ -160,7 +160,7 @@ void math::PolynomialRegressionGeneric<F>::generateCurve(const size_t degree) th
         }
 
         // And finally fill the regression polynomial
-        for ( size_t i=0; i<N; ++i )
+        for ( std::size_t i=0; i<N; ++i )
         {
             this->m_poly.set(i, x(i, 0));
         }

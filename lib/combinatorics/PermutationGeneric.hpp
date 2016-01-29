@@ -59,10 +59,10 @@ private:
     std::vector<T> elems;
     
     // Current sequence of elements' addresses for the current permutation  
-    std::vector<size_t> addr;
+    std::vector<std::size_t> addr;
     
     // Size of elems
-    size_t N_len;
+    std::size_t N_len;
     
     // More permutations available?
     bool morePermutations;
@@ -80,10 +80,10 @@ public:
     PermutationGeneric(const std::list<T>& el) throw (CombinatoricsException);
     PermutationGeneric(const std::set<T>& el) throw (CombinatoricsException);
     PermutationGeneric(const std::deque<T>& el) throw (CombinatoricsException);
-    PermutationGeneric(const T* elarray, const size_t len) throw (CombinatoricsException);       
+    PermutationGeneric(const T* elarray, const std::size_t len) throw (CombinatoricsException);       
     
     // Retrieves next n permutations
-    void next(std::list<std::list<T> >& ret, const size_t n=1) throw (CombinatoricsException);
+    void next(std::list<std::list<T> >& ret, const std::size_t n=1) throw (CombinatoricsException);
     
     // More permutations available to be retrieved?
     bool hasNext() const;

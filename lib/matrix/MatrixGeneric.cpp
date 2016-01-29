@@ -56,7 +56,7 @@ limitations under the License.
  */
 template <class T>
 void math::MatrixGeneric<T>::__init(
-    const size_t rows, const size_t cols) throw (math::MatrixException)
+    const std::size_t rows, const std::size_t cols) throw (math::MatrixException)
 {
     // Matrix must contain at least 1 row and at least 1 column
     if ( rows < 1 || cols < 1 )
@@ -99,7 +99,7 @@ void math::MatrixGeneric<T>::__init(
  *        input arguments (both must be at least 1)
  */
 template <class T>
-math::MatrixGeneric<T>::MatrixGeneric(const size_t rows, const size_t columns) throw(math::MatrixException)
+math::MatrixGeneric<T>::MatrixGeneric(const std::size_t rows, const std::size_t columns) throw(math::MatrixException)
 {
     this->__init(rows, columns);
 }
@@ -114,7 +114,7 @@ math::MatrixGeneric<T>::MatrixGeneric(const size_t rows, const size_t columns) t
  *        input arguments ('n' must be at least 1)
  */
 template <class T>
-math::MatrixGeneric<T>::MatrixGeneric(const size_t n) throw (math::MatrixException)
+math::MatrixGeneric<T>::MatrixGeneric(const std::size_t n) throw (math::MatrixException)
 {
     this->__init(n, n);
 }
@@ -170,7 +170,7 @@ void math::MatrixGeneric<T>::__copyElems(const math::MatrixGeneric<T>& orig) thr
  * @return number of rows
  */
 template <class T>
-size_t math::MatrixGeneric<T>::nrRows() const
+std::size_t math::MatrixGeneric<T>::nrRows() const
 {
     return this->m_rows;
 }
@@ -180,7 +180,7 @@ size_t math::MatrixGeneric<T>::nrRows() const
  * @return number of columns
  */
 template <class T>
-size_t math::MatrixGeneric<T>::nrColumns() const
+std::size_t math::MatrixGeneric<T>::nrColumns() const
 {
     return this->m_cols;
 }
@@ -197,7 +197,7 @@ size_t math::MatrixGeneric<T>::nrColumns() const
  * @throw MatrixException if input parameters are out of range
  */
 template <class T>
-T math::MatrixGeneric<T>::get(const size_t row, const size_t column) const throw (math::MatrixException)
+T math::MatrixGeneric<T>::get(const std::size_t row, const std::size_t column) const throw (math::MatrixException)
 {
     // Check of input parameters
     if ( row >= this->m_rows || column >= this->m_cols )
@@ -228,7 +228,7 @@ T math::MatrixGeneric<T>::get(const size_t row, const size_t column) const throw
  * @deprecated
  */
 template <class T>
-T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) throw (math::MatrixException)
+T& math::MatrixGeneric<T>::at(const std::size_t row, const std::size_t column) throw (math::MatrixException)
 {
     // Check if input arguments are within the matrix's range
     if ( row >= this->m_rows || column >= this->m_cols )
@@ -258,7 +258,7 @@ T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) throw (math
  * @deprecated
  */
 template <class T>
-const T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) const throw (math::MatrixException)
+const T& math::MatrixGeneric<T>::at(const std::size_t row, const std::size_t column) const throw (math::MatrixException)
 {
     /*
      * Implementation is actually the same as implementation of another at()
@@ -290,7 +290,7 @@ const T& math::MatrixGeneric<T>::at(const size_t row, const size_t column) const
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template <class T>
-T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t column) throw(math::MatrixException)
+T& math::MatrixGeneric<T>::operator()(const std::size_t row, const std::size_t column) throw(math::MatrixException)
 {
     // Check if input arguments are within the matrix's range
     if ( row >= this->m_rows || column >= this->m_cols )
@@ -315,7 +315,7 @@ T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t column) thr
  * @throw MatrixException if 'row' and/or 'column' are out of range
  */
 template <class T>
-const T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t column) const throw(math::MatrixException)
+const T& math::MatrixGeneric<T>::operator()(const std::size_t row, const std::size_t column) const throw(math::MatrixException)
 {
     /*
      * Implementation is actually the same as implementation of another operator()
@@ -351,7 +351,7 @@ const T& math::MatrixGeneric<T>::operator()(const size_t row, const size_t colum
  * @throw MatrixException if 'idx' is out of the matrix's range
  */
 template <class T>
-T& math::MatrixGeneric<T>::operator()(const size_t idx) throw(math::MatrixException)
+T& math::MatrixGeneric<T>::operator()(const std::size_t idx) throw(math::MatrixException)
 {
     // check if 'idx' is within elems' range
     if ( idx >= this->m_elems.size() )
@@ -359,8 +359,8 @@ T& math::MatrixGeneric<T>::operator()(const size_t idx) throw(math::MatrixExcept
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    const size_t col = idx / this->m_rows;
-    const size_t row = idx % this->m_rows;
+    const std::size_t col = idx / this->m_rows;
+    const std::size_t row = idx % this->m_rows;
 
     return this->m_elems.at(this->__pos(row, col));
 }
@@ -383,7 +383,7 @@ T& math::MatrixGeneric<T>::operator()(const size_t idx) throw(math::MatrixExcept
  * @throw MatrixException if 'idx' is out of the matrix's range
  */
 template <class T>
-const T& math::MatrixGeneric<T>::operator()(const size_t idx) const throw(math::MatrixException)
+const T& math::MatrixGeneric<T>::operator()(const std::size_t idx) const throw(math::MatrixException)
 {
     // check if 'idx' is within elems' range
     if ( idx >= this->m_elems.size() )
@@ -391,8 +391,8 @@ const T& math::MatrixGeneric<T>::operator()(const size_t idx) const throw(math::
         throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
     }
 
-    const size_t col = idx / this->m_rows;
-    const size_t row = idx % this->m_rows;
+    const std::size_t col = idx / this->m_rows;
+    const std::size_t row = idx % this->m_rows;
 
     return this->m_elems.at(this->__pos(row, col));
 }
@@ -412,7 +412,7 @@ const T& math::MatrixGeneric<T>::operator()(const size_t idx) const throw(math::
  * @throw MatrixException if input parameters are out of range
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(const size_t row, const size_t column, const T& element) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::set(const std::size_t row, const std::size_t column, const T& element) throw (math::MatrixException)
 {
     // Check of input parameters
     if ( row >= this->m_rows || column >= this->m_cols )
@@ -447,12 +447,12 @@ void math::MatrixGeneric<T>::display(std::ostream& str) const throw (math::Matri
      * Anyway, it would be nice to improve it in future.
      */
 
-    const size_t tabsPerRow = this->m_cols - 1;
+    const std::size_t tabsPerRow = this->m_cols - 1;
 
-    for ( size_t r=0; r<(this->m_rows); ++r )
+    for ( std::size_t r=0; r<(this->m_rows); ++r )
     {
         // display elements of the row r, separated by tabs
-        for ( size_t c=0; c<(this->m_cols); ++c )
+        for ( std::size_t c=0; c<(this->m_cols); ++c )
         {
             str << this->m_elems.at(this->__pos(r, c));
             if ( c < tabsPerRow )
@@ -748,7 +748,7 @@ void math::MatrixGeneric<T>::__triangPart(
     const bool lower,
     const bool diag)
 {
-    const size_t N = this->m_elems.size();
+    const std::size_t N = this->m_elems.size();
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
@@ -756,15 +756,15 @@ void math::MatrixGeneric<T>::__triangPart(
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-        size_t r;
-        size_t c;
+        std::size_t r;
+        std::size_t c;
 
         // iterator to the final element of the block:
         const typename std::vector<T>::const_iterator final = this->m_elems.begin() + iend;
         // iterator to the first/current element of this->m_elems:
         typename std::vector<T>::iterator it = this->m_elems.begin() + istart;
 
-        for ( size_t i = istart;
+        for ( std::size_t i = istart;
                 it != final;
                 ++i, ++it )
         {
@@ -919,8 +919,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag_(const T& scalar) throw(
     // A double for loop will traverse the matrix, its diagonal elements
     // (row == column) will be set to the scalar, others to 0
 
-    const size_t& N = this->m_rows;
-    const size_t N2 = N * N;
+    const std::size_t& N = this->m_rows;
+    const std::size_t N2 = N * N;
 
     // Coarse grained parallelism:
     std::vector<T>& els = this->m_elems;
@@ -932,12 +932,12 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag_(const T& scalar) throw(
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N2);
 
         typename std::vector<T>::iterator it = els.begin() + istart;
-        for ( size_t idx = istart;
+        for ( std::size_t idx = istart;
               idx<(istart+elems_per_thread) && it!=els.end();
               ++it, ++idx )
         {
-            const size_t r = idx / N;
-            const size_t c = idx % N;
+            const std::size_t r = idx / N;
+            const std::size_t c = idx % N;
 
             *it = ( r==c ? scalar : static_cast<T>(0) );
         }
@@ -1006,7 +1006,7 @@ T math::MatrixGeneric<T>::determinant(const bool fullp, const bool physSwap) con
  * @throw MatrixException if internal allocation of memory failed
  */
 template <class T>
-size_t math::MatrixGeneric<T>::rank(const bool physSwap) const throw(math::MatrixException)
+std::size_t math::MatrixGeneric<T>::rank(const bool physSwap) const throw(math::MatrixException)
 {
     return math::Pivot::getRank(*this, physSwap);
 }
@@ -1099,9 +1099,9 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
         return retVal;
     }
     
-    const size_t& tcols = this->m_cols;
+    const std::size_t& tcols = this->m_cols;
 
-    const size_t N = this->m_rows * this->m_cols;
+    const std::size_t N = this->m_rows * this->m_cols;
 
     // Coarse grained parallelism
     const std::vector<T>& els = this->m_elems;
@@ -1112,10 +1112,10 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::transpose() const throw (math::Ma
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-        for ( size_t idx=istart; idx<iend; ++idx )
+        for ( std::size_t idx=istart; idx<iend; ++idx )
         {
-            const size_t r = idx / tcols;
-            const size_t c = idx % tcols;
+            const std::size_t r = idx / tcols;
+            const std::size_t c = idx % tcols;
 
             retVal.m_elems.at(retVal.__pos(c, r)) = els.at(this->__pos(r, c));
         }
@@ -1157,8 +1157,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transpose_() throw (math::Matrix
         // A specialized algorithm for square matrices
         // TODO: find and implement a better algorithm
 
-        const size_t& N = this->m_rows;    // number of rows (and columns)
-        const size_t Ntr = N * (N-1) / 2;  // number of all elements to be transposed
+        const std::size_t& N = this->m_rows;    // number of rows (and columns)
+        const std::size_t Ntr = N * (N-1) / 2;  // number of all elements to be transposed
 
         /*
          * Traverse the upper diagonal part of the matrix,
@@ -1178,9 +1178,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::transpose_() throw (math::Matrix
                     if(Ntr>OMP_CHUNKS_PER_THREAD) \
                     default(none) shared(els) \
                     schedule(dynamic) shared(N)
-        for ( size_t r=0; r<N-1; ++r )
+        for ( std::size_t r=0; r<N-1; ++r )
         {
-            for ( size_t c=r+1; c<N; ++c )
+            for ( std::size_t c=r+1; c<N; ++c )
             {
                 std::swap(els.at(this->__pos(r, c)), els.at(this->__pos(c, r)));
             }  // for c
@@ -1264,7 +1264,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements_()
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements_(const T& eps)
 {
-    const size_t N = this->m_elems.size();
+    const std::size_t N = this->m_elems.size();
 
     // Coarse grained parallelism if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(N)) \
@@ -1274,7 +1274,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements_(const T& eps
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<T>::iterator it = this->m_elems.begin() + istart;
-        for ( size_t i = istart;
+        for ( std::size_t i = istart;
               i<iend && it!=this->m_elems.end();
               ++it, ++i )
         {
@@ -1333,7 +1333,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::roundSmallElements(const T& eps) 
  * @throw MatrixException if attempting to remove the nonexistent row
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow_(const size_t rowNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow_(const std::size_t rowNr) throw (math::MatrixException)
 {
     /*
      * Check of input arguments.
@@ -1373,7 +1373,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeRow_(const size_t rowNr) t
  * @throw MatrixException if attempting to remove the nonexistent column
  */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn_(const size_t colNr) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn_(const std::size_t colNr) throw (math::MatrixException)
 {
     /*
      * Checking of input arguments. The matrix must contain at least 2 columns
@@ -1395,7 +1395,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn_(const size_t colNr
      * Note: vector.erase() is by no means thread safe, so the for loop
      * should not be parallelized!
      */
-    for ( size_t i=1; i<=this->m_rows; ++i )
+    for ( std::size_t i=1; i<=this->m_rows; ++i )
     {
         this->m_elems.erase(
                 this->m_elems.begin() + (this->m_rows - i) * this->m_cols + colNr );
@@ -1420,7 +1420,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::removeColumn_(const size_t colNr
   * @throw MatrixException if invalid rowNr or if reallocation fails
   */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow_(const size_t rowNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow_(const std::size_t rowNr, const T& el) throw (math::MatrixException)
 {
     // a valid rowNr value is between 0 and m_rows (incl.)
     if ( rowNr > this->m_rows )
@@ -1469,7 +1469,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertRow_(const size_t rowNr, c
   * @throw MatrixException if invalid colNr or if reallocation fails
   */
 template <class T>
-math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn_(const size_t colNr, const T& el) throw (math::MatrixException)
+math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn_(const std::size_t colNr, const T& el) throw (math::MatrixException)
 {
     // A valid colNr is between 0 and m_cols (incl.)
     if ( colNr > this->m_cols )
@@ -1499,7 +1499,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn_(const size_t colNr
          * Note: vector.insert() is by no means thread safe, so the for loop
          * should not be parallelized!
          */
-        for ( size_t r = 0; r < this->m_rows; ++r )
+        for ( std::size_t r = 0; r < this->m_rows; ++r )
         {
             this->m_elems.insert(
                     this->m_elems.begin() + r * (this->m_cols + 1) + colNr, el);
@@ -1527,7 +1527,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::insertColumn_(const size_t colNr
  * @throw MatrixException if attempting to remove the nonexistent row or if allocation of memory failed
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::removeRow(const size_t rowNr) const throw (math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::removeRow(const std::size_t rowNr) const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> mret(*this);
     mret.remoweRow_(rowNr);
@@ -1545,7 +1545,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::removeRow(const size_t rowNr) con
  * @throw MatrixException if attempting to remove the nonexistent column or if allocation of memory failed
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::removeColumn(const size_t colNr) const throw (math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::removeColumn(const std::size_t colNr) const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> mret(*this);
     mret.remoweColumn_(colNr);
@@ -1564,7 +1564,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::removeColumn(const size_t colNr) 
  * @throw MatrixException if invalid rowNr or if allocation of memory failed
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::insertRow(const size_t rowNr, const T& el) const throw (math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::insertRow(const std::size_t rowNr, const T& el) const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> mret(*this);
     mret.insertRow_(rowNr, el);
@@ -1583,7 +1583,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::insertRow(const size_t rowNr, con
  * @throw MatrixException if invalid colNr or if allocation of memory failed
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::insertColumn(const size_t colNr, const T& el) const throw (math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::insertColumn(const std::size_t colNr, const T& el) const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> mret(*this);
     mret.insertColumn_(colNr, el);
@@ -1603,8 +1603,8 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::insertColumn(const size_t colNr, 
  */
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows_(
-        const size_t r1,
-        const size_t r2
+        const std::size_t r1,
+        const std::size_t r2
       ) throw(math::MatrixException)
 {
     // Sanity check
@@ -1641,8 +1641,8 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapRows_(
  */
 template <class T>
 math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns_(
-        const size_t c1,
-        const size_t c2
+        const std::size_t c1,
+        const std::size_t c2
       ) throw(math::MatrixException)
 {
     // Sanity check
@@ -1657,7 +1657,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns_(
         return *this;
     }
 
-    const size_t N = this->m_rows;
+    const std::size_t N = this->m_rows;
 
     // Coarse grained parallelization
     #pragma omp parallel num_threads(ompIdeal(N)) \
@@ -1666,7 +1666,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns_(
     {
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-        for ( size_t r=istart; r<iend; ++r )
+        for ( std::size_t r=istart; r<iend; ++r )
         {
             std::swap(
                 this->at(r, c1),
@@ -1689,7 +1689,7 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::swapColumns_(
  * @throw MatrixException if any input argument is out of range or if allocation of memory failed
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::swapRows(const size_t r1, const size_t r2) const throw(math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::swapRows(const std::size_t r1, const std::size_t r2) const throw(math::MatrixException)
 {
     math::MatrixGeneric<T> mret(*this);
     mret.swapRows_(r1, r2);
@@ -1708,7 +1708,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::swapRows(const size_t r1, const s
  * @throw MatrixException if any input argument is out of range or if allocation of memory failed
  */
 template <class T>
-math::MatrixGeneric<T> math::MatrixGeneric<T>::swapColumns(const size_t c1, const size_t c2) const throw(math::MatrixException)
+math::MatrixGeneric<T> math::MatrixGeneric<T>::swapColumns(const std::size_t c1, const std::size_t c2) const throw(math::MatrixException)
 {
     math::MatrixGeneric<T> mret(*this);
     mret.swapColumns_(c1, c2);
@@ -1889,12 +1889,12 @@ math::MatrixGeneric<T> math::operator*(const math::MatrixGeneric<T>& m1, const m
 
     #pragma omp parallel for collapse(2) \
                 default(none) shared(m1, m2, temp)
-    for ( size_t r=0; r<m1.m_rows; ++r )
+    for ( std::size_t r=0; r<m1.m_rows; ++r )
     {
-        for ( size_t c=0; c<m2.m_cols; ++c)
+        for ( std::size_t c=0; c<m2.m_cols; ++c)
         {
             T sum = static_cast<T>(0);
-            for ( size_t i=0; i<m1.m_cols; ++i )
+            for ( std::size_t i=0; i<m1.m_cols; ++i )
             {
                 sum += m1.m_elems.at(m1.__pos(r, i)) * m2.m_elems.at(m2.__pos(i, c));
             }
@@ -2180,7 +2180,7 @@ void math::__matrixprivate::__matconj( math::MatrixGeneric<std::complex<T> >& m 
      * as suggested here:
      * http://www.cplusplus.com/forum/general/68298/
      */
-    const size_t N = m.m_elems.size();
+    const std::size_t N = m.m_elems.size();
 
     //Coarse grained parallelization
     #pragma omp parallel num_threads(ompIdeal(N)) \
@@ -2190,7 +2190,7 @@ void math::__matrixprivate::__matconj( math::MatrixGeneric<std::complex<T> >& m 
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<std::complex<T> >::iterator it = m.m_elems.begin() + istart;
-        for ( size_t i=istart;
+        for ( std::size_t i=istart;
               i<iend && it!=m.m_elems.end(); ++it, ++i )
         {
             *it = std::conj(*it);

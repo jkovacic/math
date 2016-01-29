@@ -62,12 +62,12 @@ private:
     std::vector<T> elems;
     
     // Current sequence of elements' addresses for the current combination
-    std::vector<size_t> addr;
+    std::vector<std::size_t> addr;
     
     // Size of 'elems'
-    size_t N_size;
+    std::size_t N_size;
     // Size of a subset (k)
-    size_t K;
+    std::size_t K;
     
     // More combinations available?
     bool moreCombinations;
@@ -81,14 +81,14 @@ public:
     CombinationGeneric(const std::list<T>& el) throw(CombinatoricsException);
     CombinationGeneric(const std::set<T>& el) throw(CombinatoricsException);
     CombinationGeneric(const std::deque<T>& el) throw (CombinatoricsException);
-    CombinationGeneric(const T* elarray, const size_t len) throw (CombinatoricsException);
+    CombinationGeneric(const T* elarray, const std::size_t len) throw (CombinatoricsException);
     
     // Getter and setter for size of a subset (k) 
-    size_t getK() const;
-    void setK(const size_t k) throw (CombinatoricsException);
+    std::size_t getK() const;
+    void setK(const std::size_t k) throw (CombinatoricsException);
     
     // Retrieves next n combinations
-    void next(std::list<std::set<T> >& ret, const size_t n=1) throw (CombinatoricsException);
+    void next(std::list<std::set<T> >& ret, const std::size_t n=1) throw (CombinatoricsException);
     
     // More combinations available to be retrieved?
     bool hasNext() const;

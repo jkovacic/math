@@ -77,7 +77,7 @@ F __newtonCommon(
            const F& x0,
            const F& epsy,
            const F& h,
-           const size_t Nmax,
+           const std::size_t Nmax,
            bool diffFunc
          ) throw(math::RootFindException)
 {
@@ -106,7 +106,7 @@ F __newtonCommon(
         F fx = f(x);
 
         // start of the actual Newton - Raphson method
-        for ( size_t iter = Nmax;
+        for ( std::size_t iter = Nmax;
               false == math::NumericUtil::isZero<F>(fx, EPSY) && iter > 0;
               --iter )
         {
@@ -186,7 +186,7 @@ F __halleyCommon(
         const F& x0,
         const F& epsy,
         const F& h,
-        const size_t Nmax,
+        const std::size_t Nmax,
         const bool diffFunc,
         const bool mod
       ) throw (math::RootFindException)
@@ -217,7 +217,7 @@ F __halleyCommon(
         F fx = f(x);
 
         // start of the actual Halley's method
-        for ( size_t iter = Nmax;
+        for ( std::size_t iter = Nmax;
               false == math::NumericUtil::isZero<F>(fx, EPSY) && iter > 0;
               --iter )
         {
@@ -576,7 +576,7 @@ F math::RootFind::secant(
            const F& r0,
            const F& r1,
            const F& epsy,
-           const size_t Nmax
+           const std::size_t Nmax
          ) throw(math::RootFindException)
 {
     /*
@@ -612,7 +612,7 @@ F math::RootFind::secant(
         }
 
         // Start of the actual secant method
-        for ( size_t iter = Nmax;
+        for ( std::size_t iter = Nmax;
               false==math::NumericUtil::isZero<F>(fn, EPSY) && iter > 0;
               --iter )
         {
@@ -680,7 +680,7 @@ F math::RootFind::newton(
            const math::IFunctionGeneric<F>& diff,
            const F& x0,
            const F& epsy,
-           const size_t Nmax
+           const std::size_t Nmax
          ) throw(math::RootFindException)
 {
     /*
@@ -729,7 +729,7 @@ F math::RootFind::quasiNewton(
            const F& x0,
            const F& epsy,
            const F& h,
-           const size_t Nmax
+           const std::size_t Nmax
          ) throw(math::RootFindException)
 {
     /*
@@ -780,7 +780,7 @@ F math::RootFind::halley(
        const math::IFunctionGeneric<F>& diff2,
        const F& x0,
        const F& epsy,
-       const size_t Nmax
+       const std::size_t Nmax
      ) throw (math::RootFindException)
 {
     /*
@@ -829,7 +829,7 @@ F math::RootFind::quasiHalley(
        const F& x0,
        const F& epsy,
        const F& h,
-       const size_t Nmax
+       const std::size_t Nmax
      ) throw (math::RootFindException)
 {
     /*
@@ -881,7 +881,7 @@ F math::RootFind::halleyMod(
        const math::IFunctionGeneric<F>& diff2,
        const F& x0,
        const F& epsy,
-       const size_t Nmax
+       const std::size_t Nmax
      ) throw (math::RootFindException)
 {
     /*
@@ -931,7 +931,7 @@ F math::RootFind::quasiHalleyMod(
        const F& x0,
        const F& epsy,
        const F& h,
-       const size_t Nmax
+       const std::size_t Nmax
      ) throw (math::RootFindException)
 {
     /*

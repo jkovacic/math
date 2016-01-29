@@ -53,7 +53,7 @@ limitations under the License.
 template <class T>
 void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, const bool add=true)
 {
-    const size_t N = std::min<size_t>( v1.size(), v2.size() );
+    const std::size_t N = std::min<std::size_t>( v1.size(), v2.size() );
 
     // Only resize if 'dest' is too small
     if ( dest.size() < N )
@@ -71,7 +71,7 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
         typename std::vector<T>::const_iterator it1 = v1.begin() + istart;
         typename std::vector<T>::const_iterator it2 = v2.begin() + istart;
         typename std::vector<T>::iterator it = dest.begin() + istart;
-        for ( size_t i = istart;
+        for ( std::size_t i = istart;
               i<iend && it1!=v1.end() && it2!=v2.end() && it!=dest.end();
               ++it1, ++it2, ++it, ++i )
         {
@@ -112,7 +112,7 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
 template <class T>
 void math::mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>& dest)
 {
-    const size_t N = v1.size();
+    const std::size_t N = v1.size();
 
     // Only resize if 'dest' is too small
     if ( dest.size() < N )
@@ -129,7 +129,7 @@ void math::mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>&
 
         typename std::vector<T>::const_iterator srcit = v1.begin() + istart;
         typename std::vector<T>::iterator destit = dest.begin() + istart;
-        for ( size_t i = istart;
+        for ( std::size_t i = istart;
               i<iend && srcit!=v1.end() && destit!=dest.end();
               ++srcit, ++destit, ++i)
         {
@@ -182,7 +182,7 @@ void math::mtvectscalaradd(
         const bool add,
         const bool vectFirst )
 {
-    const size_t N = v1.size();
+    const std::size_t N = v1.size();
 
     // Only resize if 'dest' is too small
     if ( dest.size() < N )
@@ -199,7 +199,7 @@ void math::mtvectscalaradd(
 
         typename std::vector<T>::const_iterator srcit = v1.begin() + istart;
         typename std::vector<T>::iterator destit = dest.begin() + istart;
-        for ( size_t i = istart;
+        for ( std::size_t i = istart;
               i<iend && srcit!=v1.end() && destit!=dest.end();
               ++srcit, ++destit, ++i)
         {
@@ -278,7 +278,7 @@ bool math::mtvectewmult(
 {
     bool retVal = true;
 
-    const size_t N = std::min<size_t>( v1.size(), v2.size() );
+    const std::size_t N = std::min<std::size_t>( v1.size(), v2.size() );
 
     // Only resize if 'dest' is too small
     if ( dest.size() < N )
@@ -296,7 +296,7 @@ bool math::mtvectewmult(
         typename std::vector<T>::const_iterator it1 = v1.begin() + istart;
         typename std::vector<T>::const_iterator it2 = v2.begin() + istart;
         typename std::vector<T>::iterator it = dest.begin() + istart;
-        for ( size_t i = istart;
+        for ( std::size_t i = istart;
               i<iend && it1!=v1.end() && it2!=v2.end() && it!=dest.end();
               ++it1, ++it2, ++it, ++i )
         {

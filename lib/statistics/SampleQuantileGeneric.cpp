@@ -74,7 +74,7 @@ math::SampleQuantileGeneric<F>::SampleQuantileGeneric(const std::vector<F>& samp
  * @return size of the sample
  */
 template <typename F>
-size_t math::SampleQuantileGeneric<F>::sampleSize() const
+std::size_t math::SampleQuantileGeneric<F>::sampleSize() const
 {
     return this->m_N;
 }
@@ -146,9 +146,9 @@ F math::SampleQuantileGeneric<F>::linIntrp(const F& h) const
      *   qp = x[hf-1] + (h - hf) * (x[hf] - x[hf-1])
      */
 
-    return ( x.at(math::NumericUtil::intRound<F, size_t>(hf) - 1) +
-            (h - hf) * (x.at(math::NumericUtil::intRound<F, size_t>(hf)) -
-             x.at(math::NumericUtil::intRound<F, size_t>(hf) - 1)) );
+    return ( x.at(math::NumericUtil::intRound<F, std::size_t>(hf) - 1) +
+            (h - hf) * (x.at(math::NumericUtil::intRound<F, std::size_t>(hf)) -
+             x.at(math::NumericUtil::intRound<F, std::size_t>(hf) - 1)) );
 }
 
 
@@ -175,7 +175,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
 
     // Use references to "rename" the variables into names,
     // typically used in statistical publications.
-    const size_t& N = this->m_N;
+    const std::size_t& N = this->m_N;
     const std::vector<F>& x = this->m_v;
 
     // N casted to T, used often in nonint expressions
@@ -213,7 +213,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         else
         {
             const F h = NT * p + HALF;
-            retVal = x.at(math::NumericUtil::intCeil<F, size_t>(h-HALF) - 1);
+            retVal = x.at(math::NumericUtil::intCeil<F, std::size_t>(h-HALF) - 1);
         }
 
         break;
@@ -235,8 +235,8 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         else
         {
             const F h = NT * p + HALF;
-            retVal = ( x.at(math::NumericUtil::intCeil<F, size_t>(h-HALF) - 1) +
-                       x.at(math::NumericUtil::intFloor<F, size_t>(h+HALF) - 1) ) * HALF;
+            retVal = ( x.at(math::NumericUtil::intCeil<F, std::size_t>(h-HALF) - 1) +
+                       x.at(math::NumericUtil::intFloor<F, std::size_t>(h+HALF) - 1) ) * HALF;
         }
 
         break;
@@ -254,7 +254,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         {
             const F h = NT * p;
             const F frac = h - std::floor(h);
-            size_t idx = math::NumericUtil::intFloor<F, size_t>(h);
+            std::size_t idx = math::NumericUtil::intFloor<F, std::size_t>(h);
 
             /*
              * The index is h, rounded to the nearest integer.
@@ -460,13 +460,13 @@ template <typename F>
 F math::SampleQuantileGeneric<F>::median() const
 {
     F retVal;
-    const size_t& N = this->m_N;
+    const std::size_t& N = this->m_N;
     const std::vector<F>& x = this->m_v;
 
     if ( 0 == N % 2 )
     {
         // even number of observations
-    	size_t h = N / 2;
+    	std::size_t h = N / 2;
         retVal = (x.at(h-1) + x.at(h)) / static_cast<F>(2);
     }
     else
@@ -542,9 +542,9 @@ F math::SampleQuantileGeneric<F>::iqr(const math::EQntlType::type method) const
 template <typename F>
 F math::SampleQuantileGeneric<F>::ecdf(const F& t) const
 {
-    const size_t WMAX = 5;
+    const std::size_t WMAX = 5;
 
-    const size_t& N = this->m_N;
+    const std::size_t& N = this->m_N;
     const std::vector<F>& v = this->m_v;
 
     // Handling two "corner cases"
@@ -558,8 +558,8 @@ F math::SampleQuantileGeneric<F>::ecdf(const F& t) const
         return static_cast<F>(1);
     }
     
-    size_t k = v.at(N / 2);
-    size_t kl, ku;
+    std::size_t k = v.at(N / 2);
+    std::size_t kl, ku;
 
     // Determine the initial search interval, either the lower or the upper half
     if ( v.at(k) < t )
@@ -650,7 +650,7 @@ F math::SampleQuantileGeneric<F>::max() const
  */
 template <typename F>
 F math::SampleQuantileGeneric<F>::elem(
-             const size_t n, 
+             const std::size_t n, 
              const bool largest,
              const bool zerobase
            ) const throw(math::StatisticsException)
@@ -662,12 +662,12 @@ F math::SampleQuantileGeneric<F>::elem(
         throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
     }
 
-    const size_t nn = ( true==zerobase ? n : n-1 );
+    const std::size_t nn = ( true==zerobase ? n : n-1 );
 
 
     // this->m_v is already sorted in ascending order
 
-    const size_t idx = ( false==largest ? nn : (this->m_N - 1) - nn );
+    const std::size_t idx = ( false==largest ? nn : (this->m_N - 1) - nn );
 
     return this->m_v.at(idx);
 }

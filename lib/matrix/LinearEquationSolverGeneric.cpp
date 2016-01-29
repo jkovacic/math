@@ -66,10 +66,10 @@ template <class T>
 T incSumProd(
     const math::MatrixGeneric<T>& a,
     const math::MatrixGeneric<T>& x,
-    const size_t currentRow,
-    const size_t currentCol,
-    const std::vector<size_t>& rows,
-    const std::vector<size_t>& cols )
+    const std::size_t currentRow,
+    const std::size_t currentCol,
+    const std::vector<std::size_t>& rows,
+    const std::vector<std::size_t>& cols )
 {
     /*
      * Calculates the following sum:
@@ -87,7 +87,7 @@ T incSumProd(
      * 'c' actually equals 'currentCol'.
      */
 
-    const size_t N = a.nrRows();
+    const std::size_t N = a.nrRows();
     T sumProd = static_cast<T>(0);
 
     #pragma omp parallel num_threads(ompIdeal(N)) \
@@ -97,7 +97,7 @@ T incSumProd(
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         T tempSum = static_cast<T>(0);
-        for ( size_t j=istart; j<iend; ++j )
+        for ( std::size_t j=istart; j<iend; ++j )
         {
 
             if ( currentRow == j )
@@ -158,7 +158,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    const size_t N = coef.nrColumns();          // Nr. of unknowns
+    const std::size_t N = coef.nrColumns();          // Nr. of unknowns
 
     // Check the dimensions
     if ( N != term.nrRows() )
@@ -201,7 +201,7 @@ bool math::LinearEquationSolver::solveSOR(
           const T& w,
           const bool solInitialized,
           const T& tol,
-          const size_t maxiter
+          const std::size_t maxiter
         ) throw (math::MatrixException)
 {
     /*
@@ -220,8 +220,8 @@ bool math::LinearEquationSolver::solveSOR(
         return false;
     }
 
-    const size_t N = coef.nrColumns();
-    const size_t NC = term.nrColumns();
+    const std::size_t N = coef.nrColumns();
+    const std::size_t NC = term.nrColumns();
 
     // Check the dimensions
     if ( N != term.nrRows() )
@@ -245,8 +245,8 @@ bool math::LinearEquationSolver::solveSOR(
     }
 
     // Vectors of permutations of rows and columns, respectively
-    std::vector<size_t> rows;
-    std::vector<size_t> cols;
+    std::vector<std::size_t> rows;
+    std::vector<std::size_t> cols;
 
     /* 
      * Try to "convert" 'coef' to a diagonally dominant matrix to ensure
@@ -262,7 +262,7 @@ bool math::LinearEquationSolver::solveSOR(
     }
 
     // counter of iterations
-    size_t cnt;
+    std::size_t cnt;
     // maximum inf. norm of all columns, initially set to something larger than 'tol'
     T maxInfNorm = static_cast<T>(10) * tol;
 
@@ -275,7 +275,7 @@ bool math::LinearEquationSolver::solveSOR(
         //   (note that each column is processed independently from the others)
         #pragma omp paralel for default(none) \
                 shared(maxInfNorm, sol, coef, term, rows, cols, w)
-        for ( size_t c=0; c<NC; ++c )
+        for ( std::size_t c=0; c<NC; ++c )
         {
             // These variables will store column's maximum abs. value and increment
             T Xpmax = static_cast<T>(0);
@@ -287,7 +287,7 @@ bool math::LinearEquationSolver::solveSOR(
              * Note: this for loop must be executed sequentially
              *       and CANNOT be parallelized!
              */
-            for ( size_t i=0; i<N; ++i )
+            for ( std::size_t i=0; i<N; ++i )
             {
                 // update the column's maximum abs. value if necessary
                 const T Xpabs = math::PseudoFunction::pabs(sol(i, c));
@@ -429,7 +429,7 @@ bool math::LinearEquationSolver::solveGaussSeidel(
           math::MatrixGeneric<T>& sol,
           const bool solInitialized,
           const T& tol,
-          const size_t maxiter
+          const std::size_t maxiter
         ) throw (math::MatrixException)
 {
     /*
@@ -476,7 +476,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
           const T& w,
           const bool solInitialized,
           const T& tol,
-          const size_t maxiter
+          const std::size_t maxiter
         ) throw (math::MatrixException)
 {
     /*
@@ -495,8 +495,8 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
         return false;
     }
 
-    const size_t N = coef.nrColumns();
-    const size_t NC = term.nrColumns();
+    const std::size_t N = coef.nrColumns();
+    const std::size_t NC = term.nrColumns();
 
     // Check the dimensions
     if ( N != term.nrRows() )
@@ -520,8 +520,8 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
     }
 
     // Vectors of permutations of rows and columns, respectively
-    std::vector<size_t> rows;
-    std::vector<size_t> cols;
+    std::vector<std::size_t> rows;
+    std::vector<std::size_t> cols;
 
     /* 
      * Try to "convert" 'coef' to a diagonally dominant matrix to ensure
@@ -537,7 +537,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
     }
 
     // counter of iterations
-    size_t cnt;
+    std::size_t cnt;
     // maximum inf. norm of all columns, initially set to something larger than 'tol'
     T maxInfNorm = static_cast<T>(10) * tol;
 
@@ -549,7 +549,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
     math::MatrixGeneric<T> tempMat(sol);
 
     // Iterate until the algorithm converges or 'cnt' exceeds 'maxiter'
-    for ( cnt=0; cnt<maxiter && math::PseudoFunction::absgt(maxInfNorm, tol) ; ++cnt )
+    for ( cnt=0; cnt<maxiter && math::PseudoFunction::absgt(maxInfNorm, tol); ++cnt )
     {
         /*
          * When 'cnt' is even (divisible by 2), 'sol' stores values of the current
@@ -565,7 +565,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
         //   (note that each column is processed independently from the others)
         #pragma omp paralel for default(none) \
                 shared(maxInfNorm, xk, xk_1, coef, term, rows, cols, w)
-        for ( size_t c=0; c<NC; ++c )
+        for ( std::size_t c=0; c<NC; ++c )
         {
             // These variables will store column's maximum abs. value and increment
             T Xpmax = static_cast<T>(0);
@@ -576,7 +576,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
              */
             #pragma omp parallel for default(none) \
                     shared(coef, term, rows, cols, xk, xk_1, Xpmax, Dpmax, c, w)
-            for ( size_t i=0; i<N; ++i )
+            for ( std::size_t i=0; i<N; ++i )
             {
                 /*
                  *           N
@@ -738,7 +738,7 @@ bool math::LinearEquationSolver::solveJacobi(
           math::MatrixGeneric<T>& sol,
           const bool solInitialized,
           const T& tol,
-          const size_t maxiter
+          const std::size_t maxiter
         ) throw (math::MatrixException)
 {
     /*

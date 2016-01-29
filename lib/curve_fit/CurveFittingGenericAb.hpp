@@ -94,7 +94,7 @@ public:
     virtual CurveFittingGenericAb<F>& enterPoint(const F& x, const F& y) throw (CurveFittingException);
 
     // Number of points entered
-    size_t nrPoints() const;
+    std::size_t nrPoints() const;
 
     // has the curve been generated?
     bool curveReady() const;
@@ -104,7 +104,7 @@ public:
     F upperBound() const throw (CurveFittingException);
 
     // generate a curve that fits entered points best
-    virtual void generateCurve(const size_t degree) throw (CurveFittingException) = 0;
+    virtual void generateCurve(const std::size_t degree) throw (CurveFittingException) = 0;
 
     // value of the curve at the given abscissa
     virtual F valueAt(const F& x, const bool strict=true) const throw (CurveFittingException) = 0;

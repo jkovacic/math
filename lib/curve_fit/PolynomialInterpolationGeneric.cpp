@@ -55,7 +55,7 @@ math::PolynomialInterpolationGeneric<F>::PolynomialInterpolationGeneric()
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
 template <typename F>
-void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree) throw (math::CurveFittingException)
+void math::PolynomialInterpolationGeneric<F>::generateCurve(const std::size_t degree) throw (math::CurveFittingException)
 {
     // performs necessary checks
     this->_curveGenerationCheck();
@@ -106,7 +106,7 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree)
          */
 
         // number of points
-        const size_t N = this->m_points.size();
+        const std::size_t N = this->m_points.size();
 
         // create vectors to store temporary results:
         std::vector<F> a;
@@ -123,7 +123,7 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree)
 
         // As iterators are the fastest way to access linked list elements,
         // traverse the list only once and populate appropriate elements of a and b
-        size_t idx = 0;
+        std::size_t idx = 0;
         for ( 
           typename std::list<typename math::CurveFittingGenericAb<F>::CPoint>::const_iterator it=this->m_points.begin();
           it!=this->m_points.end(); 
@@ -159,7 +159,7 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree)
          * This for loop cannot be parallelized because 'a' at each iteration
          * depends on the same vector at the previous iteration
          */
-        for ( size_t c=0; c<(N-1); ++c )
+        for ( std::size_t c=0; c<(N-1); ++c )
         {
             /*
              * On the other hand, it is possible to parallelize the inner
@@ -168,7 +168,7 @@ void math::PolynomialInterpolationGeneric<F>::generateCurve(const size_t degree)
              * "ordered" clause.
              */
             #pragma omp parallel for ordered default(none) shared(a, x, c)
-            for ( size_t i=0; i<(N-1-c); ++i )
+            for ( std::size_t i=0; i<(N-1-c); ++i )
             {
                 const F el = (a.at(i+1) - a.at(i)) / (x.at(i+c+1) - x.at(i));
 

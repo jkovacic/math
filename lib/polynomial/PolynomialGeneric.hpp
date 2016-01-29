@@ -144,28 +144,28 @@ public:
     // Constructors
     PolynomialGeneric(const std::vector<F>& cvect) throw (PolynomialException);
     PolynomialGeneric(const F& c0 = static_cast<F>(0)) throw (PolynomialException);
-    PolynomialGeneric(const F* const carray, const size_t n) throw (PolynomialException);
-    PolynomialGeneric(const bool ignored, const size_t n = 1) throw (PolynomialException);
+    PolynomialGeneric(const F* const carray, const std::size_t n) throw (PolynomialException);
+    PolynomialGeneric(const bool ignored, const std::size_t n = 1) throw (PolynomialException);
     PolynomialGeneric(const PolynomialGeneric<F>& poly) throw (PolynomialException);
 
     // Getters
     void get(std::vector<F>& vec) const throw (PolynomialException);
     void getDesc(std::vector<F>& vec) const throw (PolynomialException);
-    F get(const size_t pos) const;
+    F get(const std::size_t pos) const;
 
     // Setters
     PolynomialGeneric<F>& set(const std::vector<F>& cvect) throw (PolynomialException);
     PolynomialGeneric<F>& setDesc(const std::vector<F>& cvect) throw (PolynomialException);
-    PolynomialGeneric<F>& set(const size_t pos, const F& c = static_cast<F>(0)) throw (PolynomialException);
+    PolynomialGeneric<F>& set(const std::size_t pos, const F& c = static_cast<F>(0)) throw (PolynomialException);
 
     // Insert and remove coefficients
-    PolynomialGeneric<F>& insert_(const size_t pos, const F& c) throw (PolynomialException);
-    PolynomialGeneric<F> insert(const size_t pos, const F& c) const throw (PolynomialException);
-    PolynomialGeneric<F>& remove_(const size_t pos);
-    PolynomialGeneric<F> remove(const size_t pos) const throw (PolynomialException);
+    PolynomialGeneric<F>& insert_(const std::size_t pos, const F& c) throw (PolynomialException);
+    PolynomialGeneric<F> insert(const std::size_t pos, const F& c) const throw (PolynomialException);
+    PolynomialGeneric<F>& remove_(const std::size_t pos);
+    PolynomialGeneric<F> remove(const std::size_t pos) const throw (PolynomialException);
 
     // Degree of the polynomial
-    size_t degree() const;
+    std::size_t degree() const;
 
     // Value of the polynomial for given x
     F value(const F& x) const;

@@ -42,7 +42,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw 
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         
         if ( 0==N )
         {
@@ -73,7 +73,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el) throw (m
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         if ( 0==N )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
@@ -104,7 +104,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el) throw (ma
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         if ( 0==N )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
@@ -135,7 +135,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (
 {
     try
     {
-        const size_t N = el.size();
+        const std::size_t N = el.size();
         if ( 0==N )
         {
             throw math::CombinatoricsException(math::CombinatoricsException::INVALID_INPUT);
@@ -166,7 +166,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (
  * @throw CombinatoricsException if input arguments are invalid or if allocation of memory fails
  */
 template <class T>
-math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, const size_t len) throw (math::CombinatoricsException)
+math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, const std::size_t len) throw (math::CombinatoricsException)
 {
     try
     {
@@ -207,7 +207,7 @@ void math::CombinationGeneric<T>::__init()
  * @return size of a subset (k)
  */
 template <class T>
-size_t math::CombinationGeneric<T>::getK() const
+std::size_t math::CombinationGeneric<T>::getK() const
 {
     return this->K;
 }
@@ -224,11 +224,11 @@ size_t math::CombinationGeneric<T>::getK() const
  * @throw CombinatoricsException if input argument is invalid or if allocation of memory fails
  */
 template <class T>
-void math::CombinationGeneric<T>::setK(const size_t k) throw (math::CombinatoricsException)
+void math::CombinationGeneric<T>::setK(const std::size_t k) throw (math::CombinatoricsException)
 {
     try
     {
-        const size_t& N = this->N_size;
+        const std::size_t& N = this->N_size;
         
         // "sanity check"
         if ( k<=0 || k>N )
@@ -246,7 +246,7 @@ void math::CombinationGeneric<T>::setK(const size_t k) throw (math::Combinatoric
          * at comments in next().
          */
         this->addr.reserve(k);
-        for ( size_t i=0; i<k; ++i )
+        for ( std::size_t i=0; i<k; ++i )
         {
             this->addr.push_back(i);
         }
@@ -278,14 +278,14 @@ void math::CombinationGeneric<T>::setK(const size_t k) throw (math::Combinatoric
  * @throw CombinatoriscException if n is too large or if allocation of memory fails
  */
 template <class T>
-void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const size_t n) throw (math::CombinatoricsException)
+void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const std::size_t n) throw (math::CombinatoricsException)
 {
     try
     {
         // K is often used within this function. As it is supposed to
         // remain constant, protect it from unintentional modifications. 
-        const size_t& Klen = this->K;
-        const size_t& N = this->N_size;
+        const std::size_t& Klen = this->K;
+        const std::size_t& N = this->N_size;
 
         // sanity check
         if ( Klen<=0 || Klen>N )
@@ -317,7 +317,7 @@ void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const size_
          * its left neighbour, etc.
          */
         
-        for ( size_t cnt=0; true==this->moreCombinations && cnt<n; ++cnt )
+        for ( std::size_t cnt=0; true==this->moreCombinations && cnt<n; ++cnt )
         {
             // append an empty set to 'ret'
             ret.push_back(std::set<T>());
@@ -329,13 +329,13 @@ void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const size_
             // 'addr' has been set by the previous iteration for the current one.
             // Just append elements at addr's indexes to ret's set:
             
-            for ( std::vector<size_t>::const_iterator it=addr.begin(); it!=addr.end(); ++it )
+            for ( std::vector<std::size_t>::const_iterator it=addr.begin(); it!=addr.end(); ++it )
             {
                 s.insert(this->elems.at(*it));
             }
 
             // And update 'addr' for the next iteration as described above:
-            for ( size_t i = Klen-1; /* i>=0 */ ; --i )
+            for ( std::size_t i = Klen-1; /* i>=0 */ ; --i )
             {
                 if ( this->addr.at(i) < (N-Klen+i) )
                 {
@@ -343,8 +343,8 @@ void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const size_
                     ++this->addr.at(i);
                     
                     // update the next elements to preserve uniqueness and ascending order: 
-                    const size_t upv = this->addr.at(i); 
-                    for ( size_t j = i+1; j<Klen; ++j )
+                    const std::size_t upv = this->addr.at(i); 
+                    for ( std::size_t j = i+1; j<Klen; ++j )
                     {
                         this->addr.at(j) = upv + j-i;
                     }

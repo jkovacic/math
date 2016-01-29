@@ -185,7 +185,7 @@ public:
     // Constructor from a string
     RationalGeneric(
             const std::string& str, 
-            const size_t repSeqLen = 0 ) 
+            const std::size_t repSeqLen = 0 ) 
         throw (RationalException);
 
     // Copy constructor
@@ -210,7 +210,7 @@ public:
     // Parses the fraction from its decimal representation
     RationalGeneric<I>& set(
             const std::string& str, 
-            const size_t repSeqLen = 0 ) 
+            const std::size_t repSeqLen = 0 ) 
         throw (RationalException);
 
     // Outputs the fraction to std::cout, optionally multiplies both members by a factor

@@ -44,7 +44,7 @@ template <class T>
 void math::mtcopy(const T* const first, const T* const last, std::vector<T>& dest)
 {
     // Number of elements in the range
-    const size_t N = last - first;
+    const std::size_t N = last - first;
 
     // Preallocate the destination vector
     dest.resize(N);
@@ -57,7 +57,7 @@ void math::mtcopy(const T* const first, const T* const last, std::vector<T>& des
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<T>::iterator it = dest.begin() + istart;
-        for ( size_t idx = istart;
+        for ( std::size_t idx = istart;
               idx<iend && it!=dest.end();
               ++it, ++idx )
         {
@@ -77,7 +77,7 @@ void math::mtcopy(const T* const first, const T* const last, std::vector<T>& des
  * @param dest - reference to a vector where the selected range will be copied to
  */
 template <class T>
-void math::mtcopy(const T* const first, const size_t len, std::vector<T>& dest)
+void math::mtcopy(const T* const first, const std::size_t len, std::vector<T>& dest)
 {
     math::mtcopy<T>(first, first+len, dest);
 }
@@ -110,17 +110,17 @@ void math::mtcopy(const std::vector<T>& src, std::vector<T>& dest)
  */
 template <class T>
 void math::mtcopy(const std::vector<T>&src,
-                  const size_t first,
-                  const size_t len,
+                  const std::size_t first,
+                  const std::size_t len,
                   std::vector<T>& dest)
 {
     // First make sure that "first+len" does not exceed size_t's range
-    const size_t lenlim = std::min<size_t>(len, static_cast<size_t>(-1)-first);
+    const std::size_t lenlim = std::min<std::size_t>(len, static_cast<std::size_t>(-1)-first);
 
     // Then ensure that the range does not exceed
     // the actual src's range:
     math::mtcopy<T>(src.begin() + first,
-                    src.begin() + std::min<size_t>( first+lenlim, src.size() ),
+                    src.begin() + std::min<std::size_t>( first+lenlim, src.size() ),
                     dest);
 }
 
@@ -159,7 +159,7 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
     }
 
     // Number of elements in the range
-    const size_t N = last - first;
+    const std::size_t N = last - first;
 
     // Preallocate the dest. vector
     dest.resize(N);

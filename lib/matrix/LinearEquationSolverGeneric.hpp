@@ -60,7 +60,7 @@ namespace LinearEquationSolver
               const T& w,
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
-              const size_t maxiter = LINEQ_MAX_ITER
+              const std::size_t maxiter = LINEQ_MAX_ITER
             ) throw (MatrixException);
 
 
@@ -71,7 +71,7 @@ namespace LinearEquationSolver
               MatrixGeneric<T>& sol,
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
-              const size_t maxiter = LINEQ_MAX_ITER
+              const std::size_t maxiter = LINEQ_MAX_ITER
             ) throw (MatrixException);
 
 
@@ -83,7 +83,7 @@ namespace LinearEquationSolver
               const T& w,
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
-              const size_t maxiter = LINEQ_MAX_ITER
+              const std::size_t maxiter = LINEQ_MAX_ITER
             ) throw (MatrixException);
 
 
@@ -94,7 +94,7 @@ namespace LinearEquationSolver
               MatrixGeneric<T>& sol,
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
-              const size_t maxiter = LINEQ_MAX_ITER
+              const std::size_t maxiter = LINEQ_MAX_ITER
             ) throw (MatrixException);
 
 }  // namespace LinearEquationSolver

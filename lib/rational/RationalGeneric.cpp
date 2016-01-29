@@ -57,7 +57,7 @@ long long int __str2ll(const std::string& str) throw (math::RationalException)
 {
     // sanity check already performed by the caller function
 
-    size_t lmax = std::numeric_limits<long long int>::digits10;
+    std::size_t lmax = std::numeric_limits<long long int>::digits10;
     if ( '+' == str.at(0) || '-' == str.at(0) )
     {
         // if the string starts with a sign, the allowed number
@@ -90,7 +90,7 @@ long long int __str2ll(const std::string& str) throw (math::RationalException)
  *
  * @throw RationalException if the result exceeds unsigned I's range
  */
- long long int __pow10(const size_t n) throw (math::RationalException)
+ long long int __pow10(const std::size_t n) throw (math::RationalException)
 {
 
 #define POW10_BASE            ( 10ULL )
@@ -98,7 +98,7 @@ long long int __str2ll(const std::string& str) throw (math::RationalException)
     unsigned long long int temp = 1ULL;
     const unsigned long long int MAX_FACTOR = ULLONG_MAX / POW10_BASE;
 
-    for ( size_t i=0; i<n; ++i )
+    for ( std::size_t i=0; i<n; ++i )
     {
         // prevent a possible integer overflow
         if ( temp > MAX_FACTOR )
@@ -392,7 +392,7 @@ math::RationalGeneric<I>::RationalGeneric(
 template <typename I>
 math::RationalGeneric<I>::RationalGeneric(
             const std::string& str, 
-            const size_t repSeqLen) 
+            const std::size_t repSeqLen) 
         throw (math::RationalException)
 {
     /*
@@ -541,15 +541,15 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::set(
             const std::string& str, 
-            const size_t repSeqLen) 
+            const std::size_t repSeqLen) 
         throw (math::RationalException)
 {
-    const size_t LEN = str.length();
-    size_t decPoint = LEN; // position of the decimal point. LEN represents no decimal point.
+    const std::size_t LEN = str.length();
+    std::size_t decPoint = LEN; // position of the decimal point. LEN represents no decimal point.
     bool hasDigits = false; // does the string contain at least one decimal digit
 
     // Check if 'str' is a proper decimal representation
-    for ( size_t i=0; i<LEN; ++i )
+    for ( std::size_t i=0; i<LEN; ++i )
     {
         const char ch = str.at(i);
 

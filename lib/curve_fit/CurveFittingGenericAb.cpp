@@ -170,7 +170,7 @@ math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::enterPoint(const
  * @return Number of all points entered
  */
 template <typename F>
-size_t math::CurveFittingGenericAb<F>::nrPoints() const
+std::size_t math::CurveFittingGenericAb<F>::nrPoints() const
 {
     return m_points.size();
 }

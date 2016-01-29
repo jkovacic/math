@@ -90,7 +90,7 @@ F __rectangle(
         const math::IFunctionGeneric<F>& f,
         const F& a,
         const F& b,
-        const size_t n
+        const std::size_t n
       ) throw(math::CalculusException)
 {
     /*
@@ -111,7 +111,7 @@ F __rectangle(
         // The algorithm requires evaluation of the function in
         // N points, the same number as integrating intervals
 
-        const size_t& N = n;
+        const std::size_t& N = n;
         const F h = (b-a) / static_cast<F>(N);
 
         F sum = static_cast<F>(0);
@@ -126,7 +126,7 @@ F __rectangle(
 
             F tempSum = static_cast<F>(0);
             F xi = a + static_cast<F>(istart) * h;
-            for (size_t i = istart;
+            for (std::size_t i = istart;
                  i < iend;
                  ++i, xi += h )
             {
@@ -172,8 +172,8 @@ F __closedNewtonCotes(
                const math::IFunctionGeneric<F>& f,
                const F& a,
                const F& b,
-               const size_t n,
-               const size_t degree,
+               const std::size_t n,
+               const std::size_t degree,
                const F* coef,
                const F& bCoef,
                const F& hCoef
@@ -196,9 +196,9 @@ F __closedNewtonCotes(
         // N must be divisible by 'degree'.
         // Additionally it is ensured that it is always greater than 0.
     	// It is also assumed that 'degree' will always be a small integer.
-        const size_t degrem = ( 0!=n%degree ? degree-n%degree : 0 );
-        const size_t N = std::max<size_t>( 2,
-            ( n <= (static_cast<size_t>(-1)-degrem) ? n + degrem : n - n%degree ) );
+        const std::size_t degrem = ( 0!=n%degree ? degree-n%degree : 0 );
+        const std::size_t N = std::max<std::size_t>( 2,
+            ( n <= (static_cast<std::size_t>(-1)-degrem) ? n + degrem : n - n%degree ) );
 
         const F h = (b-a) / static_cast<F>(N);
 
@@ -220,12 +220,12 @@ F __closedNewtonCotes(
              * Neither of the two values can even theoretically never
              * be greater then SIZE_T_MAX.
              */
-            const size_t starti = istart + 1;
-            const size_t endi = iend + 1;
+            const std::size_t starti = istart + 1;
+            const std::size_t endi = iend + 1;
 
             F tempSum = static_cast<F>(0);
             F xi = a + static_cast<F>(starti) * h;
-            for ( size_t i = starti;
+            for ( std::size_t i = starti;
                   i < endi;
                   ++i, xi += h )
             {
@@ -268,7 +268,7 @@ F __trapezoidal(
         const math::IFunctionGeneric<F>& f,
         const F& a,
         const F& b,
-        const size_t n
+        const std::size_t n
       ) throw(math::CalculusException)
 {
     /*
@@ -331,7 +331,7 @@ F __simpson(
        const math::IFunctionGeneric<F>& f,
        const F& a,
        const F& b,
-       const size_t n
+       const std::size_t n
      ) throw(math::CalculusException)
 {
     /*
@@ -376,7 +376,7 @@ F __simpson38(
       const math::IFunctionGeneric<F>& f,
       const F& a,
       const F& b,
-      const size_t n
+      const std::size_t n
     ) throw(math::CalculusException)
 {
     /*
@@ -422,7 +422,7 @@ F __boole(
       const math::IFunctionGeneric<F>& f,
       const F& a,
       const F& b,
-      const size_t n
+      const std::size_t n
     ) throw(math::CalculusException)
 {
     /*
@@ -475,7 +475,7 @@ F __romberg(
       const math::IFunctionGeneric<F>& f,
       const F& a,
       const F& b,
-      const size_t n
+      const std::size_t n
     ) throw(math::CalculusException)
 {
     /*
@@ -511,7 +511,7 @@ F __romberg(
      *      2*n < 8*s   ==>  n < 4*s
      */
 
-    if ( n >= (sizeof(size_t) * 4) )
+    if ( n >= (sizeof(std::size_t) * 4) )
     {
         throw math::CalculusException(math::CalculusException::INVALID_STEP);
     }
@@ -555,7 +555,7 @@ F __romberg(
      * Fill in the remaining cells of the first column.
      * 'p2' denotes the power of 2 for the current iteration: p2=2^(i-1)
      */
-    for ( size_t i=1, p2=1; 
+    for ( std::size_t i=1, p2=1; 
           i < n;
           ++i, p2<<=1 )
     {
@@ -585,7 +585,7 @@ F __romberg(
 
         F partsum = static_cast<F>(0);
         // TODO this for loop can be parallelized
-        for ( size_t k=1; k<=p2; ++k )
+        for ( std::size_t k=1; k<=p2; ++k )
         {
             partsum += f(a + static_cast<F>(2*k-1)*hi);
         }
@@ -600,7 +600,7 @@ F __romberg(
      * R(m,0:(n-m-1)).
      * 'p4' denotes the power of 4 for the current iteration: p4 = 4^i
      */
-    for ( size_t m=1, p4=4;
+    for ( std::size_t m=1, p4=4;
           m < n; 
           ++m, p4<<=2 )
     {
@@ -612,7 +612,7 @@ F __romberg(
          *                      4  - 1
          */
 
-        for ( size_t i=0; i<(n-m); ++i )
+        for ( std::size_t i=0; i<(n-m); ++i )
         {
             R.at(i) = ( static_cast<F>(p4) * R.at(i+1) - R.at(i) ) / 
                         static_cast<F>(p4 - 1);
@@ -876,7 +876,7 @@ F math::Integ::integ(
         const math::IFunctionGeneric<F>& f,
         const F& a,
         const F& b,
-        const size_t n,
+        const std::size_t n,
         const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
 {
@@ -996,7 +996,7 @@ F math::Integ::integH(
 
     // Just obtain the (approximate) number of integrating intervals
     // from the size
-    const size_t n = static_cast<size_t>(std::floor(std::abs(b-a) / h) +
+    const std::size_t n = static_cast<std::size_t>(std::floor(std::abs(b-a) / h) +
     		static_cast<F>(1) / static_cast<F>(2) ) + 1;
 
     return math::Integ::integ<F>( f, a, b, n, algorithm );
@@ -1039,8 +1039,8 @@ template <typename F>
 F math::Integ::integImpNegInf(
         const math::IFunctionGeneric<F>& f,
         const F& b,
-        const size_t nimp,
-        const size_t nprop,
+        const std::size_t nimp,
+        const std::size_t nprop,
         const F& bp,
         const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
@@ -1137,8 +1137,8 @@ template <typename F>
 F math::Integ::integImpPosInf(
         const math::IFunctionGeneric<F>& f,
         const F& a,
-        const size_t nimp,
-        const size_t nprop,
+        const std::size_t nimp,
+        const std::size_t nprop,
         const F& bp,
         const math::EIntegAlg::alg algorithm
       ) throw(math::CalculusException)
@@ -1231,8 +1231,8 @@ F math::Integ::integImpPosInf(
 template <typename F>
 F math::Integ::integImp(
         const math::IFunctionGeneric<F>& f,
-        const size_t nimp,
-        const size_t nprop,
+        const std::size_t nimp,
+        const std::size_t nprop,
         const F& bpneg,
         const F& bppos,
         const math::EIntegAlg::alg algorithm

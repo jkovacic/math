@@ -68,7 +68,7 @@ namespace Integ
                const IFunctionGeneric<F>& f,
                const F& a,
                const F& b,
-               const size_t n = INTEG_DEFAULT_STEPS,
+               const std::size_t n = INTEG_DEFAULT_STEPS,
                const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
 
@@ -87,8 +87,8 @@ namespace Integ
     F integImpNegInf(
                const IFunctionGeneric<F>& f,
                const F& b,
-               const size_t nimp = INTEG_DEFAULT_STEPS,
-               const size_t nprop = INTEG_DEFAULT_STEPS,
+               const std::size_t nimp = INTEG_DEFAULT_STEPS,
+               const std::size_t nprop = INTEG_DEFAULT_STEPS,
                const F& bp = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
              ) throw(CalculusException);
@@ -98,8 +98,8 @@ namespace Integ
     F integImpPosInf(
                    const IFunctionGeneric<F>& f,
                    const F& a,
-                   const size_t nimp = INTEG_DEFAULT_STEPS,
-                   const size_t prop = INTEG_DEFAULT_STEPS,
+                   const std::size_t nimp = INTEG_DEFAULT_STEPS,
+                   const std::size_t prop = INTEG_DEFAULT_STEPS,
                    const F& bp = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
                  ) throw(CalculusException);
@@ -108,8 +108,8 @@ namespace Integ
     template <typename F>
     F integImp(
                    const IFunctionGeneric<F>& f,
-                   const size_t nimp = INTEG_DEFAULT_STEPS,
-                   const size_t nprop = INTEG_DEFAULT_STEPS,
+                   const std::size_t nimp = INTEG_DEFAULT_STEPS,
+                   const std::size_t nprop = INTEG_DEFAULT_STEPS,
                    const F& bpneg = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const F& bppos = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD

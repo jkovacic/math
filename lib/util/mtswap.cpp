@@ -58,7 +58,7 @@ void math::mtswap(
     }
 
     // Number of elements in the range
-    const size_t N = last - first;
+    const std::size_t N = last - first;
 
     // Coarse grained parallelism, if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(N)) \

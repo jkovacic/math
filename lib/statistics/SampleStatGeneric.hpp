@@ -56,16 +56,16 @@ namespace SampleStat
     F var(const std::vector<F>& x, const bool sample=true) throw(StatisticsException);
 
     template <typename F>
-    F var(const std::vector<F>& x, const size_t df_sub) throw(StatisticsException);
+    F var(const std::vector<F>& x, const std::size_t df_sub) throw(StatisticsException);
 
     template <typename F>
     F stdev(const std::vector<F>& x, const bool sample=true) throw(StatisticsException);
 
     template <typename F>
-    F stdev(const std::vector<F>& x, const size_t df_sub) throw(StatisticsException);
+    F stdev(const std::vector<F>& x, const std::size_t df_sub) throw(StatisticsException);
 
     template <typename F>
-    F cov(const std::vector<F>& x1, const std::vector<F>& x2, const size_t df_sub) throw(StatisticsException);
+    F cov(const std::vector<F>& x1, const std::vector<F>& x2, const std::size_t df_sub) throw(StatisticsException);
 
     template <typename F>
     F cov(const std::vector<F>& x1, const std::vector<F>& x2, const bool sample=true) throw(StatisticsException);

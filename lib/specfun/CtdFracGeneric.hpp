@@ -54,11 +54,11 @@ namespace  CtdFrac
  * You must derive a class from this one and implement the
  * pure virtual functions
  *
- *   T fa(const size_t i) const throw(FunctionException)
+ *   T fa(const std::size_t i) const throw(FunctionException)
  *
  * and
  *
- *   T fb(const size_t i) const throw(FunctionException)
+ *   T fb(const std::size_t i) const throw(FunctionException)
  *
  * that return values of 'a_i' and 'b_i', respectively. 
  * The functions are expected to throw FunctionException::UNDEFINED if
@@ -94,7 +94,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined
      */
-    virtual T fa(const size_t i) const throw (FunctionException) = 0;
+    virtual T fa(const std::size_t i) const throw (FunctionException) = 0;
 
     /*
      * An interface for the function that returns the i^th coefficient
@@ -110,7 +110,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined
      */
-    virtual T fb(const size_t i) const throw (FunctionException) = 0;
+    virtual T fb(const std::size_t i) const throw (FunctionException) = 0;
 
     virtual ~ICtdFracFuncGeneric();
 

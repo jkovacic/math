@@ -46,15 +46,15 @@ template <class T>
 bool getDiagonallyDominantMatrix(
         const MatrixGeneric<T>& A,
         MatrixGeneric<T>* const pB,
-        std::vector<size_t>& rows,
-        std::vector<size_t>& cols
+        std::vector<std::size_t>& rows,
+        std::vector<std::size_t>& cols
       ) throw (MatrixException);
 
 
 template <class T>
 void rearrangeMatrixRows(
         MatrixGeneric<T>& x,
-        std::vector<size_t>& cols );
+        std::vector<std::size_t>& cols );
 
 
 template <class T>
@@ -76,7 +76,7 @@ T getDeterminant(
 
 
 template <class T>
-size_t getRank(
+std::size_t getRank(
         const MatrixGeneric<T>& A,
         const bool physSwap
       ) throw(MatrixException);

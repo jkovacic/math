@@ -47,9 +47,9 @@ namespace SampleOrder
 {
 
     template <typename F>
-    std::vector<size_t>& order(
+    std::vector<std::size_t>& order(
             const std::vector<F>& x,
-            std::vector<size_t>& dest,
+            std::vector<std::size_t>& dest,
             const bool asc=true
           ) throw(SampleOrderException);
 
@@ -60,10 +60,10 @@ namespace SampleOrder
     F max(const std::vector<F>& x) throw(SampleOrderException);
 
     template <typename F>
-    size_t whichMin(const std::vector<F>& x) throw(SampleOrderException);
+    std::size_t whichMin(const std::vector<F>& x) throw(SampleOrderException);
 
     template <typename F>
-    size_t whichMax(const std::vector<F>& x) throw(SampleOrderException);
+    std::size_t whichMax(const std::vector<F>& x) throw(SampleOrderException);
 
 }  // namespace SampleOrder
 }  // namespace math

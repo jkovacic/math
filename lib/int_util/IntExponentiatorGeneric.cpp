@@ -70,7 +70,7 @@ namespace IntExponentiator
         template<class T>
         math::MatrixGeneric<T> __getUnit(const math::MatrixGeneric<T>& t)
         {
-            const size_t N = t.nrRows();
+            const std::size_t N = t.nrRows();
             math::MatrixGeneric<T> retVal(N);
             retVal.setUnit_();
             return retVal;

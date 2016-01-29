@@ -60,12 +60,12 @@ namespace __private
  * @return observation with the highest absolute value among the first 'Nmax' elements of 'x'
  */
 template <typename F>
-F __getShift(const std::vector<F>& x, const size_t Nmax = 5)
+F __getShift(const std::vector<F>& x, const std::size_t Nmax = 5)
 {
     F retVal = x.at(0);
     F absRetVal = ( retVal<static_cast<F>(0) ? -retVal : retVal );
-    const size_t N = std::min<size_t>(x.size(), Nmax);
-    size_t cntr = 1;
+    const std::size_t N = std::min<std::size_t>(x.size(), Nmax);
+    std::size_t cntr = 1;
     typename std::vector<F>::const_iterator it = x.begin() + cntr;
     
     for ( ; cntr<N; ++it, ++cntr )
@@ -99,7 +99,7 @@ F __getShift(const std::vector<F>& x, const size_t Nmax = 5)
 template <typename F>
 F math::SampleStat::sum(const std::vector<F>& x)
 {
-    const size_t N = x.size();
+    const std::size_t N = x.size();
 
     if ( 0 == N )
     {
@@ -134,7 +134,7 @@ F math::SampleStat::sum(const std::vector<F>& x)
         // Calculate the sum of the assigned block...
         F partsum = static_cast<F>(0);
         typename std::vector<F>::const_iterator it = x.begin() + istart;
-        for ( size_t cntr = 0;
+        for ( std::size_t cntr = 0;
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr )
         {
@@ -176,7 +176,7 @@ F math::SampleStat::mean(const std::vector<F>& x) throw(math::StatisticsExceptio
      *
      */
 
-    const size_t N = x.size();
+    const std::size_t N = x.size();
 
     if ( 0 == N )
     {
@@ -201,7 +201,7 @@ F math::SampleStat::mean(const std::vector<F>& x) throw(math::StatisticsExceptio
  * @throw StatisticsException if 'x' is empty or if 'df_sub' exceeds sample's size
  */
 template <typename F>
-F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::var(const std::vector<F>& x, const std::size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * The best known algorithm to calculate a variance is:
@@ -240,7 +240,7 @@ F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math
      * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
      */
 
-    const size_t N = x.size();
+    const std::size_t N = x.size();
 
     if ( 0 == N )
     {
@@ -275,7 +275,7 @@ F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math
         F partsum  = static_cast<F>(0);
         F partsum2 = static_cast<F>(0);
         typename std::vector<F>::const_iterator it = x.begin() + istart;
-        for ( size_t cntr = 0;
+        for ( std::size_t cntr = 0;
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr )
         {
@@ -310,7 +310,7 @@ F math::SampleStat::var(const std::vector<F>& x, const size_t df_sub) throw(math
 template <typename F>
 F math::SampleStat::var(const std::vector<F>& x, const bool sample) throw(math::StatisticsException)
 {
-    return math::SampleStat::var<F>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::var<F>( x, static_cast<std::size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -329,7 +329,7 @@ F math::SampleStat::var(const std::vector<F>& x, const bool sample) throw(math::
 template <typename F>
 F math::SampleStat::stdev(const std::vector<F>& x, const bool sample) throw(math::StatisticsException)
 {
-    return math::SampleStat::stdev<F>( x, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::stdev<F>( x, static_cast<std::size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -347,7 +347,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, const bool sample) throw(math
  * @throw StatisticsException if 'x' is empty or 'df_sub' exceeds sample's size
  */
 template <typename F>
-F math::SampleStat::stdev(const std::vector<F>& x, const size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::stdev(const std::vector<F>& x, const std::size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Standard deviation is calculated as square root
@@ -374,7 +374,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, const size_t df_sub) throw(ma
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or 'df_sub' exceeds single sample's size
  */
 template <typename F>
-F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const std::size_t df_sub) throw(math::StatisticsException)
 {
     /*
      * Covariance of two equally sized samples (X1 and X2) can be
@@ -413,8 +413,8 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
      * https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
      */
 
-    const size_t N1 = x1.size();
-    const size_t N2 = x2.size();
+    const std::size_t N1 = x1.size();
+    const std::size_t N2 = x2.size();
 
     if ( 0==N1 || 0==N2 )
     {
@@ -458,7 +458,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
         F partsum2 = static_cast<F>(0);
         typename std::vector<F>::const_iterator it1 = x1.begin() + istart;
         typename std::vector<F>::const_iterator it2 = x2.begin() + istart;
-        for ( size_t cntr = 0;
+        for ( std::size_t cntr = 0;
               cntr<elems_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
         {
             const F d1 = *it1 - K1;
@@ -498,7 +498,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
 template <typename F>
 F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const bool sample) throw(math::StatisticsException)
 {
-    return math::SampleStat::cov<F>( x1, x2, static_cast<size_t>( (false==sample ? 0 : 1) ) );
+    return math::SampleStat::cov<F>( x1, x2, static_cast<std::size_t>( (false==sample ? 0 : 1) ) );
 }
 
 
@@ -611,7 +611,7 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
      * https://en.wikipedia.org/wiki/Moment_%28mathematics%29
      */
 
-    const size_t NN = x.size();
+    const std::size_t NN = x.size();
 
     // 'n' must be non-negative
     if ( true == math::IntUtil::isNegative<I>(n) )
@@ -655,7 +655,7 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
         F partsum = static_cast<F>(0);
 
         typename std::vector<F>::const_iterator it = x.begin() + istart;
-        for ( size_t cntr = 0;
+        for ( std::size_t cntr = 0;
               cntr<elems_per_thread && it!=x.end(); ++it,  ++cntr )
         {
             /*
@@ -703,7 +703,7 @@ F math::SampleStat::centralMoment(const std::vector<F>& x, const I& n) throw(mat
      * http://mathworld.wolfram.com/CentralMoment.html
      */
 
-    const size_t NN = x.size();
+    const std::size_t NN = x.size();
 
     // 'n' must be non-negative
     if ( true == math::IntUtil::isNegative<I>(n) )
@@ -874,7 +874,7 @@ template <typename F>
 F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) throw(math::StatisticsException)
 {
     // Number of all observations
-    const size_t NN = x.size();
+    const std::size_t NN = x.size();
 
     // NN must be greater than 0
     if ( NN <= 0 )
@@ -883,7 +883,7 @@ F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) t
     }
 
     // Total nr. of elements <=t or <t
-    size_t total = 0;
+    std::size_t total = 0;
 
     // Coarse grained parallelism if OpenMP is enabled
     #pragma omp parallel num_threads(ompIdeal(NN)) \
@@ -894,12 +894,12 @@ F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) t
         OMP_COARSE_GRAINED_PAR_INIT_VARS(NN);
 
         // Nr. of all elements within this chunk being <='t' or <'t'
-        size_t partTotal = 0;
+        std::size_t partTotal = 0;
 
         // Just traverse all elements of this chunk and count
         // all that are below (or equal) the threshold:
         typename std::vector<F>::const_iterator it = x.begin() + istart;
-        for ( size_t cntr = 0;
+        for ( std::size_t cntr = 0;
               cntr<elems_per_thread && it!=x.end(); ++it,  ++cntr )
         {
             if ( (true==incl && *it <= t) ||

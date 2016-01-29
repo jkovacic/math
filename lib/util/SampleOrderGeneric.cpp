@@ -80,7 +80,7 @@ public:
      *
      * @return logical value, indicating either v[a]<v[b] (if 'asc'==true) or v[a]>v[b]
      */
-    bool operator()(const size_t a, const size_t b)
+    bool operator()(const std::size_t a, const std::size_t b)
     {
         // Note that sorting algorithms only require that F defines the operator '<'
 
@@ -106,7 +106,7 @@ public:
 template <typename F>
 F __minmax(const std::vector<F>& x, const bool min) throw(math::SampleOrderException)
 {
-    const size_t N = x.size();
+    const std::size_t N = x.size();
 
     // sanity check
     if ( 0 == N )
@@ -128,7 +128,7 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::SampleOrderExcep
         // the first value of the block is the first candidate for the local extreme
         F temp = *it;
 
-        for ( size_t cntr=0;
+        for ( std::size_t cntr=0;
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr)
         {
@@ -163,7 +163,7 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::SampleOrderExcep
 template <typename F>
 F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SampleOrderException)
 {
-    const size_t N = x.size();
+    const std::size_t N = x.size();
 
     // sanity check
     if ( 0 == N )
@@ -183,13 +183,13 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SampleOrder
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         typename std::vector<F>::const_iterator it = x.begin() + istart;
-        size_t i = istart;
+        std::size_t i = istart;
 
         // the first value of the block is the first candidate for the local extreme
         F temp = *it;
-        size_t idx = istart;
+        std::size_t idx = istart;
 
-        for ( size_t cntr=0;
+        for ( std::size_t cntr=0;
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr, ++i )
         {
@@ -249,15 +249,15 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SampleOrder
  * @throw SampleOrderException if allocation of the return vector fails
  */
 template <typename F>
-std::vector<size_t>& math::SampleOrder::order(
+std::vector<std::size_t>& math::SampleOrder::order(
         const std::vector<F>& x,
-        std::vector<size_t>& dest,
+        std::vector<std::size_t>& dest,
         const bool asc
       ) throw(math::SampleOrderException)
 {
     try
     {
-        const size_t N = x.size();
+        const std::size_t N = x.size();
 
         dest.resize(N);
 
@@ -276,9 +276,9 @@ std::vector<size_t>& math::SampleOrder::order(
         {
             OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-            typename std::vector<size_t>::iterator it = dest.begin() + istart;
-            size_t i = istart;
-            for ( size_t cntr=0;
+            typename std::vector<std::size_t>::iterator it = dest.begin() + istart;
+            std::size_t i = istart;
+            for ( std::size_t cntr=0;
                   cntr<elems_per_thread && it!=dest.end();
                   ++cntr, ++i, ++it )
             {
@@ -342,7 +342,7 @@ F math::SampleOrder::max(const std::vector<F>& x) throw(math::SampleOrderExcepti
  * @throw SampleOrderException if 'x' is empty
  */
 template <typename F>
-size_t math::SampleOrder::whichMin(const std::vector<F>& x) throw(math::SampleOrderException)
+std::size_t math::SampleOrder::whichMin(const std::vector<F>& x) throw(math::SampleOrderException)
 {
     return math::SampleOrder::__private::__whichMinMax(x, true);
 }
@@ -356,7 +356,7 @@ size_t math::SampleOrder::whichMin(const std::vector<F>& x) throw(math::SampleOr
  * @throw SampleOrderException if 'x' is empty
  */
 template <typename F>
-size_t math::SampleOrder::whichMax(const std::vector<F>& x) throw(SampleOrderException)
+std::size_t math::SampleOrder::whichMax(const std::vector<F>& x) throw(SampleOrderException)
 {
     return math::SampleOrder::__private::__whichMinMax(x, false);
 }

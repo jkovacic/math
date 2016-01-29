@@ -57,7 +57,7 @@ public:
     PolynomialInterpolationGeneric();
 
     // inherited as an abstract function from the base class
-    void generateCurve(const size_t degree = 0) throw (CurveFittingException);
+    void generateCurve(const std::size_t degree = 0) throw (CurveFittingException);
 };
 
 // Interpolation classes with elements of types float, double and long double make

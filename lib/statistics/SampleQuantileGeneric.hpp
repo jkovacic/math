@@ -84,14 +84,14 @@ class SampleQuantileGeneric
 
 private:
     std::vector<F> m_v;
-    size_t m_N;
+    std::size_t m_N;
 
 public:
     // Constructor
     SampleQuantileGeneric(const std::vector<F>& sample) throw (StatisticsException);
 
     // Methods to obtain quantiles of the sample:
-    size_t sampleSize() const;
+    std::size_t sampleSize() const;
 
     template <typename I>
     F quantile(
@@ -121,7 +121,7 @@ public:
     F max() const;
 
     F elem(
-           const size_t n, 
+           const std::size_t n, 
            const bool largest = true,
            const bool zerobase = STAT_DEFAULT_ZERO_BASE
          ) const throw(StatisticsException);

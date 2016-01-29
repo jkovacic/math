@@ -58,9 +58,9 @@ namespace math {  namespace Pivot {  namespace __private
  * @throw MatrixException if allocation of memory for vector(s) fails
  */
 void fillVectorsWithInitialPos(
-        const size_t N,
-        std::vector<size_t>& v1,
-        std::vector<size_t>& v2,
+        const std::size_t N,
+        std::vector<std::size_t>& v1,
+        std::vector<std::size_t>& v2,
         const bool bothVectors
       ) throw(math::MatrixException)
 {
@@ -82,10 +82,10 @@ void fillVectorsWithInitialPos(
         {
             OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
-            typename std::vector<size_t>::iterator it1 = v1.begin() + istart;
-            typename std::vector<size_t>::iterator it2 = v2.begin() + istart;
-            size_t i = istart;
-            for ( size_t cntr=0;
+            typename std::vector<std::size_t>::iterator it1 = v1.begin() + istart;
+            typename std::vector<std::size_t>::iterator it2 = v2.begin() + istart;
+            std::size_t i = istart;
+            for ( std::size_t cntr=0;
                   cntr<elems_per_thread && it1!=v1.end();
                   ++cntr, ++i, ++it1 )
             {
@@ -115,7 +115,7 @@ void fillVectorsWithInitialPos(
  *
  * @throw MatrixException if allocation of memory for the vector fails
  */
-void fillVectorWithInitialPos(const size_t N, std::vector<size_t>& v) throw(math::MatrixException)
+void fillVectorWithInitialPos(const std::size_t N, std::vector<std::size_t>& v) throw(math::MatrixException)
 {
     math::Pivot::__private::fillVectorsWithInitialPos(N, v, v, false);
 }
@@ -132,7 +132,7 @@ void fillVectorWithInitialPos(const size_t N, std::vector<size_t>& v) throw(math
  * 
  * @return 'i' or v[i] if 'v' is provided
  */
-inline size_t __index(const std::vector<size_t>* const v, const size_t i)
+inline std::size_t __index(const std::vector<std::size_t>* const v, const std::size_t i)
 {
     return ( NULL==v ? i : v->at(i) );
 }
@@ -160,15 +160,15 @@ inline size_t __index(const std::vector<size_t>* const v, const size_t i)
 template <class T>
 void findPivot(
         const math::MatrixGeneric<T>& a,
-        const size_t p,
-        const std::vector<size_t>* const prows,
-        const std::vector<size_t>* const pcols,
-        size_t& row,
-        size_t& col,
+        const std::size_t p,
+        const std::vector<std::size_t>* const prows,
+        const std::vector<std::size_t>* const pcols,
+        std::size_t& row,
+        std::size_t& col,
         const bool fullp )
 {
-    const size_t Nrow = a.nrRows();
-    const size_t Ncol = a.nrColumns();
+    const std::size_t Nrow = a.nrRows();
+    const std::size_t Ncol = a.nrColumns();
 
     // check of dimensions
     if ( p >= Nrow || p >= Ncol )
@@ -184,8 +184,8 @@ void findPivot(
     }
 
     // the number of rows and columns to be considered:
-    const size_t ROWS = Nrow - p;
-    const size_t COLS = ( true==fullp ? Ncol-p: 1 );
+    const std::size_t ROWS = Nrow - p;
+    const std::size_t COLS = ( true==fullp ? Ncol-p: 1 );
 
     // initial absolute value of "pivot"
     T globMax = math::PseudoFunction::pabs( 
@@ -194,7 +194,7 @@ void findPivot(
 
     // as we are searching within a subset of a matrix,
     // N should never be out of size_t's range
-    const size_t N = ROWS * COLS;
+    const std::size_t N = ROWS * COLS;
     #pragma omp parallel num_threads(ompIdeal(N)) \
                 if(N>OMP_CHUNKS_PER_THREAD) \
                 default(none) shared(a, globMax, row, col)
@@ -202,17 +202,17 @@ void findPivot(
         OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
 
         // indices of the highest absolute value within the assigned block
-        size_t r = p + istart / COLS;
-        size_t c = p + istart % COLS;
+        std::size_t r = p + istart / COLS;
+        std::size_t c = p + istart % COLS;
         T localMax = math::PseudoFunction::pabs( 
             a( math::Pivot::__private::__index(prows, r),
                math::Pivot::__private::__index(pcols, c) ) );
 
-        for ( size_t it=istart; it<iend; ++it )
+        for ( std::size_t it=istart; it<iend; ++it )
         {
             // current indices
-            const size_t i = p + it / COLS;
-            const size_t j = p + it % COLS;
+            const std::size_t i = p + it / COLS;
+            const std::size_t j = p + it % COLS;
 
             const T elabs = math::PseudoFunction::pabs( 
               a( math::Pivot::__private::__index(prows, i),
@@ -275,7 +275,7 @@ void pivot(
         const bool fullp,
         const bool fullm,
         math::MatrixGeneric<T>* const pB,
-        size_t* const pRank,
+        std::size_t* const pRank,
         T* const pDet,
         const bool physSwap
       ) throw(math::MatrixException)
@@ -287,10 +287,10 @@ void pivot(
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    const size_t NR = A.nrRows();
-    const size_t NC = A.nrColumns();
-    const size_t N = std::min(NR, NC);  // the actual nr. of rows and columns to process
-    const size_t NT = ( NULL!=pB ? pB->nrColumns() : 0 );
+    const std::size_t NR = A.nrRows();
+    const std::size_t NC = A.nrColumns();
+    const std::size_t N = std::min(NR, NC);  // the actual nr. of rows and columns to process
+    const std::size_t NT = ( NULL!=pB ? pB->nrColumns() : 0 );
 
     const bool detRequired = ( NULL != pDet );
 
@@ -350,8 +350,8 @@ void pivot(
      * are equal to their indices. If any two columns of 'temp' are swapped,
      * the corresponding elements of 'colidx' will be swapped as well.
      */
-    std::vector<size_t> colidx;
-    std::vector<size_t> rowidx;
+    std::vector<std::size_t> colidx;
+    std::vector<std::size_t> rowidx;
 
     if ( false == physSwap )
     {
@@ -364,8 +364,8 @@ void pivot(
     }
 
     // pointers to vectors above, required by __index()
-    std::vector<size_t>* const pRows = ( false==physSwap ? &rowidx : NULL );
-    std::vector<size_t>* const pCols = ( false==physSwap ? &colidx : NULL );
+    std::vector<std::size_t>* const pRows = ( false==physSwap ? &rowidx : NULL );
+    std::vector<std::size_t>* const pCols = ( false==physSwap ? &colidx : NULL );
 
     /*
      * The first part of the algorithm will perform pivoting.
@@ -379,11 +379,11 @@ void pivot(
     // Is the total number of row/column swaps odd or even?
     bool oddSwaps = false;
 
-    for ( size_t i=0; i<N; ++i )
+    for ( std::size_t i=0; i<N; ++i )
     {
         // Find the most appropriate row and column to pivot with this one
-        size_t pr = i;
-        size_t pc = i;
+        std::size_t pr = i;
+        std::size_t pc = i;
         math::Pivot::__private::findPivot(A, i, pRows, pCols, pr, pc, fullp);
 
         // If even the highest absolute value equals 0, there is
@@ -448,7 +448,7 @@ void pivot(
         // Set the i.th column of all other rows (r>i) to 0 by
         // adding the appropriate multiple of the i.th row
         #pragma omp parallel for default(none) shared(A, i)
-        for ( size_t r=i+1; r<NR; ++r )
+        for ( std::size_t r=i+1; r<NR; ++r )
         {
             // Nothing to do if temp(r,i) is already 0.
             const T& Ari = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, i));
@@ -459,7 +459,7 @@ void pivot(
                 const T el = Ari / Aii;
 
                 // A(r,:) = A(r,:) - el*A(i,:)
-                for ( size_t c=i; c<NC; ++c )
+                for ( std::size_t c=i; c<NC; ++c )
                 {
                     T& Arc = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, c));
                     const T& Aic = A(math::Pivot::__private::__index(pRows, i), math::Pivot::__private::__index(pCols, c));
@@ -471,7 +471,7 @@ void pivot(
                 {
                     math::MatrixGeneric<T>& B = *pB;
 
-                    for ( size_t c=0; c<NT; ++c )
+                    for ( std::size_t c=0; c<NT; ++c )
                     {
                         B(r, c) -= el * B(i, c);
                     }
@@ -514,7 +514,7 @@ void pivot(
 
         // The ideal number of threads depends on the actual task
         // that can be deducted from availability of 'B'
-        const size_t NTHR = ( NULL!=pB ? N : ompIdeal(N) );
+        const std::size_t NTHR = ( NULL!=pB ? N : ompIdeal(N) );
 
         /*
          * Normalizing of each row is independent from other rows so it is
@@ -526,7 +526,7 @@ void pivot(
             T diagProd = static_cast<T>(1);
 
             #pragma omp for
-            for ( size_t r=0; r<N; ++r )
+            for ( std::size_t r=0; r<N; ++r )
             {
                 const T el = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, r));
 
@@ -534,13 +534,13 @@ void pivot(
                 // when 'B' is provided
                 if ( NULL != pB )
                 {
-                    for ( size_t c=r; c<NC; ++c )
+                    for ( std::size_t c=r; c<NC; ++c )
                     {
                         T& Arc = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, c));
                         Arc /= el;
                     }
 
-                    for ( size_t c=0; c<NT; ++c )
+                    for ( std::size_t c=0; c<NT; ++c )
                     {
                         B(r, c) /= el;
                     }
@@ -585,7 +585,7 @@ void pivot(
      */
     if ( true == fullm )
     {
-        for ( size_t c=1; c<NC; ++c )
+        for ( std::size_t c=1; c<NC; ++c )
         {
             // The current row to apply the operation described above
 
@@ -598,7 +598,7 @@ void pivot(
                         default(none) \
                         shared(A, c) \
                         schedule(dynamic)
-            for ( size_t r=0; r<c; ++r )
+            for ( std::size_t r=0; r<c; ++r )
             {
                 // Nothing to do if A(r,c) already equals 0
                 const T& Arc = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, c));
@@ -613,7 +613,7 @@ void pivot(
                     const T el = Arc;
 
                     // A(r,:) = A(r,:) - el*A(c,:)
-                    for ( size_t i=c; i<NC; ++i )
+                    for ( std::size_t i=c; i<NC; ++i )
                     {
                         T& Ari = A(math::Pivot::__private::__index(pRows, r), math::Pivot::__private::__index(pCols, i));
                         const T& Aci = A(math::Pivot::__private::__index(pRows, c), math::Pivot::__private::__index(pCols, i));
@@ -625,7 +625,7 @@ void pivot(
                     {
                         math::MatrixGeneric<T>& B = *pB;
 
-                        for ( size_t i=0; i<NT; ++i )
+                        for ( std::size_t i=0; i<NT; ++i )
                         {
                             B(r, i) -= el * B(c, i);
                         }
@@ -681,8 +681,8 @@ template <class T>
 bool math::Pivot::getDiagonallyDominantMatrix(
         const math::MatrixGeneric<T>& A,
         math::MatrixGeneric<T>* const pB,
-        std::vector<size_t>& rows,
-        std::vector<size_t>& cols
+        std::vector<std::size_t>& rows,
+        std::vector<std::size_t>& cols
       ) throw (math::MatrixException)
 {
     // sanity check
@@ -691,7 +691,7 @@ bool math::Pivot::getDiagonallyDominantMatrix(
         throw math::MatrixException(math::MatrixException::NONSQUARE_MATRIX);
     }
 
-    const size_t N = A.nrRows();
+    const std::size_t N = A.nrRows();
 
     if ( NULL!=pB && pB->nrRows()!=N )
     {
@@ -700,10 +700,10 @@ bool math::Pivot::getDiagonallyDominantMatrix(
 
     math::Pivot::__private::fillVectorsWithInitialPos(N, rows, cols, true);
 
-    for ( size_t i=0; i<(N-1); ++i )
+    for ( std::size_t i=0; i<(N-1); ++i )
     {
-        size_t pr;
-        size_t pc;
+        std::size_t pr;
+        std::size_t pc;
 
         math::Pivot::__private::findPivot(A, i, &rows, &cols, pr, pc, true);
 
@@ -744,7 +744,7 @@ bool math::Pivot::getDiagonallyDominantMatrix(
 template <class T>
 void math::Pivot::rearrangeMatrixRows(
         math::MatrixGeneric<T>& x,
-        std::vector<size_t>& cols )
+        std::vector<std::size_t>& cols )
 {
     /*
      * The algorithm below will check if cols(i) equals 'i'.
@@ -753,13 +753,13 @@ void math::Pivot::rearrangeMatrixRows(
      * be reflected by swapping of corresponding elements of 'cols'.
      */
 
-    const size_t N = x.nrRows();
+    const std::size_t N = x.nrRows();
 
-    for ( size_t idx=0; idx<N; ++idx )
+    for ( std::size_t idx=0; idx<N; ++idx )
     {
         // find such 'colIdx' that satisfies: cols(colIdx) == idx
         // TODO: does it make any sense to parallelize this simple operation?
-        size_t colIdx;
+        std::size_t colIdx;
         for ( colIdx=idx; cols.at(colIdx)!=idx; ++colIdx );
 
 #if 0
@@ -791,10 +791,10 @@ void math::Pivot::rearrangeMatrixRows(
             {
                 OMP_COARSE_GRAINED_PAR_INIT_VARS(N-idx);
 
-                const size_t idxStart = istart + idx;
-                const size_t idxEnd = iend + idx;
-                typename std::vector<size_t>::const_iterator it = cols.begin() + idxStart;
-                for ( size_t currIdx=idxStart;
+                const std::size_t idxStart = istart + idx;
+                const std::size_t idxEnd = iend + idx;
+                typename std::vector<std::size_t>::const_iterator it = cols.begin() + idxStart;
+                for ( std::size_t currIdx=idxStart;
                       false==foundFlag && currIdx<idxEnd && it!=cols.end();
                       ++it, ++currIdx )
                 {
@@ -863,7 +863,7 @@ bool math::Pivot::solveGaussJordan(
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    const size_t N = A.nrColumns();          // Nr. of unknowns
+    const std::size_t N = A.nrColumns();          // Nr. of unknowns
 
     // Check the dimensions
     if ( N != b.nrRows() )
@@ -874,7 +874,7 @@ bool math::Pivot::solveGaussJordan(
     math::MatrixGeneric<T> temp(A);
     x = b;
     
-    size_t rank;
+    std::size_t rank;
 
     math::Pivot::__private::pivot<T>(temp, fullp, true, &x, &rank, NULL, physSwap);
 
@@ -928,13 +928,13 @@ T math::Pivot::getDeterminant(
  * @throw MatrixException if internal allocation of memory failed
  */
 template <class T>
-size_t math::Pivot::getRank(
+std::size_t math::Pivot::getRank(
         const math::MatrixGeneric<T>& A,
 		const bool physSwap
       ) throw(math::MatrixException)
 {
     math::MatrixGeneric<T> temp(A);
-    size_t rank;
+    std::size_t rank;
 
     math::Pivot::__private::pivot<T>(temp, true, false, NULL, &rank, NULL, physSwap);
 

@@ -29,8 +29,6 @@ limitations under the License.
 #ifndef _MATH_DIFF_GENERIC_HPP_
 #define _MATH_DIFF_GENERIC_HPP_
 
-#include <cstddef>
-
 #include "../settings/calc_settings.h"
 #include "util/IFunctionGeneric.hpp"
 #include "exception/CalculusException.hpp"
