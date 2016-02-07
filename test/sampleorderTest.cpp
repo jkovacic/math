@@ -76,26 +76,9 @@ void sampleOrderTest()
               14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3,
               19.2, 27.3, 26.0, 30.4, 15.8, 19.7, 15.0, 21.4 };
 
-        /*
-           # Equivalent of the following command in R:
-           data(mtcars)
-         */
 
         vector<double> vmpgs;
     	mtcopy(ampgs, LEN, vmpgs);
-
-        /*
-         * R code to test rearrangement of vector's indices in ascending and descending order:
-         *
-
-           order(mtcars$mpg) - 1
-            [1] 14 15 23  6 16 30 13 22 21 28 11 12 10  5  4  9 24 29  0  1  3 31 20  2
-           [25]  8  7 26 25 18 27 17 19
-
-           order(mtcars$mpg, decreasing=TRUE) - 1
-            [1] 19 17 18 27 25 26  7  2  8 20  3 31  0  1 29  9 24  4  5 10 12 11 28 21
-           [25] 13 22 30 16  6 23 14 15
-         */
 
         vector<size_t> idx;
 
@@ -107,17 +90,6 @@ void sampleOrderTest()
         SampleOrder::order(vmpgs, idx, false);
         printIndices(idx);
         cout << endl;
-
-        /*
-           min(mtcars$mpg)
-           [1] 10.4
-           max(mtcars$mpg)
-           [1] 33.9
-           which.min(mtcars$mpg) - 1
-           [1] 14
-           which.max(mtcars$mpg) - 1
-           [1] 19
-         */
 
         cout << "min(mpg): " << SampleOrder::min(vmpgs) << " (expected: 10.4)" << endl;
         cout << "max(mpg): " << SampleOrder::max(vmpgs) << " (expected: 33.9)" << endl;

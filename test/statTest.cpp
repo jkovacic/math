@@ -80,54 +80,12 @@ void statisticsTest()
               3.845, 1.935, 2.140, 1.513, 3.170, 2.770, 3.570, 2.780 };
 
 
-        /*
-           # Equivalent of the following command in R:
-           data(mtcars)
-         */
-
         vector<double> vmpgs;
         vector<double> vwts;
 
         mtcopy(ampgs, LEN, vmpgs);
         mtcopy(awts, LEN, vwts);
 
-        /*
-         * Please note, that the additional R library 'moments' must be installed
-         * to support some R functions
-         * (e.g. 'moment', 'skewness', 'kurtosis')
-         *
-           library(moments)
-           sum(mtcars$mpg)
-           [1] 642.9
-           mean(mtcars$mpg)
-           [1] 20.09062
-           var(mtcars$mpg)
-           [1] 36.3241
-           sd(mtcars$mpg)
-           [1] 6.026948
-           n <- length(mtcars$mpg)
-           (n-1)/n * var(mtcars$mpg)
-           [1] 35.18897
-           n <- length(mtcars$mpg)
-           sqrt((n-1)/n) * sd(mtcars$mpg)
-           [1] 5.93203
-           moment(mtcars$mpg, order=4, central=TRUE)
-           [1] 3466.479
-           moment(mtcars$mpg, order=4, central=FALSE)
-           [1] 262350.3
-           skewness(mtcars$mpg)
-           [1] 0.6404399
-           skewness(mtcars$mpg)*((n-1)/n)^(3/2)
-           [1] 0.610655
-           kurtosis(mtcars$mpg)
-           [1] 2.799467
-           kurtosis(mtcars$mpg)-3
-           [1] -0.2005332
-           sum(mtcars$mpg <= 26) / length(mtcars$mpg)
-           [1] 0.84375
-           sum(mtcars$mpg < 26) / length(mtcars$mpg)
-           [1] 0.8125
-         */
 
         cout << "Sum of all elements: " << SampleStat::sum(vmpgs) << " (expected: 642.9)" << endl;
         cout << "Sample mean: " << SampleStat::mean(vmpgs) << " (expected: 20.09062)" << endl;
@@ -145,51 +103,13 @@ void statisticsTest()
         cout << "Sample ecdf(<26):  " << SampleStat::ecdf(vmpgs, 26.0, false) << " (expected: 0.8125)" << endl;
 
 
-        /*
-           cov(mtcars$mpg, mtcars$wt)
-           [1] -5.116685
-           (n-1)/n * cov(mtcars$mpg, mtcars$wt)
-           [1] -4.956788
-           cor(mtcars$mpg, mtcars$wt)
-           [1] -0.8676594
-           cor(mtcars$mpg, mtcars$wt)^2
-           [1] 0.7528328
-         */
-
         cout << "Sample covariance: " << SampleStat::cov(vmpgs, vwts) << " (expected: -5.116685)" << endl;
         cout << "Population covariance (w/o B.c.): " << SampleStat::cov(vmpgs, vwts, false) << " (expected: -4.956788)" << endl;
         cout << "Pearson's r: " << SampleStat::cor(vmpgs, vwts) << " (expected: -0.8676594)" << endl;
         cout << "r^2: " << SampleStat::r2(vmpgs, vwts) << " (expected: 0.7528328)" << endl;
 
 
-        /*
-         * R code to test normal distribution related functions:
-         *
-           dnorm(4.5, mean=2, sd=3)
-           [1] 0.09397063
-
-           (6.7 - 2) / 3
-           [1] 1.566667
-
-           2 - 1.3 * 3
-           [1] -1.9
-
-           pnorm(1.72, mean=2, sd=3)
-           [1] 0.4628194
-
-           pnorm(2.48, mean=2, sd=3, lower.tail=FALSE)
-           [1] 0.4364405
-
-           pnorm(3, mean=2, sd=3) - pnorm(1, mean=2, sd=3)
-           [1] 0.2611173
-
-           qnorm(0.75, mean=2, sd=3)
-           [1] 4.023469
-
-           qnorm(0.52, mean=2, sd=3, lower.tail=FALSE)
-           [1] 1.849539
-         */
-
+        // Normal distribution:
         cout << endl;
         cout << "N(2,3): z for x = 6.7:  " << NormalDist::getZ(6.7, 2.0, 3.0) << " (expected: 1.566667)" << endl;
         cout << "N(2,3): x for z = -1.3: " << NormalDist::getX(-1.3, 2.0, 3.0) << " (expected: -1.9)" << endl;
@@ -202,34 +122,7 @@ void statisticsTest()
         cout << endl;
 
 
-        /*
-         * R code to test Student's distribution related functions:
-         *
-           (3-2) / (1.5/sqrt(10))
-           [1] 2.108185
-
-           2 - 1.2 * 1.5/sqrt(10)
-           [1] 1.43079
-
-           dt(2, df=5)
-           [1] 0.06509031
-
-           pt(2, df=12)
-           [1] 0.9656725
-
-           pt(1.1, df=12, lower.tail=FALSE)
-           [1] 0.1464549
-
-           pt(1, df=12) - pt(-0.5, df=12)
-           [1] 0.5184167
-
-           qt(0.75, df=12)
-           [1] 0.6954829
-
-           qt(0.52, df=12, lower.tail=FALSE)
-           [1] -0.05121096
-         */
-
+        // Student's distribution:
         cout << "T(n=10, mu=2, s=1.5): t for x=3:    " << StudentDist::getT(3.0, 10, 2.0, 1.5) << " (expected: 2.108185)" << endl;
         cout << "T(n=10, mu=2, s=1.5): x for t=-1.2: " << StudentDist::getX(-1.2, 10, 2.0, 1.5) << " (expected: 1.43079)" << endl;
         cout << "T(df=5):  pdf at x=2:      " << StudentDist::pdf(2.0, 5.0) << " (expected: 0.06509031)" << endl;
@@ -241,46 +134,7 @@ void statisticsTest()
         cout << endl;
 
 
-        /*
-         * R code to test chi-squared distribution related functions:
-         *
-           dchisq(1.2, df=2)
-           [1] 0.2744058 
-
-           dchisq(3.1, df=7)
-           [1] 0.0955139
-
-           pchisq(2.7, df=1)
-           [1] 0.8996518
-
-           pchisq(1.8, df=4)
-           [1] 0.2275176
-
-           pchisq(3.4, df=0.3, lower.tail=FALSE)
-           [1] 0.01365495
-
-           pchisq(1.7, df=5, lower.tail=FALSE)
-           [1] 0.8888998
-
-           pchisq(3, df=1.3) - pchisq(2, df=1.3)
-           [1] 0.0975555
-
-           pchisq(3, df=4.2) - pchisq(2, df=4.2)
-           [1] 0.1737052
-
-           qchisq(0.25, df=0.75)
-           [1] 0.03672361
-
-           qchisq(0.25, df=3.8)
-           [1] 1.776557
-
-           qchisq(0.25, df=0.8, lower.tail=FALSE)
-           [1] 1.009612
-
-           qchisq(0.25, df=6, lower.tail=FALSE)
-           [1] 7.840804
-         */
-
+        // Chi-squared distribution:
         cout << "ChiSq(df=2) : pdf at x=1.2: " << ChiSquareDist::pdf(1.2, 2.0) << " (expected: 0.2744058)" << endl;
         cout << "ChiSq(df=7) : pdf at x=3.1: " << ChiSquareDist::pdf(3.1, 7.0) << " (expected: 0.0955139)" << endl;
         cout << "ChiSq(df=1): P(X<2.7): " <<  ChiSquareDist::prob(2.7, 1.0) << " (expected: 0.8996518)" << endl;
@@ -296,46 +150,7 @@ void statisticsTest()
         cout << endl;
 
 
-        /*
-         * R code to test F-distribution related functions:
-         *
-           df(2.1, df1=1, df2=3)
-           [1] 0.08776311
-
-           df(3.5, df1=4, df2=3)
-           [1] 0.05386789
-
-           pf(4, df1=0.7, df2=2.5)
-           [1] 0.8499816
-
-           pf(4, df1=2.5, df2=0.7)
-           [1] 0.5759108
-
-           pf(3, df1=0.8, df2=3.5, lower.tail=FALSE)
-           [1] 0.1645458
-
-           pf(3, df1=3.5, df2=1.5, lower.tail=FALSE)
-           [1] 0.3174175
-
-           pf(3, df1=0.5, df2=0.5) - pf(1, df1=0.5, df2=0.5)
-           [1] 0.1022432
-
-           pf(3, df1=4, df2=0.2) - pf(1, df1=4, df2=0.2)
-           [1] 0.07963281
-
-           qf(0.63, df1=0.7, df2=0.3)
-           [1] 45.799
-
-           qf(0.63, df1=5, df2=6)
-           [1] 1.313811
-
-           qf(0.72, df1=0.3, df2=0.7, lower.tail=FALSE)
-           [1] 0.003393905
-
-           qf(0.72, df1=6, df2=5, lower.tail=FALSE)
-           [1] 0.6081648
-         */
-
+        // F-distribution:
         cout << "F(1,3): pdf at x=2.1: " << FDist::pdf(2.1, 1.0, 3.0) << " (expected: 0.08776311)" << endl;
         cout << "F(4,3): pdf at x=3.5: " << FDist::pdf(3.5, 4.0, 3.0) << " (expected: 0.05386789)" << endl;
         cout << "F(0.7, 2.5): P(X<4): " << FDist::prob(4.0, 0.7, 2.5) << " (expected: 0.8499816)" << endl;
@@ -351,144 +166,26 @@ void statisticsTest()
         cout << endl;
 
 
-        /*
-         * R code to test continuous uniform distribution related functions:
-         *
-           dunif(0, min=1, max=3)
-           [1] 0
-           dunif(2, min=1, max=3)
-           [1] 0.5
-           dunif(4.5, min=1, max=3)
-           [1] 0
-
-           punif(0, min=1, max=3)
-           [1] 0
-           punif(1.5, min=1, max=3)
-           [1] 0.25
-           punif(3.5, min=1, max=3)
-           [1] 1
-           punif(-2, min=1, max=3, lower.tail=FALSE)
-           [1] 1
-           punif(2.7, min=1, max=3, lower.tail=FALSE)
-           [1] 0.15
-           punif(4, min=1, max=3, lower.tail=FALSE)
-           [1] 0
-
-           punif(1.4, min=1, max=3) - punif(0.25, min=1, max=3)
-           [1] 0.2
-           punif(3.7, min=1, max=3) - punif(1.9, min=1, max=3)
-           [1] 0.55
-
-           qunif(0.42, min=1, max=3)
-           [1] 1.84
-           qunif(0.57, min=1, max=3)
-           [1] 2.14
-           qunif(0.34, min=1, max=3, lower.tail=FALSE)
-           [1] 2.32
-           qunif(0.81, min=1, max=3, lower.tail=FALSE)
-           [1] 1.38
-         */
-
-         cout << "U(1,3): pdf at x=0:   " << ContUniformDist::pdf(0.0, 1.0, 3.0) << " (expected: 0)" << endl;
-         cout << "U(1,3): pdf at x=2:   " << ContUniformDist::pdf(2.0, 1.0, 3.0) << " (expected: 0.5)" << endl;
-         cout << "U(1,3): pdf at x=4.5: " << ContUniformDist::pdf(4.5, 1.0, 3.0) << " (expected: 0)" << endl;
-         cout << "U(1,3): P(X<0):   " << ContUniformDist::prob(0.0, 1.0, 3.0) << " (expected: 0)" << endl;
-         cout << "U(1,3): P(X<1.5): " << ContUniformDist::prob(1.5, 1.0, 3.0) << " (expected: 0.25)" << endl;
-         cout << "U(1,3): P(X<3.5): " << ContUniformDist::prob(3.5, 1.0, 3.0) << " (expected: 1)" << endl;
-         cout << "U(1,3): P(X>-2):  " << ContUniformDist::prob(-2.0, 1.0, 3.0, false) << " (expected: 1)" << endl;
-         cout << "U(1,3): P(X>2.7): " << ContUniformDist::prob(2.7, 1.0, 3.0, false) << " (expected: 0.15)" << endl;
-         cout << "U(1,3): P(X>4):   " << ContUniformDist::prob(4.0, 1.0, 3.0, false) << " (expected: 0)" << endl;
-         cout << "U(1,3): P(0.25<X<1.4): " << ContUniformDist::probInt(0.25, 1.4, 1.0, 3.0) << " (expected: 0.2)" << endl;
-         cout << "U(1,3): P(1.9<X<3.7):  " << ContUniformDist::probInt(3.7, 1.9, 1.0, 3.0) << " (expected: 0.55)" << endl;
-         cout << "U(1,3): q(p>0.42): " << ContUniformDist::quant(0.42, 1.0, 3.0) << " (expected: 1.84)" << endl;
-         cout << "U(1,3): q(p>0.57): " << ContUniformDist::quant(0.57, 1.0, 3.0) << " (expected: 2.14)" << endl;
-         cout << "U(1,3): q(p<0.34): " << ContUniformDist::quant(0.34, 1.0, 3.0, false) << " (expected: 2.32)" << endl;
-         cout << "U(1,3): q(p<0.81): " << ContUniformDist::quant(0.81, 1.0, 3.0, false) << " (expected: 1.38)" << endl;
-         cout << endl;
+        // Continuous uniform distribution:
+        cout << "U(1,3): pdf at x=0:   " << ContUniformDist::pdf(0.0, 1.0, 3.0) << " (expected: 0)" << endl;
+        cout << "U(1,3): pdf at x=2:   " << ContUniformDist::pdf(2.0, 1.0, 3.0) << " (expected: 0.5)" << endl;
+        cout << "U(1,3): pdf at x=4.5: " << ContUniformDist::pdf(4.5, 1.0, 3.0) << " (expected: 0)" << endl;
+        cout << "U(1,3): P(X<0):   " << ContUniformDist::prob(0.0, 1.0, 3.0) << " (expected: 0)" << endl;
+        cout << "U(1,3): P(X<1.5): " << ContUniformDist::prob(1.5, 1.0, 3.0) << " (expected: 0.25)" << endl;
+        cout << "U(1,3): P(X<3.5): " << ContUniformDist::prob(3.5, 1.0, 3.0) << " (expected: 1)" << endl;
+        cout << "U(1,3): P(X>-2):  " << ContUniformDist::prob(-2.0, 1.0, 3.0, false) << " (expected: 1)" << endl;
+        cout << "U(1,3): P(X>2.7): " << ContUniformDist::prob(2.7, 1.0, 3.0, false) << " (expected: 0.15)" << endl;
+        cout << "U(1,3): P(X>4):   " << ContUniformDist::prob(4.0, 1.0, 3.0, false) << " (expected: 0)" << endl;
+        cout << "U(1,3): P(0.25<X<1.4): " << ContUniformDist::probInt(0.25, 1.4, 1.0, 3.0) << " (expected: 0.2)" << endl;
+        cout << "U(1,3): P(1.9<X<3.7):  " << ContUniformDist::probInt(3.7, 1.9, 1.0, 3.0) << " (expected: 0.55)" << endl;
+        cout << "U(1,3): q(p>0.42): " << ContUniformDist::quant(0.42, 1.0, 3.0) << " (expected: 1.84)" << endl;
+        cout << "U(1,3): q(p>0.57): " << ContUniformDist::quant(0.57, 1.0, 3.0) << " (expected: 2.14)" << endl;
+        cout << "U(1,3): q(p<0.34): " << ContUniformDist::quant(0.34, 1.0, 3.0, false) << " (expected: 2.32)" << endl;
+        cout << "U(1,3): q(p<0.81): " << ContUniformDist::quant(0.81, 1.0, 3.0, false) << " (expected: 1.38)" << endl;
+        cout << endl;
 
 
-        /*
-         * R code to test binomial distribution related functions:
-         *
-           dbinom(2, 5, 0.6)
-           [1] 0.2304
-
-           5 * 0.6
-           [1] 3
-
-           5 * 0.6 * (1-0.6)
-           [1] 1.2
-
-           sqrt( 5 * 0.6 * (1-0.6) )
-           [1] 1.095445
-
-           20*0.6>=10 && 20*(1-0.6)>=10
-           [1] FALSE
-
-           30*0.6>=10 && 30*(1-0.6)>=10
-           [1] TRUE
-
-           pbinom(7, size=10, prob=0.6)
-           [1] 0.8327102
-
-           pbinom(6, size=10, prob=0.6)
-           [1] 0.6177194
-
-           pbinom(5, size=10, prob=0.6, lower.tail=FALSE)
-           [1] 0.6331033
-
-           pbinom(6, size=10, prob=0.6, lower.tail=FALSE)
-           [1] 0.3822806
-
-           pbinom(-1, size=10, prob=0.6)
-           [1] 0
-
-           pbinom(0, size=10, prob=0.6)
-           [1] 0.0001048576
-
-           pbinom(0, size=10, prob=0.6, lower.tail=FALSE)
-           [1] 0.9998951
-
-           pbinom(-1, size=10, prob=0.6, lower.tail=FALSE)
-           [1] 1
-
-           pbinom(9, size=10, prob=0.6)
-           [1] 0.9939534
-
-           pbinom(10, size=10, prob=0.6)
-           [1] 1
-
-           pbinom(10, size=10, prob=0.6, lower.tail=FALSE)
-           [1] 0
-
-           pbinom(9, size=10, prob=0.6, lower.tail=FALSE)
-           [1] 0.006046618
-
-           pbinom(7, size=10, prob=0.6) - pbinom(4, size=10, prob=0.6)
-           [1] 0.6664716
-
-           pbinom(7, size=10, prob=0.6) - pbinom(5, size=10, prob=0.6)
-           [1] 0.4658135
-
-           pbinom(8, size=10, prob=0.6) - pbinom(3, size=10, prob=0.6)
-           [1] 0.8988807
-
-           pbinom(7, size=10, prob=0.6) - pbinom(3, size=10, prob=0.6)
-           [1] 0.7779484
-
-           qbinom(0.4, size=10, prob=0.6)
-           [1] 6
-
-           qbinom(0.15, size=10, prob=0.6) - 1
-           [1] 3
-
-           qbinom(0.3, size=10, prob=0.6, lower.tail=FALSE) + 1
-           [1] 8
-
-           qbinom(0.3, size=10, prob=0.6, lower.tail=FALSE)
-           [1] 7
-         */
-
+        // Binomial distribution:
         cout << "Binom(5, 0.6): pmf at k=2:   " << BinomDist::pmf(2, 5, 0.6) << " (expected: 0.2304)" << endl;
         cout << "Binom(5, 0.6): exp. value:   " << BinomDist::mean(5, 0.6) << " (expected: 3)" << endl;
         cout << "Binom(5, 0.6): variance:     " << BinomDist::var(5, 0.6) << " (expected: 1.2)" << endl;
@@ -518,61 +215,7 @@ void statisticsTest()
         cout << endl;
 
 
-        /*
-         * R code to test Poisson distribution related functions:
-         * 
-           dpois(3, lambda=4)
-           [1] 0.1953668
-
-           ppois(3, lambda=4)
-           [1] 0.4334701
-
-           ppois(5-1, lambda=4)
-           [1] 0.6288369
-
-           ppois(6-1, lambda=4, lower.tail=FALSE)
-           [1] 0.2148696
-
-           ppois(2, lambda=4, lower.tail=FALSE)
-           [1] 0.7618967
-
-           ppois(0, lambda=4)
-           [1] 0.01831564
-         
-           ppois(0-1, lambda=4)
-           [1] 0
-
-           ppois(0-1, lambda=4, lower.tail=FALSE)
-           [1] 1
-
-           ppois(0, lambda=4, lower.tail=FALSE)
-           [1] 0.9816844
-
-           ppois(7, lambda=4) - ppois(5-1, lambda=4)
-           [1] 0.3200294
-
-           ppois(7, lambda=4) - ppois(5, lambda=4)
-           [1] 0.163736
-
-           ppois(7-1, lambda=4) - ppois(5-1, lambda=4)
-           [1] 0.2604891
-
-           ppois(7-1, lambda=4) - ppois(5, lambda=4)
-           [1] 0.1041956
-
-           qpois(0.3, lambda=4)
-           [1] 3
-
-           qpois(0.7, lambda=4) - 1
-           [1] 4
-
-           qpois(0.4, lambda=4, lower.tail=FALSE) + 1
-           [1] 5
-
-           qpois(0.6, lambda=4, lower.tail=FALSE)
-           [1] 3
-         */
-
+        // Poisson distribution:
         cout << "Poisson(4): pmf at k=3: " << PoissonDist::pmf(3, 4.0) << " (expected: 0.1953668)" << endl;
         cout << "Poisson(4): P(X<=3):    " << PoissonDist::prob(3, 4.0) << " (expected: 0.4334701)" << endl;
         cout << "Poisson(4): P(X<5):     " << PoissonDist::prob(5, 4.0, false) << " (expected: 0.6288369)" << endl;
@@ -592,34 +235,7 @@ void statisticsTest()
         cout << "Poisson(4): q(p>0.6):   " << PoissonDist::quant<double, int>(0.6, 4.0, false, false) << " (expected: 3)" << endl;
         cout << endl;
 
-       
-        /*
-         * R code to perform basic unit test of quantiles:
-         *
-           data(mtcars)
-           median(mtcars$mpg)
-           [1] 19.2
-
-           quantile(mtcars$mpg, c(0.25, 0.75))
-              25%    75%
-           15.425 22.800
-
-           IQR(mtcars$mpg)
-           [1] 7.375
-
-           quantile(mtcars$mpg, 0.63)
-              63%
-           21.212
-
-         * empirical cumulative distribution function:
-         * 
-           sum(mtcars$mpg <= 25) / length(mtcars$mpg)
-           [1] 0.8125
-
-           sum(mtcars$mpg <= 14.5) / length(mtcars$mpg)
-           [1] 0.125
-         */
-
+        // Quantiles:
         SampleQuantile q(vmpgs);
         cout << "Median: " << q.median() << " (expected: 19.2)" << endl;
         cout << "1st quartile: " << q.quantile(1, 4) << " (expected: 15.425)" << endl;
@@ -645,18 +261,7 @@ void statisticsTest()
         };
 
 
-        /*
-         * R code to test various probabilities and various methods:
-         *
-             data(mtcars);   x <- mtcars$mpg
-             types <- 1:9
-             p <- c(0.01, 0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.9, 0.99)
-             for (t in types)
-             {
-               print(quantile(x, p, type=t, names=FALSE))
-             }
-         */
-
+        // Quantile methods:
         cout << endl << "Test of various quantile methods:" << endl;
 
         // Not really the best practice, but as long as the enum is contiguous...
@@ -677,32 +282,7 @@ void statisticsTest()
         cout << endl;
 
 
-        /*
-         * R code to find the n.th largest or smallest element:
-         *
-             data(mtcars);
-
-             min(mtcars$mpg)
-             [1] 10.4
-
-             max(mtcars$mpg)
-             [1] 33.9
-
-             N <- length(mtcars$mpg);
-
-             sort(mtcars$mpg, partial=4+1)[4+1]
-             [1] 14.7
-
-             sort(mtcars$mpg, partial=N-4)[N-4]
-             [1] 27.3
-
-             sort(mtcars$mpg, partial=3)[3]
-             [1] 13.3 
-
-             sort(mtcars$mpg, partial=N-6+1)[N-6+1]
-             [1] 26
-         */
-
+        // n.th largest/smallest element:
         cout << "Min mpg: " << q.min() << " (expected 10.4)" << endl;
         cout << "Max mpg: " << q.max() << " (expected 33.9)" << endl;
         cout << "5th smallest mpg: " << q.elem(5-1, false) << " (expected: 14.7)" << endl;
@@ -712,20 +292,7 @@ void statisticsTest()
         cout << endl;
 
 
-        /*
-         * R code to find outliers:
-         *
-             q <- quantile(mtcars$mpg, c(0.25, 0.75), name=FALSE)
-             d <- IQR(mtcars$mpg)
-             mtcars$mpg < (q[1]-1.0*d) | mtcars$mpg > (q[2]+1.0*d)
-              [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-             [14] FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
-             [27] FALSE  TRUE FALSE FALSE FALSE FALSE
-
-             sort(unique(mtcars$mpg[mtcars$mpg<(q[1]-0.5*d) | mtcars$mpg>(q[2]+0.5*d)]))
-             [1] 10.4 27.3 30.4 32.4 33.9
-         */
-
+        // Outliers:
         typename vector<double>::const_iterator mpgit;
         for ( mpgit=vmpgs.begin(); mpgit!=vmpgs.end(); ++ mpgit )
         {

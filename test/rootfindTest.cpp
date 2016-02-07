@@ -60,10 +60,7 @@ public:
              *  lim  -------- = 1
              *  x->0    x
              *
-             *  Recheck the limit in Maxima:
-               (%i1)  f(x) := sin(x)/x - 1/2$
-               (%i2)  limit(sin(x)/x, x, 0);
-               (%o2)  1
+             *  The limit can be rechecked in Maxima.
              */
             return 1.0 - MND;
         }
@@ -88,9 +85,7 @@ public:
          * ------- = -------- - --------
          *   dx         x         x**2
          *
-         * Verified in Maxima:
-           (%i3)  d(x) := ''(diff(f(x), x));
-           (%o3)  d(x):=cos(x)/x-sin(x)/x^2
+         * The derivation can be rechecked in Maxima.
          */
 
         if ( true == NumericUtil::isZero<double>(x) )
@@ -102,9 +97,7 @@ public:
              *  lim  | -------- - -------- | = 0
              *  x->0 \    x          x^2   /
              *
-             * Verified in Maxima:
-             (%i4)  limit(d(x), x, 0);
-             (%o4)  0
+             * The limit can be rechecked in Maxima.
              */
 
             return 0.0;
@@ -132,9 +125,7 @@ public:
          *      2          x           x^2            x^3
          *    dx
          *
-         * Verified in Maxima:
-           (%i5)  d2(x) := ''(diff(f(x), x, 2));
-           (%o5)  d2(x):=-sin(x)/x+(2*sin(x))/x^3-(2*cos(x))/x^2
+         * The derivation can be rechecked in Maxima.
          */
 
         if ( true == NumericUtil::isZero<double>(x) )
@@ -146,12 +137,10 @@ public:
              *  lim  | - -------- - ------------ + ------------ | = - ---
              *  x->0 \      x           x^2            x^3      /      3
              *
-             * Verified in Maxima:
-             (%i6)  limit(d2(x), x, 0);
-             (%o6)  -1/3
+             * The limit can be rechecked in Maxima.
              */
 
-            return 1.0 / 3.0;
+            return -1.0 / 3.0;
         }
         else
         {
@@ -175,11 +164,6 @@ void rootFindTest()
 
         const double EPS = 1e-11;
 
-        /*
-         * "Exact" numerical solution found by Maxima:
-         (%i7)  find_root(f(x), x, 1, 3);
-         (%o7)  1.895494267033981
-         */
         x0 = RootFind::bisection(f, 1.0, 3.0, 1e-9, 1e-9);
         cout << "Bisection method:            x0 = " << x0 << "\t";
         cout << "f(x0) ~= " << NumericUtil::smallValToZero(f(x0), EPS) << endl;

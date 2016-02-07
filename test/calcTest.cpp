@@ -76,13 +76,6 @@ void calculusTest()
         CFunc f;
         f.ke = 0.7;   f.kl = 1.0;  f.n = 0.5;
 
-        /*
-         * Exact result obtained by Maxima:
-         *
-           (%i1) f(x):=0.7*exp(-(x-3)^2)+1*x+0.5$
-           (%i2) float(integrate(f(x), x, 0, 5));
-           (%o2) 16.23780211731536
-         */
         cout << "f(x) = " << f.ke << "*exp(-(x-3)^2) " << showpos << f.kl << "*x " << f.n << noshowpos << endl << endl;
 
         cout << "Numerical integration:" << endl;
@@ -99,31 +92,6 @@ void calculusTest()
         cout << "Expected result: 16.23780211731536" << endl;
 
 
-        /*
-         * Exact results obtained by Maxima:
-         *
-           (%i3)  fn(x) := 0.39894228040143268 * exp(-x^2/2)$
-           (%i4)  float(integrate(fn(x), x, 1, inf));
-           (%o4)  0.15865525393145
-           (%i5)  float(integrate(fn(x), x, 1.3, inf));
-           (%o5)  0.09680048458561
-           (%i6)  float(integrate(fn(x), x, -2, inf));
-           (%o6)  0.97724986805182
-           (%i7)  float(integrate(fn(x), x, -1.8, inf));
-           (%o7)  0.96406968088707
-           (%i8)  float(integrate(fn(x), x, -inf, -2));
-           (%o8)  0.022750131948179
-           (%i9)  float(integrate(fn(x), x, -inf, -1.7));
-           (%o9)  0.044565462758543
-           (%i10) float(integrate(fn(x), x, -inf, 1));
-           (%o10) 0.84134474606854
-           (%i11) float(integrate(fn(x), x, -inf, 0.5));
-           (%o12) 0.69146246127401
-           (%i13) float(integrate(fn(x), x, -inf, inf));
-           (%o13) 1.0
-           (%i14) float(integrate(fn(x), x, -inf, inf));
-           (%o14) 1.0
-         */
         const CNormPdf fn;
 
         cout << endl;
@@ -139,13 +107,7 @@ void calculusTest()
         cout << "Int(fn(x), -inf, inf)  = " << Integ::integImp(fn) << " (expected: 1.0)" << endl;
         cout << "Int(fn(x), -inf, inf)  = " << Integ::integImpH(fn) << " (expected: 1.0)" << endl;
 
-        /*
-         * Exact slope obtained by Maxima:
-         *
-           (%i15) df(x) := ''(diff(f(x), x))$
-           (%i16) float(df(4));
-           (%o16) 0.48496878235998
-         */
+
         cout << endl << "Numerical differentiation:" << endl;
         for ( int method=EDiffMethod::FORWARD; method<=EDiffMethod::FIVE_POINT; ++method )
         {
@@ -154,13 +116,7 @@ void calculusTest()
         }
         cout << "Expected result: 0.48496878235998" << endl;
 
-        /*
-         * Exact 2nd order derivative obtained by Maxima:
-         *
-           (%i17)  d2f(x) := ''(diff(f(x), x, 2))$
-           (%i18)  float(d2f(2));
-           (%o18)  0.51503121764002
-         */
+
         cout << endl << "f''(2) = " << Diff::diff2(f, 2.0, 0.001) << " (expected: 0.51503121764002)" << endl;
     }
     catch ( const CalculusException& iex )

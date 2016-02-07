@@ -72,7 +72,7 @@ void quaternionTest()
         Quaternion dif = p-q;
         cout << "p: " << +p << "\tq: " << q << endl;
         cout << "p+q: " << sum << "\tp-q: " << dif << endl;
-        // Must output (7.6-10.2i+6.8j+5.6k) and (7.6+13.2i+1.6j-2.2k), respectively
+
         cout << "p*q: " << p*q << "\tq*p: " << q*p << endl;
         cout << "p+5: " << p+5. << "\t3+p: " << 3.0 + p << endl;
         cout << "p-4: " << p-4. << "\t1-p: " << 1.0 - p << endl;

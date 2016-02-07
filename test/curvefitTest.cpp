@@ -70,48 +70,7 @@ void curveFittingTest()
         fprexp2.generateCurve(2);
         fprexp3.generateCurve(3);
 
-        /*
-         Correct regression polynomials as calculated by R:
-
-            > x <- c(0,1,2,3,4,5)
-            > y <- exp(-x)
-            > print(x)
-            [1] 0 1 2 3 4 5
-
-            > print(y)
-            [1] 1.000000000 0.367879441 0.135335283 0.049787068 0.018315639 0.006737947
-
-            > p1 <- lm(y ~ x)
-            > p2 <- lm(y ~ x + I(x^2))
-            > p3 <- lm(y ~ x + I(x^2) + I(x^3))
-            > print(p1)
-
-            Call:
-            lm(formula = y ~ x)
-
-            Coefficients:
-            (Intercept)            x
-                 0.6988      -0.1743
-
-            > print(p2)
-
-            Call:
-            lm(formula = y ~ x + I(x^2))
-
-            Coefficients:
-            (Intercept)            x       I(x^2)
-                0.93132     -0.52314      0.06977
-
-            > print(p3)
-
-            Call:
-            lm(formula = y ~ x + I(x^2) + I(x^3))
-
-            Coefficients:
-            (Intercept)            x       I(x^2)       I(x^3)
-                0.99180     -0.79932      0.22096     -0.02016
-        */
-
+        // Regression polynomials:
         cout << "1st degree polynomial: ";
         fprexp1.getPolynomial().display();
         cout << endl << "2nd degree polynomial: ";
