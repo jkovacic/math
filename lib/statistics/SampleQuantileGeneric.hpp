@@ -73,10 +73,12 @@ struct EQntlType
 
 
 /**
- * @brief A class that estimates sample's quantile for any probabilty within
+ * @brief A class that estimates sample's quantile for any probability within
  * a valid range. Several estimation methods are supported.
  *
- * The class creates its own copy of the sample vector.
+ * The class creates its own copy of the sample vector. Consequently
+ * the original sample vector (passed to the constructor) is not needed
+ * anymore once the class has been instantiated.
  */
 template <typename F>
 class SampleQuantileGeneric
