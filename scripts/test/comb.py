@@ -11,21 +11,27 @@
 
 
 from __future__ import print_function
-import itertools as it
 
-perm = it.permutations("abcde")
 
-print("Permutations...\n")
-cnt = 1
-for i in list(perm) :
-    print(cnt, ": ", ''.join(i))
-    cnt += 1
+def combTest() :
+    import itertools as it
 
-print("\nCombinations...\n")
-for k in range(1, 6) :
-    print("\nK = ", k, "\n")
-    comb = it.combinations("abcde", k)
+    perm = it.permutations("abcde")
+
+    print("Permutations...\n")
     cnt = 1
-    for i in list(comb) :
+    for i in list(perm) :
         print(cnt, ": ", ''.join(i))
         cnt += 1
+
+    print("\nCombinations...\n")
+    for k in range(1, 6) :
+        print("\nK = ", k, "\n")
+        comb = it.combinations("abcde", k)
+        cnt = 1
+        for i in list(comb) :
+            print(cnt, ": ", ''.join(i))
+            cnt += 1
+
+
+combTest()
