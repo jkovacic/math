@@ -17,9 +17,14 @@
 
 # continued from test cases in 'intexp.m'
 
-f = -3//4
-println("f = ", f)
-println("f^0 = ", f^0)
-println("f^7 = ", f^7)
+function intexpTest()
+    f = -3//4
+    println("f = ", f)
+    println("f^0 = ", f^0)
+    println("f^7 = ", f^7)
+end
+
+
+intexpTest()
 
 # test cases continue in 'intexp.mac'.
