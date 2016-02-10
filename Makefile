@@ -101,6 +101,7 @@ TESTFILES += rationalTest
 TESTFILES += ratmatTest
 TESTFILES += rootfindTest
 TESTFILES += statTest
+TESTFILES += probdistTest
 
 # Prepend path and append suffixes to the selected test modules
 TESTOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(TESTFILES) ))
@@ -210,6 +211,7 @@ TEST_COMB_OBJDEP = CombinatoricsException
 TEST_CALC_OBJDEP = FunctionException CalculusException
 TEST_ROOTFIND_OBJDEP = FunctionException RootFindException
 TEST_STAT_OBJDEP = StatisticsException
+TEST_PROBDIST_OBJDEP = StatisticsException
 
 
 # Templated classes included into test modules.
@@ -235,9 +237,9 @@ TEST_SPECFUN_GENDEP = $(DEP_SPECFUN)
 TEST_COMB_GENDEP = $(DEP_PERMUTATION) $(DEP_COMBINATION)
 TEST_CALC_GENDEP = $(DEP_IFUNCTION) $(DEP_INTEG) $(DEP_DIFF)
 TEST_ROOTFIND_GENDEP = $(DEP_NUMUTIL) $(DEP_IFUNCTION) $(DEP_ROOTFIND)
-TEST_STAT_GENDEP = $(DEP_MTCOPY) $(DEP_SAMPLESTAT) $(DEP_SAMPLEQUANT) $(DEP_NORMDIST) \
-                   $(DEP_STUDDIST) $(DEP_CHISQDIST) $(DEP_FDIST) $(DEP_CONTUNIFDIST) \
-                   $(DEP_BINOMDIST) $(DEP_POISSONDIST)
+TEST_STAT_GENDEP = $(DEP_MTCOPY) $(DEP_SAMPLESTAT) $(DEP_SAMPLEQUANT)
+TEST_PROBDIST_GENDEP = $(DEP_NORMDIST) $(DEP_STUDDIST) $(DEP_CHISQDIST) \
+                       $(DEP_FDIST) $(DEP_CONTUNIFDIST) $(DEP_BINOMDIST) $(DEP_POISSONDIST)
 
 
 # Join object file dependencies for selected test modules.
@@ -264,6 +266,8 @@ TEST_LINKOBJ += $(TEST_SPECFUN_OBJDEP)
 TEST_LINKOBJ += $(TEST_CALC_OBJDEP)
 TEST_LINKOBJ += $(TEST_ROOTFIND_OBJDEP)
 TEST_LINKOBJ += $(TEST_STAT_OBJDEP)
+TEST_LINKOBJ += $(TEST_PROBDIST_OBJDEP)
+
 
 # Prepend a path and append $(OBJSUFFIX) to dependencies for
 # selected test modules, remove dependencies using the Make's sort command
@@ -468,6 +472,8 @@ $(OBJDIR)rootfindTest$(OBJSUFFIX) : $(TESTDIR)rootfindTest.cpp $(call gen_deps,$
 $(OBJDIR)statTest$(OBJSUFFIX) : $(TESTDIR)statTest.cpp $(call gen_deps,$(TEST_STAT_GENDEP))
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
+$(OBJDIR)probdistTest$(OBJSUFFIX) : $(TESTDIR)probdistTest.cpp $(call gen_deps,$(TEST_PROBDIST_GENDEP))
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
 
 # Build rule for the main test module

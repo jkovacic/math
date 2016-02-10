@@ -46,6 +46,7 @@ extern void specfunTest();
 extern void calculusTest();
 extern void rootFindTest();
 extern void statisticsTest();
+extern void probDistributionTest();
 
 
 using namespace std;
@@ -110,6 +111,9 @@ int main(int argc, const char* argv[])
 
     cout << endl << "S T A T I S T I C S   T E S T" << endl << endl;
     statisticsTest();
+
+    cout << endl << "P R O B A B I L I T Y   D I S T R I B U T I O N   T E S T" << endl << endl;
+    probDistributionTest();
 
     return 0;
 
