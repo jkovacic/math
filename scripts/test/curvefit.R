@@ -7,33 +7,37 @@
 # From R/RStudio, the script can be run as:
 #   source('/path/to/curvefit.R')
 
-x <- c(0,1,2,3,4,5)
-y <- exp(-x)
-#print(x)
-#print(y)
 
-p1 <- lm(y ~ x)
-p2 <- lm(y ~ x + I(x^2))
-p3 <- lm(y ~ x + I(x^2) + I(x^3))
+curvefitTest <- function()
+{
+  x <- c(0,1,2,3,4,5)
+  y <- exp(-x)
 
-cat("1st degree regression polynomial:\n")
-print(p1)
-cat("\n2nd degree regression polynomial:\n")
-print(p2)
-cat("\n3rd degree regression polynomial:\n")
-print(p3)
+  p1 <- lm(y ~ x)
+  p2 <- lm(y ~ x + I(x^2))
+  p3 <- lm(y ~ x + I(x^2) + I(x^3))
 
-
-
-xt = c(-1.5, -0.75, 0, 0.75, 1.5)
-yt <- tan(xt)
-
-intp <- lm(yt ~ xt + I(xt^2) + I(xt^3))
-cat("\n3rd degree interpolation polynmial for tan(x):\n")
-print(intp)
+  cat("1st degree regression polynomial:\n")
+  print(p1)
+  cat("\n2nd degree regression polynomial:\n")
+  print(p2)
+  cat("\n3rd degree regression polynomial:\n")
+  print(p3)
 
 
+  xt = c(-1.5, -0.75, 0, 0.75, 1.5)
+  yt <- tan(xt)
 
-p5 <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + I(x^5))
-cat("\n5th degree interpolation polynomial for exp(-x):\n")
-print(p5)
+  intp <- lm(yt ~ xt + I(xt^2) + I(xt^3))
+  cat("\n3rd degree interpolation polynmial for tan(x):\n")
+  print(intp)
+
+
+  p5 <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + I(x^5))
+  cat("\n5th degree interpolation polynomial for exp(-x):\n")
+  print(p5)
+  
+  return(0)
+}
+
+curvefitTest()
