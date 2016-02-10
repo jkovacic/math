@@ -29,4 +29,3 @@ float(df(4));
 
 d2f(x) := ''(diff(f(x), x, 2))$
 float(d2f(2));
-           
