@@ -18,13 +18,12 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of functions within the namespace SampleOrder
- * that return indices of the given vector's elements in a stably
- * sorted vector.
+ * Implementation of functions within the namespace Selection
+ * that select the i.th largest/smallest element of a vector.
  */
 
 
-// no #include "SampleOrderGeneric.hpp" !
+// no #include "SelectionGeneric.hpp" !
 #include <cstddef>
 #include <vector>
 #include <algorithm>
@@ -34,10 +33,10 @@ limitations under the License.
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
 
-#include "exception/SampleOrderException.hpp"
+#include "exception/SelectionException.hpp"
 
 
-namespace math {  namespace SampleOrder {  namespace __private
+namespace math {  namespace Selection {  namespace __private
 {
 
 
@@ -101,17 +100,17 @@ public:
  *
  * @return sample's minimum/maximum observation
  *
- * @throw SampleOrdersException if 'x' is empty
+ * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F __minmax(const std::vector<F>& x, const bool min) throw(math::SampleOrderException)
+F __minmax(const std::vector<F>& x, const bool min) throw(math::SelectionException)
 {
     const std::size_t N = x.size();
 
     // sanity check
     if ( 0 == N )
     {
-        throw math::SampleOrderException(math::SampleOrderException::SAMPLE_EMPTY);
+        throw math::SelectionException(math::SelectionException::SAMPLE_EMPTY);
     }
 
     // the first observation is the first candidate for the extreme value...
@@ -158,17 +157,17 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::SampleOrderExcep
  *
  * @return the smallest index of sample's minimum/maximum observation
  *
- * @throw SampleOrdersException if 'x' is empty
+ * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SampleOrderException)
+F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SelectionException)
 {
     const std::size_t N = x.size();
 
     // sanity check
     if ( 0 == N )
     {
-        throw math::SampleOrderException(math::SampleOrderException::SAMPLE_EMPTY);
+        throw math::SelectionException(math::SelectionException::SAMPLE_EMPTY);
     }
 
     // the first observation is the first candidate for the extreme value...
@@ -226,7 +225,7 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SampleOrder
     return extIdx;
 }
 
-}}}  // namespace math::SampleOrder::__private
+}}}  // namespace math::Selection::__private
 
 
 
@@ -246,14 +245,14 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SampleOrder
  *
  * @return reference to 'dest'
  *
- * @throw SampleOrderException if allocation of the return vector fails
+ * @throw SelectionException if allocation of the return vector fails
  */
 template <typename F>
-std::vector<std::size_t>& math::SampleOrder::order(
+std::vector<std::size_t>& math::Selection::order(
         const std::vector<F>& x,
         std::vector<std::size_t>& dest,
         const bool asc
-      ) throw(math::SampleOrderException)
+      ) throw(math::SelectionException)
 {
     try
     {
@@ -288,7 +287,7 @@ std::vector<std::size_t>& math::SampleOrder::order(
             (void) iend;
         }  // omp parallel
 
-        math::SampleOrder::__private::IndexCmp<F> idxCmp(&x, asc);
+        math::Selection::__private::IndexCmp<F> idxCmp(&x, asc);
 
         /*
          * Performs stable sort of indices, assuring that order
@@ -299,7 +298,7 @@ std::vector<std::size_t>& math::SampleOrder::order(
     }
     catch ( const std::bad_alloc& ba )
     {
-        throw math::SampleOrderException(math::SampleOrderException::OUT_OF_MEMORY);
+        throw math::SelectionException(math::SelectionException::OUT_OF_MEMORY);
     }
 
     return dest;
@@ -311,12 +310,12 @@ std::vector<std::size_t>& math::SampleOrder::order(
  *
  * @return minimum observation of the sample
  *
- * @throw SampleOrderException if 'x' is empty
+ * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F math::SampleOrder::min(const std::vector<F>& x) throw(math::SampleOrderException)
+F math::Selection::min(const std::vector<F>& x) throw(math::SelectionException)
 {
-    return math::SampleOrder::__private::__minmax<F>(x, true);
+    return math::Selection::__private::__minmax<F>(x, true);
 }
 
 
@@ -325,12 +324,12 @@ F math::SampleOrder::min(const std::vector<F>& x) throw(math::SampleOrderExcepti
  *
  * @return maximum observation of the sample
  *
- * @throw SampleOrderException if 'x' is empty
+ * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F math::SampleOrder::max(const std::vector<F>& x) throw(math::SampleOrderException)
+F math::Selection::max(const std::vector<F>& x) throw(math::SelectionException)
 {
-    return math::SampleOrder::__private::__minmax<F>(x, false);
+    return math::Selection::__private::__minmax<F>(x, false);
 }
 
 
@@ -339,12 +338,12 @@ F math::SampleOrder::max(const std::vector<F>& x) throw(math::SampleOrderExcepti
  *
  * @return the smallest zero based index of the minimum observation of the sample
  *
- * @throw SampleOrderException if 'x' is empty
+ * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-std::size_t math::SampleOrder::whichMin(const std::vector<F>& x) throw(math::SampleOrderException)
+std::size_t math::Selection::whichMin(const std::vector<F>& x) throw(math::SelectionException)
 {
-    return math::SampleOrder::__private::__whichMinMax(x, true);
+    return math::Selection::__private::__whichMinMax(x, true);
 }
 
 
@@ -353,10 +352,10 @@ std::size_t math::SampleOrder::whichMin(const std::vector<F>& x) throw(math::Sam
  *
  * @return the smallest zero based index of the maximum observation of the sample
  *
- * @throw SampleOrderException if 'x' is empty
+ * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-std::size_t math::SampleOrder::whichMax(const std::vector<F>& x) throw(SampleOrderException)
+std::size_t math::Selection::whichMax(const std::vector<F>& x) throw(SelectionException)
 {
-    return math::SampleOrder::__private::__whichMinMax(x, false);
+    return math::Selection::__private::__whichMinMax(x, false);
 }

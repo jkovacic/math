@@ -18,13 +18,13 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
- * Implementation of the class SampleOrderException
+ * Implementation of the class SelectionException
  */
 
 
 #include <ostream>
 
-#include "exception/SampleOrderException.hpp"
+#include "exception/SelectionException.hpp"
 
 
 /**
@@ -32,7 +32,7 @@ limitations under the License.
  *
  * @param error code
  */
-math::SampleOrderException::SampleOrderException(const math::SampleOrderException::err_codes err)
+math::SelectionException::SelectionException(const math::SelectionException::err_codes err)
 {
     this->error = err;
 }
@@ -42,14 +42,14 @@ math::SampleOrderException::SampleOrderException(const math::SampleOrderExceptio
  *
  * @param str - stream, the error description will be written in (default: cerr)
  */
-void math::SampleOrderException::what(std::ostream& str) const
+void math::SelectionException::what(std::ostream& str) const
 {
     switch (this->error)
     {
-        case math::SampleOrderException::OUT_OF_MEMORY :
+        case math::SelectionException::OUT_OF_MEMORY :
             str << "Could not allocate enough memory.";
             break;
-        case math::SampleOrderException::SAMPLE_EMPTY :
+        case math::SelectionException::SAMPLE_EMPTY :
             str << "The sample is empty.";
             break;
 

@@ -20,15 +20,12 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace SampleOrder
- * that return indices of the given vector's elements in a stably
- * sorted vector.
+ * Declaration of the class SampleOrderException.
  */
 
+#ifndef _MATH_SELECTIONEXCEPTION_H_
+#define _MATH_SELECTIONEXCEPTION_H_
 
-#ifndef _MATH_SAMPLEORDERGENERIC_H_
-#define _MATH_SAMPLEORDERGENERIC_H_
+#include "exception/SelectionException.hpp"
 
-#include "util/SampleOrderGeneric.hpp"
-
-#endif  /* _MATH_SAMPLEORDERGENERIC_H_ */
+#endif  /*  _MATH_SELECTIONEXCEPTION_H_  */

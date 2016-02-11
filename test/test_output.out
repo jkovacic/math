@@ -28,7 +28,7 @@ Test vector's range:
 Copy:     56  56  92  
 Expected: 56  56  92 
 
-S A M P L E   O R D E R   T E S T
+S E L E C T I O N   T E S T
 
 Indices in ascending order:
 14 15 23 6 16 30 13 22 21 28 11 12 10 5 4 9 24 29 0 1 3 31 20 2 8 7 26 25 18 27 17 19 

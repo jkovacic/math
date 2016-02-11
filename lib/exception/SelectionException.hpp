@@ -19,14 +19,14 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{SampleOrderException.h}
+ * @headername{SelectionException.h}
  *
- * Declaration of the class SampleOrderException.
+ * Declaration of the class SelectionException.
  */
 
 
-#ifndef _MATH_SAMPLEORDEREXCEPTION_HPP_
-#define	_MATH_SAMPLEORDEREXCEPTION_HPP_
+#ifndef _MATH_SELECTIONEXCEPTION_HPP_
+#define	_MATH_SELECTIONEXCEPTION_HPP_
 
 #include "exception/IMathException.hpp"
 
@@ -36,10 +36,10 @@ namespace math
 {
 
 /**
- * @brief An exception, typically thrown by functions of statistics
- *        related classes: SampleStatGeneric, etc.
+ * @brief An exception, typically thrown by functions from the namespace
+ * math::Selection
  */
-struct SampleOrderException : public IMathException
+struct SelectionException : public IMathException
 {
     /// Enum with possible error codes
     enum err_codes
@@ -50,11 +50,11 @@ struct SampleOrderException : public IMathException
 
     err_codes error;    /// type of an error
     // Constructor
-    SampleOrderException(const SampleOrderException::err_codes err);
+    SelectionException(const SelectionException::err_codes err);
     // Output a short description of the error
     void what(std::ostream& str = std::cerr) const;
 };
 
 } // namespace math
 
-#endif	// _MATH_SAMPLEORDEREXCEPTION_HPP_
+#endif	// _MATH_SELECTIONEXCEPTION_HPP_

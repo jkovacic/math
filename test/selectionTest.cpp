@@ -19,12 +19,12 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * A test module to test functionality in namespaces that perform
- * searching of elements' indices in stably sorted vectors (SampleOrder).
+ * searching of the i.th largest/smallest element of a vector (Selection).
  */
 
 
 /*
- * Note: results are reproduced in 'scripts/test/sampleorder.R'.
+ * Note: results are reproduced in 'scripts/test/selection.R'.
  */
 
 
@@ -34,8 +34,8 @@ limitations under the License.
 #include <new>
 
 #include "mtcopy.h"
-#include "SampleOrderGeneric.h"
-#include "SampleOrderException.h"
+#include "SelectionGeneric.h"
+#include "SelectionException.h"
 
 using namespace std;
 using namespace math;
@@ -65,7 +65,7 @@ void printIndices(const vector<size_t>& vi)
 /*
  * Test of functions that search indices of a sorted sample vector
  */
-void sampleOrderTest()
+void selectionTest()
 {
     try
     {
@@ -82,24 +82,24 @@ void sampleOrderTest()
 
         vector<size_t> idx;
 
-        SampleOrder::order(vmpgs, idx);
+        Selection::order(vmpgs, idx);
         cout << "Indices in ascending order:" << endl;
         printIndices(idx);
 
         cout << endl << "Indices in descending order:" << endl;
-        SampleOrder::order(vmpgs, idx, false);
+        Selection::order(vmpgs, idx, false);
         printIndices(idx);
         cout << endl;
 
-        cout << "min(mpg): " << SampleOrder::min(vmpgs) << " (expected: 10.4)" << endl;
-        cout << "max(mpg): " << SampleOrder::max(vmpgs) << " (expected: 33.9)" << endl;
-        cout << "Index of the smallest mpg: " << SampleOrder::whichMin(vmpgs) << " (expected: 14)" << endl;
-        cout << "Index of the largest mpg:  " << SampleOrder::whichMax(vmpgs) << " (expected: 19)" << endl;
+        cout << "min(mpg): " << Selection::min(vmpgs) << " (expected: 10.4)" << endl;
+        cout << "max(mpg): " << Selection::max(vmpgs) << " (expected: 33.9)" << endl;
+        cout << "Index of the smallest mpg: " << Selection::whichMin(vmpgs) << " (expected: 14)" << endl;
+        cout << "Index of the largest mpg:  " << Selection::whichMax(vmpgs) << " (expected: 19)" << endl;
 
     }
-    catch ( const SampleOrderException& ex )
+    catch ( const SelectionException& ex )
     {
-        cerr << "SampleOrder exception caught: ";
+        cerr << "Selection exception caught: ";
         ex.what();
         cerr << endl;
     }

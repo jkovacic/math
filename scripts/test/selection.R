@@ -1,13 +1,13 @@
 # A R script that reproduces expected results of the test module
-# 'test/sampleorderTest.cpp'.
+# 'test/selectionTest.cpp'.
 #
 # From a shell, run the script as:
-#   Rscript /path/to/sampleorder.R
+#   Rscript /path/to/selection.R
 #
 # From R/RStudio, the script can be run as:
-#   source('/path/to/sampleorder.R')
+#   source('/path/to/selection.R')
 
-sampleorderTest <- function()
+selectionTest <- function()
 {
   #data(mtcars)
 
@@ -26,4 +26,4 @@ sampleorderTest <- function()
   return(0)
 }
 
-sampleorderTest()
+selectionTest()

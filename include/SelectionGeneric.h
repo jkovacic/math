@@ -20,12 +20,14 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class SampleOrderException.
+ * Declaration of functions within the namespace Selection
+ * that select the i.th largest/smallest element of a vector.
  */
 
-#ifndef _MATH_SAMPLEORDEREXCEPTION_H_
-#define _MATH_SAMPLEORDEREXCEPTION_H_
 
-#include "exception/SampleOrderException.hpp"
+#ifndef _MATH_SELECTIONGENERIC_H_
+#define _MATH_SELECTIONGENERIC_H_
 
-#endif  /*  _MATH_SAMPLEORDEREXCEPTION_H_  */
+#include "util/SelectionGeneric.hpp"
+
+#endif  /* _MATH_SELECTIONGENERIC_H_ */

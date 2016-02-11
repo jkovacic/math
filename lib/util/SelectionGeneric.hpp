@@ -19,20 +19,19 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{SampleOrderGeneric.h}
+ * @headername{SelectionGeneric.h}
  *
- * Declaration of functions within the namespace SampleOrder
- * that return indices of the given vector's elements in a stably
- * sorted vector.
+ * Declaration of functions within the namespace Selection
+ * that select the i.th largest/smallest element of a vector.
  */
 
-#ifndef _MATH_SAMPLEORDERGENERIC_HPP_
-#define _MATH_SAMPLEORDERGENERIC_HPP_
+#ifndef _MATH_SELECTIONGENERIC_HPP_
+#define _MATH_SELECTIONGENERIC_HPP_
 
 #include <cstddef>
 #include <vector>
 
-#include "exception/SampleOrderException.hpp"
+#include "exception/SelectionException.hpp"
 
 
 namespace math
@@ -43,7 +42,7 @@ namespace math
  * @brief A namespace with functions that search indices of
  *        stably sorted vectors of elements.
  */
-namespace SampleOrder
+namespace Selection
 {
 
     template <typename F>
@@ -51,25 +50,25 @@ namespace SampleOrder
             const std::vector<F>& x,
             std::vector<std::size_t>& dest,
             const bool asc=true
-          ) throw(SampleOrderException);
+          ) throw(SelectionException);
 
     template <typename F>
-    F min(const std::vector<F>& x) throw(SampleOrderException);
+    F min(const std::vector<F>& x) throw(SelectionException);
 
     template <typename F>
-    F max(const std::vector<F>& x) throw(SampleOrderException);
+    F max(const std::vector<F>& x) throw(SelectionException);
 
     template <typename F>
-    std::size_t whichMin(const std::vector<F>& x) throw(SampleOrderException);
+    std::size_t whichMin(const std::vector<F>& x) throw(SelectionException);
 
     template <typename F>
-    std::size_t whichMax(const std::vector<F>& x) throw(SampleOrderException);
+    std::size_t whichMax(const std::vector<F>& x) throw(SelectionException);
 
 }  // namespace SampleOrder
 }  // namespace math
 
 
 // DEFINITION
-#include "SampleOrderGeneric.cpp"
+#include "SelectionGeneric.cpp"
 
-#endif  // _MATH_SAMPLEORDERGENERIC_HPP_
+#endif  // _MATH_SELECTIONGENERIC_HPP_
