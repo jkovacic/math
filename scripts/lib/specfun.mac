@@ -11,6 +11,10 @@
  *   batch("/path/to/specfun.mac")
  */
 
-diff(gamma_incomplete_regularized(a, x), x);
 
-diff(beta_incomplete_regularized(a, b, x), x);
+block(
+
+  print("gamma_inc_reg'(a, x) = ", diff(gamma_incomplete_regularized(a, x), x) ),
+
+  print("beta_inc_reg'(a, x) = ", diff(beta_incomplete_regularized(a, b, x), x) )
+)$
