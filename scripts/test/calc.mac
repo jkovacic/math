@@ -9,23 +9,46 @@
  *   batch("/path/to/calc.mac")
  */
 
-f(x):=0.7*exp(-(x-3)^2)+1*x+0.5$
-float(integrate(f(x), x, 0, 5));
 
-fn(x) := 0.39894228040143268 * exp(-x^2/2)$
-float(integrate(fn(x), x, 1, inf));
-float(integrate(fn(x), x, 1.3, inf));
-float(integrate(fn(x), x, -2, inf));
-float(integrate(fn(x), x, -1.8, inf));
-float(integrate(fn(x), x, -inf, -2));
-float(integrate(fn(x), x, -inf, -1.7));
-float(integrate(fn(x), x, -inf, 1));
-float(integrate(fn(x), x, -inf, 0.5));
-float(integrate(fn(x), x, -inf, inf));
-float(integrate(fn(x), x, -inf, inf));
+block(
+  [df, d2f, lims, i],
 
-df(x) := ''(diff(f(x), x))$
-float(df(4));
+  local(f, fn),
+  f(x) := 0.7*exp(-(x-3)^2)+1*x+0.5,
+  print("f(x) = ", f(x)),
+  print("integ(f(x), x, 0, 5) = ", float(integrate(f(x), x, 0, 5)) ),
 
-d2f(x) := ''(diff(f(x), x, 2))$
-float(d2f(2));
+  fn(x) := 0.39894228040143268 * exp(-x^2/2),
+  print("fn(x) = ", fn(x)),
+
+  lims: [ [1, inf], [1.3, inf], [-2, inf], [-1.8, inf], [-inf, -2],
+          [-inf, -1.7], [-inf, 1], [-inf, 0.5], [-inf, inf], [-inf, inf] ],
+  for i: 1 thru length(lims) do
+    block(
+      [a, b, res],
+      a: lims[i][1],
+      b: lims[i][2],
+      res: float(integrate(fn(x), x, a, b)),
+      print("integ(fn(x), x, ", a, ", ", b, ") = ", res )
+    ),
+  /*
+  print("integ(fn(x), x, 1, inf) = ", float(integrate(fn(x), x, 1, inf)) ),
+  print("integ(fn(x), x, 1.3, inf) = ", float(integrate(fn(x), x, 1.3, inf)) ),
+  print("integ(fn(x), x, -2, inf) = ", float(integrate(fn(x), x, -2, inf)) ),
+  print("integ(fn(x), x, -1.8, inf) = ", float(integrate(fn(x), x, -1.8, inf)) ),
+  print("integ(fn(x), x, -inf, -2) = ", float(integrate(fn(x), x, -inf, -2)) ),
+  print("integ(fn(x), x, -inf, -1.7) = ", float(integrate(fn(x), x, -inf, -1.7)) ),
+  print("integ(fn(x), x, -inf, 1) = ", float(integrate(fn(x), x, -inf, 1)) ),
+  print("integ(fn(x), x, -inf, 0.5) = ", float(integrate(fn(x), x, -inf, 0.5)) ),
+  print("integ(fn(x), x, -inf, inf) = ", float(integrate(fn(x), x, -inf, inf)) ),
+  print("integ(fn(x), x, -inf, inf) = ", float(integrate(fn(x), x, -inf, inf)) ),
+*/
+  df: ev(diff(f(x), x)),
+  print("f'(x) = ", df),
+  print("f'(4) = ", float(ev(df, [x:4])) ),
+
+  d2f: ev(diff(f(x), x, 2)),
+  print("f''(x) = ", d2f),
+  print("f''(2) = ", float(ev(d2f, [x:2])) )
+
+)$

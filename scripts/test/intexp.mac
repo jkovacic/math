@@ -19,7 +19,12 @@
  */
 
 /* continued from test cases in 'intexp.jl' */
- 
-p(x) := x^2 -0.5*x +0.2;
-expand(p(x)^0);
-expand(p(x)^6);
+
+block(
+  local(p),
+
+  p(x) := x^2 -0.5*x +0.2,
+  print("p(x) = ", p(x) ),
+  print("p(x)^0 = ", expand(p(x)^0) ),
+  print("p(x)^6 = ", expand(p(x)^6) )
+)$

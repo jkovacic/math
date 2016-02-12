@@ -9,27 +9,32 @@
  *   batch("/path/to/intcomb.mac")
  */
 
+
 load(orthopoly)$
 
-5!;
-20!;
-15! / 5!;
+block(
+  local(multif),
 
-10! / (10-4)!;
-12! / (12-8)!;
+  print("5! = ", 5! ),
+  print("20! = ", 20! ),
+  print("15! / 5! = ", 15! / 5! ),
 
-pochhammer(5, 6);
-pochhammer(16, 10);
+  print("falling factorial: (10)_4 = ", 10! / (10-4)! ),
+  print("falling factorial: (12)_8 = ", 12! / (12-8)! ),
 
-multif(n, k) := if (n<k) then 1 else n*multif(n-k, k)$
-multif(18, 3);
-multif(19, 3);
-multif(20, 3);
-multif(21, 3);
-15!!;
-22!!;
-27!!;
+  print("rising factorial: 5^(6) = ", pochhammer(5, 6) ),
+  print("rising factorial: 16^(10) = ", pochhammer(16, 10) ),
 
-binomial(14, 4);
-binomial(14, 10);
-binomial(50, 41);
+  multif(n, k) := if (n<k) then 1 else n*multif(n-k, k),
+  print("18!^(3) = ", multif(18, 3) ),
+  print("19!^(3) = ", multif(19, 3) ),
+  print("20!^(3) = ", multif(20, 3) ),
+  print("21!^(3) = ", multif(21, 3) ),
+  print("15!! = ", 15!! ),
+  print("22!! = ", 22!! ),
+  print("27!! = ", 27!! ),
+
+  print("binom(14, 4) = ", binomial(14, 4) ),
+  print("binom(14, 10) = ", binomial(14, 10) ),
+  print("binom(50, 41) = ", binomial(50, 41) )
+)$

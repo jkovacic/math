@@ -11,48 +11,45 @@
 
 load("functs")$
 
-floor(sqrt(12));
-floor(sqrt(100));
-floor(sqrt(37423));
+block(
+  [nums, i],
 
-primep(3);  next_prime(3);
-primep(6);  next_prime(6);
-primep(15);  next_prime(15);
-primep(37);  next_prime(37);
-primep(257);  next_prime(257);
-primep(703);  next_prime(703);
-primep(907);  next_prime(907);
-primep(101861);  next_prime(101861);
-primep(102601);  next_prime(102601);
-primep(104597);  next_prime(104597);
+  print("int. sqrt of 12 = ", floor(sqrt(12)) ),
+  print("int. sqrt of 100 = ", floor(sqrt(100)) ),
+  print("int. sqrt of 37423 = ", floor(sqrt(37423)) ),
 
-ifactors(245);  divisors(245);
-ifactors(6784);  divisors(6784);
-ifactors(21737);  divisors(21737);
-ifactors(195327);  divisors(195327);
-ifactors(3428543);  divisors(3428543);
+  nums: [3, 6, 15, 37, 257, 703, 907, 101861, 102601, 104597],
+  for i: 1 thru length(nums) do
+    block( 
+      [p],
+      p: nums[i],
 
-gcd(500, 1000);
-lcm(500, 1000);
-gcd(500, 1000) * lcm(500, 1000);
-500 * 1000;
+      print("Is ", p, " a prime: ", primep(p), ", next prime: ", next_prime(p) )
+    ),
 
-gcd(85, 3428543);
-lcm(85, 3428543);
-gcd(85, 3428543) * lcm(85, 3428543);
-85 * 3428543;
+  nums: [245, 6784, 21737, 195327, 3428543],
+  for i: 1 thru length(nums) do
+    block(
+      [p],
+      p: nums[i],
 
-gcd(15, 100);
-lcm(15, 100);
-gcd(15, 100) * lcm(15, 100);
-15 * 100;
+      print("Prime factors of ", p, ": ", ifactors(p) ),
+      print("Divisors of ", p, ": ", divisors(p) )
+    ),
 
-gcd(3, 57);
-lcm(3, 57);
-gcd(3, 57) * lcm(3, 57);
-3 * 57;
+  nums: [ [500, 1000], [85, 3428543], [15, 100], [3, 57], [234, 7643] ],
+  for i: 1 thru length(nums) do
+    block(
+      [a, b, g, l],
+      a: nums[i][1],
+      b: nums[i][2],
+      g: gcd(a, b),
+      l: lcm(a, b),
+      
+      print("gcd(", a, ", ", b, ") = ", g ),
+      print("lcm(", a, ", ", b, ") = ", l ),
+      print("gcd * lcm = ", g*l ),
+      print(a, " * ", b, " = ", a*b )
+    )
 
-gcd(234, 7643);
-lcm(234, 7643);
-gcd(234, 7643) * lcm(234, 7643);
-234 * 7643;
+)$
