@@ -26,7 +26,7 @@ limitations under the License.
 
 
 #ifndef _MATH_SELECTIONEXCEPTION_HPP_
-#define	_MATH_SELECTIONEXCEPTION_HPP_
+#define _MATH_SELECTIONEXCEPTION_HPP_
 
 #include "exception/IMathException.hpp"
 
@@ -37,7 +37,7 @@ namespace math
 
 /**
  * @brief An exception, typically thrown by functions from the namespace
- * math::Selection
+ *        math::Selection
  */
 struct SelectionException : public IMathException
 {
