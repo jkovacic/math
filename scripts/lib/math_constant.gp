@@ -8,7 +8,7 @@
  */
 
 
-mathConst() =
+displayMathConstants() =
 {
   print("Pi = ", Pi );
   print("1/Pi = ", 1/Pi );
@@ -23,4 +23,4 @@ mathConst() =
 }
 
 
-mathConst()
+displayMathConstants()
