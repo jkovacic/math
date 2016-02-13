@@ -22,9 +22,9 @@ load("diag")$
 
 
 block(
-  [G, N],
+  [G, N, orig_prec],
 
-  local(Dc, cmatrix_element, Cn, f, Dr, bmatrix_element, B, lanczos_coeff, tlg),
+  local(Dc, cmatrix_element, C, f, Dr, bmatrix_element, B, lanczos_coeff, tlg),
 
   Dc(n) := diag(makelist(2*double_factorial(2*k-1), k, 0, n)),
 
@@ -53,7 +53,7 @@ block(
 
   tlg(g, n) := lanczos_coeff(g, n-1) * exp(g) / sqrt(2*%pi),
 
-
+  orig_prec : fpprec, 
   fpprec : 25,
 
   /* Selected Lanczos G parameter and number of coefficients: */
@@ -61,6 +61,9 @@ block(
   N : 6,
 
   print("Lanczos coefficents for G = ", G, " and N = ", N, ":"),
-  print(bfloat(tlg(G, N)))
+  print(bfloat(tlg(G, N))),
+
+  /* restore the original bfloat precision */
+  fpprec : orig_prec
 
 )$
