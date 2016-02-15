@@ -35,7 +35,7 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
-#include "../settings/stat_settings.h"
+#include "../settings/probdist_settings.h"
 
 #include "util/NumericUtil.hpp"
 #include "specfun/SpecFunGeneric.hpp"
@@ -190,8 +190,8 @@ F math::ChiSquareDist::prob(
     try
     {
         // Tolerance for the algorithm that evaluates the incomplete gamma function:
-        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                      static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
 
         const F cdf = math::SpecFun::incGammaLowerReg<F>(
@@ -261,8 +261,8 @@ F math::ChiSquareDist::quant(
         const F P = (true==lowerTail ? p : static_cast<F>(1)-p);
 
         // Tolerance for the algorithm that evaluates pInv():)
-        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                      static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
         return math::SpecFun::incGammaLowerRegInv<F>(df / static_cast<F>(2), P, TOL) *
                static_cast<F>(2);

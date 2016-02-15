@@ -35,7 +35,7 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
-#include "../settings/stat_settings.h"
+#include "../settings/probdist_settings.h"
 
 #include "util/NumericUtil.hpp"
 #include "specfun/SpecFunGeneric.hpp"
@@ -253,8 +253,8 @@ F math::FDist::prob(
     try
     {
         // Tolerance for the algorithm that evaluates the incomplete gamma function:
-        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                      static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
 
         const F f = d1 * x / (d1 * x + d2);
@@ -334,8 +334,8 @@ F math::FDist::quant(
         const F P = (true==lowerTail ? p : static_cast<F>(1)-p);
 
         // Tolerance for the algorithm that evaluates iInv():
-        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                      static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
         const F f = math::SpecFun::incBetaLowerRegInv<F>(
                                             d1 / static_cast<F>(2),

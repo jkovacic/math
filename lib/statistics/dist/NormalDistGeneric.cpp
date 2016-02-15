@@ -36,7 +36,7 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
-#include "../settings/stat_settings.h"
+#include "../settings/probdist_settings.h"
 
 #include "util/math_constant.h"
 #include "util/NumericUtil.hpp"
@@ -281,8 +281,8 @@ F math::NormalDist::prob(
     math::NormalDist::__private::__checkSigma<F>(sigma);
 
     // Tolerance for the last Taylor series term
-    const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                  static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+    const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                  static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
     /*
      *            x - mu            sqrt(2) * (x - mu)
@@ -358,8 +358,8 @@ F math::NormalDist::quant(
         const F P = (true==lowerTail ? p : static_cast<F>(1)-p);
 
         // Tolerance for the algorithm that evaluates erfcInv():)
-        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                      static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
         return mu - math::SpecFun::erfcInv<F>(static_cast<F>(2) * P, TOL) *
                     sigma * static_cast<F>(MATH_CONST_SQRT_2);

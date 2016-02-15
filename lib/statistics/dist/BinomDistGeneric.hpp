@@ -32,7 +32,7 @@ limitations under the License.
 #define _MATH_BINOMDISTGENERIC_HPP_
 
 
-#include "../settings/stat_settings.h"
+#include "../settings/probdist_settings.h"
 #include "exception/StatisticsException.hpp"
 
 
@@ -73,7 +73,7 @@ namespace BinomDist
     bool normalApprox(
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2),
-        const F& th = static_cast<F>(STAT_BINOM_DIST_NORMAL_APPROX_NUM) / static_cast<F>(STAT_BINOM_DIST_NORMAL_APPROX_DEN)
+        const F& th = static_cast<F>(PROBDIST_BINOM_DIST_NORMAL_APPROX_NUM) / static_cast<F>(PROBDIST_BINOM_DIST_NORMAL_APPROX_DEN)
       ) throw(StatisticsException);
 
 

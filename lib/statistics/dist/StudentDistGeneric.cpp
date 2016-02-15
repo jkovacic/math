@@ -36,7 +36,7 @@ limitations under the License.
 #include <cmath>
 #include <algorithm>
 
-#include "../settings/stat_settings.h"
+#include "../settings/probdist_settings.h"
 #include "util/math_constant.h"
 #include "util/NumericUtil.hpp"
 #include "specfun/SpecFunGeneric.hpp"
@@ -326,8 +326,8 @@ F math::StudentDist::prob(
     try
     {
         // Tolerance for the incomplete beta function
-        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                      static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
         /*
          *            df
@@ -464,8 +464,8 @@ F math::StudentDist::quant(
         const F PP = std::min(P, static_cast<F>(1)-P);
 
         // Tolerance for the inverse incomplete beta function:
-        const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                      static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+        const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                      static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
         // t = Iinv(df/2, 1/2, 2*p):
         const F t = math::SpecFun::incBetaLowerRegInv<F>(

@@ -36,7 +36,7 @@ limitations under the License.
 #include <algorithm>
 #include <limits>
 
-# include "../settings/stat_settings.h"
+# include "../settings/probdist_settings.h"
 
 #include "util/NumericUtil.hpp"
 #include "int_util/IntUtilGeneric.hpp"
@@ -220,8 +220,8 @@ F math::PoissonDist::prob(
     const F ONE = static_cast<F>(1);
 
     // Tolerance for the incomplete gamma function
-    const F TOL = static_cast<F>(STAT_DIST_PROB_TOL_NUM) /
-                  static_cast<F>(STAT_DIST_PROB_TOL_DEN);
+    const F TOL = static_cast<F>(PROBDIST_PROB_TOL_NUM) /
+                  static_cast<F>(PROBDIST_PROB_TOL_DEN);
 
     /*
      * If k==0, the incomplete gamma function may not be defined.

@@ -29,19 +29,6 @@ limitations under the License.
 
 
 /**
- * Tolerance for numerical algorithms (e.g. for root finding methods
- * and terms of Taylor series).
- * 
- * Tolerance is specified by its numerator and denominator. This ensures
- * more flexibility for generic (templated) statistical functions.
- * 
- * Note: typically statistical functions do not require very high accuracy.
- */
-#define STAT_DIST_PROB_TOL_NUM                ( 1 )
-#define STAT_DIST_PROB_TOL_DEN                ( 1000000 )
-
-
-/**
  * Default method to estimate a quantile
  */
 #define STAT_DEFAULT_QUANTILE_ALG             math::EQntlType::R7
@@ -63,18 +50,6 @@ limitations under the License.
  * are zero or one based.
  */
 #define STAT_DEFAULT_ZERO_BASE                true
-
-
-/**
- * Default threshold for products n*p and n*(1-p)
- * to determine whether a binomial distribution can be
- * approximated as nearly normal.
- *
- * The parameter is specified by its numerator and denominator. This ensures
- * more flexibility for generic (templated) statistical functions.
- */
-#define STAT_BINOM_DIST_NORMAL_APPROX_NUM     ( 10 )
-#define STAT_BINOM_DIST_NORMAL_APPROX_DEN     ( 1 )
 
 
 #endif  /* _MATH_STAT_SETTINGS_H_ */
