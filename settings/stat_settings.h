@@ -59,7 +59,8 @@ limitations under the License.
 
 
 /**
- * 
+ * Default setting, specifying whether indices of some statistical functions
+ * are zero or one based.
  */
 #define STAT_DEFAULT_ZERO_BASE                true
 
