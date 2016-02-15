@@ -27,7 +27,7 @@ limitations under the License.
 
 
 #ifndef _MATH_MATRIXEXCEPTION_HPP_
-#define	_MATH_MATRIXEXCEPTION_HPP_
+#define _MATH_MATRIXEXCEPTION_HPP_
 
 #include <ostream>
 

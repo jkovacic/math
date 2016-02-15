@@ -26,7 +26,7 @@ limitations under the License.
 
 
 #ifndef _MATH_STATISTICSEXCEPTION_HPP_
-#define	_MATH_STATISTICSEXCEPTION_HPP_
+#define _MATH_STATISTICSEXCEPTION_HPP_
 
 #include "exception/IMathException.hpp"
 

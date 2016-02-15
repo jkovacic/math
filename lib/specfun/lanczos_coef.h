@@ -26,7 +26,7 @@ limitations under the License.
 
 
 #ifndef _MATH_SPECFUN_LANCZOS_COEF_H_
-#define	_MATH_SPECFUN_LANCZOS_COEF_H_
+#define _MATH_SPECFUN_LANCZOS_COEF_H_
 
 
 /*

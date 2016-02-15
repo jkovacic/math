@@ -26,7 +26,7 @@ limitations under the License.
  */
 
 #ifndef _MATH_RATIONALEXCEPTION_HPP_
-#define	_MATH_RATIONALEXCEPTION_HPP_
+#define _MATH_RATIONALEXCEPTION_HPP_
 
 #include <ostream>
 

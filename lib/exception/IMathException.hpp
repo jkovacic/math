@@ -26,7 +26,7 @@ limitations under the License.
  */
 
 #ifndef _MATH_IMATHEXCEPTION_HPP_
-#define	_MATH_IMATHEXCEPTION_HPP_
+#define _MATH_IMATHEXCEPTION_HPP_
 
 #include <iostream>
 

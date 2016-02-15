@@ -26,7 +26,7 @@ limitations under the License.
  */
 
 #ifndef _MATH_MATRIXGENERIC_HPP_
-#define	_MATH_MATRIXGENERIC_HPP_
+#define _MATH_MATRIXGENERIC_HPP_
 
 #include <vector>
 #include <ostream>

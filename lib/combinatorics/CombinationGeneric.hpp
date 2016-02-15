@@ -26,7 +26,7 @@ limitations under the License.
  */
 
 #ifndef _MATH_COMBINATIONGENERIC_HPP_
-#define	_MATH_COMBINATIONGENERIC_HPP_
+#define _MATH_COMBINATIONGENERIC_HPP_
 
 #include "exception/CombinatoricsException.hpp"
 

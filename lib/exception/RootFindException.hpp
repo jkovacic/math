@@ -26,7 +26,7 @@ limitations under the License.
 
 
 #ifndef _MATH_ROOT_FIND_EXCEPTION_HPP_
-#define	_MATH_ROOT_FIND_EXCEPTION_HPP_
+#define _MATH_ROOT_FIND_EXCEPTION_HPP_
 
 #include "exception/IMathException.hpp"
 

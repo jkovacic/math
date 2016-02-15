@@ -26,7 +26,7 @@ limitations under the License.
 
 
 #ifndef _MATH_SPECFUNEXCEPTION_HPP_
-#define	_MATH_SPECFUNEXCEPTION_HPP_
+#define _MATH_SPECFUNEXCEPTION_HPP_
 
 #include "exception/IMathException.hpp"
 

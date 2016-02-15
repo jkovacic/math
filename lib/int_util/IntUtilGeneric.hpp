@@ -25,7 +25,7 @@ limitations under the License.
 
 
 #ifndef _MATH_INTUTILGENERIC_HPP_
-#define	_MATH_INTUTILGENERIC_HPP_
+#define _MATH_INTUTILGENERIC_HPP_
 
 
 namespace math
