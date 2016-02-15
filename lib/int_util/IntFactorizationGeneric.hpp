@@ -27,7 +27,7 @@ limitations under the License.
  */
 
 #ifndef _MATH_INTFACTORIZATIONGENERIC_HPP_
-#define	_MATH_INTFACTORIZATIONGENERIC_HPP_
+#define _MATH_INTFACTORIZATIONGENERIC_HPP_
 
 #include "exception/IntFactorizationException.hpp"
 

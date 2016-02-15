@@ -26,7 +26,7 @@ limitations under the License.
  */
 
 #ifndef _MATH_INTFUNCTIONGENERIC_HPP_
-#define	_MATH_INTFUNCTIONGENERIC_HPP_
+#define _MATH_INTFUNCTIONGENERIC_HPP_
 
 #include "exception/IntFunctionException.hpp"
 
