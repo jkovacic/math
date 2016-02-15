@@ -47,4 +47,4 @@ limitations under the License.
  */
 #define OMP_QUAT_PARALLELIZE                  ( 0 )
 
-#endif  // _MATH_OMP_SETTINGS_H_
+#endif  /* _MATH_OMP_SETTINGS_H_ */

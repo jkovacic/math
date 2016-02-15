@@ -163,4 +163,4 @@ typedef SampleQuantileGeneric<long double>  LDSampleQuantile;
 // DEFINITION
 #include "statistics/SampleQuantileGeneric.cpp"
 
-#endif   // _MATH_SAMPLEQUANTILEGENERIC_HPP_
+#endif  // _MATH_SAMPLEQUANTILEGENERIC_HPP_

@@ -61,4 +61,4 @@ struct RationalException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_RATIONALEXCEPTION_HPP_
+#endif  // _MATH_RATIONALEXCEPTION_HPP_

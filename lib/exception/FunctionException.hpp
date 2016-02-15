@@ -57,4 +57,4 @@ struct FunctionException : public IMathException
 
 }
 
-#endif //  _MATH_FUNCTIONEXCEPTION_HPP_
+#endif  // _MATH_FUNCTIONEXCEPTION_HPP_

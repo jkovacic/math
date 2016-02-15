@@ -51,4 +51,4 @@ limitations under the License.
 #define NUMUTIL_LONGDOUBLE_VAL                     ( 10.0L )
 
 
-#endif	/* _MATH_NUMUTIL_SETTINGS_H_ */
+#endif  /* _MATH_NUMUTIL_SETTINGS_H_ */

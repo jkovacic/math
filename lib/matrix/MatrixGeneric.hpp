@@ -277,4 +277,4 @@ typedef MatrixGeneric<long double> LDMatrix;
 // DEFINITION
 #include "matrix/MatrixGeneric.cpp"
 
-#endif	// _MATH_MATRIXGENERIC_HPP_
+#endif  // _MATH_MATRIXGENERIC_HPP_

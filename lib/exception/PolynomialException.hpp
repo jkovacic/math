@@ -58,4 +58,4 @@ struct PolynomialException : public IMathException
 
 } // namespace math
 
-#endif // _MATH_POLYNOMIALEXCEPTION_H_
+#endif  // _MATH_POLYNOMIALEXCEPTION_HPP_

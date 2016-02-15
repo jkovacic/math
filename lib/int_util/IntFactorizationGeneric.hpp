@@ -98,4 +98,4 @@ namespace IntFactorization
 // DEFINITION
 #include "int_util/IntFactorizationGeneric.cpp"
 
-#endif	// _MATH_INTFACTORIZATIONGENERIC_HPP_
+#endif  // _MATH_INTFACTORIZATIONGENERIC_HPP_

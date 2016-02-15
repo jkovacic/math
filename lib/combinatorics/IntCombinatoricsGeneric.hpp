@@ -91,4 +91,4 @@ namespace IntCombinatorics
 // DEFINITION
 #include "combinatorics/IntCombinatoricsGeneric.cpp"
 
-#endif	// _MATH_INTCOMBINATORICSGENERIC_HPP_
+#endif  // _MATH_INTCOMBINATORICSGENERIC_HPP_

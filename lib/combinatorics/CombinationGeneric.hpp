@@ -103,4 +103,4 @@ public:
 // DEFINITION
 #include "combinatorics/CombinationGeneric.cpp"
 
-#endif	// _MATH_COMBINATIONGENERIC_HPP_
+#endif  // _MATH_COMBINATIONGENERIC_HPP_

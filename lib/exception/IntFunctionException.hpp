@@ -57,4 +57,4 @@ struct IntFunctionException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_INTFUNCTIONEXCEPTION_HPP_
+#endif  // _MATH_INTFUNCTIONEXCEPTION_HPP_

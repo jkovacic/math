@@ -24,7 +24,7 @@ limitations under the License.
 
 
 #ifndef _MATH_PROBDIST_SETTINGS_H_
-#define	_MATH_PROBDIST_SETTINGS_H_
+#define _MATH_PROBDIST_SETTINGS_H_
 
 
 /**
@@ -52,4 +52,4 @@ limitations under the License.
 #define PROBDIST_BINOM_DIST_NORMAL_APPROX_DEN     ( 1 )
 
 
-#endif	/* _MATH_PROBDIST_SETTINGS_H_ */
+#endif  /* _MATH_PROBDIST_SETTINGS_H_ */

@@ -53,4 +53,4 @@ struct QuaternionException : public IMathException
 
 } // namespace math
 
-#endif // _MATH_QUATERNIONEXCEPTION_H_
+#endif  // _MATH_QUATERNIONEXCEPTION_HPP_

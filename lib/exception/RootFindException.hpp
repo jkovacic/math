@@ -59,4 +59,4 @@ struct RootFindException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_ROOT_FIND_EXCEPTION_HPP_
+#endif  // _MATH_ROOT_FIND_EXCEPTION_HPP_

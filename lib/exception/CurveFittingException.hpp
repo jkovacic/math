@@ -65,4 +65,4 @@ struct CurveFittingException : public IMathException
 
 } // namespace math
 
-#endif // _MATH_CURVEFITTINGEXCEPTION_HPP_
+#endif  // _MATH_CURVEFITTINGEXCEPTION_HPP_

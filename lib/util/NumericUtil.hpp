@@ -95,4 +95,4 @@ namespace NumericUtil
 // DEFINITION
 #include "util/NumericUtil.cpp"
 
-#endif	// _MATH_NUMERICUTIL_HPP_
+#endif  // _MATH_NUMERICUTIL_HPP_

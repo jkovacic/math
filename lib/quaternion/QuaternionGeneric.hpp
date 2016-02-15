@@ -245,4 +245,4 @@ typedef QuaternionGeneric<long double> LDQuaternion;
 // DEFINITION
 #include "quaternion/QuaternionGeneric.cpp"
 
-#endif // _MATH_QUATERNIONGENERIC_HPP_
+#endif  // _MATH_QUATERNIONGENERIC_HPP_

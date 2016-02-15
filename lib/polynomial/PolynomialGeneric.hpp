@@ -242,4 +242,4 @@ typedef PolynomialGeneric<long double> LDPolynomial;
 // DEFINITION
 #include "polynomial/PolynomialGeneric.cpp"
 
-#endif // _MATH_POLYNOMIALGENERIC_HPP_
+#endif  // _MATH_POLYNOMIALGENERIC_HPP_

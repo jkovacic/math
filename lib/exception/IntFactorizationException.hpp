@@ -57,4 +57,4 @@ struct IntFactorizationException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_INTFACTORIZATIONEXCEPTION_HPP_
+#endif  // _MATH_INTFACTORIZATIONEXCEPTION_HPP_

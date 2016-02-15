@@ -70,4 +70,4 @@ public:
 // DEFINITION
 #include "curve_fit/PolynomialFittingGenericAb.cpp"
 
-#endif // _MATH_POLYNOMIALFITTINGGENERICAB_HPP_
+#endif  // _MATH_POLYNOMIALFITTINGGENERICAB_HPP_

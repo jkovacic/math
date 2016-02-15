@@ -58,4 +58,4 @@ struct CombinatoricsException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_COMBINATORICSEXCEPTION_HPP_
+#endif  // _MATH_COMBINATORICSEXCEPTION_HPP_

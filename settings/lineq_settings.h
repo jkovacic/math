@@ -60,4 +60,4 @@ limitations under the License.
 #define LINEQ_PHYSSWAP_COEF           ( false )
 
 
-#endif 	/* _MATH_LINEQ_SETTINGS_H_ */
+#endif  /* _MATH_LINEQ_SETTINGS_H_ */

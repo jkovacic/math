@@ -32,4 +32,4 @@ limitations under the License.
 
 #include "statistics/dist/PoissonDistGeneric.hpp"
 
-#endif	/* _MATH_POISSONDISTGENERIC_H_ */
+#endif  /* _MATH_POISSONDISTGENERIC_H_ */

@@ -68,4 +68,4 @@ struct StatisticsException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_STATISTICSEXCEPTION_HPP_
+#endif  // _MATH_STATISTICSEXCEPTION_HPP_

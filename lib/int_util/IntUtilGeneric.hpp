@@ -50,4 +50,4 @@ namespace IntUtil
 // DEFINITION
 #include "int_util/IntUtilGeneric.cpp"
 
-#endif	 // _MATH_INTUTILGENERIC_HPP_
+#endif  // _MATH_INTUTILGENERIC_HPP_

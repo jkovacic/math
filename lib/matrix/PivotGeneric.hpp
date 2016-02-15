@@ -90,4 +90,4 @@ std::size_t getRank(
 #include "matrix/PivotGeneric.cpp"
 
 
-#endif	// _MATH_PIVOTGENERIC_HPP_
+#endif  // _MATH_PIVOTGENERIC_HPP_

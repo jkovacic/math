@@ -62,4 +62,4 @@ namespace IntFunction
 // DEFINITION
 #include "int_util/IntFunctionGeneric.cpp"
 
-#endif  //  _MATH_INTFUNCTIONGENERIC_HPP_
+#endif  // _MATH_INTFUNCTIONGENERIC_HPP_

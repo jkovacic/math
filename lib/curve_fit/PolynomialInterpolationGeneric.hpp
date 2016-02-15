@@ -72,4 +72,4 @@ typedef PolynomialInterpolationGeneric<long double> LDPolynomialInterpolation;
 // DEFINITION
 #include "curve_fit/PolynomialInterpolationGeneric.cpp"
 
-#endif // _MATH_POLYNOMIALINTERPOLATIONGENERIC_HPP_
+#endif  // _MATH_POLYNOMIALINTERPOLATIONGENERIC_HPP_

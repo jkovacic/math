@@ -57,4 +57,4 @@ struct SelectionException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_SELECTIONEXCEPTION_HPP_
+#endif  // _MATH_SELECTIONEXCEPTION_HPP_

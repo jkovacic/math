@@ -63,4 +63,4 @@ struct MatrixException : public IMathException
 
 } // namespace math
 
-#endif	// _MATH_MATRIXEXCEPTION_HPP_
+#endif  // _MATH_MATRIXEXCEPTION_HPP_

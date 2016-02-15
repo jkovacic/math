@@ -413,4 +413,4 @@ typedef RationalGeneric<short int>       SIRational;
 // DEFINITION
 #include "rational/RationalGeneric.cpp"
 
-#endif	// _MATH_RATIONALGENERIC_HPP_
+#endif  // _MATH_RATIONALGENERIC_HPP_

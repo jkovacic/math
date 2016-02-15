@@ -105,4 +105,4 @@ namespace LinearEquationSolver
 #include "matrix/LinearEquationSolverGeneric.cpp"
 
 
-#endif // _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_
+#endif  // _MATH_LINEAREQUATIONSOLVERGENERIC_HPP_

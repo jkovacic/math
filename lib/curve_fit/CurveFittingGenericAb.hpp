@@ -118,4 +118,4 @@ public:
 // DEFINITION
 #include "curve_fit/CurveFittingGenericAb.cpp"
 
-#endif // _MATH_CURVEFITTINGGENERICAB_HPP_
+#endif  // _MATH_CURVEFITTINGGENERICAB_HPP_

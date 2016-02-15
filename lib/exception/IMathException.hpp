@@ -50,5 +50,4 @@ struct IMathException
 
 } // namespace math
 
-#endif	// _MATH_IMATHEXCEPTION_HPP_
-
+#endif  // _MATH_IMATHEXCEPTION_HPP_

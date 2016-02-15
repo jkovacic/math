@@ -87,4 +87,4 @@ namespace PoissonDist
 // DEFINITION
 #include "statistics/dist/PoissonDistGeneric.cpp"
 
-#endif	// _MATH_POISSONDISTGENERIC_HPP_
+#endif  // _MATH_POISSONDISTGENERIC_HPP_

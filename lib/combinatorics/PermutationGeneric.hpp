@@ -98,4 +98,4 @@ public:
 #include "combinatorics/PermutationGeneric.cpp"
 
 
-#endif	// _MATH_PERMUTATIONGENERIC_HPP_
+#endif  // _MATH_PERMUTATIONGENERIC_HPP_
