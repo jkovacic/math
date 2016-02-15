@@ -38,8 +38,8 @@ namespace math {  namespace IntUtil {  namespace __private
  * An integer value can only be negative if its type is signed. This could be
  * quickly checked by comparing (I)(-1) and (I)(0), however, if I is an unsigned type,
  * a compiler would raise a warning that "comparison of unsigned expression < 0 is 
- * always false". One workaround this would be partial specialization. As C++ does
- * allow partial specialization of templated functions, thiswork around using an
+ * always false". One workaround of this would be partial specialization. As C++ does
+ * allow partial specialization of templated functions, this workaround using an
  * additional templated static class has been introduced.
  */
 

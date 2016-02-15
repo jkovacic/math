@@ -50,7 +50,8 @@ namespace IntFactorization
 {    
 
     template <typename I>
-    bool isPrime(const I& n);
+    bool isPrime(const I& n)
+                    throw(IntFactorizationException);
 
 
     // greatest common divisor
@@ -74,11 +75,6 @@ namespace IntFactorization
                     throw(IntFactorizationException);
 
 
-    // the largest integer not exceeding sqrt(n)
-    template <typename I>
-    I intSqrt(const I& n) throw(IntFactorizationException);
- 
-
     // prime factorization
     template <typename I>
     void factor(
@@ -93,6 +89,7 @@ namespace IntFactorization
                 const I& n,
                 std::set<I>& div )
             throw(IntFactorizationException);
+
 
 }  // namespace IntFactorization
 

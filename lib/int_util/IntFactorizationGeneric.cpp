@@ -25,6 +25,7 @@ limitations under the License.
 
 // no #include "IntFactorizationGeneric.hpp" !!!
 #include "int_util/IntUtilGeneric.hpp"
+#include "int_util/IntFunctionGeneric.hpp"
 #include "exception/IntFactorizationException.hpp"
 
 #include <limits>
@@ -61,10 +62,16 @@ void __checkSign(const I& n) throw (math::IntFactorizationException)
  * @param n - integer to be checked
  * 
  * @return whether 'n' is a prime number
+ *
+ * @throw IntFactorizationException if 'n' is negative
  */
 template <typename I>
 bool math::IntFactorization::isPrime(const I& n)
+               throw(math::IntFactorizationException)
 {
+    // sanity check
+    math::IntFactorization::__private::__checkSign(n);
+
     /*
      * 0 is not a natural number and as such cannot be a prime.
      * By convention, 1 is also not a prime.
@@ -128,7 +135,7 @@ bool math::IntFactorization::isPrime(const I& n)
      * as the for loop's condition)
      */
 
-    const I sqn = math::IntFactorization::intSqrt<I>(n);
+    const I sqn = math::IntFunction::intSqrt<I>(n);
 
     for ( I i=static_cast<I>(3); i<=sqn; i+=static_cast<I>(2) )
     {
@@ -141,6 +148,7 @@ bool math::IntFactorization::isPrime(const I& n)
     
     return true;
 }
+
 
 /**
  * Greatest common divisor of 'first' and 'second'.
@@ -191,6 +199,7 @@ I math::IntFactorization::greatestCommonDivisor(
 
     return a;    
 }
+
 
 /**
  * Least common multiple of 'first' and 'second'.
@@ -250,6 +259,7 @@ I math::IntFactorization::leastCommonMultiple(
 
     return temp * second;
 }
+
 
 /**
  * Find the first prime number, greater than 'n'.
@@ -334,59 +344,6 @@ I math::IntFactorization::nextPrime(const I& n)
     return retVal;
 }
 
-/**
- * Finds the highest integer that does not exceed sqrt(n).
- * If 'n' is a perfect int square, its exact square root will be returned.
- * 
- * @param n - integer input argument whose "square root" will be calculated
- * 
- * @return floor(sqrt(n))
- * 
- * @throw IntFactorizationException if 'n' is negative
- */
-template <typename I>
-I math::IntFactorization::intSqrt(const I& n)
-             throw (math::IntFactorizationException)
-{
-    // sanity check
-    math::IntFactorization::__private::__checkSign<I>(n);
-
-    /*
-     * Integer square root can be efficiently calculated using the
-     * C. Woo's algorithm, described and implemented at:
-     * http://medialab.freaknet.org/martin/src/sqrt/
-     */
-    I res = static_cast<I>(0);
-    I bit = static_cast<I>(1) << (static_cast<I>(8) * sizeof(I) - static_cast<I>(2));
-    I sq = n;
-
-    /*
-     * Even if 'I' represents an unsigned type, 'bit' will never be
-     * negative because its MSB will not be set.
-     */
-
-    while ( bit > sq )
-    {
-        bit >>= static_cast<I>(2);
-    }
-
-    while ( bit != static_cast<I>(0) ) 
-    {
-        if (sq >= res + bit) 
-        {
-            sq -= (res + bit);
-            res = (res>>static_cast<I>(1)) + bit;
-        }
-        else
-        {
-            res >>= static_cast<I>(1);
-        }
-        
-        bit >>= static_cast<I>(2);
-    }
-    
-    return res;
-}
 
 /**
  * Prime factorization.
@@ -458,6 +415,7 @@ void math::IntFactorization::factor(
 
 }
 
+
 /**
  * List of all integer numbers that divide 'n', including 1 and 'n' itself.
  * Divisors will be sorted in ascending order.
@@ -493,7 +451,7 @@ void math::IntFactorization::divisors(
          * into the set.
          */
 
-        const I sqn = math::IntFactorization::intSqrt<I>(n);
+        const I sqn = math::IntFunction::intSqrt<I>(n);
 
         for ( I i=static_cast<I>(1); i<=sqn; ++i )
         {

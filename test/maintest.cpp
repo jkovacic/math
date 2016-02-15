@@ -38,6 +38,7 @@ extern void rationalMatrixTest();
 extern void polynomialTest();
 extern void lineqSolverTest();
 extern void curveFittingTest();
+extern void intFunctionTest();
 extern void intExponentiaorTest();
 extern void intFactorizationTest();
 extern void intCombinatoricsTest();
@@ -87,10 +88,13 @@ int main(int argc, const char* argv[])
 
     cout << endl << "C U R V E   F I T T I N G   T E S T" << endl << endl;
     curveFittingTest();
-    
+
+    cout << endl << "I N T   F U N C T I O N   T E S T" << endl << endl;
+    intFunctionTest();
+
     cout << endl << "I N T E X P O N E N T I A T O R   T E S T" << endl << endl;
     intExponentiaorTest();
-    
+
     cout << endl << "I N T   F A C T O R I Z A T I O N   T E S T" << endl << endl;
     intFactorizationTest();
 

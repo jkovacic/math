@@ -89,6 +89,7 @@ TESTFILES += calcTest
 TESTFILES += combTest
 TESTFILES += curvefitTest
 TESTFILES += intcombTest
+TESTFILES += intfunctionTest
 TESTFILES += intexpTest
 TESTFILES += intfactorTest
 TESTFILES += lineqTest
@@ -148,7 +149,8 @@ DEP_COMBINATION = $(LIBCOMBDIR)CombinationGeneric $(DEP_MTCOPY)
 DEP_PERMUTATION =$(LIBCOMBDIR)PermutationGeneric $(DEP_MTCOPY)
 
 DEP_INTUTIL = $(LIBINTUTILDIR)IntUtilGeneric
-DEP_INTFACT = $(LIBINTUTILDIR)IntFactorizationGeneric $(DEP_INTUTIL)
+DEP_INTFUNCTION = $(LIBINTUTILDIR)IntFunctionGeneric $(DEP_INTUTIL)
+DEP_INTFACT = $(LIBINTUTILDIR)IntFactorizationGeneric $(DEP_INTUTIL) $(DEP_INTFUNCTION)
 DEP_INTEXP = $(LIBINTUTILDIR)IntExponentiatorGeneric $(DEP_INTUTIL)
 DEP_INTCOMB = $(LIBCOMBDIR)IntCombinatoricsGeneric $(DEP_INTUTIL)
 
@@ -204,6 +206,7 @@ TEST_POLY_OBJDEP = PolynomialException
 TEST_LINEQ_OBJDEP = MatrixException
 TEST_CURVEFIT_OBJDEP = CurveFittingException
 TEST_INTEXP_OBJDEP = MatrixException QuaternionException RationalException PolynomialException
+TEST_INTFUNCTION_OBJDEP = IntFunctionException
 TEST_INTFACTOR_OBJDEP = IntFactorizationException
 TEST_INTCOMB_OBJDEP = CombinatoricsException
 TEST_SPECFUN_OBJDEP = SpecFunException
@@ -230,6 +233,7 @@ TEST_RATMAT_GENDEP = $(DEP_RAT) $(DEP_MATRIX)
 TEST_POLY_GENDEP = $(DEP_POLYNOMIAL)
 TEST_LINEQ_GENDEP = $(DEP_MATRIX) $(DEP_LINEQ)
 TEST_CURVEFIT_GENDEP = $(DEP_POLYREG) $(DEP_POLYINT)
+TEST_INTFUNCTION_GENDEP = $(DEP_INTFUNCTION)
 TEST_INTEXP_GENDEP = $(DEP_INTEXP) $(DEP_MATRIX) $(DEP_QUATERNION) $(DEP_POLYNOMIAL) $(DEP_RAT)
 TEST_INTFACTOR_GENDEP = $(DEP_INTFACT)
 TEST_INTCOMB_GENDEP = $(DEP_INTCOMB) 
@@ -258,6 +262,7 @@ TEST_LINKOBJ += $(TEST_RATMAT_OBJDEP)
 TEST_LINKOBJ += $(TEST_POLY_OBJDEP)
 TEST_LINKOBJ += $(TEST_LINEQ_OBJDEP)
 TEST_LINKOBJ += $(TEST_CURVEFIT_OBJDEP)
+TEST_LINKOBJ += $(TEST_INTFUNCTION_OBJDEP)
 TEST_LINKOBJ += $(TEST_INTEXP_OBJDEP)
 TEST_LINKOBJ += $(TEST_INTFACTOR_OBJDEP)
 TEST_LINKOBJ += $(TEST_INTCOMB_OBJDEP)
@@ -397,6 +402,9 @@ $(OBJDIR)CurveFittingException$(OBJSUFFIX) : $(LIBEXCPDIR)CurveFittingException.
 $(OBJDIR)CombinatoricsException$(OBJSUFFIX) : $(LIBEXCPDIR)CombinatoricsException.cpp
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
+$(OBJDIR)IntFunctionException$(OBJSUFFIX) : $(LIBEXCPDIR)IntFunctionException.cpp
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
+
 $(OBJDIR)IntFactorizationException$(OBJSUFFIX) : $(LIBEXCPDIR)IntFactorizationException.cpp
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(MACROS) $< $(OFLAG) $@
 
@@ -448,6 +456,9 @@ $(OBJDIR)lineqTest$(OBJSUFFIX) : $(TESTDIR)lineqTest.cpp $(call gen_deps,$(TEST_
 $(OBJDIR)curvefitTest$(OBJSUFFIX) : $(TESTDIR)curvefitTest.cpp $(call gen_deps,$(TEST_CURVEFIT_GENDEP))
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 
+$(OBJDIR)intfunctionTest$(OBJSUFFIX) : $(TESTDIR)intfunctionTest.cpp $(call gen_deps,$(TEST_INTFUNCTION_GENDEP))
+	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
+	
 $(OBJDIR)intexpTest$(OBJSUFFIX) : $(TESTDIR)intexpTest.cpp $(call gen_deps,$(TEST_INTEXP_GENDEP))
 	$(CPP) $(CFLAG) $(CPPFLAGS) $(APPINCFLAG) $(MACROS) $< $(OFLAG) $@
 

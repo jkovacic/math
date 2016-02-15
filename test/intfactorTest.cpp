@@ -47,16 +47,6 @@ void intFactorizationTest()
 {
     try
     {
-        // Find integer square roots of the following numbers:
-        const unsigned int NS = 3;
-        int s[NS] = { 12, 100, 37423 };
-
-        // Expected results: 3, 10 and 193
-        for ( unsigned int i=0; i<NS; ++i )
-        {
-            cout << "Int sqrt of " << s[i] << ": " << IntFactorization::intSqrt(s[i]) << endl;
-        }
-        cout << endl;
 
         // Test primality test and the algorithm for the next prime,
         // Reference: http://primes.utm.edu/lists/small/10000.txt

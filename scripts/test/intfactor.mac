@@ -14,10 +14,6 @@ load("functs")$
 block(
   [nums, i],
 
-  print("int. sqrt of 12 = ", floor(sqrt(12)) ),
-  print("int. sqrt of 100 = ", floor(sqrt(100)) ),
-  print("int. sqrt of 37423 = ", floor(sqrt(37423)) ),
-
   nums: [3, 6, 15, 37, 257, 703, 907, 101861, 102601, 104597],
   for i: 1 thru length(nums) do
     block( 
