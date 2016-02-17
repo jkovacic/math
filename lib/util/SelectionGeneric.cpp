@@ -131,12 +131,14 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::SelectionExcepti
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr)
         {
+            const F& xcur = *it;
+
             // update 'temp' depending on 'min'
-            temp = ( true==min ? std::min(temp, *it) : std::max(temp, *it) );
+            temp = ( true==min ? std::min(temp, xcur) : std::max(temp, xcur) );
         }
 
         // prevent possible race condition when updating retVal
-        #pragma omp critical(sampleordergeneric_minmax)
+        #pragma omp critical(selectiongeneric_minmax)
         {
             retVal = ( true==min ? std::min(retVal, temp) : std::max(retVal, temp) );
         }
@@ -192,18 +194,20 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SelectionEx
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr, ++i )
         {
+            const F& xcur = *it;
+
             // compare the current element with 'temp' and
             // update 'temp' and 'idx' if necessary
-            if ( ( true==min && *it<temp ) ||
-                 ( false==min && *it>temp ) )
+            if ( ( true==min && xcur<temp ) ||
+                 ( false==min && xcur>temp ) )
             {
-                temp = *it;
+                temp = xcur;
                 idx = i;
             }
         }
 
         // prevent possible race condition when updating 'extVal' and 'extIdx'
-        #pragma omp critical(sampleordergeneric_whichminmax)
+        #pragma omp critical(selectiongeneric_whichminmax)
         {
             /*
              * Compare each thread's extreme to the current global extreme.
@@ -270,7 +274,8 @@ std::vector<std::size_t>& fillIndices(
                   cntr<elems_per_thread && it!=dest.end();
                   ++cntr, ++i, ++it )
             {
-                *it = i;
+                std::size_t& destCurr = *it;
+                destCurr = i;
             }
 
             (void) iend;
