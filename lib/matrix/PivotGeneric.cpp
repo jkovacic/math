@@ -89,10 +89,13 @@ void fillVectorsWithInitialPos(
                   cntr<elems_per_thread && it1!=v1.end();
                   ++cntr, ++i, ++it1 )
             {
-                *it1 = i;
+                std::size_t& v1cur = *it1;
+                std::size_t& v2cur = *it2;
+
+                v1cur = i;
                 if ( true == bothVectors )
                 {
-                    *it2 = i;
+                    v2cur = i;
                     ++it2;
                 }
             }
@@ -798,7 +801,9 @@ void math::Pivot::rearrangeMatrixRows(
                       false==foundFlag && currIdx<idxEnd && it!=cols.end();
                       ++it, ++currIdx )
                 {
-                    if ( *it == idx )
+                    const std::size_t& currCol = *it;
+    
+                    if ( currCol == idx )
                     {
                         colIdx = currIdx;
                         foundFlag = true;

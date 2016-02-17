@@ -739,7 +739,8 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::roundSmallCoefficients_(
               i<iend && it!=this->m_coef.end();
               ++it, ++i )
         {
-            *it = math::NumericUtil::smallValToZero<F>(*it, eps);
+            F& currCoef = *it;
+            currCoef = math::NumericUtil::smallValToZero<F>(currCoef, eps);
         }
     }  // pragma omp
 
@@ -834,7 +835,10 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math
               i<elems_per_thread && mit!=els.end() && it!=retVal.m_coef.end();
               ++mit, ++it, ++i )
         {
-            *it = static_cast<F>(istart+i+1) * (*mit);
+            const F& currEl = *mit;
+            F& currCoef = *it;
+
+            currCoef = static_cast<F>(istart+i+1) * currEl;
         }
 
         (void) iend;
@@ -896,7 +900,10 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::integ(const F& c) const t
               i<elems_per_thread && mit!=els.end() && it!=retVal.m_coef.end();
               ++mit, ++it, ++i )
         {
-            *it = *mit / static_cast<F>(istart + i + 1);
+            const F& currEl = *mit;
+            F& currCoef = *it;
+
+            currCoef = currEl / static_cast<F>(istart + i + 1);
         }
 
         (void) iend;
@@ -1030,7 +1037,10 @@ void math::PolynomialGeneric<F>::__polyDivision(
                   j<elems_per_thread && pit!=p.end() && p2it!=p2.m_coef.end();
                   ++pit, ++p2it, ++j)
             {
-                *pit -= c * (*p2it);
+                const F& currP2 = *p2it;
+                F& currP = *pit;
+
+                currP -= c * currP2;
             }
 
             (void) iend;
@@ -1517,14 +1527,20 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
                   i<elems_per_thread && it!=retVal.m_coef.end();
                   ++it, ++i )
             {
-                if ( p1it != p1.m_coef.end() )
+                F& currCoef = *it;
+
+                if ( i < Np1 )
                 {
-                    *it = *(p1it++);
+                    const F& currP1 = *p1it;
+                    currCoef = currP1;
+                    ++p1it;
                 }
 
-                if ( p2it != p2.m_coef.end() )
+                if ( i < Np2 )
                 {
-                    *it += *(p2it++);
+                    const F& currP2 = *p2it;
+                    currCoef += currP2;
+                    ++p2it;
                 }
             }
 
@@ -1601,14 +1617,20 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
                   i<elems_per_thread && it!=retVal.m_coef.end();
                   ++it, ++i )
             {
-                if ( p1it != p1.m_coef.end() )
+                F& currCoef = *it;
+
+                if ( i < Np1 )
                 {
-                    *it = *(p1it++);
+                    const F& currP1 = *p1it;
+                    currCoef = currP1;
+                    ++p1it;
                 }
 
-                if ( p2it != p2.m_coef.end() )
+                if ( i < Np2 )
                 {
-                    *it -= *(p2it++);
+                    const F& currP2 = *p2it;
+                    currCoef -= currP2;
+                    ++p2it;
                 }
             }
 

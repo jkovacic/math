@@ -768,6 +768,8 @@ void math::MatrixGeneric<T>::__triangPart(
                 it != final;
                 ++i, ++it )
         {
+            T& currElem = *it;
+
             // row and column of the current index 'i':
             r = i / this->m_cols;
             c = i % this->m_cols;
@@ -777,7 +779,7 @@ void math::MatrixGeneric<T>::__triangPart(
                     (r>c && true==lower) ||
                     (r<c && true==upper) ) )
             {
-                *it = static_cast<T>(0);
+                currElem = static_cast<T>(0);
             }
         }
     }  // omp parallel
@@ -933,16 +935,16 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::setDiag_(const T& scalar) throw(
 
         typename std::vector<T>::iterator it = els.begin() + istart;
         for ( std::size_t idx = istart;
-              idx<(istart+elems_per_thread) && it!=els.end();
+              idx<iend && it!=els.end();
               ++it, ++idx )
         {
+            T& currElem = *it;
+
             const std::size_t r = idx / N;
             const std::size_t c = idx % N;
 
-            *it = ( r==c ? scalar : static_cast<T>(0) );
+            currElem = ( r==c ? scalar : static_cast<T>(0) );
         }
-
-        (void) iend;
     }  // omp parallel
 
     return *this;
@@ -1278,7 +1280,9 @@ math::MatrixGeneric<T>& math::MatrixGeneric<T>::roundSmallElements_(const T& eps
               i<iend && it!=this->m_elems.end();
               ++it, ++i )
         {
-            *it = math::NumericUtil::smallValToZero<T>(*it, eps);
+            T& currElem = *it;
+
+            currElem = math::NumericUtil::smallValToZero<T>(currElem, eps);
         }
     }  // pragma omp
 
@@ -2193,7 +2197,9 @@ void math::__matrixprivate::__matconj( math::MatrixGeneric<std::complex<T> >& m 
         for ( std::size_t i=istart;
               i<iend && it!=m.m_elems.end(); ++it, ++i )
         {
-            *it = std::conj(*it);
+            std::complex<T>& currElem = *it;
+ 
+            currElem = std::conj(currElem);
         }
     }  // omp parallel
 
