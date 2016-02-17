@@ -225,13 +225,73 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SelectionEx
     return extIdx;
 }
 
+
+/*
+ * Allocates the vector 'dest' to 'N' elements and fills in with integers
+ * between 0 and N-1 in ascending order.
+ *
+ * @note If 'N' is zero, an empty vector is returned.
+ *
+ * @param dest - reference to a vector to be filled with integers
+ * @param N - desired number of elements in 'dest'.
+ *
+ * @return reference to 'dest'
+ *
+ * @throw SelectionException if allocation of the return vector fails
+ */
+std::vector<std::size_t>& fillIndices(
+        std::vector<std::size_t>& dest,
+        const std::size_t N )
+        throw(math::SelectionException)
+{
+    try
+    {
+        // (re)allocates 'dest' to 'N' elements
+        dest.resize(N);
+
+        // Nothing else to do if N==0
+        if ( 0 == N )
+        {
+            return dest;
+        }
+
+        /*
+         * Assign 'dest' with initial positions 0..(N-1)
+         */
+        #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(dest)
+        {
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+            typename std::vector<std::size_t>::iterator it = dest.begin() + istart;
+            std::size_t i = istart;
+            for ( std::size_t cntr=0;
+                  cntr<elems_per_thread && it!=dest.end();
+                  ++cntr, ++i, ++it )
+            {
+                *it = i;
+            }
+
+            (void) iend;
+        }  // omp parallel
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::SelectionException(math::SelectionException::OUT_OF_MEMORY);
+    }
+
+    return dest;
+}
+
 }}}  // namespace math::Selection::__private
 
 
 
 /**
- * Returns indices of each element in the stably sorted vector.
- * In case of ties, the order of indices remains unmodified.
+ * Returns the index table of 'x', i.e. a vector of indices of each
+ * element in the stably sorted vector. In case of ties, the order of indices
+ * remains unmodified.
  *
  * @note The input vector 'x' is not modified.
  *
@@ -258,34 +318,13 @@ std::vector<std::size_t>& math::Selection::order(
     {
         const std::size_t N = x.size();
 
-        dest.resize(N);
+        // allocates 'dest' and fills it with initial positions 0..(N-1)
+        math::Selection::__private::fillIndices(dest, N);
 
         if ( 0 == N )
         {
             return dest;
         }
-
-
-        /*
-         * Assign 'dest' with initial positions.
-         */
-        #pragma omp parallel num_threads(ompIdeal(N)) \
-                    if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(dest)
-        {
-            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
-
-            typename std::vector<std::size_t>::iterator it = dest.begin() + istart;
-            std::size_t i = istart;
-            for ( std::size_t cntr=0;
-                  cntr<elems_per_thread && it!=dest.end();
-                  ++cntr, ++i, ++it )
-            {
-                *it = i;
-            }
-
-            (void) iend;
-        }  // omp parallel
 
         math::Selection::__private::IndexCmp<F> idxCmp(&x, asc);
 
