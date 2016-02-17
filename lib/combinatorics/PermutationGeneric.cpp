@@ -281,7 +281,8 @@ void math::PermutationGeneric<T>::next(std::list<std::list<T> >& ret, const std:
                 // just copy elements of 'elems' into 'l':
                 for ( typename std::vector<T>::const_iterator it=this->elems.begin(); it!=this->elems.end(); ++it )
                 {
-                    l.push_back(*it);
+                    const T& currElem = *it;
+                    l.push_back(currElem);
                 }
 
                 // set the flag indicating that the initial permutation

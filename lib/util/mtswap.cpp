@@ -78,7 +78,10 @@ void math::mtswap(
 	          it != final;
 	          ++it, ++dest )
         {
-	        std::swap<T>(*it, *dest);
+            T& currSrc = *it;
+            T& currDest = *dest;
+
+            std::swap<T>(currSrc, currDest);
         }
     }
 }

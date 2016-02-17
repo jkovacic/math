@@ -331,7 +331,9 @@ void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const std::
             
             for ( std::vector<std::size_t>::const_iterator it=addr.begin(); it!=addr.end(); ++it )
             {
-                s.insert(this->elems.at(*it));
+                const std::size_t& currAddr = *it;
+
+                s.insert(this->elems.at(currAddr));
             }
 
             // And update 'addr' for the next iteration as described above:

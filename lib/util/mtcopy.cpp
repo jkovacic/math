@@ -61,7 +61,10 @@ void math::mtcopy(const T* const first, const T* const last, std::vector<T>& des
               idx<iend && it!=dest.end();
               ++it, ++idx )
         {
-            *it = *(first+idx);
+            T& currDest = *it;
+            const T& currSrc = *(first + idx);
+
+            currDest = currSrc;
         }
     }
 }
@@ -182,7 +185,10 @@ void math::mtcopy(const typename std::vector<T>::const_iterator& first,
               idx != final && it != dest.end();
               ++it, ++idx )
         {
-            *it = *idx;
+            T& currDest = *it;
+            const T& currIdx = *idx;
+
+            currDest = currIdx;
         }
     }
 }

@@ -75,9 +75,13 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
               i<iend && it1!=v1.end() && it2!=v2.end() && it!=dest.end();
               ++it1, ++it2, ++it, ++i )
         {
+            T& destCurr = *it;
+            const T& v1cur = *it1;
+            const T& v2cur = *it2;
+
             if ( &v1 != &dest )
             {
-                *it = (true==add ? *it1 + *it2 : *it1 - *it2 );
+                destCurr = (true==add ? v1cur + v2cur : v1cur - v2cur );
             }
             else
             {
@@ -85,11 +89,11 @@ void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::ve
                 // rather perform += or -= operations
                 if ( true == add )
                 {
-                    *it += *it2;
+                    destCurr += v2cur;
                 }
                 else
                 {
-                    *it -= *it2;
+                    destCurr -= v2cur;
                 }
             }
         }  // for
@@ -133,15 +137,18 @@ void math::mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>&
               i<iend && srcit!=v1.end() && destit!=dest.end();
               ++srcit, ++destit, ++i)
         {
+            T& currDest = *destit;
+            const T& currSrc = *srcit;
+
             if ( &v1 != &dest )
             {
-                *destit = *srcit * scalar;
+                currDest = currSrc * scalar;
             }
             else
             {
                 // if 'v1' is actually the same vector as 'dest',
                 // rather perform *= operation
-            	*destit *= scalar;
+            	currDest *= scalar;
             }
         }  // for
     }  // omp parallel
@@ -203,29 +210,32 @@ void math::mtvectscalaradd(
               i<iend && srcit!=v1.end() && destit!=dest.end();
               ++srcit, ++destit, ++i)
         {
+            const T& currSrc = *srcit;
+            T& currDest = *destit;
+
             if ( &v1 != &dest || false == vectFirst )
             {
                 if ( true == vectFirst )
                 {
-                	if ( true == add )
+                    if ( true == add )
                     {
-                        *destit = *srcit + scalar;
+                        currDest = currSrc + scalar;
                     }
                     else
                     {
-                        *destit = *srcit - scalar;
-                	}
+                        currDest = currSrc - scalar;
+                    }
                 }
                 else
                 {
                     // vectFirst == false
                     if ( true == add )
                     {
-                        *destit = scalar + *srcit;
+                        currDest = scalar + currSrc;
                     }
                     else
                     {
-                        *destit = scalar - *srcit;
+                        currDest = scalar - currSrc;
                     }
                 }
             }
@@ -236,11 +246,11 @@ void math::mtvectscalaradd(
                 // Note that 'vectFirst' can only equal true.
                	if ( true == add )
                	{
-               	    *destit += scalar;
+               	    currDest += scalar;
                	}
                	else
                	{
-               	    *destit -= scalar;
+               	    currDest -= scalar;
                	}
             }
         }  // for
@@ -300,9 +310,13 @@ bool math::mtvectewmult(
               i<iend && it1!=v1.end() && it2!=v2.end() && it!=dest.end();
               ++it1, ++it2, ++it, ++i )
         {
+            const T& v1cur = *it1;
+            const T& v2cur = *it2;
+            T& currDest = *it;
+
             // Prevent possible division by zero
             if ( false == mult &&
-                 true==math::NumericUtil::isZero<T>(*it2) )
+                 true==math::NumericUtil::isZero<T>(v2cur) )
             {
                 retVal = false;
                 // TODO what to do if division by 0 is attempted???
@@ -311,19 +325,19 @@ bool math::mtvectewmult(
 
             if ( &v1 != &dest )
             {
-                *it = (true==mult ? *it1 * *it2 : *it1 / *it2 );
+                currDest = (true==mult ? v1cur * v2cur : v1cur / v2cur );
             }
             else
             {
                 // if 'v1' is actually the same vector as 'dest',
-                // rather perform += or -= operations
+                // rather perform *= or /= operations
                 if ( true == mult )
                 {
-                    *it *= *it2;
+                    currDest *= v2cur;
                 }
                 else
                 {
-                    *it /= *it2;
+                    currDest /= v2cur;
                 }
             }
         }  // for

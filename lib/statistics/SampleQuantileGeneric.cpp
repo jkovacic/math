@@ -750,7 +750,8 @@ void math::SampleQuantileGeneric<F>::outliers(
               it!=this->m_v.end() && *it<lowerBound;
               ++it )
         {
-            outl.insert(*it);
+            const F& vcur = *it;
+            outl.insert(vcur);
         }
 
         typename std::vector<F>::const_reverse_iterator rit;
@@ -758,7 +759,8 @@ void math::SampleQuantileGeneric<F>::outliers(
               rit!=this->m_v.rend() && *rit>upperBound;
               ++rit )
         {
-            outl.insert(*rit);
+            const F& vcur = *rit;
+            outl.insert(vcur);
         }
     }
     catch ( const std::bad_alloc& ba )

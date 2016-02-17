@@ -70,7 +70,7 @@ F __getShift(const std::vector<F>& x, const std::size_t Nmax = 5)
     
     for ( ; cntr<N; ++it, ++cntr )
     {
-        const F el = *it;
+        const F& el = *it;
         const F absx = ( el<static_cast<F>(0) ? -el : el );
 
         if ( absx > absRetVal )
@@ -138,7 +138,8 @@ F math::SampleStat::sum(const std::vector<F>& x)
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr )
         {
-            partsum += *it;
+            const F& xcur = *it;
+            partsum += xcur;
         }
 
         // ... and add it to the total sum in a thread safe manner.
@@ -279,7 +280,9 @@ F math::SampleStat::var(const std::vector<F>& x, const std::size_t df_sub) throw
               cntr<elems_per_thread && it!=x.end();
               ++it, ++cntr )
         {
-            const F diff = *it - K;
+            const F& xcur = *it;
+
+            const F diff = xcur - K;
             partsum  += diff;
             partsum2 += diff * diff;
         }
@@ -461,8 +464,11 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
         for ( std::size_t cntr = 0;
               cntr<elems_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
         {
-            const F d1 = *it1 - K1;
-            const F d2 = *it2 - K2;
+            const F& x1cur = *it1;
+            const F& x2cur = *it2;
+
+            const F d1 = x1cur - K1;
+            const F d2 = x2cur - K2;
             partsum  += d1 * d2;
             partsum1 += d1;
             partsum2 += d2;
@@ -662,7 +668,8 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
              * TODO when does it make sense to calculate powers
              * "manually" and when using the provided function?
              */
-            partsum += math::IntExponentiator::power((*it - about), n);
+            const F& xcur = *it;
+            partsum += math::IntExponentiator::power((xcur - about), n);
         }
 
         sum += partsum;
@@ -902,8 +909,10 @@ F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) t
         for ( std::size_t cntr = 0;
               cntr<elems_per_thread && it!=x.end(); ++it,  ++cntr )
         {
-            if ( (true==incl && *it <= t) ||
-                 (false==incl && *it < t) )
+            const F& xcur = *it;
+
+            if ( (true==incl && xcur <= t) ||
+                 (false==incl && xcur < t) )
             {
                 ++partTotal;
             }
