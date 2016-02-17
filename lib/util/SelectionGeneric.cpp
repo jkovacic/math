@@ -314,31 +314,23 @@ std::vector<std::size_t>& math::Selection::order(
         const bool asc
       ) throw(math::SelectionException)
 {
-    try
+    const std::size_t N = x.size();
+
+    // allocates 'dest' and fills it with initial positions 0..(N-1)
+    math::Selection::__private::fillIndices(dest, N);
+
+    if ( 0 == N )
     {
-        const std::size_t N = x.size();
-
-        // allocates 'dest' and fills it with initial positions 0..(N-1)
-        math::Selection::__private::fillIndices(dest, N);
-
-        if ( 0 == N )
-        {
-            return dest;
-        }
-
-        math::Selection::__private::IndexCmp<F> idxCmp(&x, asc);
-
-        /*
-         * Performs stable sort of indices, assuring that order
-         * of indices remains unmodified in case of ties.
-         */
-        std::stable_sort(dest.begin(), dest.end(), idxCmp);
-
+        return dest;
     }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::SelectionException(math::SelectionException::OUT_OF_MEMORY);
-    }
+
+    math::Selection::__private::IndexCmp<F> idxCmp(&x, asc);
+
+    /*
+     * Performs stable sort of indices, assuring that order
+     * of indices remains unmodified in case of ties.
+     */
+    std::stable_sort(dest.begin(), dest.end(), idxCmp);
 
     return dest;
 }
