@@ -16,6 +16,12 @@ selectionTest <- function()
 
   cat("\nOrder of mpgs' indices in descending order:\n")
   print(order(mtcars$mpg, decreasing=TRUE) - 1)
+  
+  cat("Rank table of 'mpg' in ascending order:\n")
+  print(rank(mtcars$mpg, ties.method="min") - 1)
+  
+  cat("Rank table of 'mpg' in descending order:\n")
+  print(rank(-mtcars$mpg, ties.method="min") - 1)
 
   cat('\n')
   cat('Min. mpg: ', min(mtcars$mpg), '\n')

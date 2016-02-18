@@ -36,6 +36,12 @@ Indices in ascending order:
 Indices in descending order:
 19 17 18 27 25 26 7 2 8 20 3 31 0 1 29 9 24 4 5 10 12 11 28 21 13 22 30 16 6 23 14 15 
 
+Rank table in ascending order:
+18 18 23 20 14 13 3 25 23 15 12 10 11 6 0 0 4 30 28 31 22 8 6 2 15 27 26 28 9 17 5 20 
+
+Rank table in descending order:
+12 12 7 10 17 18 28 6 7 15 19 21 20 24 30 30 27 1 2 0 9 23 24 29 15 4 5 2 22 14 26 10 
+
 min(mpg): 10.4 (expected: 10.4)
 max(mpg): 33.9 (expected: 33.9)
 Index of the smallest mpg: 14 (expected: 14)

@@ -49,17 +49,29 @@ namespace Selection
     std::vector<std::size_t>& order(
             const std::vector<F>& x,
             std::vector<std::size_t>& dest,
-            const bool asc=true
+            const bool asc = true
           ) throw(SelectionException);
+
+
+    template <typename F>
+    std::vector<std::size_t>& rank(
+            const std::vector<F>& x,
+            std::vector<std::size_t>& dest,
+            const bool asc = true
+          ) throw(SelectionException);
+
 
     template <typename F>
     F min(const std::vector<F>& x) throw(SelectionException);
 
+
     template <typename F>
     F max(const std::vector<F>& x) throw(SelectionException);
 
+
     template <typename F>
     std::size_t whichMin(const std::vector<F>& x) throw(SelectionException);
+
 
     template <typename F>
     std::size_t whichMax(const std::vector<F>& x) throw(SelectionException);

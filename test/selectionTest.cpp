@@ -89,6 +89,14 @@ void selectionTest()
         cout << endl << "Indices in descending order:" << endl;
         Selection::order(vmpgs, idx, false);
         printIndices(idx);
+
+        cout << endl << "Rank table in ascending order:" << endl;
+        Selection::rank(vmpgs, idx);
+        printIndices(idx);
+
+        cout << endl << "Rank table in descending order:" << endl;
+        Selection::rank(vmpgs, idx, false);
+        printIndices(idx);
         cout << endl;
 
         cout << "min(mpg): " << Selection::min(vmpgs) << " (expected: 10.4)" << endl;

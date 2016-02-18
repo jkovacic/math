@@ -342,6 +342,97 @@ std::vector<std::size_t>& math::Selection::order(
 
 
 /**
+ * Returns the rank table of 'x' The table indicates each element's
+ * position if 'x' were sorted in ascending or descending order,
+ * depending on 'asc'. In case of ties, all equal elements are assigned
+ * the same (i.e the smallest possible) rank, as it is typical in sports
+ * ranking.
+ *
+ * @note The input vector 'x' is not modified.
+ *
+ * @note If 'x' is empty, an empty vector is returned.
+ *
+ * @note The function is equivalent to the function 'rank(x, ties.method="min")' in R.
+ *
+ * @param x - vector of elements
+ * @param dest - reference to a vector to write ranks of elements of 'x' to
+ * @param asc - logical value indicating whether ranks indicate  ascending order or not (default: TRUE)
+ *
+ * @return reference to 'dest'
+ *
+ * @throw SelectionException if allocation of the return vector fails
+ */
+template <typename F>
+std::vector<std::size_t>& math::Selection::rank(
+            const std::vector<F>& x,
+            std::vector<std::size_t>& dest,
+            const bool asc = true
+          ) throw(math::SelectionException)
+{
+    try
+    {
+        const std::size_t N = x.size();
+        std::vector<std::size_t> indexTable;
+
+        dest.resize(N);
+
+        if ( 0 == N )
+        {
+            return dest;
+        }
+
+        // The most convenient algorithm requires the
+        // index table of 'x'.
+        math::Selection::order(x, indexTable, asc);
+
+        // indexTable should not be modified anymore:
+        const std::vector<std::size_t>& idx = indexTable;
+
+        /*
+         * The algorithm is actually quite simple. It relies on
+         * the fact, that idx[i] denotes the position of the i.th
+         * largest/smallest element of 'x'. Hence the most basic
+         * algorithm would be as follows:
+         *
+         * for i in 0 (N-1):
+         *   rank[ idx[i] ] = i
+         *
+         * However, this algorithm does not handle ties, therefore it
+         * requires a few modifications as explained below. The modified
+         * algorithm, however, must only run sequentially and it is
+         * not possible to parallelize it.
+         */
+
+        /*
+         * But in any case it is perfectly safe to assign the value 0
+         * to (one of) the smallest/largest element(s)...
+         */
+        dest.at(idx.at(0)) = 0;
+
+        /*
+         * For all the remaining elements, the algorithm above is slightly
+         * modified. x[idx[i]] is compared to the previously ranked element
+         * (x[idx[i-1]]). If they are equal, just copy the previously ranked
+         * element's rank (rank[idx[i-1]]). Otherwise assign the lement x[idx[i]]
+         * the value 'i'.
+         */
+        for (std::size_t i = 1; i<N; ++i )
+        {
+            dest.at(idx.at(i)) =
+                ( x.at(idx.at(i-1)) == x.at(idx.at(i)) ?
+                  dest.at(idx.at(i-1)) :  i );
+        }
+    }
+    catch ( const std::bad_alloc& ex )
+    {
+        throw math::SelectionException(math::SelectionException::OUT_OF_MEMORY);
+    }
+
+    return dest;
+}
+
+
+/**
  * @param x - vector of observations
  *
  * @return minimum observation of the sample
