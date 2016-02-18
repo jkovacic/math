@@ -11,19 +11,34 @@
 function intfunctionTest()
     nums = [ 12, 100, 37423 ]
     for n = nums
-       println("int. sqrt of ", n, ": ", convert(Integer, floor(sqrt(n))) )
+       println("floor(sqrt(", n, ")) = ", convert(Integer, floor(sqrt(n))) )
+    end
+    
+    println()
+    for n = nums
+       println("ceil(sqrt(", n, ")) = ", convert(Integer, ceil(sqrt(n))) )
     end
 
     println()
     nums = [ 1, 8, 63, 64, 1024, 1025, 65000 ]
     for n = nums
-       println("int. log2 of ", n, ": ", convert(Integer, floor(log2(n))) )
+       println("floor(log2(", n, ")) = ", convert(Integer, floor(log2(n))) )
+    end
+
+    println()
+    for n = nums
+       println("ceil(log2(", n, ")) = ", convert(Integer, ceil(log2(n))) )
     end
 
     println()
     nums = [ 1, 16, 65 ]
     for n = nums
-       println("int. log2 of ", n, ": ", convert(Integer, floor(log2(n))) )
+       println("floor(log2(", n, ")) = ", convert(Integer, floor(log2(n))) )
+    end
+
+    println()
+    for n = nums
+       println("ceil(log2(", n, ")) = ", convert(Integer, ceil(log2(n))) )
     end
 end
 

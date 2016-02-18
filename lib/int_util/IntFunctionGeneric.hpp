@@ -46,14 +46,14 @@ namespace math
 namespace IntFunction
 {
 
-    // the largest integer not exceeding sqrt(n)
+    // floor/ceil of sqrt(n)
     template <typename I>
-    I intSqrt(const I& n) throw(IntFunctionException);
+    I intSqrt(const I& n, const bool ceil=false) throw(IntFunctionException);
 
 
-    // the largest integer not exceeding log2(n)
+    // floor/ceil of log2(n)
     template <typename I>
-    I intLog2(const I& n) throw(IntFunctionException);
+    I intLog2(const I& n, const bool ceil=false) throw(IntFunctionException);
 
 }  // namespace IntFunction
 

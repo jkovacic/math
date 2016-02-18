@@ -53,7 +53,14 @@ void intFunctionTest()
         // Expected results: 3, 10 and 193
         for ( unsigned int i=0; i<NS; ++i )
         {
-            cout << "Int sqrt of " << s[i] << ": " << IntFunction::intSqrt(s[i]) << endl;
+            cout << "floor(sqrt(" << s[i] << ")) = " << IntFunction::intSqrt(s[i]) << endl;
+        }
+        cout << endl;
+
+        // Expected results: 4, 10 and 194
+        for ( unsigned int i=0; i<NS; ++i )
+        {
+            cout << "ceil(sqrt(" << s[i] << ")) = " << IntFunction::intSqrt(s[i], true) << endl;
         }
         cout << endl;
 
@@ -64,7 +71,14 @@ void intFunctionTest()
         // Expected results: 0, 3, 5, 6, 10, 10, 15
         for ( unsigned int i=0; i<NL2S; ++i )
         {
-            cout << "Int log2 of " << l2s[i] << ": " << IntFunction::intLog2(l2s[i]) << endl;
+            cout << "floor(log2((" << l2s[i] << ")) = " << IntFunction::intLog2(l2s[i]) << endl;
+        }
+        cout << endl;
+
+        // Expected results: 0, 3, 6, 6, 10, 11, 16
+        for ( unsigned int i=0; i<NL2S; ++i )
+        {
+            cout << "ceil(log2((" << l2s[i] << ")) = " << IntFunction::intLog2(l2s[i], true) << endl;
         }
         cout << endl;
 
@@ -75,8 +89,16 @@ void intFunctionTest()
         // Expected results: 0, 4, 6
         for ( unsigned int i=0; i<NL2U; ++i )
         {
-            cout << "Int log2 of " << l2u[i] << ": " << IntFunction::intLog2(l2u[i]) << endl;
+            cout << "floor(log2(" << l2u[i] << ")) = " << IntFunction::intLog2(l2u[i]) << endl;
         }
+        cout << endl;
+
+        // Expected results: 0, 4, 7
+        for ( unsigned int i=0; i<NL2U; ++i )
+        {
+            cout << "ceil(log2(" << l2u[i] << ")) = " << IntFunction::intLog2(l2u[i], true) << endl;
+        }
+
     }
     catch ( const IntFunctionException& ex )
     {

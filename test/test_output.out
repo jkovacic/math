@@ -494,21 +494,37 @@ Exp's interpolation polynomial: 1 -0.976203*x +0.441309*x^2 -0.111449*x^3 +0.015
 
 I N T   F U N C T I O N   T E S T
 
-Int sqrt of 12: 3
-Int sqrt of 100: 10
-Int sqrt of 37423: 193
+floor(sqrt(12)) = 3
+floor(sqrt(100)) = 10
+floor(sqrt(37423)) = 193
 
-Int log2 of 1: 0
-Int log2 of 8: 3
-Int log2 of 63: 5
-Int log2 of 64: 6
-Int log2 of 1024: 10
-Int log2 of 1025: 10
-Int log2 of 65000: 15
+ceil(sqrt(12)) = 4
+ceil(sqrt(100)) = 10
+ceil(sqrt(37423)) = 194
 
-Int log2 of 1: 0
-Int log2 of 16: 4
-Int log2 of 65: 6
+floor(log2((1)) = 0
+floor(log2((8)) = 3
+floor(log2((63)) = 5
+floor(log2((64)) = 6
+floor(log2((1024)) = 10
+floor(log2((1025)) = 10
+floor(log2((65000)) = 15
+
+ceil(log2((1)) = 0
+ceil(log2((8)) = 3
+ceil(log2((63)) = 6
+ceil(log2((64)) = 6
+ceil(log2((1024)) = 10
+ceil(log2((1025)) = 11
+ceil(log2((65000)) = 16
+
+floor(log2(1)) = 0
+floor(log2(16)) = 4
+floor(log2(65)) = 6
+
+ceil(log2(1)) = 0
+ceil(log2(16)) = 4
+ceil(log2(65)) = 7
 
 I N T E X P O N E N T I A T O R   T E S T
 

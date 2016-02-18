@@ -32,17 +32,20 @@ limitations under the License.
 
 
 /**
- * Finds the highest integer that does not exceed sqrt(n).
- * If 'n' is a perfect int square, its exact square root will be returned.
+ * Efficiently calculates floor or ceil (depending on 'ceil')
+ * of sqrt(n).
+ *
+ * If 'n' is a perfect square, its exact sqrt will be returned in any case.
  *
  * @param n - integer input argument whose "square root" will be calculated
+ * @param ceil - should the rounded result be ceil'ed (default: FALSE)
  *
- * @return floor(sqrt(n))
+ * @return floor/ceil of sqrt(n)
  *
  * @throw IntFunctionException if 'n' is negative
  */
 template <typename I>
-I math::IntFunction::intSqrt(const I& n)
+I math::IntFunction::intSqrt(const I& n, const bool ceil)
              throw (math::IntFunctionException)
 {
     // sanity check
@@ -85,22 +88,34 @@ I math::IntFunction::intSqrt(const I& n)
         bit >>= static_cast<I>(2);
     }
 
+    /*
+     * If ceiling is requested and res^2 != n,
+     * increment 'res'
+     */
+    if ( true==ceil && (res*res)<n )
+    {
+        ++res;
+    }
+
     return res;
 }
 
 
 /**
- * Finds the highest integer that does not exceed log2(n).
- * If 'n' is a power of 2, its log2 will be returned.
+ * Efficiently calculates floor or ceil (depending on 'ceil')
+ * of log2(n).
+ *
+ * If 'n' is a power of 2, its exact log2 will be returned in any case.
  *
  * @param n - integer input argument whose "log base 2" will be calculated
+ * @param ceil - should the rounded result be ceil'ed (default: FALSE)
  *
- * @return floor(log2(n))
+ * @return floor/ceil of log2(n)
  *
  * @throw IntFunctionException if 'n' is not strictly positive or if the type 'I' is not integral
  */
 template <typename I>
-I math::IntFunction::intLog2(const I& n) throw(math::IntFunctionException)
+I math::IntFunction::intLog2(const I& n, const bool ceil) throw(math::IntFunctionException)
 {
     // Sanity check:
     // - this function uses bitwise operators that might not be properly supported
@@ -144,9 +159,23 @@ I math::IntFunction::intLog2(const I& n) throw(math::IntFunctionException)
      * algorithm will never be trapped into an infinite loop.
      *
      */
-    for ( I mask = static_cast<I>(1) << l2;
+    I mask;
+    for ( mask = static_cast<I>(1) << l2;
          (n & mask) == static_cast<I>(0);
           --l2, mask >>= static_cast<I>(1) );
+
+    /*
+     * Handling of ceiling. If any other bit of 'n' except the one
+     * in 'mask' is also set, increment 'l2'. The most convenient way
+     * to check this is to invert bits in 'mask' and perform bitwise AND
+     * on n's bits. If any other n's bit (except the one in mask) is also
+     * set, the result will be non-zero, indicating that 'n' is not a
+     * perfect power of 2.
+     */
+    if ( true==ceil && static_cast<I>(0) != (n & (~mask)) )
+    {
+        ++l2;
+    }
 
     return l2;
 }
@@ -163,9 +192,10 @@ namespace math {  namespace IntFunction
 {
 
     template <>
-    bool intLog2(const bool& n) throw(math::IntFunctionException)
+    bool intLog2(const bool& n, const bool ceil) throw(math::IntFunctionException)
     {
         (void) n;
+        (void) ceil;
         throw math::IntFunctionException(math::IntFunctionException::INVALID_TYPE);
     }
 }}
