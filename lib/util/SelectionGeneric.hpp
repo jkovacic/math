@@ -76,6 +76,10 @@ namespace Selection
     template <typename F>
     std::size_t whichMax(const std::vector<F>& x) throw(SelectionException);
 
+
+    template <typename F>
+    F select(const std::vector<F>& x, const std::size_t K, const bool smallest=true) throw(SelectionException);
+
 }  // namespace SampleOrder
 }  // namespace math
 

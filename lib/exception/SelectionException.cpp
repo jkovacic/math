@@ -52,6 +52,9 @@ void math::SelectionException::what(std::ostream& str) const
         case math::SelectionException::SAMPLE_EMPTY :
             str << "The sample is empty.";
             break;
+        case math::SelectionException::ARG_OUT_OF_RANGE :
+            str << "Input argument is out of range.";
+            break;
 
         default:
             // Should not occur but handle it anyway.

@@ -10,24 +10,29 @@
 selectionTest <- function()
 {
   #data(mtcars)
+  mpg <- mtcars$mpg
 
   cat("Order of mpgs' indices in ascending order:\n")
-  print(order(mtcars$mpg) - 1)
+  print(order(mpg) - 1)
 
   cat("\nOrder of mpgs' indices in descending order:\n")
-  print(order(mtcars$mpg, decreasing=TRUE) - 1)
+  print(order(mpg, decreasing=TRUE) - 1)
   
   cat("Rank table of 'mpg' in ascending order:\n")
-  print(rank(mtcars$mpg, ties.method="min") - 1)
+  print(rank(mpg, ties.method="min") - 1)
   
   cat("Rank table of 'mpg' in descending order:\n")
-  print(rank(-mtcars$mpg, ties.method="min") - 1)
+  print(rank(-mpg, ties.method="min") - 1)
 
   cat('\n')
-  cat('Min. mpg: ', min(mtcars$mpg), '\n')
-  cat('Max. mpg: ', max(mtcars$mpg), '\n')
-  cat('Index of min. mpg: ', which.min(mtcars$mpg) - 1, '\n')
-  cat('Index of max. mpg: ', which.max(mtcars$mpg) - 1, '\n')
+  cat('Min. mpg: ', min(mpg), '\n')
+  cat('Max. mpg: ', max(mpg), '\n')
+  cat('Index of min. mpg: ', which.min(mpg) - 1, '\n')
+  cat('Index of max. mpg: ', which.max(mpg) - 1, '\n')
+  
+  cat('\n')
+  cat('5th smallest mpg: ', mpg[order(mpg)[5]], '\n')
+  cat('7th largest mpg: ', mpg[order(mpg, decreasing=TRUE)[7]], '\n')
   
   return(0)
 }

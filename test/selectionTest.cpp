@@ -103,6 +103,10 @@ void selectionTest()
         cout << "max(mpg): " << Selection::max(vmpgs) << " (expected: 33.9)" << endl;
         cout << "Index of the smallest mpg: " << Selection::whichMin(vmpgs) << " (expected: 14)" << endl;
         cout << "Index of the largest mpg:  " << Selection::whichMax(vmpgs) << " (expected: 19)" << endl;
+        cout << endl;
+
+        cout << "5th smallest mpg: " << Selection::select(vmpgs, 5-1) << " (expected: 14.7)" << endl;
+        cout << "7th largest mpg: " << Selection::select(vmpgs, 7-1, false) << " (expected: 24.4)" << endl;
 
     }
     catch ( const SelectionException& ex )

@@ -47,6 +47,9 @@ max(mpg): 33.9 (expected: 33.9)
 Index of the smallest mpg: 14 (expected: 14)
 Index of the largest mpg:  19 (expected: 19)
 
+5th smallest mpg: 14.7 (expected: 14.7)
+7th largest mpg: 24.4 (expected: 24.4)
+
 Q U A T E R N I O N   T E S T
 
 zero: (0+0i+0j+0k)

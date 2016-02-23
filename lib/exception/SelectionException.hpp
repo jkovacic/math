@@ -46,6 +46,7 @@ struct SelectionException : public IMathException
     {
         OUT_OF_MEMORY,                  /// allocation of memory failed
         SAMPLE_EMPTY,                   /// empty sample
+        ARG_OUT_OF_RANGE,               /// input argument is out of valid range
     };
 
     err_codes error;    /// type of an error

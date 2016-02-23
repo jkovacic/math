@@ -289,6 +289,87 @@ std::vector<std::size_t>& fillIndices(
     return dest;
 }
 
+
+/*
+ * "Partitions" the given subarray 'x' between 'left' and 'right, fills the
+ * permutation array of indices 'idx' and returns an index 'k' s.t. all elements
+ * x[idx[i<k]] are guaranteed to be less than x[idx[k]] and all elements x[idx[i>k]]
+ * are guaranteed to be greater than x[idx[k]].
+ *
+ * @note This function is only called internally hence it is assumed that all
+ *       arguments are valid, i.e., 'idx' is preallocated and of the same size as
+ *       'x', left<right, etc.
+ *
+ * @note The function does not modify the input vector 'x'
+ *
+ * @note The function only modifies elements of 'idx' in the interval left <= i <= right
+ *
+ * @note The same function is also a part of the quicksort algorithm
+ *
+ * @param x - vector of elements
+ * @param idx - vector of indices to be rearranged
+ * @param left - left margin of the partition interval
+ * @param right - right margin of the partition interval
+ *
+ * @return 'k' that satisfies x[idx[i<k]] <= x[idx[k]] and x[idx[k]] <= x[idx[i>k]]
+ */
+template <typename F>
+std::size_t partition(
+        const std::vector<F>& x,
+        std::vector<std::size_t>& idx,
+        const std::size_t left,
+        const std::size_t right )
+{
+    /*
+     * The algorithm is described in detail at:
+     *
+     * Robert Sedgewick, Kevin Wayne
+     * Algorithms (4th Edition)
+     * Addison-Wesley Professional, 2011
+     *
+     * http://algs4.cs.princeton.edu
+     */
+
+    /*
+     * TODO Implement a better algorithm to choose a "pivot",
+     * e.g. "median of three". Until then, the left most element
+     * of the given interval is chosen as the pivot.
+     */
+    const std::size_t pivot = left;
+
+    // TODO swap 'pivot' and 'left' if any other element is
+    // selected as the pivot
+
+    std::size_t i = pivot + 1;
+    std::size_t j = right;
+    const F pval = x.at(idx.at(pivot));
+
+    for ( ; ; )
+    {
+        // Find both elements to swap
+        for ( ; i<right && x.at(idx.at(i)) < pval; ++i );
+        for ( ; j>pivot && pval < x.at(idx.at(j)); --j );
+
+        // If the pointers have crossed, terminate the "infinite" loop
+        if ( i >= j )
+        {
+            break;  // out of for(;;)
+        }
+
+        // ...and swap the elements of 'idx'
+        std::swap( idx.at(i), idx.at(j) );
+
+    }
+
+    // Move the "pivot" to its appropriate position within 'idx'.
+    if ( j != pivot )
+    {
+        std::swap( idx.at(pivot), idx.at(j) );
+    }
+
+    return j;
+}
+
 }}}  // namespace math::Selection::__private
 
 
@@ -485,4 +566,83 @@ template <typename F>
 std::size_t math::Selection::whichMax(const std::vector<F>& x) throw(SelectionException)
 {
     return math::Selection::__private::__whichMinMax(x, false);
+}
+
+
+/**
+ * Returns the K.th smallest or largest element of the vector 'x'.
+ *
+ * On average, the complexity of the implemented algorithm is O(n),
+ * where 'n' denotes the size of 'x'.
+ *
+ * @note The function does not modify the input vector 'x'
+ *
+ * @param x - vector of elements
+ * @param K - the ordinal (between 0 and size(x)-1)
+ * @param smallest - if TRUE, K.th smallest element will be returned, K.th largest otherwise (default: TRUE)
+ *
+ * @return K.th smallest or largest element of 'x', depending on 'smallest'
+ *
+ * @throw SelectionException if 'K' is invalid or if internal allocation of memory failed
+ */
+template <typename F>
+F math::Selection::select(
+            const std::vector<F>& x,
+            const std::size_t K,
+            const bool smallest)
+          throw(math::SelectionException)
+{
+    const std::size_t N = x.size();
+
+    // internal vector of indices, necessary to keep 'x' immutable
+    std::vector<std::size_t> idxTable;
+
+    // sanity check
+    if ( K >= N )
+    {
+        throw math::SelectionException(math::SelectionException::ARG_OUT_OF_RANGE);
+    }
+
+    // Regardless of 'smallest', the algorithm will always select the P.th smallest value
+    const std::size_t P = ( true==smallest ? K : N-K-1 );
+
+    // Allocates and fills the vector of indices
+    math::Selection::__private::fillIndices(idxTable, N);
+
+    /*
+     * The algorithm is based on the well known quicksort algorithm.
+     * It will partition the current subarray of 'idx' and narrow it
+     * down either to its left or right subarray, depending whether the
+     * partition's return value is less or greater than 'P'
+     * return value. The procedure will repeat until the returned value
+     * equals 'P'.
+     */
+
+    std::size_t lo;
+    std::size_t hi;
+
+    for ( lo = 0, hi = N - 1;
+          hi > lo; )
+    {
+        const std::size_t pivot_pos = math::Selection::__private::partition(x, idxTable, lo, hi);
+
+        if ( pivot_pos < P )
+        {
+            // take the right subarray
+            lo = pivot_pos + 1;
+        }
+        else if ( pivot_pos > P )
+        {
+            // take the left subarray
+            hi = pivot_pos - 1;
+        }
+        else  // if pivot_pos == P
+        {
+            // Now the idx[P] points to the P.th smallest element
+            break;  // out of the for loop
+        }
+    }
+
+
+    return x.at(idxTable.at(P));
 }
