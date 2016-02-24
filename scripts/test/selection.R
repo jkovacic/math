@@ -31,8 +31,18 @@ selectionTest <- function()
   cat('Index of max. mpg: ', which.max(mpg) - 1, '\n')
   
   cat('\n')
-  cat('5th smallest mpg: ', mpg[order(mpg)[5]], '\n')
-  cat('7th largest mpg: ', mpg[order(mpg, decreasing=TRUE)[7]], '\n')
+  srt <- sort(mpg)
+  for (i in 1:length(srt))
+  {
+    cat(i, '. smallest mpg: ', srt[i], '\n', sep='')
+  }
+
+  cat('\n')
+  srt <- sort(mpg, decreasing=TRUE)
+  for (i in 1:length(srt))
+  {
+    cat(i, '. largest mpg: ', srt[i], '\n', sep='')
+  }
   
   return(0)
 }

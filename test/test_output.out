@@ -47,8 +47,71 @@ max(mpg): 33.9 (expected: 33.9)
 Index of the smallest mpg: 14 (expected: 14)
 Index of the largest mpg:  19 (expected: 19)
 
-5th smallest mpg: 14.7 (expected: 14.7)
-7th largest mpg: 24.4 (expected: 24.4)
+1. smallest mpg: 10.4
+2. smallest mpg: 10.4
+3. smallest mpg: 13.3
+4. smallest mpg: 14.3
+5. smallest mpg: 14.7
+6. smallest mpg: 15
+7. smallest mpg: 15.2
+8. smallest mpg: 15.2
+9. smallest mpg: 15.5
+10. smallest mpg: 15.8
+11. smallest mpg: 16.4
+12. smallest mpg: 17.3
+13. smallest mpg: 17.8
+14. smallest mpg: 18.1
+15. smallest mpg: 18.7
+16. smallest mpg: 19.2
+17. smallest mpg: 19.2
+18. smallest mpg: 19.7
+19. smallest mpg: 21
+20. smallest mpg: 21
+21. smallest mpg: 21.4
+22. smallest mpg: 21.4
+23. smallest mpg: 21.5
+24. smallest mpg: 22.8
+25. smallest mpg: 22.8
+26. smallest mpg: 24.4
+27. smallest mpg: 26
+28. smallest mpg: 27.3
+29. smallest mpg: 30.4
+30. smallest mpg: 30.4
+31. smallest mpg: 32.4
+32. smallest mpg: 33.9
+
+1. largest mpg: 33.9
+2. largest mpg: 32.4
+3. largest mpg: 30.4
+4. largest mpg: 30.4
+5. largest mpg: 27.3
+6. largest mpg: 26
+7. largest mpg: 24.4
+8. largest mpg: 22.8
+9. largest mpg: 22.8
+10. largest mpg: 21.5
+11. largest mpg: 21.4
+12. largest mpg: 21.4
+13. largest mpg: 21
+14. largest mpg: 21
+15. largest mpg: 19.7
+16. largest mpg: 19.2
+17. largest mpg: 19.2
+18. largest mpg: 18.7
+19. largest mpg: 18.1
+20. largest mpg: 17.8
+21. largest mpg: 17.3
+22. largest mpg: 16.4
+23. largest mpg: 15.8
+24. largest mpg: 15.5
+25. largest mpg: 15.2
+26. largest mpg: 15.2
+27. largest mpg: 15
+28. largest mpg: 14.7
+29. largest mpg: 14.3
+30. largest mpg: 13.3
+31. largest mpg: 10.4
+32. largest mpg: 10.4
 
 Q U A T E R N I O N   T E S T
 
