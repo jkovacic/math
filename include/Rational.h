@@ -29,4 +29,4 @@ limitations under the License.
 
 #include "rational/RationalGeneric.hpp"
 
-#endif  /*  _MATH_RATIONALGENERIC_H_  */
+#endif  /*  _MATH_RATIONAL_H_  */

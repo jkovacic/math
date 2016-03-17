@@ -29,4 +29,4 @@ limitations under the License.
 
 #include "matrix/LinearEquationSolverGeneric.hpp"
 
-#endif  /*  _LINEAREQUATIONSOLVERGENERIC_H_  */
+#endif  /*  _MATH_LINEAREQUATIONSOLVER_H_  */
