@@ -67,6 +67,22 @@ function matrixTest
     invv([2, 3], :) = invv([3, 2], :)
     printf('Swap the 2nd and the 3rd column:\n');
     invv(:, [2, 3]) = invv(:, [3, 2])
+    printf('Maximums of each row of invv:');
+    max(invv, [], 2)
+    printf('Absolute maximums of each row of invv:');
+    max(abs(invv), [], 2)
+    printf('Minimums of each row of invv:');
+    min(invv, [], 2)
+    printf('Absolute minimums of each row of invv:');
+    min(abs(invv), [], 2)
+    printf('Maximums of each column of invv:');
+    max(invv, [], 1)
+    printf('Absolute maximums of each column of invv:');
+    max(abs(invv), [], 1)
+    printf('Minimums of each column of invv:');
+    min(invv, [], 1)
+    printf('Absolute minimums of each column of invv:');
+    min(abs(invv), [], 1)
     a1 = 5.5
     printf('\n');
 

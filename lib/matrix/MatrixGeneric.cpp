@@ -30,6 +30,7 @@ limitations under the License.
 #include <ostream>
 #include <complex>
 #include <algorithm>
+#include <cmath>
 
 // no #include "MatrixGeneric.hpp" !!!
 #include "util/NumericUtil.hpp"
@@ -1323,6 +1324,164 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::roundSmallElements(const T& eps) 
     math::MatrixGeneric<T> mret(*this);
     mret.roundSmallElements_(eps);
     return mret;
+}
+
+
+/*
+ * A convenience function that obtains a vector of minimum or
+ * maximum (depending on 'maxv') values of each row or column
+ * (depending on 'row') of the given matrix 'm' and assigns
+ * the resulting vector to itself. If requested by 'absval',
+ * a vector of rows'/columns' minmax absolute values is assigned
+ * to itself.
+ *
+ * @note 'this' is not required to be of the correct dimensions
+ *       as the method takes care of it.
+ *
+ * @param m - input matrix
+ * @param row - if TRUE, return minmax values of each row, otherwise minmax values of each column
+ * @param maxv - should return rows'/columns' minimum (FALSE) or maximum (TRUE) values
+ * @param absval - should return minmax values of m's absolute values
+ *
+ * @throw MatrixException if (re)allocation of memory failed
+ */
+template <class T>
+void math::MatrixGeneric<T>::__minmaxRowCol(const math::MatrixGeneric<T>& m, const bool row, const bool maxv, const bool absval) throw (math::MatrixException)
+{
+    // dimensions of the "output" (i.e 'this'), depending on 'row':
+    const std::size_t NROWS = ( true==row ?  m.nrRows()    : 1 );
+    const std::size_t NCOLS = ( false==row ? m.nrColumns() : 1 );
+
+    // length of the "output" vector
+    const std::size_t N = ( true==row ? NROWS : NCOLS );
+
+    // length of subarrays to search their minmax values
+    const std::size_t ARRLEN = ( true==row ? m.nrColumns(): m.nrRows() );
+
+    // resize itself
+    this->__init(NROWS, NCOLS);
+
+    /*
+     * Each m's row/column can be processed independently
+     * from the others and in parallel.
+     */
+    #pragma omp parallel for default(none) shared(m)
+    for ( std::size_t i=0; i<N; ++i )
+    {
+        /*
+         * The first value of each row/column, also
+         * the first candidate for the minmax value
+         */
+        T temp = ( true==row ? m(i, 0) : m(0, i) );
+        if ( true == absval )
+        {
+            temp = std::abs(temp);
+        }
+
+
+        // The remaining elements in the subarray...
+        for ( std::size_t j=1; j<ARRLEN; ++j )
+        {
+            // ... obtain the next value in the subarray...
+            T currVal = ( true==row ? m(i, j) : m(j, i) );
+            if ( true == absval )
+            {
+                currVal = std::abs(currVal);
+            }
+
+            // ... compare it to 'temp' (depending on 'maxv') and
+            // reassign 'temp' if necessary.
+            if ( ( true == maxv  && currVal > temp ) ||
+                 ( false == maxv && currVal < temp ) )
+            {
+                temp = currVal;
+            }
+        }  // for j
+
+        /*
+         * 'temp' ids now the subarray's minimum/maximum and can be written
+         * into 'this'. Note that 'this' is actually a one dimensionla vector,
+         * hence 'temp' can be written directly into the appropriate position
+         * of 'm_elems'.
+         */
+        this->m_elems.at(i) = temp;
+    }  //for i
+}
+
+
+/**
+ * Returns a nx1 vector with minimum values of each row.
+ * The method is equivalent to the Matlab function min(A, [], 2)
+ *
+ * @param absval - should the function return a vector of minimum absolute values (default: FALSE)
+ *
+ * @return a column vector with minimum values of each row
+ *
+ * @throw MatrixException if allocation memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::minRows(const bool absval) const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> ret(1, 1);
+    ret.__minmaxRowCol(*this, true, false, absval);
+    return ret;
+}
+
+
+/**
+ * Returns a nx1 vector with maximum values of each row.
+ * The method is equivalent to the Matlab function max(A, [], 2)
+ *
+ * @param absval - should the function return a vector of maximum absolute values (default: FALSE)
+ *
+ * @return a column vector with maximum values of each row
+ *
+ * @throw MatrixException if allocation memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::maxRows(const bool absval) const throw(math::MatrixException)
+{
+    math::MatrixGeneric<T> ret(1, 1);
+    ret.__minmaxRowCol(*this, true, true, absval);
+    return ret;
+}
+
+
+/**
+ * Returns a 1xn vector with minimum values of each column.
+ * The method is equivalent to the Matlab function min(A, [], 1)
+ *
+ * @param absval - should the function return a vector of minimum absolute values (default: FALSE)
+ *
+ * @return a row vector with minimum values of each column
+ *
+ * @throw MatrixException if allocation memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::minColumns(const bool absval) const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> ret(1, 1);
+    ret.__minmaxRowCol(*this, false, false, absval);
+    return ret;
+}
+
+
+/**
+ * Returns a 1xn vector with maximum values of each column.
+ * The method is equivalent to the Matlab function max(A, [], 1)
+ *
+ * @param absval - should the function return a vector of maximum absolute values (default: FALSE)
+ *
+ * @return a row vector with maximum values of each column
+ *
+ * @throw MatrixException if allocation memory failed
+ */
+template <class T>
+math::MatrixGeneric<T> math::MatrixGeneric<T>::maxColumns(const bool absval) const throw (math::MatrixException)
+{
+    math::MatrixGeneric<T> ret(1, 1);
+    ret.__minmaxRowCol(*this, false, true, absval);
+    return ret;
 }
 
 

@@ -218,6 +218,48 @@ void matrixTest()
         inv.display();
         cout << endl;
 
+
+        cout << "Maximums of each row of 'inv':" << endl;
+        m1 = inv.maxRows();
+        m1.display();
+        cout << endl;
+
+        cout << "Absolute maximums of each row of 'inv':" << endl;
+        m1 = inv.maxRows(true);
+        m1.display();
+        cout << endl;
+
+        cout << "Minimums of each row of 'inv':" << endl;
+        m1 = inv.minRows();
+        m1.display();
+        cout << endl;
+
+        cout << "Absolute minimums of each row of 'inv':" << endl;
+        m1= inv.minRows(true);
+        m1.display();
+        cout << endl;
+
+        cout << "Maximums of each column of 'inv':" << endl;
+        m1 = inv.maxColumns();
+        m1.display();
+        cout << endl;
+
+        cout << "Absolute maximums of each column of 'inv':" << endl;
+        m1 = inv.maxColumns(true);
+        m1.display();
+        cout << endl;
+
+        cout << "Minimums of each column of 'inv':" << endl;
+        m1 = inv.minColumns();
+        m1.display();
+        cout << endl;
+
+        cout << "Absolute minimums of each column of 'inv':" << endl;
+        m1= inv.minColumns(true);
+        m1.display();
+        cout << endl;
+
+
         a1 = 5.5;
         cout << "a1:" << endl;
         a1.display();
