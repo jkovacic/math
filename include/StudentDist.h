@@ -20,13 +20,17 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class PolynomialInterpolationGeneric.h that calculates
- * an interpolation polynomial that goes exactly through entered points.
+ * Declaration of functions within the namespace StudentDist
+ * that perform various Student's (Gosset's) distribution related
+ * operations, such as calculation of upper and lower tail
+ * probabilities and quantiles, calculation of t-statistics,
+ * probability distribution function, etc.
  */
 
-#ifndef _MATH_POLYNOMIALINTERPOLATIONGENERIC_H_
-#define _MATH_POLYNOMIALINTERPOLATIONGENERIC_H_
 
-#include "curve_fit/PolynomialInterpolationGeneric.hpp"
+#ifndef _MATH_STUDENTDIST_H_
+#define _MATH_STUDENTDIST_H_
 
-#endif  /*  _MATH_POLYNOMIALINTERPOLATIONGENERIC_H_  */
+#include "statistics/dist/StudentDistGeneric.hpp"
+
+#endif  /* _MATH_STUDENTDIST_H_ */

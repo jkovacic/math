@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{DiffGeneric.h}
+ * @headername{Diff.h}
  *
  * Declaration of functions within the namespace Diff with that
  * perform numerical differentiation of continuous functions.

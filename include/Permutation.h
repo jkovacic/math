@@ -20,14 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace Diff with that
- * perform numerical differentiation of continuous functions.
+ * Declaration of the class PermutationGeneric that gradually lists
+ * all permutations of a sequence of objects.
  */
 
+#ifndef _MATH_PERMUTATION_H_
+#define _MATH_PERMUTATION_H_
 
-#ifndef _MATH_DIFFGENERIC_H_
-#define _MATH_DIFFGENERIC_H_
+#include "combinatorics/PermutationGeneric.hpp"
 
-#include "calculus/DiffGeneric.hpp"
-
-#endif  /*  _MATH_DIFFGENERIC_H_  */
+#endif  /*  _MATH_PERMUTATION_H_  */

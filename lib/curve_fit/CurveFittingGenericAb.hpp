@@ -20,7 +20,6 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{CurveFittingGenericAb.h}
  *
  * Declaration of the class CurveFittingGenericAb.h. This is an
  * abstract class, its derived classes implement various

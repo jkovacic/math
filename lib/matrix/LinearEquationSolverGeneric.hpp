@@ -20,7 +20,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{LinearEquationSolverGeneric.h}
+ * @headername{LinearEquationSolver.h}
  *
  * Declaration of functions within namespace LinearEquationSolver for
  * solving systems of linear equations.

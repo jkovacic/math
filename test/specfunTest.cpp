@@ -32,7 +32,7 @@ limitations under the License.
 #include <iostream>
 #include <complex>
 
-#include "SpecFunGeneric.h"
+#include "SpecFun.h"
 #include "SpecFunException.h"
 
 using namespace std;

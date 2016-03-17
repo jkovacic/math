@@ -1,5 +1,5 @@
 /*
-Copyright 2014, Jernej Kovacic
+Copyright 2015, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,12 +20,16 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class QuaternionGeneric, representing quaternions.
+ * Declaration of functions within the namespace ContUniformDist
+ * that perform various continuous unform (a.k.a. rectangular) distribution
+ * related operations, such as calculation of upper and lower tail probabilities
+ * and quantiles, probability distribution function, etc.
  */
 
-#ifndef _MATH_QUATERNIONGENERIC_H_
-#define _MATH_QUATERNIONGENERIC_H_
 
-#include "quaternion/QuaternionGeneric.hpp"
+#ifndef _MATH_CONTUNIFORMDIST_H_
+#define _MATH_CONTUNIFORMDIST_H_
 
-#endif  /*  _MATH_QUATERNIONGENERIC_H_  */
+#include "statistics/dist/ContUniformDistGeneric.hpp"
+
+#endif  /* _MATH_CONTUNIFORMDIST_H_ */

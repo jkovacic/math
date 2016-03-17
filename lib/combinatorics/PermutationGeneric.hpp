@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  * 
  * An internal header file, it should not be included directly.
- * @headername{PermutationGeneric.h}
+ * @headername{Permutation.h}
  *
  * Declaration of the class PermutationGeneric that gradually lists
  * all permutations of a sequence of objects.

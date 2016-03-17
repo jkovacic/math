@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{SelectionGeneric.h}
+ * @headername{Selection.h}
  *
  * Declaration of functions within the namespace Selection
  * that select the i.th largest/smallest element of a vector.

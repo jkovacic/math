@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{NormalDistGeneric.h}
+ * @headername{NormalDist.h}
  *
  * Declaration of functions within the namespace NormalDist
  * that perform various normal distribution related operations,

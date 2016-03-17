@@ -31,7 +31,7 @@ limitations under the License.
 #include <iostream>
 #include <vector>
 
-#include "PolynomialGeneric.h"
+#include "Polynomial.h"
 #include "PolynomialException.h"
 
 using namespace std;

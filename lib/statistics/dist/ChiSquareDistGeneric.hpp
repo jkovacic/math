@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{ChiSquareDistGeneric.h}
+ * @headername{ChiSquareDist.h}
  *
  * Declaration of functions within the namespace ChiSquareDist
  * that perform various chi-squared distribution related

@@ -31,7 +31,7 @@ limitations under the License.
 #include <iostream>
 #include <complex>
 
-#include "MatrixGeneric.h"
+#include "Matrix.h"
 #include "MatrixException.h"
 
 

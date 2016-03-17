@@ -1,5 +1,5 @@
 /*
-Copyright 2015, Jernej Kovacic
+Copyright 2014, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,16 +20,15 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace FDist
- * that perform various F-distribution (a.k.a.Fisher - Snedecor distribution)
- * related operations, such as calculation of upper and lower tail
- * probabilities and quantiles, probability distribution function, etc.
+ * Declaration of the namespace IntExponentiator with
+ * functions for efficient calculation of powers of
+ * positive integer exponents.
  */
 
 
-#ifndef _MATH_FDISTGENERIC_H_
-#define _MATH_FDISTGENERIC_H_
+#ifndef _MATH_INTEXPONENTIATOR_H_
+#define _MATH_INTEXPONENTIATOR_H_
 
-#include "statistics/dist/FDistGeneric.hpp"
+#include "int_util/IntExponentiatorGeneric.hpp"
 
-#endif  /* _MATH_FDISTGENERIC_H_ */
+#endif  /* _MATH_INTEXPONENTIATOR_H_ */

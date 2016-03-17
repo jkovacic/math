@@ -20,14 +20,14 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions in the namespace SampleStat that calculate sample's
- * sum, mean, variance, standard deviation, covariance, Pearson's r
- * (correlation), r squared, etc.
+ * Declaration of functions within the namespace Diff with that
+ * perform numerical differentiation of continuous functions.
  */
 
-#ifndef _MATH_SAMPLESTATGENERIC_H_
-#define _MATH_SAMPLESTATGENERIC_H_
 
-#include "statistics/SampleStatGeneric.hpp"
+#ifndef _MATH_DIFF_H_
+#define _MATH_DIFF_H_
 
-#endif  /*  _MATH_SAMPLESTATGENERIC_H_  */
+#include "calculus/DiffGeneric.hpp"
+
+#endif  /*  _MATH_DIFF_H_  */

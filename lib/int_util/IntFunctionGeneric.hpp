@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{IntFunctionGeneric.h}
+ * @headername{IntFunction.h}
  *
  * Declaration of the namespace IntFunction with
  * some elementary functions, "specialized" for integer numbers.

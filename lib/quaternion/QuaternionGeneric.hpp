@@ -20,7 +20,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{QuaternionGeneric.h}
+ * @headername{Quaternion.h}
  *
  * Declaration of the class QuaternionGeneric, representing quaternions.
  */

@@ -20,13 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class CombinationGeneric that gradually lists
- * all combinations of a sequence of objects.
+ * Declaration of the class PolynomialFittingGenericAb.h that calculates
+ * a regression polynomial using the method of least squares.
  */
 
-#ifndef _MATH_COMBINATIONGENERIC_H_
-#define _MATH_COMBINATIONGENERIC_H_
+#ifndef _MATH_POLYNOMIALREGRESSION_H_
+#define _MATH_POLYNOMIALREGRESSION_H_
 
-#include "combinatorics/CombinationGeneric.hpp"
+#include "curve_fit/PolynomialRegressionGeneric.hpp"
 
-#endif  /*  _MATH_COMBINATIONGENERIC_H_  */
+#endif  /*  _MATH_POLYNOMIALREGRESSION_H_  */

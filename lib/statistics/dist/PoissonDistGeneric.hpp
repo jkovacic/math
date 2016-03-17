@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{PoissonDistGeneric.h}
+ * @headername{PoissonDist.h}
  *
  * Declaration of functions within the namespace PoissonDist
  * that perform various Poisson distribution related operations,

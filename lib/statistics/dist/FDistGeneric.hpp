@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{FDistGeneric.h}
+ * @headername{FDist.h}
  *
  * Declaration of functions within the namespace FDist
  * that perform various F-distribution (a.k.a.Fisher - Snedecor distribution)

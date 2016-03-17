@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{IntExponentiatorGeneric.h}
+ * @headername{IntExponentiator.h}
  *
  * Declaration of the namespace IntExponentiator with
  * functions for efficient calculation of powers of

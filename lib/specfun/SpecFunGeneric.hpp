@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{SpecFunGeneric.h}
+ * @headername{SpecFun.h}
  *
  * Declaration of special functions in the namespace SpecFun.
  */

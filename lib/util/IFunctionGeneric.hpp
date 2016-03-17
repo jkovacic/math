@@ -18,6 +18,9 @@ limitations under the License.
  * @file
  * @author Jernej Kovacic
  *
+ * An internal header file, it should not be included directly.
+ * @headername{IFunction.h}
+ *
  * Declaration of the base class IFunctionGeneric
  */
 

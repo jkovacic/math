@@ -20,13 +20,12 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace RootFind with several
- * root finding algorithms.
+ * Declaration of special functions in the namespace SpecFun.
  */
 
-#ifndef _MATH_ROOTFINDGENERIC_H_
-#define _MATH_ROOTFINDGENERIC_H_
+#ifndef _MATH_SPECFUN_H_
+#define _MATH_SPECFUN_H_
 
-#include "root_find/RootFindGeneric.hpp"
+#include "specfun/SpecFunGeneric.hpp"
 
-#endif  /*  _MATH_ROOTFINDGENERIC_H_  */
+#endif  /*  _MATH_SPECFUN_H_  */

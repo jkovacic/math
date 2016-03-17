@@ -20,7 +20,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{MatrixGeneric.h}
+ * @headername{Matrix.h}
  *
  * Declaration of the class MatrixGeneric, representing generic matrices.
  */

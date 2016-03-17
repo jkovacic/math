@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  * 
  * An internal header file, it should not be included directly.
- * @headername{IntCombinatoricsGeneric.h}
+ * @headername{IntCombinatorics.h}
  *
  * Declaration of the namespace IntCombinatorics with functions 
  * for calculation of factorials, binomial coefficients, etc.

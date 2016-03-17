@@ -32,8 +32,8 @@ limitations under the License.
 #include <cmath>
 
 #include "NumericUtil.h"
-#include "IFunctionGeneric.h"
-#include "RootFindGeneric.h"
+#include "IFunction.h"
+#include "RootFind.h"
 #include "FunctionException.h"
 #include "RootFindException.h"
 

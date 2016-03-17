@@ -20,13 +20,17 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class MatrixGeneric, representing
- * generic matrices.
+ * Declaration of functions within the namespace NormalDist
+ * that perform various normal distribution related operations,
+ * such as calculation of upper and lower tail probabilities and
+ * quantiles, calculation of z statistics, probability
+ * distribution function, etc.
  */
 
-#ifndef _MATH_MATRIXGENERIC_H_
-#define _MATH_MATRIXGENERIC_H_
 
-#include "matrix/MatrixGeneric.hpp"
+#ifndef _MATH_NORMALDIST_H_
+#define _MATH_NORMALDIST_H_
 
-#endif  /*  _MATH_MATRIXGENERIC_H_  */
+#include "statistics/dist/NormalDistGeneric.hpp"
+
+#endif  /* _MATH_NORMALDIST_H_ */

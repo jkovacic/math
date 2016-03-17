@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{IntegGeneric.h}
+ * @headername{Integ.h}
  *
  * Declaration of the namespace Integ with functions that
  * perform numerical integration of continuous functions.

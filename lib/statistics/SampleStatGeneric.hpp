@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{SampleStatGeneric.h}
+ * @headername{SampleStat.h}
  *
  * Declaration of functions in the namespace SampleStat that calculate sample's
  * sum, mean, variance, standard deviation, covariance, Pearson's r

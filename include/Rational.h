@@ -20,13 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class SampleQuantileGeneric that estimates
- * quantiles of a sample.
+ * Declaration of the class Rational, representing mathematical rational numbers,
+ * i.e. reduced fractions of two integers.
  */
 
-#ifndef _MATH_SAMPLEQUANTILEGENERIC_H_
-#define _MATH_SAMPLEQUANTILEGENERIC_H_
+#ifndef _MATH_RATIONAL_H_
+#define _MATH_RATIONAL_H_
 
-#include "statistics/SampleQuantileGeneric.hpp"
+#include "rational/RationalGeneric.hpp"
 
-#endif  /*  _MATH_SAMPLEQUANTILEGENERIC_H_  */
+#endif  /*  _MATH_RATIONALGENERIC_H_  */

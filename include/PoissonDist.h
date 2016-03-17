@@ -1,5 +1,5 @@
 /*
-Copyright 2014, Jernej Kovacic
+Copyright 2015, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,13 +20,16 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the virtual class IFunctionGeneric.
+ * Declaration of functions within the namespace PoissonDist
+ * that perform various Poisson distribution related operations,
+ * such as calculation of upper and lower tail probabilities and
+ * quantiles, probability mass function, etc.
  */
 
 
-#ifndef _MATH_IFUNCTIONGENERIC_H_
-#define _MATH_IFUNCTIONGENERIC_H_
+#ifndef _MATH_POISSONDIST_H_
+#define _MATH_POISSONDIST_H_
 
-#include "util/IFunctionGeneric.hpp"
+#include "statistics/dist/PoissonDistGeneric.hpp"
 
-#endif  /*  _MATH_IFUNCTIONGENERIC_H_  */
+#endif  /* _MATH_POISSONDIST_H_ */

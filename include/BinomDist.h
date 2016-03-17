@@ -1,5 +1,5 @@
 /*
-Copyright 2014, Jernej Kovacic
+Copyright 2015, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,13 +20,16 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class PermutationGeneric that gradually lists
- * all permutations of a sequence of objects.
+ * Declaration of functions within the namespace BinomDist
+ * that perform various binomial distribution related operations,
+ * such as calculation of upper and lower tail probabilities and
+ * quantiles, probability mass function, etc.
  */
 
-#ifndef _MATH_PERMUTATIONGENERIC_H_
-#define _MATH_PERMUTATIONGENERIC_H_
 
-#include "combinatorics/PermutationGeneric.hpp"
+#ifndef _MATH_BINOMDIST_H_
+#define _MATH_BINOMDIST_H_
 
-#endif  /*  _MATH_PERMUTATIONGENERIC_H_  */
+#include "statistics/dist/BinomDistGeneric.hpp"
+
+#endif  /* _MATH_BINOMDIST_H_ */

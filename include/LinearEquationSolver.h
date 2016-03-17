@@ -20,15 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the namespace IntExponentiator with
- * functions for efficient calculation of powers of
- * positive integer exponents.
+ * Declaration of functions within namespace LinearEquationSolver for
+ * solving systems of linear equations.
  */
 
+#ifndef _MATH_LINEAREQUATIONSOLVER_H_
+#define _MATH_LINEAREQUATIONSOLVER_H_
 
-#ifndef _MATH_INTEXPONENTIATORGENERIC_H_
-#define _MATH_INTEXPONENTIATORGENERIC_H_
+#include "matrix/LinearEquationSolverGeneric.hpp"
 
-#include "int_util/IntExponentiatorGeneric.hpp"
-
-#endif  /* _MATH_INTEXPONENTIATORGENERIC_H_ */
+#endif  /*  _LINEAREQUATIONSOLVERGENERIC_H_  */

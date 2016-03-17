@@ -34,8 +34,8 @@ limitations under the License.
 #include <list>
 #include <set>
 
-#include "PermutationGeneric.h"
-#include "CombinationGeneric.h"
+#include "Permutation.h"
+#include "Combination.h"
 #include "CombinatoricsException.h"
 
 

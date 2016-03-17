@@ -31,8 +31,8 @@ limitations under the License.
 #include <iostream>
 #include <complex>
 
-#include "MatrixGeneric.h"
-#include "LinearEquationSolverGeneric.h"
+#include "Matrix.h"
+#include "LinearEquationSolver.h"
 #include "MatrixException.h"
 
 

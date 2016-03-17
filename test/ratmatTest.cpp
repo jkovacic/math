@@ -30,8 +30,8 @@ limitations under the License.
 
 #include <iostream>
 
-#include "RationalGeneric.h"
-#include "MatrixGeneric.h"
+#include "Rational.h"
+#include "Matrix.h"
 
 #include "MatrixException.h"
 #include "RationalException.h"

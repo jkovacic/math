@@ -1,5 +1,5 @@
 /*
-Copyright 2015, Jernej Kovacic
+Copyright 2014, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,16 +20,12 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace ChiSquareDist
- * that perform various chi-squared distribution related
- * operations, such as calculation of upper and lower tail
- * probabilities and quantiles, probability distribution function, etc.
+ * Declaration of the class PolynomialGeneric, representing polynomials.
  */
 
+#ifndef _MATH_POLYNOMIAL_H_
+#define _MATH_POLYNOMIAL_H_
 
-#ifndef _MATH_CHISQUARETDISTGENERIC_H_
-#define _MATH_CHISQUARETDISTGENERIC_H_
+#include "polynomial/PolynomialGeneric.hpp"
 
-#include "statistics/dist/ChiSquareDistGeneric.hpp"
-
-#endif  /* _MATH_CHISQUARETDISTGENERIC_H_ */
+#endif  /*  _MATH_POLYNOMIAL_H_  */

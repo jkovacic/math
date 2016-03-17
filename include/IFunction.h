@@ -20,12 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of special functions in the namespace SpecFun.
+ * Declaration of the virtual class IFunctionGeneric.
  */
 
-#ifndef _MATH_SPECFUNGENERIC_H_
-#define _MATH_SPECFUNGENERIC_H_
 
-#include "specfun/SpecFunGeneric.hpp"
+#ifndef _MATH_IFUNCTION_H_
+#define _MATH_IFUNCTION_H_
 
-#endif  /*  _MATH_SPECFUNGENERIC_H_  */
+#include "util/IFunctionGeneric.hpp"
+
+#endif  /*  _MATH_IFUNCTION_H_  */

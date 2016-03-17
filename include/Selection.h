@@ -1,5 +1,5 @@
 /*
-Copyright 2014, Jernej Kovacic
+Copyright 2015, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the namespace Integ with functions that
- * perform numerical integration of continuous functions.
+ * Declaration of functions within the namespace Selection
+ * that select the i.th largest/smallest element of a vector.
  */
 
 
-#ifndef _MATH_INTEGGENERIC_H_
-#define _MATH_INTEGGENERIC_H_
+#ifndef _MATH_SELECTION_H_
+#define _MATH_SELECTION_H_
 
-#include "calculus/IntegGeneric.hpp"
+#include "util/SelectionGeneric.hpp"
 
-#endif  /*  _MATH_INTEGGENERIC_H_  */
+#endif  /* _MATH_SELECTION_H_ */

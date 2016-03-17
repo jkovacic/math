@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{BinomDistGeneric.h}
+ * @headername{BinomDist.h}
  *
  * Declaration of functions within the namespace BinomDist
  * that perform various binomial distribution related operations,

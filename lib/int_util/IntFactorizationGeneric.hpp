@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  * 
  * An internal header file, it should not be included directly.
- * @headername{IntFactorizationGeneric.h}
+ * @headername{IntFactorization.h}
  *
  * Declaration of the namespace IntFactorization with
  * functions for factorization of integers and some 

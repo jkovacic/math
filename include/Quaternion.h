@@ -20,13 +20,12 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class PolynomialFittingGenericAb.h that calculates
- * a regression polynomial using the method of least squares.
+ * Declaration of the class QuaternionGeneric, representing quaternions.
  */
 
-#ifndef _MATH_POLYNOMIALREGRESSIONGENERIC_H_
-#define _MATH_POLYNOMIALREGRESSIONGENERIC_H_
+#ifndef _MATH_QUATERNION_H_
+#define _MATH_QUATERNION_H_
 
-#include "curve_fit/PolynomialRegressionGeneric.hpp"
+#include "quaternion/QuaternionGeneric.hpp"
 
-#endif  /*  _MATH_POLYNOMIALREGRESSIONGENERIC_H_  */
+#endif  /*  _MATH_QUATERNION_H_  */

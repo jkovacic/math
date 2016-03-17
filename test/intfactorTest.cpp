@@ -32,7 +32,7 @@ limitations under the License.
 #include <map>
 #include <set>
 
-#include "IntFactorizationGeneric.h"
+#include "IntFactorization.h"
 #include "IntFactorizationException.h"
 
 

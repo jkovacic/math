@@ -31,9 +31,9 @@ limitations under the License.
 #include <iostream>
 #include <cmath>
 
-#include "IFunctionGeneric.h"
-#include "IntegGeneric.h"
-#include "DiffGeneric.h"
+#include "IFunction.h"
+#include "Integ.h"
+#include "Diff.h"
 #include "FunctionException.h"
 #include "CalculusException.h"
 

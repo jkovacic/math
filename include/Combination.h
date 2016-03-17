@@ -20,13 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class Rational, representing mathematical rational numbers,
- * i.e. reduced fractions of two integers.
+ * Declaration of the class CombinationGeneric that gradually lists
+ * all combinations of a sequence of objects.
  */
 
-#ifndef _MATH_RATIONALGENERIC_H_
-#define _MATH_RATIONALGENERIC_H_
+#ifndef _MATH_COMBINATION_H_
+#define _MATH_COMBINATION_H_
 
-#include "rational/RationalGeneric.hpp"
+#include "combinatorics/CombinationGeneric.hpp"
 
-#endif  /*  _MATH_RATIONALGENERIC_H_  */
+#endif  /*  _MATH_COMBINATION_H_  */

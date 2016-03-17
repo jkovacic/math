@@ -20,7 +20,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{PolynomialRegressionGeneric.h}
+ * @headername{PolynomialRegression.h}
  *
  * Declaration of the class PolynomialFittingGenericAb.h that calculates 
  * a regression polynomial using the method of least squares.

@@ -31,11 +31,11 @@ limitations under the License.
 
 #include <iostream>
 
-#include "IntExponentiatorGeneric.h"
-#include "MatrixGeneric.h"
-#include "QuaternionGeneric.h"
-#include "RationalGeneric.h"
-#include "PolynomialGeneric.h"
+#include "IntExponentiator.h"
+#include "Matrix.h"
+#include "Quaternion.h"
+#include "Rational.h"
+#include "Polynomial.h"
 #include "MatrixException.h"
 #include "QuaternionException.h"
 #include "RationalException.h"

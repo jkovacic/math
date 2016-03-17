@@ -1,5 +1,5 @@
 /*
-Copyright 2014, Jernej Kovacic
+Copyright 2015, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,13 +20,16 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within namespace LinearEquationSolver for
- * solving systems of linear equations.
+ * Declaration of functions within the namespace FDist
+ * that perform various F-distribution (a.k.a.Fisher - Snedecor distribution)
+ * related operations, such as calculation of upper and lower tail
+ * probabilities and quantiles, probability distribution function, etc.
  */
 
-#ifndef _MATH_LINEAREQUATIONSOLVERGENERIC_H_
-#define _MATH_LINEAREQUATIONSOLVERGENERIC_H_
 
-#include "matrix/LinearEquationSolverGeneric.hpp"
+#ifndef _MATH_FDIST_H_
+#define _MATH_FDIST_H_
 
-#endif  /*  _LINEAREQUATIONSOLVERGENERIC_H_  */
+#include "statistics/dist/FDistGeneric.hpp"
+
+#endif  /* _MATH_FDIST_H_ */

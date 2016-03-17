@@ -20,7 +20,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{RationalGeneric.h}
+ * @headername{Rational.h}
  *
  * Declaration of the class RationalGeneric, representing mathematical
  * rational numbers, i.e. reduced fractions of two integers.

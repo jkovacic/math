@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  * 
  * An internal header file, it should not be included directly.
- * @headername{CombinationGeneric.h}
+ * @headername{Combination.h}
  *
  * Declaration of the class CombinationGeneric that gradually lists
  * all combinations of a sequence of objects.

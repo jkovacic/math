@@ -30,8 +30,8 @@ limitations under the License.
 
 #include <iostream>
 
-#include "PolynomialRegressionGeneric.h"
-#include "PolynomialInterpolationGeneric.h"
+#include "PolynomialRegression.h"
+#include "PolynomialInterpolation.h"
 #include "CurveFittingException.h"
 
 using namespace std;

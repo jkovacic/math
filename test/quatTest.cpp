@@ -30,7 +30,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "QuaternionGeneric.h"
+#include "Quaternion.h"
 #include "QuaternionException.h"
 
 

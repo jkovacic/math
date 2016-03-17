@@ -1,5 +1,5 @@
 /*
-Copyright 2015, Jernej Kovacic
+Copyright 2014, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,16 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace PoissonDist
- * that perform various Poisson distribution related operations,
- * such as calculation of upper and lower tail probabilities and
- * quantiles, probability mass function, etc.
+ * Declaration of the class SampleQuantileGeneric that estimates
+ * quantiles of a sample.
  */
 
+#ifndef _MATH_SAMPLEQUANTILE_H_
+#define _MATH_SAMPLEQUANTILE_H_
 
-#ifndef _MATH_POISSONDISTGENERIC_H_
-#define _MATH_POISSONDISTGENERIC_H_
+#include "statistics/SampleQuantileGeneric.hpp"
 
-#include "statistics/dist/PoissonDistGeneric.hpp"
-
-#endif  /* _MATH_POISSONDISTGENERIC_H_ */
+#endif  /*  _MATH_SAMPLEQUANTILE_H_  */

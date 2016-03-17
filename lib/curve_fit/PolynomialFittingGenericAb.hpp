@@ -20,7 +20,6 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{PolynomialFittingGenericAb.h}
  *
  * Declaration of the class PolynomialFittingGenericAb.h. This is an 
  * abstract class with some functionality common to all derived classes

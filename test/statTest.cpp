@@ -35,8 +35,8 @@ limitations under the License.
 #include <new>
 
 #include "mtcopy.h"
-#include "SampleStatGeneric.h"
-#include "SampleQuantileGeneric.h"
+#include "SampleStat.h"
+#include "SampleQuantile.h"
 #include "StatisticsException.h"
 
 using namespace std;

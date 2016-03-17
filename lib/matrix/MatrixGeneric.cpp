@@ -1399,7 +1399,7 @@ void math::MatrixGeneric<T>::__minmaxRowCol(const math::MatrixGeneric<T>& m, con
         }  // for j
 
         /*
-         * 'temp' ids now the subarray's minimum/maximum and can be written
+         * 'temp' is now the subarray's minimum/maximum and can be written
          * into 'this'. Note that 'this' is actually a one dimensionla vector,
          * hence 'temp' can be written directly into the appropriate position
          * of 'm_elems'.

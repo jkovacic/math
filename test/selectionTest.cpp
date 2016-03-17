@@ -34,7 +34,7 @@ limitations under the License.
 #include <new>
 
 #include "mtcopy.h"
-#include "SelectionGeneric.h"
+#include "Selection.h"
 #include "SelectionException.h"
 
 using namespace std;

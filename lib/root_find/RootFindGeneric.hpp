@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{RootFindGeneric.h}
+ * @headername{RootFind.h}
  *
  * Declaration of functions within the namespace RootFind with several
  * root finding algorithms.

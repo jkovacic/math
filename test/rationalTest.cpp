@@ -30,7 +30,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "RationalGeneric.h"
+#include "Rational.h"
 #include "RationalException.h"
 
 

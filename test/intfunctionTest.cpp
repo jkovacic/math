@@ -30,7 +30,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "IntFunctionGeneric.h"
+#include "IntFunction.h"
 #include "IntFunctionException.h"
 
 

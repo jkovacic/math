@@ -31,13 +31,13 @@ limitations under the License.
 
 #include <iostream>
 
-#include "NormalDistGeneric.h"
-#include "StudentDistGeneric.h"
-#include "ChiSquareDistGeneric.h"
-#include "FDistGeneric.h"
-#include "ContUniformDistGeneric.h"
-#include "BinomDistGeneric.h"
-#include "PoissonDistGeneric.h"
+#include "NormalDist.h"
+#include "StudentDist.h"
+#include "ChiSquareDist.h"
+#include "FDist.h"
+#include "ContUniformDist.h"
+#include "BinomDist.h"
+#include "PoissonDist.h"
 
 #include "StatisticsException.h"
 

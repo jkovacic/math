@@ -20,17 +20,14 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace NormalDist
- * that perform various normal distribution related operations,
- * such as calculation of upper and lower tail probabilities and
- * quantiles, calculation of z statistics, probability
- * distribution function, etc.
+ * Declaration of the namespace Integ with functions that
+ * perform numerical integration of continuous functions.
  */
 
 
-#ifndef _MATH_NORMALDISTGENERIC_H_
-#define _MATH_NORMALDISTGENERIC_H_
+#ifndef _MATH_INTEG_H_
+#define _MATH_INTEG_H_
 
-#include "statistics/dist/NormalDistGeneric.hpp"
+#include "calculus/IntegGeneric.hpp"
 
-#endif  /* _MATH_NORMALDISTGENERIC_H_ */
+#endif  /*  _MATH_INTEG_H_  */

@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{ContUniformDistGeneric.h}
+ * @headername{ContUniformDist.h}
  *
  * Declaration of functions within the namespace ContUniformDist
  * that perform various continuous unform (a.k.a. rectangular) distribution

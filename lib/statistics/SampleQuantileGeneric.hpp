@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{SampleQuantileGeneric.h}
+ * @headername{SampleQuantile.h}
  *
  * Declaration of the class SampleQuantileGeneric that estimates
  * quantiles of a sample.

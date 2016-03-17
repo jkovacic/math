@@ -1,5 +1,5 @@
 /*
-Copyright 2015, Jernej Kovacic
+Copyright 2014, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,16 +20,14 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace ContUniformDist
- * that perform various continuous unform (a.k.a. rectangular) distribution
- * related operations, such as calculation of upper and lower tail probabilities
- * and quantiles, probability distribution function, etc.
+ * Declaration of functions in the namespace SampleStat that calculate sample's
+ * sum, mean, variance, standard deviation, covariance, Pearson's r
+ * (correlation), r squared, etc.
  */
 
+#ifndef _MATH_SAMPLESTAT_H_
+#define _MATH_SAMPLESTAT_H_
 
-#ifndef _MATH_CONTUNIFORMDISTGENERIC_H_
-#define _MATH_CONTUNIFORMDISTGENERIC_H_
+#include "statistics/SampleStatGeneric.hpp"
 
-#include "statistics/dist/ContUniformDistGeneric.hpp"
-
-#endif  /* _MATH_CONTUNIFORMDISTGENERIC_H_ */
+#endif  /*  _MATH_SAMPLESTAT_H_  */

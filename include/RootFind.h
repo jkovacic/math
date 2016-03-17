@@ -1,5 +1,5 @@
 /*
-Copyright 2015, Jernej Kovacic
+Copyright 2014, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of functions within the namespace Selection
- * that select the i.th largest/smallest element of a vector.
+ * Declaration of functions within the namespace RootFind with several
+ * root finding algorithms.
  */
 
+#ifndef _MATH_ROOTFIND_H_
+#define _MATH_ROOTFIND_H_
 
-#ifndef _MATH_SELECTIONGENERIC_H_
-#define _MATH_SELECTIONGENERIC_H_
+#include "root_find/RootFindGeneric.hpp"
 
-#include "util/SelectionGeneric.hpp"
-
-#endif  /* _MATH_SELECTIONGENERIC_H_ */
+#endif  /*  _MATH_ROOTFIND_H_  */

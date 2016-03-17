@@ -30,7 +30,7 @@ limitations under the License.
 
 #include <iostream>
 
-#include "IntCombinatoricsGeneric.h"
+#include "IntCombinatorics.h"
 #include "CombinatoricsException.h"
 
 

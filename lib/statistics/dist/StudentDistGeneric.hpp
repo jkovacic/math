@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{StudentDistGeneric.h}
+ * @headername{StudentDist.h}
  *
  * Declaration of functions within the namespace StudentDist
  * that perform various Student's (Gosset's) distribution related
