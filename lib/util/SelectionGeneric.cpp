@@ -290,33 +290,86 @@ std::vector<std::size_t>& fillIndices(
 }
 
 
+/**
+ * Allocates the vector 'dest' and fills in with pointers to all
+ * elements of 'x'.
+ * 
+ * @param x - vector of elements
+ * @param dest - reference to a vector to be filled with pointers to elements of 'x'
+ * 
+ * @return reference to 'dest'
+ * 
+ * @throw SelectionException if allocation of return vector fails
+ */
+template <typename F>
+std::vector<const F*>& fillPointers(
+        const std::vector<F>& x,
+        std::vector<const F*>& dest
+      ) throw (math::SelectionException)
+{
+    try
+    {
+        const std::size_t N = x.size();
+        dest.resize(N, NULL);
+
+        // Nothing else to do if N==0
+        if ( 0 == N )
+        {
+            return dest;
+        }
+
+        /*
+         * Assign 'dest' with pointers to x[0] .. x[N-1]
+         */
+        #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(x, dest)
+        {
+            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+            typename std::vector<F>::const_iterator srcit = x.begin() + istart;
+            typename std::vector<const F*>::iterator it = dest.begin() + istart;
+            for ( std::size_t cntr=0;
+                  cntr<elems_per_thread && it!=dest.end();
+                  ++cntr, ++srcit, ++it )
+            {
+                *it = &(*srcit);
+            }
+
+            (void) iend;
+        }  // omp parallel
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::SelectionException(math::SelectionException::OUT_OF_MEMORY);
+    }
+
+    return dest;
+}
+
+
 /*
- * "Partitions" the given subarray 'x' between 'left' and 'right, fills the
- * permutation array of indices 'idx' and returns an index 'k' s.t. all elements
- * x[idx[i<k]] are guaranteed to be less than x[idx[k]] and all elements x[idx[i>k]]
- * are guaranteed to be greater than x[idx[k]].
+ * "Partitions" the given subarray 'px' between 'left' and 'right, rearranges the
+ * array of pointers 'px' int he given range and returns an index 'k' s.t. all
+ * elements *px[i<k] are guaranteed to be less than *px[k] and all elements *px[i>k]
+ * are guaranteed to be greater than *px[k].
  *
  * @note This function is only called internally hence it is assumed that all
- *       arguments are valid, i.e., 'idx' is preallocated and of the same size as
- *       'x', left<right, etc.
+ *       arguments are valid, i.e., 'px' is preallocated, left<right, etc.
  *
- * @note The function does not modify the input vector 'x'
- *
- * @note The function only modifies elements of 'idx' in the interval left <= i <= right
+ * @note The function only rerranges elements of 'px' in the range left <= i <= right
  *
  * @note The same function is also a part of the quicksort algorithm
  *
- * @param x - vector of elements
- * @param idx - vector of indices to be rearranged
+ * @param px - vector of pointers to be rearranged
  * @param left - left margin of the partition interval
  * @param right - right margin of the partition interval
  *
- * @return 'k' that satisfies x[idx[i<k]] <= x[idx[k]] and x[idx[k]] <= x[idx[i>k]]
+ * @return 'k' that satisfies *px[i<k] <= *px[k] and *px[k] <= *px[i>k]
  */
 template <typename F>
 std::size_t partition(
-        const std::vector<F>& x,
-        std::vector<std::size_t>& idx,
+        std::vector<const F*>& px,
         const std::size_t left,
         const std::size_t right )
 {
@@ -342,13 +395,13 @@ std::size_t partition(
 
     std::size_t i = pivot + 1;
     std::size_t j = right;
-    const F pval = x.at(idx.at(pivot));
+    const F pval = *(px.at(pivot));
 
     for ( ; ; )
     {
         // Find both elements to swap
-        for ( ; i<right && x.at(idx.at(i)) < pval; ++i );
-        for ( ; j>pivot && pval < x.at(idx.at(j)); --j );
+        for ( ; i<right && *(px.at(i)) < pval; ++i );
+        for ( ; j>pivot && pval < *(px.at(j)); --j );
 
         // If the pointers have crossed, terminate the "infinite" loop
         if ( i >= j )
@@ -356,15 +409,15 @@ std::size_t partition(
             break;  // out of for(;;)
         }
 
-        // ...and swap the elements of 'idx'
-        std::swap( idx.at(i), idx.at(j) );
+        // ...and swap the elements of 'px'
+        std::swap( px.at(i), px.at(j) );
 
     }
 
-    // Move the "pivot" to its appropriate position within 'idx'.
+    // Move the "pivot" to its appropriate position within 'px'.
     if ( j != pivot )
     {
-        std::swap( idx.at(pivot), idx.at(j) );
+        std::swap( px.at(pivot), px.at(j) );
     }
 
     return j;
@@ -595,7 +648,7 @@ F math::Selection::select(
     const std::size_t N = x.size();
 
     // internal vector of indices, necessary to keep 'x' immutable
-    std::vector<std::size_t> idxTable;
+    std::vector<const F*> ptrTable;
 
     // sanity check
     if ( K >= N )
@@ -607,15 +660,14 @@ F math::Selection::select(
     const std::size_t P = ( true==smallest ? K : N-K-1 );
 
     // Allocates and fills the vector of indices
-    math::Selection::__private::fillIndices(idxTable, N);
+    math::Selection::__private::fillPointers(x, ptrTable);
 
     /*
      * The algorithm is based on the well known quicksort algorithm.
-     * It will partition the current subarray of 'idx' and narrow it
+     * It will partition the current subarray of 'ptrTable' and narrow it
      * down either to its left or right subarray, depending whether the
      * partition's return value is less or greater than 'P'
-     * return value. The procedure will repeat until the returned value
-     * equals 'P'.
+     * The procedure will repeat until the returned value equals 'P'.
      */
 
     std::size_t lo;
@@ -624,7 +676,7 @@ F math::Selection::select(
     for ( lo = 0, hi = N - 1;
           hi > lo; )
     {
-        const std::size_t pivot_pos = math::Selection::__private::partition(x, idxTable, lo, hi);
+        const std::size_t pivot_pos = math::Selection::__private::partition(ptrTable, lo, hi);
 
         if ( pivot_pos < P )
         {
@@ -638,11 +690,10 @@ F math::Selection::select(
         }
         else  // if pivot_pos == P
         {
-            // Now the idx[P] points to the P.th smallest element
+            // Now the ptrTable[P] points to the P.th smallest element
             break;  // out of the for loop
         }
     }
 
-
-    return x.at(idxTable.at(P));
+    return *(ptrTable.at(P));
 }
