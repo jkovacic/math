@@ -160,8 +160,9 @@ private:
     // a convenience function to extract the upper/lower triangular part
     void __triangPart(const bool upper, const bool lower, const bool diag);
 
-    // a convenience function that finds minimum/maximum values of each m's row or column
-    void __minmaxRowCol(const MatrixGeneric<T>& m, const bool row, const bool maxv, const bool absval) throw (MatrixException);
+    //  convenienc functions that find minimum/maximum values of each m's row or column
+    T __minmaxRowCol(const std::size_t rc, const bool row, const bool maxv, const bool absval) const throw (MatrixException);
+    void __minmaxRowsCols(const MatrixGeneric<T>& m, const bool row, const bool maxv, const bool absval) throw (MatrixException);
 
 public:
     // Constructors
@@ -214,6 +215,10 @@ public:
     MatrixGeneric<T> roundSmallElements(const T& eps) const throw(MatrixException);
 
     // Minimum or maximum values of each column/row:
+    T minRow(const std::size_t row, const bool absval = false) const throw (MatrixException);
+    T maxRow(const std::size_t row, const bool absval = false) const throw (MatrixException);
+    T minColumn(const std::size_t column, const bool absval = false) const throw (MatrixException);
+    T maxColumn(const std::size_t column, const bool absval = false) const throw (MatrixException);
     MatrixGeneric<T> minRows(const bool absval = false) const throw (MatrixException);
     MatrixGeneric<T> maxRows(const bool absval = false) const throw(MatrixException);
     MatrixGeneric<T> minColumns(const bool absval = false) const throw (MatrixException);

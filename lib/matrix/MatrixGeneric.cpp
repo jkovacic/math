@@ -1328,6 +1328,175 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::roundSmallElements(const T& eps) 
 
 
 /*
+ * A convenience function that finds the minimum or  maximum
+ * (depending on 'maxv') value of the given row or column
+ * (depending on 'row'). If requested by 'absval', the absolute
+ * minmax will be returned.
+ *
+ * @param rc - row/column number
+ * @param row - if TRUE, return minmax value of the row 'rc', otherwise minmax value of the column 'rc'
+ * @param maxv - should return row's/column's minimum (FALSE) or maximum (TRUE) value
+ * @param absval - should return minmax value of the givenrow/column?
+ *
+ * @return minimum or maximum value of the given row/column
+ *
+ * @throw MatrixException if 'rc' is invalid
+ */
+template <class T>
+T math::MatrixGeneric<T>::__minmaxRowCol(
+        const std::size_t rc,
+        const bool row,
+        const bool maxv,
+        const bool absval
+      ) const throw (math::MatrixException)
+{
+    // Is 'rc' a valid row/column number?
+    const std::size_t& ROWCOL = ( true==row ? this->m_rows : this->m_cols );
+    if ( rc >= ROWCOL )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_RANGE);
+    }
+
+    // Number of elements to check:
+    const std::size_t& N = ( true==row ? this->m_cols : this->m_rows );
+
+    /*
+     * The first value of the row/column, also
+     * the first candidate for the minmax value
+     */
+    T retVal = ( true==row ? this->at(rc, 0) : this->at(0, rc) );
+    if ( true == absval )
+    {
+        retVal = std::abs(retVal);
+    }
+
+    // Coarse grained parallelism
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                if(N>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(N, retVal)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        // The first element of the block, also the first candidate for a minmax value
+        T temp = ( true==row ? this->at(rc, istart) : this->at(istart, rc) );
+        if ( true == absval )
+        {
+            temp = std::abs(temp);
+        }
+
+        std::size_t idx = istart;
+        for (std::size_t cntr = 0;
+             cntr<elems_per_thread && idx<N;
+             ++cntr, ++idx )
+        {
+            T curr = ( true==row ? this->at(rc, idx): this->at(idx, rc) );
+            if ( true == absval )
+            {
+                curr = std::abs(curr);
+            }
+
+            // Update 'temp' depending on 'maxv'
+            temp = ( true==maxv ? std::max(temp, curr) : std::min(temp, curr) );
+        }
+
+        // prevent possible race condition when updating retVal
+        #pragma omp critical(matrixgeneric_minmaxrowcol)
+        {
+            retVal = ( true==maxv ? std::max(retVal, temp) : std::min(retVal, temp) );
+        }
+
+        (void) iend;
+    }  // omp parallel
+
+    return retVal;
+}
+
+
+/**
+ * Returns the minimum value of the given row. If requested via 'absval',
+ * the row's minimum absolute value will be returned.
+ *
+ * @param row - row number
+ * @param absval - should return the row's minimum absolute value? (default: FALSE)
+ *
+ * @return minimum value of the given row
+ *
+ * @throw MatrixException if 'row' is invalid
+ */
+template <class T>
+T math::MatrixGeneric<T>::minRow(
+        const std::size_t row,
+        const bool absval
+      ) const throw (math::MatrixException)
+{
+    return this->__minmaxRowCol(row, true, false, absval);
+}
+
+
+/**
+ * Returns the maximum value of the given row. If requested via 'absval',
+ * the row's maximum absolute value will be returned.
+ *
+ * @param row - row number
+ * @param absval - should return the row's maximum absolute value? (default: FALSE)
+ *
+ * @return maximum value of the given row
+ *
+ * @throw MatrixException if 'row' is invalid
+ */
+template <class T>
+T math::MatrixGeneric<T>::maxRow(
+        const std::size_t row,
+        const bool absval
+      ) const throw (math::MatrixException)
+{
+    return this->__minmaxRowCol(row, true, true, absval);
+}
+
+
+/**
+ * Returns the minimum value of the given column. If requested via 'absval',
+ * the column's minimum absolute value will be returned.
+ *
+ * @param column - column number
+ * @param absval - should return the column's minimum absolute value? (default: FALSE)
+ *
+ * @return minimum value of the given column
+ *
+ * @throw MatrixException if 'column' is invalid
+ */
+template <class T>
+T math::MatrixGeneric<T>::minColumn(
+        const std::size_t column,
+        const bool absval
+     ) const throw (math::MatrixException)
+{
+    return this->__minmaxRowCol(column, false, false, absval);
+}
+
+
+/**
+ * Returns the maximum value of the given column. If requested via 'absval',
+ * the column's maximum absolute value will be returned.
+ *
+ * @param column - column number
+ * @param absval - should return the column's maximum absolute value? (default: FALSE)
+ *
+ * @return maximum value of the given column
+ *
+ * @throw MatrixException if 'column' is invalid
+ */
+template <class T>
+T math::MatrixGeneric<T>::maxColumn(
+        const std::size_t column,
+        const bool absval
+      ) const throw (math::MatrixException)
+{
+    return this->__minmaxRowCol(column, false, true, absval);
+}
+
+
+/*
  * A convenience function that obtains a vector of minimum or
  * maximum (depending on 'maxv') values of each row or column
  * (depending on 'row') of the given matrix 'm' and assigns
@@ -1346,17 +1515,19 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::roundSmallElements(const T& eps) 
  * @throw MatrixException if (re)allocation of memory failed
  */
 template <class T>
-void math::MatrixGeneric<T>::__minmaxRowCol(const math::MatrixGeneric<T>& m, const bool row, const bool maxv, const bool absval) throw (math::MatrixException)
+void math::MatrixGeneric<T>::__minmaxRowsCols(
+        const math::MatrixGeneric<T>& m,
+        const bool row,
+        const bool maxv,
+        const bool absval
+      ) throw (math::MatrixException)
 {
     // dimensions of the "output" (i.e 'this'), depending on 'row':
-    const std::size_t NROWS = ( true==row ?  m.nrRows()    : 1 );
-    const std::size_t NCOLS = ( false==row ? m.nrColumns() : 1 );
+    const std::size_t NROWS = ( true==row ?  m.m_rows : 1 );
+    const std::size_t NCOLS = ( false==row ? m.m_cols : 1 );
 
     // length of the "output" vector
     const std::size_t N = ( true==row ? NROWS : NCOLS );
-
-    // length of subarrays to search their minmax values
-    const std::size_t ARRLEN = ( true==row ? m.nrColumns(): m.nrRows() );
 
     // resize itself
     this->__init(NROWS, NCOLS);
@@ -1369,43 +1540,14 @@ void math::MatrixGeneric<T>::__minmaxRowCol(const math::MatrixGeneric<T>& m, con
     for ( std::size_t i=0; i<N; ++i )
     {
         /*
-         * The first value of each row/column, also
-         * the first candidate for the minmax value
+         * Note that 'this' is actually a one dimensional vector, hence
+         * each row's/column's minmax can be written directly into the
+         * appropriate position of 'm_elems'.
          */
-        T temp = ( true==row ? m(i, 0) : m(0, i) );
-        if ( true == absval )
-        {
-            temp = std::abs(temp);
-        }
 
+        this->m_elems.at(i) = m.__minmaxRowCol(i, row, maxv, absval);
+    }
 
-        // The remaining elements in the subarray...
-        for ( std::size_t j=1; j<ARRLEN; ++j )
-        {
-            // ... obtain the next value in the subarray...
-            T currVal = ( true==row ? m(i, j) : m(j, i) );
-            if ( true == absval )
-            {
-                currVal = std::abs(currVal);
-            }
-
-            // ... compare it to 'temp' (depending on 'maxv') and
-            // reassign 'temp' if necessary.
-            if ( ( true == maxv  && currVal > temp ) ||
-                 ( false == maxv && currVal < temp ) )
-            {
-                temp = currVal;
-            }
-        }  // for j
-
-        /*
-         * 'temp' is now the subarray's minimum/maximum and can be written
-         * into 'this'. Note that 'this' is actually a one dimensionla vector,
-         * hence 'temp' can be written directly into the appropriate position
-         * of 'm_elems'.
-         */
-        this->m_elems.at(i) = temp;
-    }  //for i
 }
 
 
@@ -1423,7 +1565,7 @@ template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::minRows(const bool absval) const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> ret(1, 1);
-    ret.__minmaxRowCol(*this, true, false, absval);
+    ret.__minmaxRowsCols(*this, true, false, absval);
     return ret;
 }
 
@@ -1442,7 +1584,7 @@ template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::maxRows(const bool absval) const throw(math::MatrixException)
 {
     math::MatrixGeneric<T> ret(1, 1);
-    ret.__minmaxRowCol(*this, true, true, absval);
+    ret.__minmaxRowsCols(*this, true, true, absval);
     return ret;
 }
 
@@ -1461,7 +1603,7 @@ template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::minColumns(const bool absval) const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> ret(1, 1);
-    ret.__minmaxRowCol(*this, false, false, absval);
+    ret.__minmaxRowsCols(*this, false, false, absval);
     return ret;
 }
 
@@ -1480,7 +1622,7 @@ template <class T>
 math::MatrixGeneric<T> math::MatrixGeneric<T>::maxColumns(const bool absval) const throw (math::MatrixException)
 {
     math::MatrixGeneric<T> ret(1, 1);
-    ret.__minmaxRowCol(*this, false, true, absval);
+    ret.__minmaxRowsCols(*this, false, true, absval);
     return ret;
 }
 

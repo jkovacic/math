@@ -335,6 +335,15 @@ Swap the 2nd and the 3rd column:
 0.166667	-0.333333	0.666667
 1.22222	0.555556	-1.44444
 
+Maximum of the 1st row of 'inv': 1.11111
+Absolute maximum of the 1st row of 'inv': 1.55556
+Minimum of the 3rd row of 'inv': -1.44444
+Absolute minimum of the 3rd row of 'inv': 0.555556
+Maximum of the 1st column of 'inv': 1.22222
+Absolute maximum of the 1st column of 'inv': 1.55556
+Minimum of the 3rd column of 'inv': -1.44444
+Absolute minimum of the 3rd column of 'inv': 0.666667
+
 Maximums of each row of 'inv':
 1.11111
 0.666667
