@@ -160,7 +160,7 @@ private:
     // a convenience function to extract the upper/lower triangular part
     void __triangPart(const bool upper, const bool lower, const bool diag);
 
-    //  convenienc functions that find minimum/maximum values of each m's row or column
+    //  convenience functions that find minimum/maximum values of each m's row or column
     T __minmaxRowCol(const std::size_t rc, const bool row, const bool maxv, const bool absval) const throw (MatrixException);
     void __minmaxRowsCols(const MatrixGeneric<T>& m, const bool row, const bool maxv, const bool absval) throw (MatrixException);
 

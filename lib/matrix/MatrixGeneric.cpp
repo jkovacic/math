@@ -1328,7 +1328,7 @@ math::MatrixGeneric<T> math::MatrixGeneric<T>::roundSmallElements(const T& eps) 
 
 
 /*
- * A convenience function that finds the minimum or  maximum
+ * A convenience function that finds the minimum or maximum
  * (depending on 'maxv') value of the given row or column
  * (depending on 'row'). If requested by 'absval', the absolute
  * minmax will be returned.
@@ -1469,7 +1469,7 @@ template <class T>
 T math::MatrixGeneric<T>::minColumn(
         const std::size_t column,
         const bool absval
-     ) const throw (math::MatrixException)
+      ) const throw (math::MatrixException)
 {
     return this->__minmaxRowCol(column, false, false, absval);
 }
