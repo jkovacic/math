@@ -469,7 +469,7 @@ std::vector<std::size_t>& math::Selection::order(
      * Performs stable sort of indices, assuring that order
      * of indices remains unmodified in case of ties.
      */
-    std::stable_sort(dest.begin(), dest.end(), idxCmp);
+    std::stable_sort( dest.begin(), dest.end(), idxCmp );
 
     return dest;
 }
@@ -541,20 +541,20 @@ std::vector<std::size_t>& math::Selection::rank(
          * But in any case it is perfectly safe to assign the value 0
          * to (one of) the smallest/largest element(s)...
          */
-        dest.at(idx.at(0)) = 0;
+        dest.at( idx.at(0) ) = 0;
 
         /*
          * For all the remaining elements, the algorithm above is slightly
          * modified. x[idx[i]] is compared to the previously ranked element
          * (x[idx[i-1]]). If they are equal, just copy the previously ranked
-         * element's rank (rank[idx[i-1]]). Otherwise assign the lement x[idx[i]]
+         * element's rank (rank[idx[i-1]]). Otherwise assign the element x[idx[i]]
          * the value 'i'.
          */
-        for (std::size_t i = 1; i<N; ++i )
+        for ( std::size_t i = 1; i<N; ++i )
         {
             dest.at(idx.at(i)) =
-                ( x.at(idx.at(i-1)) == x.at(idx.at(i)) ?
-                  dest.at(idx.at(i-1)) :  i );
+                ( x.at( idx.at(i-1) ) == x.at( idx.at(i) ) ?
+                  dest.at( idx.at(i-1) ) :  i );
         }
     }
     catch ( const std::bad_alloc& ex )
