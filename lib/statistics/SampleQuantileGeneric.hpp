@@ -107,7 +107,7 @@ public:
            const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
          ) const throw (StatisticsException);
 
-    F median() const;
+    F median(const bool approx = false) const;
 
     F quartile(
            const unsigned short int q,

@@ -105,6 +105,7 @@ void statisticsTest()
         cout << endl;
         SampleQuantile q(vmpgs);
         cout << "Median: " << q.median() << " (expected: 19.2)" << endl;
+        cout << "Approx. median: " << q.median(true) << " (expected: 19.2)" << endl;
         cout << "1st quartile: " << q.quantile(1, 4) << " (expected: 15.425)" << endl;
         cout << "3rd quartile: " << q.quantile(3, 4) << " (expected: 22.800)" << endl;
         cout << "IQR: " << q.iqr() << " (expected: 7.375)" << endl;

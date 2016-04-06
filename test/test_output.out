@@ -1023,6 +1023,7 @@ Pearson's r: -0.867659 (expected: -0.8676594)
 r^2: 0.752833 (expected: 0.7528328)
 
 Median: 19.2 (expected: 19.2)
+Approx. median: 19.2 (expected: 19.2)
 1st quartile: 15.425 (expected: 15.425)
 3rd quartile: 22.8 (expected: 22.800)
 IQR: 7.375 (expected: 7.375)

@@ -446,18 +446,24 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
  *
  *   median = sorted_vector[(N-1)/2]
  *
- * If the number of observations is even, the mean of the middle
- * two elements is returned:
+ * If the number of observations is even and 'approx' equals FALSE, the
+ * exact median, i.e. the mean of the middle two elements, is returned:
  *
  *             sorted_vector[N/2 - 1] + sorted_vector[N/2]
  *   median = ---------------------------------------------
  *                                  2
  *
+ * If the number of observations is even and 'approx' equals TRUE, the
+ * approximate median is returned:
+ *
+ *   median = sorted_vector[N/2]
+ *
+ * @param approx - what to return in case of even number of observations, see above (default: FALSE)
  *
  * @return median of the sample
  */
 template <typename F>
-F math::SampleQuantileGeneric<F>::median() const
+F math::SampleQuantileGeneric<F>::median(const bool approx) const
 {
     F retVal;
     const std::size_t& N = this->m_N;
@@ -466,8 +472,25 @@ F math::SampleQuantileGeneric<F>::median() const
     if ( 0 == N % 2 )
     {
         // even number of observations
-    	std::size_t h = N / 2;
-        retVal = (x.at(h-1) + x.at(h)) / static_cast<F>(2);
+        if ( true == approx )
+        {
+            /*
+             * A quote from the Numerical Recipes, 3rd Edition, page 432
+             * (http://numerical.recipes/):
+             *
+             * "
+             *   For N > 100 we usually use k = N/2 as the median
+             *   element, formalists be damned.
+             * "
+             */
+
+            retVal = x.at(N/2);
+        }
+        else
+        {
+            std::size_t h = N / 2;
+            retVal = (x.at(h-1) + x.at(h)) / static_cast<F>(2);
+        }
     }
     else
     {
