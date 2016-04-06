@@ -45,6 +45,7 @@ math::PolynomialRegressionGeneric<F>::PolynomialRegressionGeneric()
     math::CurveFittingGenericAb<F>::_init();
 }
 
+
 /**
  * Generates a regression polynomial satisfying the least squares criteria.
  * 

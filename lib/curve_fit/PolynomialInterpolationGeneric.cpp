@@ -45,6 +45,7 @@ math::PolynomialInterpolationGeneric<F>::PolynomialInterpolationGeneric()
     math::CurveFittingGenericAb<F>::_init();
 }
 
+
 /**
  * Generates an interpolation polynomial that goes exactly 
  * through all entered points. The degree of the polynomial is

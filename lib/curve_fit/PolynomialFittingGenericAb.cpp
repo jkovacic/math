@@ -27,6 +27,7 @@ limitations under the License.
 // no #include "PolynomialFittingGenericAb.hpp" !!!
 #include "polynomial/PolynomialGeneric.hpp"
 
+
 /**
  * @return a copy of the polynomial that best fits entered points.
  * 
@@ -42,6 +43,7 @@ math::PolynomialGeneric<F> math::PolynomialFittingGenericAb<F>::getPolynomial() 
 
     return this->m_poly;
 }
+
 
 /**
  * Evaluates the best fitting polynomial at the given input value 'x'.

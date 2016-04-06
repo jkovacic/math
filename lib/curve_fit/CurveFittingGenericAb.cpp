@@ -45,6 +45,7 @@ bool math::CurveFittingGenericAb<F>::CPoint::operator<(const math::CurveFittingG
     return ( this->m_x < p.m_x );
 }
 
+
 /*
  * As an abstract class cannot have constructors, this function performs
  * some initialization tasks, common to all derived classes.
@@ -57,6 +58,7 @@ void math::CurveFittingGenericAb<F>::_init()
     // Init the linked list (delete all points from the list if any exists)
     this->m_points.clear();
 }
+
 
 /**
  * Assignment operator (=). It is only applicable for instances of the same class.
@@ -91,6 +93,7 @@ math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::operator=(const 
     return *this;
 }
 
+
 /**
  * A convenience function that copies points from 'porig' to 'this'.
  * Unlike operator=(), 'porig' can be a pointer to any instance that is derived
@@ -119,6 +122,7 @@ math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::copy(const math:
     // if all checks have passed, just reuse functionality of operator=
     return this->operator=(*dyncporig);
 }
+
 
 /**
  * Adds a point to be used for generation of the best fitting curve.
@@ -166,6 +170,7 @@ math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::enterPoint(const
     return *this;
 }
 
+
 /**
  * @return Number of all points entered
  */
@@ -175,6 +180,7 @@ std::size_t math::CurveFittingGenericAb<F>::nrPoints() const
     return m_points.size();
 }
 
+
 /**
  * @return has the curve already been generated?
  */
@@ -183,6 +189,7 @@ bool math::CurveFittingGenericAb<F>::curveReady() const
 {
     return this->m_curveGenerated;
 }
+
 
 /**
  * @return the smallest abscissa of all points entered till this moment
@@ -219,6 +226,7 @@ F math::CurveFittingGenericAb<F>::lowerBound() const throw (math::CurveFittingEx
 
     return currMin->m_x;
 }
+
 
 /**
  * @return the highest abscissa of all points entered till this moment
@@ -257,6 +265,7 @@ F math::CurveFittingGenericAb<F>::upperBound() const throw (math::CurveFittingEx
 
     return currMax->m_x;
 }
+
 
 /*
  * A convenience function to detect if any "duplicate" (with the same abscissa)
@@ -311,6 +320,7 @@ bool math::CurveFittingGenericAb<F>::_duplicatePoints() const
     return retVal;
 }
 
+
 /*
  * Sort entered points by points' abscissa values in ascending order.
  * CPoint's 'operaator<' method is used as the comparison criteria.
@@ -325,6 +335,7 @@ void math::CurveFittingGenericAb<F>::_sortPoints()
         this->m_points.sort();
     }
 }
+
 
 /*
  * Performs some necessary checks prior curve generation. If any check
@@ -350,7 +361,7 @@ void math::CurveFittingGenericAb<F>::_curveGenerationCheck() throw (math::CurveF
     }
 
     // sort the points by abscissae's values in ascending order
-    _sortPoints();
+    this->_sortPoints();
 
     // and detect any "duplicate" points
     if ( true == this->_duplicatePoints() )
@@ -358,6 +369,7 @@ void math::CurveFittingGenericAb<F>::_curveGenerationCheck() throw (math::CurveF
         throw math::CurveFittingException(math::CurveFittingException::DUPLICATE_POINTS);
     }
 }
+
 
 /**
  * Destructor
