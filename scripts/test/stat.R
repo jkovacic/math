@@ -41,7 +41,7 @@ statTest <- function()
 
   cat('\n')
   cat('Median of mpg: ', median(mtcars$mpg), '\n')
-  cat('Approx. median of mpg: ', sort(mtcars$mpg)[n %/% 2L + 1], '\n')
+  cat('Approx. median of mpg: ', sort(mtcars$mpg)[(n %/% 2L) + 1L], '\n')
   cat('1st and 3rd quartile of mpg:\n')
   print(quantile(mtcars$mpg, c(0.25, 0.75)))
   cat('IQR of mpg: ', IQR(mtcars$mpg), '\n')
@@ -53,12 +53,12 @@ statTest <- function()
   x <- mtcars$mpg;
   types <- 1:9;
   p <- c(0.01, 0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.9, 0.99);
-  alg <- 1
+  alg <- 1L
   for (t in types)
   {
     cat(alg, ': ')
     print(quantile(x, p, type=t, names=FALSE))
-    alg <- alg + 1
+    alg <- alg + 1L
   }
 
   cat('\n')
