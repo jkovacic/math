@@ -126,7 +126,7 @@ F math::SampleQuantileGeneric<F>::quantile(
  * @return estimated quantile as a function of 'h'
  */
 template <typename F>
-F math::SampleQuantileGeneric<F>::linIntrp(const F& h) const
+F math::SampleQuantileGeneric<F>::__linIntrp(const F& h) const
 {
     // "rename" the vector as it is referred in statistical publications:
     const std::vector<F>& x = this->m_v;
@@ -297,7 +297,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         }
         else
         {
-            retVal = this->linIntrp(NT * p);
+            retVal = this->__linIntrp(NT * p);
         }
 
         break;
@@ -318,7 +318,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         }
         else
         {
-            retVal = this->linIntrp(NT * p + HALF);
+            retVal = this->__linIntrp(NT * p + HALF);
         }
 
         break;
@@ -340,7 +340,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         }
         else
         {
-            retVal = this->linIntrp((NT + ONE) * p);
+            retVal = this->__linIntrp((NT + ONE) * p);
         }
 
         break;
@@ -358,7 +358,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         }
         else
         {
-            retVal = this->linIntrp((NT - ONE) * p + ONE);
+            retVal = this->__linIntrp((NT - ONE) * p + ONE);
         }
 
         break;
@@ -380,7 +380,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         }
         else
         {
-            retVal = this->linIntrp((NT + third) * p + third);
+            retVal = this->__linIntrp((NT + third) * p + third);
         }
 
         break;
@@ -404,7 +404,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         }
         else
         {
-            retVal = this->linIntrp((NT + QUARTER) * p + F_3_8);
+            retVal = this->__linIntrp((NT + QUARTER) * p + F_3_8);
         }
 
         break;
@@ -424,7 +424,7 @@ F math::SampleQuantileGeneric<F>::qntl(const F& p, const math::EQntlType::type m
         }
         else
         {
-            retVal = this->linIntrp((NT + TWO) * p - HALF);
+            retVal = this->__linIntrp((NT + TWO) * p - HALF);
         }
 
         break;

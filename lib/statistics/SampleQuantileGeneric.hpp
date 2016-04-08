@@ -145,7 +145,7 @@ public:
 
 private:
     // internally used functions:
-    F linIntrp(const F& h) const;
+    F __linIntrp(const F& h) const;
 
 };  // class SampleQuantileGeneric
 
