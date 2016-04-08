@@ -49,23 +49,20 @@ template <typename F>
 class IndexCmp
 {
 private:
-    const std::vector<F>* m_pvec;   // pointer to a vector of sample elements
-    bool m_asc;                     // should order in ascending order?
+    const std::vector<F>& m_vec;    // reference to a vector of sample elements
+    const bool m_asc;               // should order in ascending order?
 
 public:
 
     /*
-     * Constructor that accepts the pointer to a vector of elements and
+     * Constructor that accepts the reference to a vector of elements and
      * type of sorting (ascending or descending)
      *
-     * @note: as the class is used internally only, it is reasonable to assume
-     *        that'pvec' will never be NULL.
-     *
-     * @param pvec - pointer to a vector of sample elements (should not be NULL)
+     * @param vec - vector of sample elements
      * @param asc - logical value indicating whether elements' indices should be sorted in ascending (true) or descending (false) order
      */
-    IndexCmp(const std::vector<F>* pvec, const bool asc=true) :
-        m_pvec(pvec), m_asc(asc)
+    IndexCmp(const std::vector<F>& vec, const bool asc=true) :
+        m_vec(vec), m_asc(asc)
     {
         // nothing else to do
     }
@@ -84,8 +81,8 @@ public:
         // Note that sorting algorithms only require that F defines the operator '<'
 
         return ( true == this->m_asc ?
-                 ( this->m_pvec->at(a) < this->m_pvec->at(b) ) :
-                 ( -this->m_pvec->at(a) < -this->m_pvec->at(b) )  );
+                 ( this->m_vec.at(a) < this->m_vec.at(b) ) :
+                 ( -this->m_vec.at(a) < -this->m_vec.at(b) )  );
     }
 
 };  // class IndexCmp
@@ -443,10 +440,10 @@ template <typename F>
 void __selectRange(
             std::vector<const F*>& pvec,
             const std::size_t P,
-		    const std::size_t from,
+            const std::size_t from,
             const std::size_t to )
 {
-	// nothing to do if P 'P' is not in the range from..to
+    // nothing to do if P 'P' is not in the range from..to
     if ( from>to || P<from || P>to )
     {
         return;
@@ -510,13 +507,13 @@ void __selectRange(
  */
 template <typename F>
 void __selectMult(
-    const std::vector<F>& x,
-    const std::size_t K1,
-    const std::size_t K2,
-    F* const a1,
-    F* const a2,
-    const bool smallest
-  ) throw(math::SelectionException)
+            const std::vector<F>& x,
+            const std::size_t K1,
+            const std::size_t K2,
+            F* const a1,
+            F* const a2,
+            const bool smallest
+          ) throw(math::SelectionException)
 {
     if ( NULL == a1 )
     {
@@ -602,7 +599,7 @@ std::vector<std::size_t>& math::Selection::order(
         return dest;
     }
 
-    math::Selection::__private::IndexCmp<F> idxCmp(&x, asc);
+    math::Selection::__private::IndexCmp<F> idxCmp(x, asc);
 
     /*
      * Performs stable sort of indices, assuring that order
@@ -781,8 +778,8 @@ template <typename F>
 F math::Selection::select(
             const std::vector<F>& x,
             const std::size_t K,
-            const bool smallest)
-          throw (math::SelectionException)
+            const bool smallest
+          ) throw (math::SelectionException)
 {
     F retVal;
     math::Selection::__private::__selectMult(x, K, K, &retVal, static_cast<F* const>(NULL), smallest);
