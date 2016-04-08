@@ -80,6 +80,17 @@ namespace Selection
     template <typename F>
     F select(const std::vector<F>& x, const std::size_t K, const bool smallest=true) throw(SelectionException);
 
+
+    template <typename F>
+    void select2(
+            const std::vector<F>& x,
+            const std::size_t K1,
+            const std::size_t K2,
+            F& val1,
+            F& val2,
+            const bool smallest = true
+          ) throw(SelectionException);
+
 }  // namespace SampleOrder
 }  // namespace math
 

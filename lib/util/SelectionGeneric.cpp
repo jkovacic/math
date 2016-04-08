@@ -243,7 +243,7 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SelectionEx
  *
  * @throw SelectionException if allocation of the return vector fails
  */
-std::vector<std::size_t>& fillIndices(
+std::vector<std::size_t>& __fillIndices(
         std::vector<std::size_t>& dest,
         const std::size_t N )
         throw(math::SelectionException)
@@ -302,7 +302,7 @@ std::vector<std::size_t>& fillIndices(
  * @throw SelectionException if allocation of return vector fails
  */
 template <typename F>
-std::vector<const F*>& fillPointers(
+std::vector<const F*>& __fillPointers(
         const std::vector<F>& x,
         std::vector<const F*>& dest
       ) throw (math::SelectionException)
@@ -368,7 +368,7 @@ std::vector<const F*>& fillPointers(
  * @return 'k' that satisfies *px[i<k] <= *px[k] and *px[k] <= *px[i>k]
  */
 template <typename F>
-std::size_t partition(
+std::size_t __partition(
         std::vector<const F*>& px,
         const std::size_t left,
         const std::size_t right )
@@ -423,6 +423,145 @@ std::size_t partition(
     return j;
 }
 
+
+/*
+ * Finds the P.th smallest element of 'pvec' in the range between 'from' and 'to'.
+ *
+ * The function is only called internally, hence several assumptions can be made:
+ * - from < P < to
+ * - *pvec[i] < *pvec[from]  for each i < 'from'
+ * - *pvec[j] > * pvec[to]   for each j > 'to'
+ * - 'pvec' is only rearranged by previous calls of this function and the range is
+ *   narrowed down at each iteration
+ *
+ * @param pvec - vector of pointers to array's elements
+ * @param P - the ordinal
+ * @param from - lower bound of the range
+ * @param to - upper bpound of the range
+ */
+template <typename F>
+void __selectRange(
+            std::vector<const F*>& pvec,
+            const std::size_t P,
+		    const std::size_t from,
+            const std::size_t to )
+{
+	// nothing to do if P 'P' is not in the range from..to
+    if ( from>to || P<from || P>to )
+    {
+        return;
+    }
+
+
+    /*
+     * The algorithm is based on the well known quicksort algorithm.
+     * It will partition the current subarray of 'pvec' and narrow it
+     * down either to its left or right subarray, depending whether the
+     * partition's return value is less or greater than 'P'
+     * The procedure will repeat until the returned value equals 'P'.
+     */
+
+    std::size_t lo;
+    std::size_t hi;
+
+    for ( lo = from, hi = to;
+          hi > lo; )
+    {
+        const std::size_t pivot_pos = math::Selection::__private::__partition(pvec, lo, hi);
+
+        if ( pivot_pos < P )
+        {
+            // take the right subarray
+            lo = pivot_pos + 1;
+        }
+        else if ( pivot_pos > P )
+        {
+            // take the left subarray
+            hi = pivot_pos - 1;
+        }
+        else  // if pivot_pos == P
+        {
+            // Now the ptrTable[P] points to the P.th smallest element
+            break;  // out of the for loop
+        }
+    }
+}
+
+
+/*
+ * Finds k1.th and optionally K2.th smallest or largest element of
+ * the vector 'x' and assigns them/it to the location(s) pointed by
+ * 'a1' and optionally 'a2'.
+ *
+ * If 'a2' equals NULL only K1.th smallest/largest element will be selected
+ * and assigned to the location pointed by 'a1'.
+ *
+ * The function is only called internally, hence it is assumed that 'a1'
+ * will never be NULL.
+ *
+ * @param x - vector of elements
+ * @param K1 - first ordinal (between 0 and size(x)-1)
+ * @param K2 - second ordinal (between 0 and size(x)-1), ignored if a2==NULL
+ * @param a1 - pointer to assign the value of first ordinal
+ * @param a2 - pointer to asign the value of the second ordinal, ignored if NULL
+ * @param smallest - if TRUE, K1.th and optionally K2.th smallest elements will be returned, K1.th and optionally K2.th largest otherwise
+ *
+ * @throw SelectionException if 'K1' or 'K2' is invalid or if internal allocation of memory failed
+ */
+template <typename F>
+void __selectMult(
+    const std::vector<F>& x,
+    const std::size_t K1,
+    const std::size_t K2,
+    F* const a1,
+    F* const a2,
+    const bool smallest
+  ) throw(math::SelectionException)
+{
+    if ( NULL == a1 )
+    {
+        // should never occur, handle it anyway just in case
+        return;
+    }
+
+    const std::size_t N = x.size();
+
+    // internal vector of indices, necessary to keep 'x' immutable
+    std::vector<const F*> ptrTable;
+
+    // sanity check
+    if ( ( K1>=N ) || (NULL!=a2 && K2>=N) )
+    {
+        throw math::SelectionException(math::SelectionException::ARG_OUT_OF_RANGE);
+    }
+
+
+    // Regardless of 'smallest', the algorithm will always select the P.th smallest value
+    const std::size_t P1 = ( true==smallest ? K1 : N-K1-1 );
+    const std::size_t P2 = ( true==smallest ? K2 : N-K2-1 );
+
+    // Allocates and fills the vector of indices
+    math::Selection::__private::__fillPointers(x, ptrTable);
+
+    // Selects the P1.th smallest element, initially in the whole range
+    F& ret1 = *a1;
+    math::Selection::__private::__selectRange(ptrTable, P1, 0, N-1);
+    ret1 = *(ptrTable.at(P1));
+
+    if ( NULL != a2 )
+    {
+        // If requested, select the P2.th smallest element as well.
+        // At this point we are sure that the element is located in
+        // the left or right subrange of 'ptrTable'.
+        const std::size_t lb = ( P2>P1 ? P1 : 0 );
+        const std::size_t ub = ( P2>P1 ? N-1 : P1 );
+
+        F& ret2 = *a2;
+        math::Selection::__private::__selectRange(ptrTable, P2, lb, ub);
+        ret2 = *(ptrTable.at(P2));
+    }
+}
+
 }}}  // namespace math::Selection::__private
 
 
@@ -456,7 +595,7 @@ std::vector<std::size_t>& math::Selection::order(
     const std::size_t N = x.size();
 
     // allocates 'dest' and fills it with initial positions 0..(N-1)
-    math::Selection::__private::fillIndices(dest, N);
+    math::Selection::__private::__fillIndices(dest, N);
 
     if ( 0 == N )
     {
@@ -643,57 +782,41 @@ F math::Selection::select(
             const std::vector<F>& x,
             const std::size_t K,
             const bool smallest)
-          throw(math::SelectionException)
+          throw (math::SelectionException)
 {
-    const std::size_t N = x.size();
+    F retVal;
+    math::Selection::__private::__selectMult(x, K, K, &retVal, static_cast<F* const>(NULL), smallest);
+    return retVal;
+}
 
-    // internal vector of indices, necessary to keep 'x' immutable
-    std::vector<const F*> ptrTable;
 
-    // sanity check
-    if ( K >= N )
-    {
-        throw math::SelectionException(math::SelectionException::ARG_OUT_OF_RANGE);
-    }
-
-    // Regardless of 'smallest', the algorithm will always select the P.th smallest value
-    const std::size_t P = ( true==smallest ? K : N-K-1 );
-
-    // Allocates and fills the vector of indices
-    math::Selection::__private::fillPointers(x, ptrTable);
-
-    /*
-     * The algorithm is based on the well known quicksort algorithm.
-     * It will partition the current subarray of 'ptrTable' and narrow it
-     * down either to its left or right subarray, depending whether the
-     * partition's return value is less or greater than 'P'
-     * The procedure will repeat until the returned value equals 'P'.
-     */
-
-    std::size_t lo;
-    std::size_t hi;
-
-    for ( lo = 0, hi = N - 1;
-          hi > lo; )
-    {
-        const std::size_t pivot_pos = math::Selection::__private::partition(ptrTable, lo, hi);
-
-        if ( pivot_pos < P )
-        {
-            // take the right subarray
-            lo = pivot_pos + 1;
-        }
-        else if ( pivot_pos > P )
-        {
-            // take the left subarray
-            hi = pivot_pos - 1;
-        }
-        else  // if pivot_pos == P
-        {
-            // Now the ptrTable[P] points to the P.th smallest element
-            break;  // out of the for loop
-        }
-    }
-
-    return *(ptrTable.at(P));
+/**
+ * Selects the K1.th and K2.th smallest or largest elements of the vector 'x'
+ * and assigns them to variables 'val1' and 'val2', respectively.
+ *
+ * On average, the complexity of the implemented algorithm is O(n),
+ * where 'n' denotes the size of 'x'.
+ *
+ * @note The function does not modify the input vector 'x'
+ *
+ * @param x - vector of elements
+ * @param K1 - the first ordinal (between 0 and size(x)-1)
+ * @param K1 - the second ordinal (between 0 and size(x)-1)
+ * @param val1 - reference to the variable to assign the K1.th smallest/largest value of 'x'
+ * @param val2 - reference to the variable to assign the K2.th smallest/largest value of 'x'
+ * @param smallest - if TRUE, K1.th and K2.th smallest element will be returned, K1.th and K2.th largest otherwise (default: TRUE)
+ *
+ * @throw SelectionException if 'K1' or 'K2' is invalid or if internal allocation of memory failed
+ */
+template <typename F>
+void math::Selection::select2(
+            const std::vector<F>& x,
+            const std::size_t K1,
+            const std::size_t K2,
+            F& val1,
+            F& val2,
+            const bool smallest
+          ) throw (math::SelectionException)
+{
+    math::Selection::__private::__selectMult(x, K1, K2, &val1, &val2, smallest);
 }

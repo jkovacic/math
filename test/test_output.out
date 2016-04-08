@@ -113,6 +113,11 @@ Index of the largest mpg:  19 (expected: 19)
 31. largest mpg: 10.4
 32. largest mpg: 10.4
 
+5. and 16. smallest mpg: 14.7 and 19.2
+26. and 8. smallest mpg: 24.4 and 15.2
+19. and 31. largest mpg: 18.1 and 10.4
+22. and 9. largest mpg: 16.4 and 22.8
+
 Q U A T E R N I O N   T E S T
 
 zero: (0+0i+0j+0k)

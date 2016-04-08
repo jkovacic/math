@@ -115,7 +115,17 @@ void selectionTest()
         {
             cout << i<< ". largest mpg: " << Selection::select(vmpgs, i-1, false)  << endl;
         }
+        cout << endl;
 
+        double val1, val2;
+        Selection::select2(vmpgs, 5-1, 16-1, val1, val2);
+        cout << "5. and 16. smallest mpg: " << val1 << " and " << val2 << endl;
+        Selection::select2(vmpgs, 26-1, 8-1, val1, val2);
+        cout << "26. and 8. smallest mpg: " << val1 << " and " << val2 << endl;
+        Selection::select2(vmpgs, 19-1, 31-1, val1, val2, false);
+        cout << "19. and 31. largest mpg: " << val1 << " and " << val2 << endl;
+        Selection::select2(vmpgs, 22-1, 9-1, val1, val2, false);
+        cout << "22. and 9. largest mpg: " << val1 << " and " << val2 << endl;
     }
     catch ( const SelectionException& ex )
     {
