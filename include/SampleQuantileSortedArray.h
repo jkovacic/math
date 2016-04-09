@@ -1,5 +1,5 @@
 /*
-Copyright 2014, Jernej Kovacic
+Copyright 2016, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,13 +20,14 @@ limitations under the License.
  *
  * A public header, may be directly included into applications.
  *
- * Declaration of the class SampleQuantileGeneric that estimates
- * quantiles of a sample.
+ * Declaration of the class SampleQuantileSortedArrayGeneric that
+ * estimates quantiles of a sample, based on a sorted copy of the
+ * sample vector.
  */
 
-#ifndef _MATH_SAMPLEQUANTILE_H_
-#define _MATH_SAMPLEQUANTILE_H_
+#ifndef _MATH_SAMPLEQUANTILESORTEDARRAY_H_
+#define _MATH_SAMPLEQUANTILESORTEDARRAY_H_
 
-#include "statistics/SampleQuantileGeneric.hpp"
+#include "statistics/SampleQuantileSortedArrayGeneric.hpp"
 
-#endif  /*  _MATH_SAMPLEQUANTILE_H_  */
+#endif  /*  _MATH_SAMPLEQUANTILESORTEDARRAY_H_  */

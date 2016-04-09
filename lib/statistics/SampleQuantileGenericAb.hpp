@@ -1,5 +1,5 @@
 /*
-Copyright 2014, Jernej Kovacic
+Copyright 2016, Jernej Kovacic
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * An internal header file, it should not be included directly.
- * @headername{SampleQuantile.h}
  *
- * Declaration of the class SampleQuantileGeneric that estimates
- * quantiles of a sample.
+ * Declaration of the class SampleQuantileGenericAb, a superclass
+ * of all classes that estimate quantiles of a sample.
  */
 
-#ifndef _MATH_SAMPLEQUANTILEGENERIC_HPP_
-#define _MATH_SAMPLEQUANTILEGENERIC_HPP_
+
+#ifndef _MATH_SAMPLEQUANTILEGENERICAB_HPP_
+#define _MATH_SAMPLEQUANTILEGENERICAB_HPP_
 
 #include <cstddef>
 #include <vector>
@@ -73,26 +73,33 @@ struct EQntlType
 
 
 /**
- * @brief A class that estimates sample's quantile for any probability within
- * a valid range. Several estimation methods are supported.
+ * @brief A base abstarct class for all classes that estimate sample's quantile
+ * for any probability within a valid range. It supports several estimation
+ * methods, however, it relies on several pure virtual methods that are implemented
+ * in derived classes.
  *
- * The class creates its own copy of the sample vector. Consequently
- * the original sample vector (passed to the constructor) is not needed
- * anymore once the class has been instantiated.
+ * As this class is abstract, it cannot be instantiated directly.
  */
 template <typename F>
-class SampleQuantileGeneric
+class SampleQuantileGenericAb
 {
 
+protected:
+    const std::size_t m_N;
+
+protected:
+   // Constructor (called by derived classes' constructors)
+   SampleQuantileGenericAb(const std::size_t N);
+
 private:
-    std::vector<F> m_v;
-    std::size_t m_N;
+    // internally used linear interpolation to estimate noninteger ordinals
+    F __linIntrp(const F& h) const;
+
+    // pure virtual method that selects (depending on implementation) n.th smallest element
+    virtual F _select(const std::size_t n) const throw(StatisticsException) = 0;
 
 public:
-    // Constructor
-    SampleQuantileGeneric(const std::vector<F>& sample) throw (StatisticsException);
 
-    // Methods to obtain quantiles of the sample:
     std::size_t sampleSize() const;
 
     template <typename I>
@@ -116,51 +123,40 @@ public:
 
     F iqr(const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
 
-    F ecdf(const F& t) const;
+    // The following methods are pure virtual, i.e. implemented in derived classes
+    virtual F ecdf(const F& t) const = 0;
 
-    F min() const;
+    virtual F min() const = 0;
 
-    F max() const;
+    virtual F max() const = 0;
 
-    F elem(
+    virtual F elem(
            const std::size_t n, 
            const bool largest = true,
            const bool zerobase = STAT_DEFAULT_ZERO_BASE
-         ) const throw(StatisticsException);
+         ) const throw(StatisticsException) = 0;
 
-    bool isOutlier(
+    virtual bool isOutlier(
            const F& val,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
-        )  const;
+        )  const = 0;
 
-    void outliers(
+    virtual void outliers(
            std::set<F>& outl,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
-         ) const throw (StatisticsException );
+         ) const throw (StatisticsException) = 0;
 
     // Destructor
-    virtual ~SampleQuantileGeneric();
+    virtual ~SampleQuantileGenericAb();
 
-private:
-    // internally used functions:
-    F __linIntrp(const F& h) const;
-
-};  // class SampleQuantileGeneric
-
-
-// Samples with elements of types float, double and long double
-// make most sense, therefore the following types are predefined
-
-typedef SampleQuantileGeneric<float>        FSampleQuantile;
-typedef SampleQuantileGeneric<double>       SampleQuantile;
-typedef SampleQuantileGeneric<long double>  LDSampleQuantile;
+};  // class SampleQuantileGenericAb
 
 }  // namespace math
 
 
 // DEFINITION
-#include "statistics/SampleQuantileGeneric.cpp"
+#include "statistics/SampleQuantileGenericAb.cpp"
 
-#endif  // _MATH_SAMPLEQUANTILEGENERIC_HPP_
+#endif  // _MATH_SAMPLEQUANTILEGENERICAB_HPP_

@@ -36,7 +36,7 @@ limitations under the License.
 
 #include "mtcopy.h"
 #include "SampleStat.h"
-#include "SampleQuantile.h"
+#include "SampleQuantileSortedArray.h"
 #include "StatisticsException.h"
 
 using namespace std;
@@ -103,7 +103,7 @@ void statisticsTest()
 
         // Quantiles:
         cout << endl;
-        SampleQuantile q(vmpgs);
+        SampleQuantileSortedArray q(vmpgs);
         cout << "Median: " << q.median() << " (expected: 19.2)" << endl;
         cout << "Approx. median: " << q.median(true) << " (expected: 19.2)" << endl;
         cout << "1st quartile: " << q.quantile(1, 4) << " (expected: 15.425)" << endl;
