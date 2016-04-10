@@ -34,7 +34,6 @@ limitations under the License.
 #include "util/mtcopy.hpp"
 
 #include "exception/StatisticsException.hpp"
-#include "SampleQuantileSortedArrayGeneric.hpp"
 
 
 /**
