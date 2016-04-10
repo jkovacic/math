@@ -79,8 +79,9 @@ F math::SampleQuantileGenericAb<F>::__linIntrp(const F& h) const
      *   qp = x[hf-1] + (h - hf) * (x[hf] - x[hf-1])
      */
 
-    const F xhf = this->_select(math::NumericUtil::intRound<F, std::size_t>(hf));
-    const F xhf_1 = this->_select(math::NumericUtil::intRound<F, std::size_t>(hf) - 1);
+    const std::size_t ihf = math::NumericUtil::intRound<F, std::size_t>(hf);
+    F xhf, xhf_1;
+    this->_select2(ihf, ihf-1, xhf, xhf_1 );
 
     return ( xhf_1 + (h - hf) * (xhf - xhf_1));
 }
@@ -214,8 +215,12 @@ F math::SampleQuantileGenericAb<F>::qntl(const F& p, const math::EQntlType::type
         else
         {
             const F h = NT * p + HALF;
-            retVal = ( this->_select(math::NumericUtil::intCeil<F, std::size_t>(h-HALF) - 1) +
-                       this->_select(math::NumericUtil::intFloor<F, std::size_t>(h+HALF) - 1) ) * HALF;
+            F xhn, xhp;
+            this->_select2(
+                    math::NumericUtil::intCeil<F, std::size_t>(h-HALF) - 1,
+                    math::NumericUtil::intFloor<F, std::size_t>(h+HALF) - 1,
+                    xhn, xhp );
+            retVal = ( xhn + xhp ) * HALF;
         }
 
         break;
@@ -467,7 +472,9 @@ F math::SampleQuantileGenericAb<F>::median(const bool approx) const
         else
         {
             std::size_t h = N / 2;
-            retVal = (this->_select(h-1) + this->_select(h)) / static_cast<F>(2);
+            F elem1, elem2;
+            this->_select2(h-1, h, elem1, elem2);
+            retVal = (elem1 + elem2) / static_cast<F>(2);
         }
     }
     else

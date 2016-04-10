@@ -34,6 +34,7 @@ limitations under the License.
 #include "util/mtcopy.hpp"
 
 #include "exception/StatisticsException.hpp"
+#include "SampleQuantileSortedArrayGeneric.hpp"
 
 
 /**
@@ -55,8 +56,6 @@ math::SampleQuantileSortedArrayGeneric<F>::SampleQuantileSortedArrayGeneric(cons
         {
             throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
         }
-
-        //this->m_N = sample.size();
 
         // copy the 'sample' into an internal vector:
         math::mtcopy(sample, this->m_v);
@@ -87,6 +86,35 @@ F math::SampleQuantileSortedArrayGeneric<F>::_select(const std::size_t n) const 
     }
 
     return this->m_v.at(n);
+}
+
+
+/*
+ * Finds the n1.th and n2.th smallest value of the sample and assigns them
+ * to 'val1' and 'val2', respectively.
+ * 
+ * @param n1 - first ordinal
+ * @param n2 - second ordinal
+ * @param val1 - reference to the variable to assign the n1.th smallest value
+ * @param val2 - reference to the variable to assign the n2.th smallest value
+ * 
+ * @throw StatisticsExcpetion if either 'n1' or 'n2' is larger or equal to the number of elements
+ */
+template <typename F>
+void math::SampleQuantileSortedArrayGeneric<F>::_select2(
+            const std::size_t n1,
+            const std::size_t n2,
+            F& val1,
+            F& val2
+          ) const throw(math::StatisticsException)
+{
+    if ( n1>=this->m_N || n2>=this->m_N )
+    {
+        throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
+    }
+
+    val1 = this->m_v.at(n1);
+    val2 = this->m_v.at(n2);
 }
 
 

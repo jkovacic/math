@@ -68,6 +68,13 @@ private:
 protected:
     F _select(const std::size_t n) const throw(StatisticsException);
 
+    void _select2(
+            const std::size_t n1,
+            const std::size_t n2,
+            F& val1,
+            F& val2
+          ) const throw(StatisticsException);
+
 public:
     // Constructor
     SampleQuantileSortedArrayGeneric(const std::vector<F>& sample) throw(StatisticsException);
