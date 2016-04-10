@@ -65,10 +65,10 @@ private:
     // internal storage to hold a sorted copy of the sample:
     std::vector<F> m_v;
 
-protected:
-    F _select(const std::size_t n) const throw(StatisticsException);
+private:
+    virtual F _select(const std::size_t n) const throw(StatisticsException);
 
-    void _select2(
+    virtual void _select2(
             const std::size_t n1,
             const std::size_t n2,
             F& val1,
@@ -79,25 +79,25 @@ public:
     // Constructor
     SampleQuantileSortedArrayGeneric(const std::vector<F>& sample) throw(StatisticsException);
 
-    F ecdf(const F& t) const;
+    virtual F ecdf(const F& t) const;
 
-    F min() const;
+    virtual F min() const;
 
-    F max() const;
+    virtual F max() const;
 
-    F elem(
+    virtual F elem(
            const std::size_t n,
            const bool largest = true,
            const bool zerobase = STAT_DEFAULT_ZERO_BASE
          ) const throw(StatisticsException);
 
-    bool isOutlier(
+    virtual bool isOutlier(
            const F& val,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
         )  const;
 
-    void outliers(
+    virtual void outliers(
            std::set<F>& outl,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG

@@ -95,7 +95,7 @@ private:
     // internally used linear interpolation to estimate noninteger ordinals
     F __linIntrp(const F& h) const;
 
-protected:
+private:
     // pure virtual methods that select (depending on implementation) n.th smallest element(s)
     virtual F _select(const std::size_t n) const throw(StatisticsException) = 0;
 
