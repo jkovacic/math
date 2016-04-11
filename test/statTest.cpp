@@ -51,6 +51,90 @@ using namespace math;
 
 
 /*
+ * An auxiliary function that tests functionality of classes derived
+ * from SampleQuantileGenericAb. Those classes obtain quantiles and
+ * (check for) outliers.
+ */
+static void testQuantilesOutliers(
+       const SampleQuantileGenericAb<double>& q,
+       const vector<double>& vmpgs )
+{
+    // Quantiles:
+    cout << endl;
+    cout << "Median: " << q.median() << " (expected: 19.2)" << endl;
+    cout << "Approx. median: " << q.median(true) << " (expected: 19.2)" << endl;
+    cout << "1st quartile: " << q.quantile(1, 4) << " (expected: 15.425)" << endl;
+    cout << "3rd quartile: " << q.quantile(3, 4) << " (expected: 22.800)" << endl;
+    cout << "IQR: " << q.iqr() << " (expected: 7.375)" << endl;
+    cout << "63th percentile: " << q.qntl(0.63) << " (expected: 21.212)" << endl;
+    cout << "ecdf(25):   " << q.ecdf(25.0) << " (expected: 0.8125)" << endl;
+    cout << "ecdf(14.5): " << q.ecdf(14.5) << " (expected: 0.125)" << endl;
+
+    const double probs[] = { 0.01, 0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.9, 0.99 };
+    const char* exp[ N_PROBS ] =
+    {
+        "10.4\t14.3\t15.2\t17.3\t19.2\t21.0\t22.8\t30.4\t33.9",
+        "10.40\t14.30\t15.35\t17.55\t19.20\t21.20\t22.80\t30.40\t33.90",
+        "10.4\t13.3\t15.2\t17.3\t19.2\t21.0\t22.8\t30.4\t33.9",
+        "10.40\t13.50\t15.20\t17.30\t19.20\t21.00\t22.80\t29.78\t33.42",
+        "10.40\t14.00\t15.35\t17.55\t19.20\t21.20\t22.80\t30.40\t33.90",
+        "10.4000\t13.6000\t15.2750\t17.4875\t19.2000\t21.2500\t22.8000\t30.4000\t33.9000",
+        "10.4000\t14.3400\t15.4250\t17.6125\t19.2000\t21.1500\t22.8000\t30.0900\t33.4350",
+        "10.40\t13.8667\t15.325\t17.5292\t19.200\t21.2167\t22.80\t30.40\t33.90",
+        "10.40\t13.90\t15.3312\t17.5344\t19.20\t21.2125\t22.80\t30.40\t33.90"
+    };
+
+
+    // Quantile methods:
+    cout << endl << "Test of various quantile methods:" << endl;
+
+    // Not really the best practice, but as long as the enum is contiguous...
+    for ( int type=EQntlType::R1; type<=EQntlType::R9; ++type )
+    {
+        cout << "R" << 1+type << ":\t";
+        for ( size_t i=0; i<N_PROBS; ++i )
+        {
+            cout << q.qntl(probs[i], static_cast<EQntlType::type>(type));
+            if ( i < N_PROBS-1 )
+            {
+                cout << "\t";
+            }
+        }
+        cout << endl;
+        cout << "Exp.:\t" << exp[type] << endl;
+    }
+    cout << endl;
+
+
+    // n.th largest/smallest element:
+    cout << "Min mpg: " << q.min() << " (expected 10.4)" << endl;
+    cout << "Max mpg: " << q.max() << " (expected 33.9)" << endl;
+    cout << "5th smallest mpg: " << q.elem(5-1, false) << " (expected: 14.7)" << endl;
+    cout << "5th largest mpg:  " << q.elem(5-1) << " (expected: 27.3)" << endl;
+    cout << "3rd smallest mpg: " << q.elem(3, false, false) << " (expected: 13.3)" << endl;
+    cout << "6th largest mpg:  " << q.elem(6, true, false) << " (expected: 26)" << endl;
+    cout << endl;
+
+
+    // Outliers:
+    typename vector<double>::const_iterator mpgit;
+    for ( mpgit=vmpgs.begin(); mpgit!=vmpgs.end(); ++ mpgit )
+    {
+        cout << *mpgit << " in range [8.05, 30.175]: ";
+        cout << q.isOutlier(*mpgit, 1.0) << endl;
+    }
+    cout << "Outliers for iqr=0.5: [";
+    set<double> oul;
+    q.outliers(oul, 0.5);
+    typename set<double>::const_iterator oit;
+    for ( oit=oul.begin(); oit!=oul.end(); ++oit )
+    {
+        cout << *oit << " ";
+    }
+    cout << "] expected [10.4 27.3 30.4 32.4 33.9]" << endl;
+}
+
+/*
  * Test of classes that perform statistical operations
  */
 void statisticsTest()
@@ -100,82 +184,10 @@ void statisticsTest()
         cout << "Pearson's r: " << SampleStat::cor(vmpgs, vwts) << " (expected: -0.8676594)" << endl;
         cout << "r^2: " << SampleStat::r2(vmpgs, vwts) << " (expected: 0.7528328)" << endl;
 
-
-        // Quantiles:
-        cout << endl;
+        // Classes that obtain quantiles and outliers are tested by an auxiliary
+        // function that accepts all classes derived from SampleQuantileGenericAb.
         SampleQuantileSortedArray q(vmpgs);
-        cout << "Median: " << q.median() << " (expected: 19.2)" << endl;
-        cout << "Approx. median: " << q.median(true) << " (expected: 19.2)" << endl;
-        cout << "1st quartile: " << q.quantile(1, 4) << " (expected: 15.425)" << endl;
-        cout << "3rd quartile: " << q.quantile(3, 4) << " (expected: 22.800)" << endl;
-        cout << "IQR: " << q.iqr() << " (expected: 7.375)" << endl;
-        cout << "63th percentile: " << q.qntl(0.63) << " (expected: 21.212)" << endl;
-        cout << "ecdf(25):   " << q.ecdf(25.0) << " (expected: 0.8125)" << endl;
-        cout << "ecdf(14.5): " << q.ecdf(14.5) << " (expected: 0.125)" << endl;
-
-
-        const double probs[] = { 0.01, 0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.9, 0.99 };
-        const char* exp[ N_PROBS ] =
-        {
-            "10.4\t14.3\t15.2\t17.3\t19.2\t21.0\t22.8\t30.4\t33.9",
-            "10.40\t14.30\t15.35\t17.55\t19.20\t21.20\t22.80\t30.40\t33.90",
-            "10.4\t13.3\t15.2\t17.3\t19.2\t21.0\t22.8\t30.4\t33.9",
-            "10.40\t13.50\t15.20\t17.30\t19.20\t21.00\t22.80\t29.78\t33.42",
-            "10.40\t14.00\t15.35\t17.55\t19.20\t21.20\t22.80\t30.40\t33.90",
-            "10.4000\t13.6000\t15.2750\t17.4875\t19.2000\t21.2500\t22.8000\t30.4000\t33.9000",
-            "10.4000\t14.3400\t15.4250\t17.6125\t19.2000\t21.1500\t22.8000\t30.0900\t33.4350",
-            "10.40\t13.8667\t15.325\t17.5292\t19.200\t21.2167\t22.80\t30.40\t33.90",
-            "10.40\t13.90\t15.3312\t17.5344\t19.20\t21.2125\t22.80\t30.40\t33.90"
-        };
-
-
-        // Quantile methods:
-        cout << endl << "Test of various quantile methods:" << endl;
-
-        // Not really the best practice, but as long as the enum is contiguous...
-        for ( int type=EQntlType::R1; type<=EQntlType::R9; ++type )
-        {
-            cout << "R" << 1+type << ":\t";
-            for ( size_t i=0; i<N_PROBS; ++i )
-            {
-                cout << q.qntl(probs[i], static_cast<EQntlType::type>(type));
-                if ( i < N_PROBS-1 )
-                {
-                    cout << "\t";
-                }
-            }
-            cout << endl;
-            cout << "Exp.:\t" << exp[type] << endl;
-        }
-        cout << endl;
-
-
-        // n.th largest/smallest element:
-        cout << "Min mpg: " << q.min() << " (expected 10.4)" << endl;
-        cout << "Max mpg: " << q.max() << " (expected 33.9)" << endl;
-        cout << "5th smallest mpg: " << q.elem(5-1, false) << " (expected: 14.7)" << endl;
-        cout << "5th largest mpg:  " << q.elem(5-1) << " (expected: 27.3)" << endl;
-        cout << "3rd smallest mpg: " << q.elem(3, false, false) << " (expected: 13.3)" << endl;
-        cout << "6th largest mpg:  " << q.elem(6, true, false) << " (expected: 26)" << endl;
-        cout << endl;
-
-
-        // Outliers:
-        typename vector<double>::const_iterator mpgit;
-        for ( mpgit=vmpgs.begin(); mpgit!=vmpgs.end(); ++ mpgit )
-        {
-            cout << *mpgit << " in range [8.05, 30.175]: ";
-            cout << q.isOutlier(*mpgit, 1.0) << endl;
-        }
-        cout << "Outliers for iqr=0.5: [";
-        set<double> oul;
-        q.outliers(oul, 0.5);
-        typename set<double>::const_iterator oit;
-        for ( oit=oul.begin(); oit!=oul.end(); ++oit )
-        {
-            cout << *oit << " ";
-        }
-        cout << "] expected [10.4 27.3 30.4 32.4 33.9]" << endl;
+        testQuantilesOutliers(q, vmpgs);
     }
     catch ( const StatisticsException& ex )
     {
