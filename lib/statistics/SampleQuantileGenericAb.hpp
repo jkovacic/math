@@ -106,6 +106,14 @@ private:
             F& val2
           ) const throw(StatisticsException) = 0;
 
+protected:
+    void _outlierBounds(
+            F& lower,
+            F& upper,
+            const F& iqrs,
+            const EQntlType::type method
+          ) const;
+
 public:
 
     std::size_t sampleSize() const;
@@ -147,17 +155,17 @@ public:
     virtual bool isOutlier(
            const F& val,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
-           const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
+           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
         )  const = 0;
 
     virtual void outliers(
            std::set<F>& outl,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
-           const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
+           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
          ) const throw (StatisticsException) = 0;
 
     // Destructor
-    virtual ~SampleQuantileGenericAb();
+    virtual ~SampleQuantileGenericAb() = 0;
 
 };  // class SampleQuantileGenericAb
 

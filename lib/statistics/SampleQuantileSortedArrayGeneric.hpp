@@ -94,13 +94,13 @@ public:
     virtual bool isOutlier(
            const F& val,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
-           const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
+           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
         )  const;
 
     virtual void outliers(
            std::set<F>& outl,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
-           const EQntlType::type = STAT_DEFAULT_QUANTILE_ALG
+           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
          ) const throw (StatisticsException);
 
     // Destructor

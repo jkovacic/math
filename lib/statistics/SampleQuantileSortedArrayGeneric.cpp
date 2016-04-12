@@ -285,12 +285,11 @@ bool math::SampleQuantileSortedArrayGeneric<F>::isOutlier(
                 const F& iqrs,
                 const math::EQntlType::type method) const
 {
-    const F q1 = this->quartile(1, method);
-    const F q3 = this->quartile(3, method);
-    const F diff = q3 - q1;   // IQR
+    F lower, upper;
 
-    return ( ( val < (q1-iqrs * diff) ) ||
-             ( val > (q3+iqrs * diff) ) );
+    this->_outlierBounds(lower, upper, iqrs, method);
+
+    return ( ( val < lower ) || ( val > upper ) );
 }
 
 
@@ -318,11 +317,8 @@ void math::SampleQuantileSortedArrayGeneric<F>::outliers(
 {
     try
     {
-        const F q1 = this->quartile(1, method);
-        const F q3 = this->quartile(3, method);
-        const F diff = q3 - q1;   // IQR
-        const F lowerBound = q1 - iqrs * diff;
-        const F upperBound = q3 + iqrs * diff;
+        F lowerBound,  upperBound;
+        this->_outlierBounds(lowerBound, upperBound, iqrs, method);
 
         /*
          * Vector this->m_v is already sorted in ascending order. That said,

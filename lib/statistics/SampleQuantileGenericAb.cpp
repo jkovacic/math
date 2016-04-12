@@ -538,6 +538,33 @@ F math::SampleQuantileGenericAb<F>::iqr(const math::EQntlType::type method) cons
 }
 
 
+/*
+ * Obtains the range that is used to detect outliers. Observation 'x' is
+ * an outlier if:
+ *   x < q1 * iqrs  OR  x > q2 * iqrs
+ * 
+ * @param lower - reference to the variable to assign the lower boundary of the range
+ * @param upper - reference to the variable to assign the lower boundary of the range
+ * @param iqrs - number of interquartile ranges to subtract from q1 and add to q3
+ * @param method - method to estimate quartiles
+ */
+template <typename F>
+void math::SampleQuantileGenericAb<F>::_outlierBounds(
+           F& lower,
+           F& upper,
+           const F& iqrs,
+           const math::EQntlType::type method
+         ) const
+{
+    const F q1 = this->quartile(1, method);
+    const F q3 = this->quartile(3, method);
+    const F IQR = q3 - q1;
+
+    lower = q1 - iqrs * IQR;
+    upper = q3 + iqrs * IQR;
+}
+
+
 /**
  * Destructor
  */
