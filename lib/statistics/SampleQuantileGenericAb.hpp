@@ -139,6 +139,12 @@ public:
 
     F iqr(const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
 
+    bool isOutlier(
+               const F& val,
+               const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
+               const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
+            )  const;
+
     // The following methods are pure virtual, i.e. implemented in derived classes
     virtual F ecdf(const F& t) const = 0;
 
@@ -151,12 +157,6 @@ public:
            const bool largest = true,
            const bool zerobase = STAT_DEFAULT_ZERO_BASE
          ) const throw(StatisticsException) = 0;
-
-    virtual bool isOutlier(
-           const F& val,
-           const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
-           const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
-        )  const = 0;
 
     virtual void outliers(
            std::set<F>& outl,

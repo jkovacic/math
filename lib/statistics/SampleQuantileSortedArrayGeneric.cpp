@@ -261,39 +261,6 @@ F math::SampleQuantileSortedArrayGeneric<F>::elem(
 
 
 /**
- * Test if an observation is an outlier regarding the sample.
- *
- * An observation is an outlier if it lies either below the first quartile - iqrs * IQR
- * or above the third quartile + iqrs * IQR.
- *
- * The exact value of 'iqrs' can be passed as an argument and is typically
- * equal to 1.5.
- *
- * Note that quartiles are estimated from the original sample that was passed to
- * the constructor. In other words, if 'val' is not a member of the sample,
- * quartiles will not be reestimated to include this sample.
- *
- * @param val - value to be checked
- * @param iqrs - number of interquartile ranges below/above Q1 and Q3 (default 1.5)
- * @param method - method to estimate quartiles (default R7)
- *
- * @return a logical value indicating whether 'val' is an outlier or not
- */
-template <typename F>
-bool math::SampleQuantileSortedArrayGeneric<F>::isOutlier(
-                const F& val,
-                const F& iqrs,
-                const math::EQntlType::type method) const
-{
-    F lower, upper;
-
-    this->_outlierBounds(lower, upper, iqrs, method);
-
-    return ( ( val < lower ) || ( val > upper ) );
-}
-
-
-/**
  * Fills all sample's outliers into the set 'outl'.
  *
  * An observation is an outlier if it lies either below the first quartile - iqrs * IQR
