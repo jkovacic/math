@@ -36,6 +36,8 @@ limitations under the License.
 
 #include "statistics/SampleQuantileGenericAb.hpp"
 
+#include "../settings/stat_settings.h"
+
 #include "exception/StatisticsException.hpp"
 
 
