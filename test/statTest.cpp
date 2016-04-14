@@ -37,6 +37,7 @@ limitations under the License.
 #include "mtcopy.h"
 #include "SampleStat.h"
 #include "SampleQuantileSortedArray.h"
+#include "SampleQuantileSelection.h"
 #include "StatisticsException.h"
 
 using namespace std;
@@ -186,8 +187,18 @@ void statisticsTest()
 
         // Classes that obtain quantiles and outliers are tested by an auxiliary
         // function that accepts all classes derived from SampleQuantileGenericAb.
-        SampleQuantileSortedArray q(vmpgs);
-        testQuantilesOutliers(q, vmpgs);
+
+        cout << endl << "= Test of quantile algorithms based on sorted arrays: =" << endl;
+        SampleQuantileSortedArray qsa(vmpgs);
+        testQuantilesOutliers(qsa, vmpgs);
+
+        cout << endl << "= Test of quantile algorithms based on selection (copy of the original array): =" << endl;
+        SampleQuantileSortedArray qselc(vmpgs);
+        testQuantilesOutliers(qselc, vmpgs);
+
+        cout << endl << "= Test of quantile algorithms based on selection (the original array): =" << endl;
+        SampleQuantileSortedArray qselorig(vmpgs);
+        testQuantilesOutliers(qselorig, vmpgs);
     }
     catch ( const StatisticsException& ex )
     {
