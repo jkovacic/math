@@ -73,7 +73,7 @@ struct EQntlType
 
 
 /**
- * @brief A base abstarct class for all classes that estimate sample's quantile
+ * @brief A base abstract class for all classes that estimate sample's quantile
  * for any probability within a valid range. It supports several estimation
  * methods, however, it relies on several pure virtual methods that are implemented
  * in derived classes.

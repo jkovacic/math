@@ -40,6 +40,7 @@ limitations under the License.
 #include "omp/omp_coarse.h"
 
 #include "exception/StatisticsException.hpp"
+#include "exception/SelectionException.hpp"
 
 
 /**
@@ -59,9 +60,9 @@ limitations under the License.
  */
 template <typename F>
 math::SampleQuantileSelectionGeneric<F>::SampleQuantileSelectionGeneric(
-		          const std::vector<F>& sample,
-		          const bool copy
-			    ) throw(math::StatisticsException)
+            const std::vector<F>& sample,
+            const bool copy
+          ) throw(math::StatisticsException)
   : math::SampleQuantileGenericAb<F>( sample.size() ),
     m_v( true==copy ? m_stor : sample )
 {
@@ -101,7 +102,7 @@ math::SampleQuantileSelectionGeneric<F>::SampleQuantileSelectionGeneric(
  *
  * @return n.th smallest element of the sample
  *
- * @throw StatisticsExcpetion if 'n' is larger or equal to the number of elements
+ * @throw StatisticsExcpetion if 'n' is larger or equal to the number of elements or if selection algorithm's internal allocation of memory fails
  */
 template <typename F>
 F math::SampleQuantileSelectionGeneric<F>::_select(const std::size_t n) const throw(math::StatisticsException)
@@ -111,8 +112,15 @@ F math::SampleQuantileSelectionGeneric<F>::_select(const std::size_t n) const th
         throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
     }
 
-    // An efficient selection algorithm is implemented by this function
-    return math::Selection::select(this->m_v, n);
+    try
+    {
+        // An efficient selection algorithm is implemented by this function
+        return math::Selection::select(this->m_v, n);
+    }
+    catch ( const math::SelectionException& sox )
+    {
+        throw math::StatisticsException(math::StatisticsException::OUT_OF_MEMORY);
+    }
 }
 
 
@@ -125,7 +133,7 @@ F math::SampleQuantileSelectionGeneric<F>::_select(const std::size_t n) const th
  * @param val1 - reference to the variable to assign the n1.th smallest value
  * @param val2 - reference to the variable to assign the n2.th smallest value
  *
- * @throw StatisticsExcpetion if either 'n1' or 'n2' is larger or equal to the number of elements
+ * @throw StatisticsExcpetion if either 'n1' or 'n2' is larger or equal to the number of elements or if selection algorithm's internal allocation of memory fails
  */
 template <typename F>
 void math::SampleQuantileSelectionGeneric<F>::_select2(
@@ -140,8 +148,15 @@ void math::SampleQuantileSelectionGeneric<F>::_select2(
         throw math::StatisticsException(math::StatisticsException::INVALID_ARG);
     }
 
-    // An efficient selection algorithm is implemented by this function
-    math::Selection::select2(this->m_v, n1, n2, val1, val2);
+    try
+    {
+        // An efficient selection algorithm is implemented by this function
+        math::Selection::select2(this->m_v, n1, n2, val1, val2);
+    }
+    catch ( const math::SelectionException& sox )
+    {
+        throw math::StatisticsException(math::StatisticsException::OUT_OF_MEMORY);
+    }
 }
 
 
@@ -238,8 +253,8 @@ template <typename F>
 void math::SampleQuantileSelectionGeneric<F>::outliers(
                 std::set<F>& outl,
                 const F& iqrs,
-                const math::EQntlType::type method) const
-            throw (math::StatisticsException)
+                const math::EQntlType::type method
+              ) const throw (math::StatisticsException)
 {
     try
     {
@@ -260,7 +275,6 @@ void math::SampleQuantileSelectionGeneric<F>::outliers(
                     default(none) shared(N, outl, lowerBound, upperBound)
         {
             OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
-
 
             typename std::vector<F>::const_iterator it = this->m_v.begin() + istart;
             for ( std::size_t cntr = 0;
