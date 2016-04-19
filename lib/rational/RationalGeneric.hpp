@@ -29,7 +29,6 @@ limitations under the License.
 #ifndef _MATH_RATIONALGENERIC_HPP_
 #define _MATH_RATIONALGENERIC_HPP_
 
-#include "util/NumericUtil.hpp"
 #include "exception/RationalException.hpp"
 
 #include <ostream>

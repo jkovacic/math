@@ -29,7 +29,6 @@ limitations under the License.
 #define _MATH_QUATERNIONGENERIC_HPP_
 
 
-#include "util/NumericUtil.hpp"
 #include "exception/QuaternionException.hpp"
 
 namespace math
