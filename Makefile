@@ -23,7 +23,7 @@ TOOLCHAIN =
 
 # Compiler commands.
 # The commands are set for the GCC compiler.
-# If any other compiler is used, the commands must be modified appropriately.
+# If any other compiler is used, the commands must be modified accordingly.
 #CC = $(TOOLCHAIN)gcc
 CPP = $(TOOLCHAIN)g++
 #FC = $(TOOLCHAIN)gfortran
@@ -60,7 +60,7 @@ LIBSPECFUNDIR = $(LIBDIR)specfun/
 LIBOMPDIR = $(LIBDIR)omp/
 LIBPROBDISTDIR = $(LIBSTATDIR)dist/
 
-# Directory with smoke testing files
+# Directory with smoke test source files
 TESTDIR = test/
 
 # Directory with settings file(s)
@@ -75,38 +75,6 @@ BUILDDIR = build/
 # Target binary, without any prefixes and suffixes
 TARGETROOT = maintest
 
-# These objects should probably always be compiled and 
-# "implicitly" linked into any application:
-IMPL_OBJS = IMathException
-
-# Test modules (source files in $(TESTDIR)) that will be linked 
-# to the final test application.
-# Unnecessary modules may be commented out
-TESTFILES =
-TESTFILES += numutilTest
-TESTFILES += selectionTest
-TESTFILES += calcTest
-TESTFILES += combTest
-TESTFILES += curvefitTest
-TESTFILES += intcombTest
-TESTFILES += intfunctionTest
-TESTFILES += intexpTest
-TESTFILES += intfactorTest
-TESTFILES += lineqTest
-TESTFILES += matrixTest
-TESTFILES += mtcopyTest
-TESTFILES += polyTest
-TESTFILES += quatTest
-TESTFILES += specfunTest
-TESTFILES += rationalTest
-TESTFILES += ratmatTest
-TESTFILES += rootfindTest
-TESTFILES += statTest
-TESTFILES += probdistTest
-
-# Prepend path and append suffixes to the selected test modules
-TESTOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(TESTFILES) ))
-
 
 # Dependencies of OpenMP headers
 
@@ -114,7 +82,7 @@ DEP_OMPSETTINGS = $(SETTINGDIR)omp_settings.h
 DEP_OMPHEADER = $(LIBOMPDIR)omp_header.h
 DEP_OMPCOARSE = $(LIBOMPDIR)omp_coarse.h
 
-# Dependencies of other settings headers
+# Dependencies of other settings' headers
 DEP_NUMUTIL_SETTINGS = $(SETTINGDIR)numutil_settings.h
 DEP_STAT_SETTINGS = $(SETTINGDIR)stat_settings.h
 DEP_PROBDIST_SETTINGS = $(SETTINGDIR)probdist_settings.h
@@ -124,14 +92,13 @@ DEP_ROOTFIND_SETTINGS = $(SETTINGDIR)rootfind_settings.h
 DEP_MATRIX_SETTINGS = $(SETTINGDIR)matrix_settings.h
 DEP_LINEQ_SETTINGS = $(SETTINGDIR)lineq_settings.h
 
-# Object dependencies of templated classes
-# Note #1: Some dependencies may repeat several times.
-#          This is not a problem as all duplicated dependencies 
-#          will be removed from the list later
+# Header dependencies of templated classes
+# Note #1: Dependencies may be listed several times and all
+#          duplicated dependencies will be removed from the list later
 # Note #2: No Suffixes (.hpp and .cpp) must be appended to file names
 #          as it will be handled later.
-#          The only exception are OMP dependencies (*.h files) that are
-#          actually not objects
+#          The only exception are OMP and settings dependencies (*.h files) that are
+#          actually not objects.
 DEP_NUMUTIL = $(LIBUTILDIR)NumericUtil $(DEP_NUMUTIL_SETTINGS)
 DEP_MATHCONST = $(LIBUTILDIR)math_constant.h
 DEP_PSEUDOFUNC = $(LIBUTILDIR)PseudoFunctionGeneric
@@ -147,7 +114,7 @@ DEP_QUATERNION = $(LIBQUATDIR)QuaternionGeneric $(DEP_NUMUTIL) $(DEP_OMPSETTINGS
 DEP_POLYNOMIAL = $(LIBPOLYDIR)PolynomialGeneric $(DEP_NUMUTIL) $(DEP_MTCOPY) $(DEP_VECTOP) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 
 DEP_COMBINATION = $(LIBCOMBDIR)CombinationGeneric $(DEP_MTCOPY)
-DEP_PERMUTATION =$(LIBCOMBDIR)PermutationGeneric $(DEP_MTCOPY)
+DEP_PERMUTATION = $(LIBCOMBDIR)PermutationGeneric $(DEP_MTCOPY)
 
 DEP_INTUTIL = $(LIBINTUTILDIR)IntUtilGeneric
 DEP_INTFUNCTION = $(LIBINTUTILDIR)IntFunctionGeneric $(DEP_INTUTIL)
@@ -192,33 +159,102 @@ DEP_POISSONDIST = $(LIBPROBDISTDIR)PoissonDistGeneric $(DEP_PROBDIST_SETTINGS) $
 
 
 
+# Object dependencies, i.e. a list of other files (typically exception files)
+# that must be compiled and linked to the application if certain header file
+# is included into any module. Dependencies may be listed several
+# times as all duplicates will be removed later.
+# Note: object dependencies must not contain their directories and suffixes
+#       as this will be handled later.
+OBJDEP_NUMUTIL = 
+OBJDEP_PSEUDOFUNC = 
+OBJDEP_MTCOPY = 
+OBJDEP_MTVECTOP = 
+OBJDEP_MTSWAP = 
+OBJDEP_IFUNCTION = FunctionException
+OBJDEP_SELECTION = SelectionException
+OBJDEP_QUATERNION = QuaternionException $(OBJDEP_NUMUTIL)
+OBJDEP_POLYNOMIAL = PolynomialException $(OBJDEP_NUMUTIL) $(OBJDEP_MTCOPY) $(OBJDEP_MTVECTOP)
+OBJDEP_COMBINATION = CombinatoricsException $(OBJDEP_MTCOPY)
+OBJDEP_PERMUTATION = CombinatoricsException $(OBJDEP_MTCOPY)
+OBJDEP_INTUTIL = 
+OBJDEP_INTFUNCTION = IntFunctionException $(OBJDEP_INTUTIL)
+OBJDEP_INTFACT = IntFactorizationException $(OBJDEP_INTUTIL) $(OBJDEP_INTFUNCTION)
+OBJDEP_INTEXP = IntFactorizationException $(OBJDEP_INTUTIL)
+OBJDEP_INTCOMB = CombinatoricsException $(OBJDEP_MTCOPY)
+OBJDEP_RAT = RationalException $(OBJDEP_INTUTIL) $(OBJDEP_INTFACT)
+OBJDEP_SPECFUN = SpecFunException $(OBJDEP_IFUNCTION) $(OBJDEP_NUMUTIL)
+OBJDEP_PIVOT = MatrixException $(OBJDEP_PSEUDOFUNC) $(OBJDEP_NUMUTIL)
+OBJDEP_MATRIX = MatrixException $(OBJDEP_PIVOT) $(OBJDEP_NUMUTIL) \
+                $(OBJDEP_MTCOPY) $(OBJDEP_MTVECTOP) $(OBJDEP_MTSWAP) 
+OBJDEP_LINEQ = MatrixException $(OBJDEP_MATRIX) $(OBJDEP_PSEUDOFUNC) \
+               $(OBJDEP_NUMUTIL) $(OBJDEP_PSEUDOFUNC)
+OBJDEP_CURVEFITAB = CurveFittingException $(OBJDEP_NUMUTIL)
+OBJDEP_CURVEFITPOLY = $(OBJDEP_CURVEFITAB) $(OBJDEP_POLYNOMIAL)
+OBJDEP_POLYINT = $(OBJDEP_CURVEFITPOLY)
+OBJDEP_POLYREG = $(OBJDEP_CURVEFITPOLY) $(OBJDEP_MATRIX) $(OBJDEP_LINEQ)
+OBJDEP_INTEG = CalculusException $(OBJDEP_IFUNCTION) $(OBJDEP_NUMUTIL)
+OBJDEP_DIFF = CalculusException $(OBJDEP_IFUNCTION) $(OBJDEP_NUMUTIL)
+OBJDEP_ROOTFIND = RootFindException $(OBJDEP_IFUNCTION) $(OBJDEP_NUMUTIL) $(OBJDEP_DIFF)
+OBJDEP_SAMPLESTAT = StatisticsException $(OBJDEP_NUMUTIL) $(OBJDEP_INTUTIL) $(OBJDEP_INTEXP)
+OBJDEP_SAMPLEQUANTAB = StatisticsException $(OBJDEP_INTUTIL) $(OBJDEP_NUMUTIL)
+OBJDEP_SAMPLEQUANTSORTEDARRAY = $(OBJDEP_SAMPLEQUANTAB) $(OBJDEP_MTCOPY)
+OBJDEP_SAMPLEQUANTSELECTION = $(OBJDEP_SAMPLEQUANTAB) $(OBJDEP_SELECTION) \
+                              $(OBJDEP_SAMPLESTAT) $(OBJDEP_MTCOPY)
+OBJDEP_NORMDIST = StatisticsException $(OBJDEP_SPECFUN) $(OBJDEP_NUMUTIL)
+OBJDEP_STUDDIST = StatisticsException $(OBJDEP_SPECFUN) $(OBJDEP_NUMUTIL)
+OBJDEP_CHISQDIST = StatisticsException $(OBJDEP_SPECFUN) $(OBJDEP_NUMUTIL)
+OBJDEP_FDIST = StatisticsException $(OBJDEP_SPECFUN) $(OBJDEP_NUMUTIL)
+OBJDEP_CONTUNIFDIST = StatisticsException $(OBJDEP_NUMUTIL)
+OBJDEP_BINOMDIST = StatisticsException $(OBJDEP_SPECFUN) $(OBJDEP_NUMUTIL) \
+                   $(OBJDEP_INTUTIL) $(OBJDEP_INTCOMB) $(OBJDEP_INTEXP)
+OBJDEP_POISSONDIST = StatisticsException $(OBJDEP_SPECFUN) $(OBJDEP_NUMUTIL) \
+                     $(OBJDEP_INTUTIL) $(OBJDEP_INTEXP)
+
+
+# These objects should probably always be compiled and 
+# "implicitly" linked into each application:
+IMPL_OBJS = IMathException
+
+
 # Object files (.o) that must be built and linked to
 # the final test application if it includes the selected
-# test module.
+# test module. All lines with unnecessary modules may be commented out.
 # Note #1: No paths and file suffixes must be appended to file names
 #          as it will be handled later.
-# Note #2: no problem if the same object file repeats among several test module
-#          dependencies as it will be handled later
-TEST_NUMUTIL_OBJDEP =
-TEST_MTCOPY_OBJDEP =
-TEST_SELECTION_OBJDEP = SelectionException
-TEST_QUAT_OBJDEP = QuaternionException
-TEST_RAT_OBJDEP = RationalException
-TEST_MATRIX_OBJDEP = MatrixException
-TEST_RATMAT_OBJDEP = MatrixException RationalException
-TEST_POLY_OBJDEP = PolynomialException
-TEST_LINEQ_OBJDEP = MatrixException
-TEST_CURVEFIT_OBJDEP = CurveFittingException
-TEST_INTEXP_OBJDEP = MatrixException QuaternionException RationalException PolynomialException
-TEST_INTFUNCTION_OBJDEP = IntFunctionException
-TEST_INTFACTOR_OBJDEP = IntFactorizationException
-TEST_INTCOMB_OBJDEP = CombinatoricsException
-TEST_SPECFUN_OBJDEP = SpecFunException
-TEST_COMB_OBJDEP = CombinatoricsException
-TEST_CALC_OBJDEP = FunctionException CalculusException
-TEST_ROOTFIND_OBJDEP = FunctionException RootFindException
-TEST_STAT_OBJDEP = StatisticsException
-TEST_PROBDIST_OBJDEP = StatisticsException
+# Note #2: the same object file may be listed several times
+#          as duplicates will be handled later.
+# Note #3: the first line should include implicit object files
+#          that should be linked into each application.
+TESTLINKOBJ = $(IMPL_OBJS)
+TESTLINKOBJ += numutilTest $(OBJDEP_NUMUTIL)
+TESTLINKOBJ += selectionTest $(OBJDEP_SELECTION) $(OBJDEP_MTCOPY)
+TESTLINKOBJ += calcTest $(OBJDEP_IFUNCTION) $(OBJDEP_INTEG) $(OBJDEP_DIFF)
+TESTLINKOBJ += combTest $(OBJDEP_PERMUTATION) $(OBJDEP_COMBINATION)
+TESTLINKOBJ += curvefitTest $(OBJDEP_POLYINT) $(OBJDEP_POLYREG)
+TESTLINKOBJ += intcombTest $(OBJDEP_INTCOMB)
+TESTLINKOBJ += intfunctionTest $(OBJDEP_INTFUNCTION)
+TESTLINKOBJ += intexpTest $(OBJDEP_INTEXP) $(OBJDEP_MATRIX) $(OBJDEP_QUATERNION) $(OBJDEP_RAT) $(OBJDEP_POLYNOMIAL)
+TESTLINKOBJ += intfactorTest $(OBJDEP_INTFACT)
+TESTLINKOBJ += lineqTest $(OBJDEP_LINEQ) $(OBJDEP_MATRIX)
+TESTLINKOBJ += matrixTest $(OBJDEP_MATRIX)
+TESTLINKOBJ += mtcopyTest $(OBJDEP_MTCOPY)
+TESTLINKOBJ += polyTest $(OBJDEP_POLYNOMIAL)
+TESTLINKOBJ += quatTest $(OBJDEP_QUATERNION)
+TESTLINKOBJ += specfunTest $(OBJDEP_SPECFUN)
+TESTLINKOBJ += rationalTest $(OBJDEP_RAT)
+TESTLINKOBJ += ratmatTest $(OBJDEP_RAT) $(OBJDEP_MATRIX)
+TESTLINKOBJ += rootfindTest $(OBJDEP_NUMUTIL) $(OBJDEP_IFUNCTION) $(OBJDEP_ROOTFIND)
+TESTLINKOBJ += statTest $(OBJDEP_MTCOPY) $(OBJDEP_SAMPLESTAT) $(OBJDEP_SAMPLEQUANTSORTEDARRAY) $(OBJDEP_SAMPLEQUANTSELECTION)
+TESTLINKOBJ += probdistTest $(OBJDEP_NORMDIST) $(OBJDEP_STUDDIST) $(OBJDEP_CHISQDIST) $(OBJDEP_FDIST) $(OBJDEP_CONTUNIFDIST) $(OBJDEP_BINOMDIST) $(OBJDEP_POISSONDIST)
+
+
+# Prepend a path and append $(OBJSUFFIX) to object dependencies for
+# selected test modules, remove duplicates using the Make's sort command.
+# Note: even though this is not necessary, the list will contain all test
+# objects (*Test files) first, followed by all other object dependencies. 
+TEST_LINKOBJS_TEST = $(filter %Test, $(sort $(TESTLINKOBJ)) )
+TEST_LINKOBJS_OTHER = $(filter-out %Test, $(sort $(TESTLINKOBJ)) )
+TEST_LINKOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(TEST_LINKOBJS_TEST) $(TEST_LINKOBJS_OTHER) ))
 
 
 # Templated classes included into test modules.
@@ -226,7 +262,7 @@ TEST_PROBDIST_OBJDEP = StatisticsException
 # any templated class file has changed before the test
 # module is built.
 # Note: only include DEP_* variables declared above,
-#       any duplicates will be removed later
+#       all duplicates will be removed later
 TEST_NUMUTIL_GENDEP = $(DEP_NUMUTIL)
 TEST_MTCOPY_GENDEP = $(DEP_MTCOPY)
 TEST_SELECTION_GENDEP = $(DEP_MTCOPY) $(DEP_SELECTION)
@@ -250,43 +286,10 @@ TEST_PROBDIST_GENDEP = $(DEP_NORMDIST) $(DEP_STUDDIST) $(DEP_CHISQDIST) \
                        $(DEP_FDIST) $(DEP_CONTUNIFDIST) $(DEP_BINOMDIST) $(DEP_POISSONDIST)
 
 
-# Join object file dependencies for selected test modules.
-# Lines for unnecessary test modules may be commented out.
-# All duplicates will be removed in the next step.
-# Note: the first line should include implicit object files
-# that should be linked into any application.
-TEST_LINKOBJ = $(IMPL_OBJS)
-TEST_LINKOBJ += $(TEST_NUMUTIL_OBJDEP)
-TEST_LINKOBJ += $(TEST_MTCOPY_OBJDEP)
-TEST_LINKOBJ += $(TEST_SELECTION_OBJDEP)
-TEST_LINKOBJ += $(TEST_QUAT_OBJDEP)
-TEST_LINKOBJ += $(TEST_RAT_OBJDEP)
-TEST_LINKOBJ += $(TEST_MATRIX_OBJDEP)
-TEST_LINKOBJ += $(TEST_RATMAT_OBJDEP)
-TEST_LINKOBJ += $(TEST_POLY_OBJDEP)
-TEST_LINKOBJ += $(TEST_LINEQ_OBJDEP)
-TEST_LINKOBJ += $(TEST_CURVEFIT_OBJDEP)
-TEST_LINKOBJ += $(TEST_INTFUNCTION_OBJDEP)
-TEST_LINKOBJ += $(TEST_INTEXP_OBJDEP)
-TEST_LINKOBJ += $(TEST_INTFACTOR_OBJDEP)
-TEST_LINKOBJ += $(TEST_INTCOMB_OBJDEP)
-TEST_LINKOBJ += $(TEST_COMB_OBJDEP)
-TEST_LINKOBJ += $(TEST_SPECFUN_OBJDEP)
-TEST_LINKOBJ += $(TEST_CALC_OBJDEP)
-TEST_LINKOBJ += $(TEST_ROOTFIND_OBJDEP)
-TEST_LINKOBJ += $(TEST_STAT_OBJDEP)
-TEST_LINKOBJ += $(TEST_PROBDIST_OBJDEP)
-
-
-# Prepend a path and append $(OBJSUFFIX) to dependencies for
-# selected test modules, remove dependencies using the Make's sort command
-TEST_LINKOBJS = $(addprefix $(OBJDIR), $(addsuffix $(OBJSUFFIX), $(sort $(TEST_LINKOBJ)) ) )
-
-
 # A convenience "function" that prepares list of all dependencies.
 # Its input (referred as $1) is a list of files that declare and implement
 # templated classes (a *_GENDEP variable), the function will first filter out
-# OMP dependencies (*h. files), the remaining names will be appended
+# OMP and settings dependencies (*h. files), the remaining names will be appended
 # *.hpp and *.cpp suffixes, finally the unmodified list of *.h files
 # will be joined to the list.
 #
@@ -497,8 +500,8 @@ $(OBJDIR)maintest$(OBJSUFFIX) : $(TESTDIR)maintest.cpp
 
 
 # Build (link) rule for the final test application
-$(TARGET) : $(OBJDIR) $(BUILDDIR) $(TARGETOBJ) $(TESTOBJS) $(TEST_LINKOBJS) 
-	$(LINKER) $(LDFLAGS) $(TARGETOBJ) $(TESTOBJS) $(TEST_LINKOBJS) $(OFLAG) $@ 
+$(TARGET) : $(OBJDIR) $(BUILDDIR) $(TARGETOBJ) $(TEST_LINKOBJS)
+	$(LINKER) $(LDFLAGS) $(TARGETOBJ) $(TEST_LINKOBJS) $(OFLAG) $@ 
 
 
 # Cleanup directives:
