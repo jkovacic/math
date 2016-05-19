@@ -100,6 +100,8 @@ void fillVectorsWithInitialConsecutiveIndices(
 
 }}} // anonymous namespace
 
+
+
 /**
  * Preallocates and fills vectors 'v1' and 'v2' with consecutive values
  * between 0 and N-1.
