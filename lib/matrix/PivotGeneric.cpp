@@ -34,6 +34,8 @@ limitations under the License.
 #include "util/NumericUtil.hpp"
 #include "util/PseudoFunctionGeneric.hpp"
 
+#include "util/FillVectors.h"
+
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
@@ -44,85 +46,6 @@ limitations under the License.
 // A namespace with "private" functions:
 namespace math {  namespace Pivot {  namespace __private
 {
-
-
-/*
- * Preallocates and fills vectors 'v1' and optionally 'v2' with consecutive
- * values between 0 and N-1.
- * 
- * @param N - size of vector(s)
- * @param v1 - first vector
- * @param v2 - second vector (ignored if 'bothVectors' is false)
- * @param bothVectors - if false, only 'v1' is preallocated and filled with initial positions
- * 
- * @throw MatrixException if allocation of memory for vector(s) fails
- */
-void fillVectorsWithInitialPos(
-        const std::size_t N,
-        std::vector<std::size_t>& v1,
-        std::vector<std::size_t>& v2,
-        const bool bothVectors
-      ) throw(math::MatrixException)
-{
-    try
-    {
-        v1.resize(N);
-
-        if ( true == bothVectors )
-        {
-            v2.resize(N);
-        }
-        
-        /*
-         * Fill 'v1' and optionally 'v2' with initial positions.
-         */
-        #pragma omp parallel num_threads(ompIdeal(N)) \
-                    if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(v1, v2)
-        {
-            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
-
-            typename std::vector<std::size_t>::iterator it1 = v1.begin() + istart;
-            typename std::vector<std::size_t>::iterator it2 = v2.begin() + istart;
-            std::size_t i = istart;
-            for ( std::size_t cntr=0;
-                  cntr<elems_per_thread && it1!=v1.end();
-                  ++cntr, ++i, ++it1 )
-            {
-                std::size_t& v1cur = *it1;
-                std::size_t& v2cur = *it2;
-
-                v1cur = i;
-                if ( true == bothVectors )
-                {
-                    v2cur = i;
-                    ++it2;
-                }
-            }
-
-            (void) iend;
-        }  // omp parallel
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
-    }
-}
-
-
-/*
- * Preallocates and fills vector 'v' with consecutive  values between 0 and N-1.
- * 
- * @param N - size of vector
- * @param v1 - vector to fill
- *
- * @throw MatrixException if allocation of memory for the vector fails
- */
-void fillVectorWithInitialPos(const std::size_t N, std::vector<std::size_t>& v) throw(math::MatrixException)
-{
-    math::Pivot::__private::fillVectorsWithInitialPos(N, v, v, false);
-}
-
 
 /*
  * Returns either 'i' or the i.th element of 'v' if 'v' is provided,
@@ -356,14 +279,21 @@ void pivot(
     std::vector<std::size_t> colidx;
     std::vector<std::size_t> rowidx;
 
-    if ( false == physSwap )
+    try
     {
-        math::Pivot::__private::fillVectorWithInitialPos(NR, rowidx);
-    }
+        if ( false == physSwap )
+        {
+            math::util::fillVectorWithConsecutiveIndices(NR, rowidx);
+        }
 
-    if ( false == physSwap || true == fullPB )
+        if ( false == physSwap || true == fullPB )
+        {
+            math::util::fillVectorWithConsecutiveIndices(NC, colidx);
+        }
+    }
+    catch ( const std::bad_alloc& ba )
     {
-        math::Pivot::__private::fillVectorWithInitialPos(NC, colidx);
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
     }
 
     // pointers to vectors above, required by __index()
@@ -701,7 +631,17 @@ bool math::Pivot::getDiagonallyDominantMatrix(
         throw math::MatrixException(math::MatrixException::INVALID_DIMENSION);
     }
 
-    math::Pivot::__private::fillVectorsWithInitialPos(N, rows, cols, true);
+    try
+    {
+        rows.resize(N);
+        cols.resize(N);
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::MatrixException(math::MatrixException::OUT_OF_MEMORY);
+    }
+    
+    math::util::fillVectorsWithConsecutiveIndices(N, rows, cols);
 
     for ( std::size_t i=0; i<(N-1); ++i )
     {
