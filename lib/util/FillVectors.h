@@ -33,7 +33,7 @@ limitations under the License.
 
 
 #ifndef _MATH_FILLVECTORS_H_
-#define	_MATH_FILLVECTORS_H_
+#define _MATH_FILLVECTORS_H_
 
 #include <cstddef>
 #include <vector>
