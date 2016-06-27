@@ -1,9 +1,9 @@
 ##About
 A simple and robust C++ library for mathematical and scientific applications. 
 It supports matrix, rational, polynomial and quaternion arithmetics,
-as well as various combinatorics, statistical, curve fitting algorithms,
-etc. See `test/maintest.cpp` as a basic demonstration. Or use Doxygen to
-generate documentation about the API.
+as well as various calculus, root-finding, combinatorics, statistical, curve
+fitting algorithms, etc. See `test/maintest.cpp` as a basic demonstration. Or use
+Doxygen to generate documentation about the API.
 
 ##Usage
 Only headers (*.h files) from the directory `include` should be included
