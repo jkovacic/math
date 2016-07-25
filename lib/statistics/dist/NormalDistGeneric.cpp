@@ -127,7 +127,7 @@ F math::NormalDist::getX(
      */
 
     // sanity check:
-	math::NormalDist::__private::__checkSigma<F>(sigma);
+    math::NormalDist::__private::__checkSigma<F>(sigma);
 
     return mu + z * sigma;
 }

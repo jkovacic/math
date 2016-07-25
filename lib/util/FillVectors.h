@@ -57,4 +57,4 @@ void fillVectorWithConsecutiveIndices(
 
 }}  // namespace math::util
 
-#endif	// _MATH_FILLVECTORS_H_
+#endif  // _MATH_FILLVECTORS_H_

@@ -374,7 +374,7 @@ void pivot(
 
             if ( false==physSwap || true==fullPB )
             {
-            	std::swap( colidx.at(i), colidx.at(pc) );
+                std::swap( colidx.at(i), colidx.at(pc) );
             }
         }
 
@@ -875,7 +875,7 @@ T math::Pivot::getDeterminant(
 template <class T>
 std::size_t math::Pivot::getRank(
         const math::MatrixGeneric<T>& A,
-		const bool physSwap
+        const bool physSwap
       ) throw(math::MatrixException)
 {
     math::MatrixGeneric<T> temp(A);

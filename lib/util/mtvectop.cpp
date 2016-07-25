@@ -148,7 +148,7 @@ void math::mtvectmult(const std::vector<T>& v1, const T& scalar, std::vector<T>&
             {
                 // if 'v1' is actually the same vector as 'dest',
                 // rather perform *= operation
-            	currDest *= scalar;
+                currDest *= scalar;
             }
         }  // for
     }  // omp parallel
@@ -244,14 +244,14 @@ void math::mtvectscalaradd(
                 // if 'v1' is actually the same vector as 'dest',
                 // rather use compound assignment operators.
                 // Note that 'vectFirst' can only equal true.
-               	if ( true == add )
-               	{
-               	    currDest += scalar;
-               	}
-               	else
-               	{
-               	    currDest -= scalar;
-               	}
+                if ( true == add )
+                {
+                    currDest += scalar;
+                }
+                else
+                {
+                    currDest -= scalar;
+                }
             }
         }  // for
     }  // omp parallel

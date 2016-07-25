@@ -415,7 +415,7 @@ F math::SampleQuantileGenericAb<F>::qntl(const F& p, const math::EQntlType::type
     }
 
     default:
-    	throw math::StatisticsException(math::StatisticsException::UNSUPPORTED_QUANTILE_METHOD);
+        throw math::StatisticsException(math::StatisticsException::UNSUPPORTED_QUANTILE_METHOD);
     }  // switch
 
     return retVal;

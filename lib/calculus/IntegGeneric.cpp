@@ -195,7 +195,7 @@ F __closedNewtonCotes(
 
         // N must be divisible by 'degree'.
         // Additionally it is ensured that it is always greater than 0.
-    	// It is also assumed that 'degree' will always be a small integer.
+        // It is also assumed that 'degree' will always be a small integer.
         const std::size_t degrem = ( 0!=n%degree ? degree-n%degree : 0 );
         const std::size_t N = std::max<std::size_t>( 2,
             ( n <= (static_cast<std::size_t>(-1)-degrem) ? n + degrem : n - n%degree ) );
@@ -779,7 +779,7 @@ public:
     {
         if ( true == math::NumericUtil::isZero<F>(x) )
         {
-        	throw math::FunctionException(math::FunctionException::UNDEFINED);
+            throw math::FunctionException(math::FunctionException::UNDEFINED);
         }
 
         return static_cast<F>(1) / x;
@@ -997,7 +997,7 @@ F math::Integ::integH(
     // Just obtain the (approximate) number of integrating intervals
     // from the size
     const std::size_t n = static_cast<std::size_t>(std::floor(std::abs(b-a) / h) +
-    		static_cast<F>(1) / static_cast<F>(2) ) + 1;
+            static_cast<F>(1) / static_cast<F>(2) ) + 1;
 
     return math::Integ::integ<F>( f, a, b, n, algorithm );
 }
@@ -1053,7 +1053,7 @@ F math::Integ::integImpNegInf(
 
     try
     {
-    	F retVal = static_cast<F>(0);
+        F retVal = static_cast<F>(0);
 
         const math::Integ::__private::IntegSubstRec<F> fsub(f);
 
@@ -1095,7 +1095,7 @@ F math::Integ::integImpNegInf(
     }
     catch ( const math::FunctionException& fex )
     {
-    	throw math::CalculusException(math::CalculusException::UNDEFINED);
+        throw math::CalculusException(math::CalculusException::UNDEFINED);
     }
 
 }
@@ -1443,7 +1443,7 @@ F math::Integ::integImpPosInfH(
     // sanity check
     if ( a <= static_cast<F>(0) && bp <= static_cast<F>(0) )
     {
-	    throw math::CalculusException(math::CalculusException::INVALID_BREAKPOINT);
+        throw math::CalculusException(math::CalculusException::INVALID_BREAKPOINT);
     }
 
     math::Integ::__private::__checkStep<F>(himp);

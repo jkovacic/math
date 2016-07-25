@@ -75,8 +75,8 @@ void math::mtswap(
 
         typename std::vector<T>::iterator dest = destit + istart;
         for ( ;
-	          it != final;
-	          ++it, ++dest )
+              it != final;
+              ++it, ++dest )
         {
             T& currSrc = *it;
             T& currDest = *dest;

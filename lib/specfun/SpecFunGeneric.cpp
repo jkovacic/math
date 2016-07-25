@@ -663,7 +663,7 @@ T __incGamma(
          * In this case evaluate the upper gamma function as described above.
          */
 
-    	const T G = ( true==upper && false==reg ? 
+        const T G = ( true==upper && false==reg ? 
             static_cast<T>(0) : 
             math::SpecFun::gamma<T>(a) );
 
@@ -692,7 +692,7 @@ T __incGamma(
          *
          * In this case evaluate the lower gamma function as described above.
          */
-    	const T G = ( false==upper && false==reg ? 
+        const T G = ( false==upper && false==reg ? 
             static_cast<T>(0) : 
             math::SpecFun::gamma<T>(a) );
 
@@ -2100,7 +2100,7 @@ T math::SpecFun::incGammaUpperInv(
            const T& tol
          ) throw (math::SpecFunException)
 {
-	return math::SpecFun::__private::__invIncGamma<T>(a, g, true, false, tol);
+    return math::SpecFun::__private::__invIncGamma<T>(a, g, true, false, tol);
 }
 
 
@@ -2134,7 +2134,7 @@ T math::SpecFun::incGammaLowerRegInv(
            const T& tol
          ) throw (math::SpecFunException)
 {
-	return math::SpecFun::__private::__invIncGamma<T>(a, g, false, true, tol);
+    return math::SpecFun::__private::__invIncGamma<T>(a, g, false, true, tol);
 }
 
 
@@ -2168,7 +2168,7 @@ T math::SpecFun::incGammaUpperRegInv(
            const T& tol
          ) throw (math::SpecFunException)
 {
-	return math::SpecFun::__private::__invIncGamma<T>(a, g, true, true, tol);
+    return math::SpecFun::__private::__invIncGamma<T>(a, g, true, true, tol);
 }
 
 

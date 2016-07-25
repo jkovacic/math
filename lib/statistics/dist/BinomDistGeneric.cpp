@@ -468,7 +468,7 @@ F math::BinomDist::prob(
                 math::SpecFun::incBetaLowerReg<F>(
                      static_cast<F>(k),
                      static_cast<F>(n-k) + static_cast<F>(1),
-        		     p, TOL ) :
+                     p, TOL ) :
                 math::SpecFun::incBetaLowerReg<F>(
                      static_cast<F>(k) + static_cast<F>(1),
                      static_cast<F>(n-k),
@@ -607,7 +607,7 @@ I math::BinomDist::quant(
     {
         /*
          * Equivalent to (kl + ku) / 2, but more robust
-    	 * Note: when a positive number is casted to an integer,
+         * Note: when a positive number is casted to an integer,
          * it is always rounded down.
          */
         k = kl + (ku - kl) / static_cast<I>(2);

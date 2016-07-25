@@ -453,7 +453,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
                 default(none) shared(x1, x2) \
                 reduction(+ : sum, sum1, sum2)
     {
-    	OMP_COARSE_GRAINED_PAR_INIT_VARS(N1);
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N1);
 
         // Calculate both sums of the assigned block...
         F partsum  = static_cast<F>(0);
@@ -628,7 +628,7 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
     // 'x' must not be empty
     if ( NN <= 0 )
     {
-    	throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
     /*
@@ -721,7 +721,7 @@ F math::SampleStat::centralMoment(const std::vector<F>& x, const I& n) throw(mat
     // 'x' must not be empty
     if ( NN <= 0 )
     {
-    	throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
     }
 
     /*

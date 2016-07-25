@@ -67,7 +67,7 @@ public:
         else
         {
            return sin(x)/x - MND;
-      	}
+        }
     }
 };
 

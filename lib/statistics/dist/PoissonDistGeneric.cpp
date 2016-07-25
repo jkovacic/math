@@ -374,7 +374,7 @@ I math::PoissonDist::quant(
     {
         /*
          * Equivalent to (kl + ku) / 2, but more robust
-    	 * Note: when a positive number is casted to an integer,
+         * Note: when a positive number is casted to an integer,
          * it is always rounded down.
          */
         k = kl + (ku - kl) / static_cast<I>(2);

@@ -843,10 +843,10 @@ math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q1,
      */
 
     return math::QuaternionGeneric<F>(
-    		q1.m_o - q2.m_o,
-    		q1.m_i - q2.m_i,
-    		q1.m_j - q2.m_j,
-    		q1.m_k - q2.m_k );
+            q1.m_o - q2.m_o,
+            q1.m_i - q2.m_i,
+            q1.m_j - q2.m_j,
+            q1.m_k - q2.m_k );
 }
 
 
@@ -953,10 +953,10 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator-(const math::QuaternionGeneric<F>& q, const F& sc)
 {
     return QuaternionGeneric<F>(
-    		q.m_o - sc,
-    		q.m_i,
-    		q.m_j,
-    		q.m_k );
+            q.m_o - sc,
+            q.m_i,
+            q.m_j,
+            q.m_k );
 }
 
 

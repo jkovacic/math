@@ -1213,7 +1213,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator*=(const F& sc)
 {
     // Multiply each coefficient by the scalar
 
-	math::mtvectmult(this->m_coef, sc, this->m_coef);
+    math::mtvectmult(this->m_coef, sc, this->m_coef);
 
     // applicable when the scalar is 0...
     this->__reduce();
