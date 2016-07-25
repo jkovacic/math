@@ -10,7 +10,7 @@
 
 curvefitTest <- function()
 {
-  x <- c(0,1,2,3,4,5)
+  x <- seq(0, 5)
   y <- exp(-x)
 
   p1 <- lm(y ~ x)
