@@ -541,7 +541,7 @@ F math::SampleQuantileGenericAb<F>::iqr(const math::EQntlType::type method) cons
 /*
  * Obtains the range that is used to detect outliers. Observation 'x' is
  * an outlier if:
- *   x < q1 * iqrs  OR  x > q2 * iqrs
+ *   x < (q1 - iqrs * IQR)  OR  x > (q2 + iqrs * IQR)
  * 
  * @param lower - reference to the variable to assign the lower boundary of the range
  * @param upper - reference to the variable to assign the lower boundary of the range
