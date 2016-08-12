@@ -29,6 +29,8 @@ limitations under the License.
 #include <algorithm>
 #include <new>
 
+#include "util/FillVectors.h"
+
 #include "omp/omp_header.h"
 #include "../settings/omp_settings.h"
 #include "omp/omp_coarse.h"
@@ -227,66 +229,6 @@ F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SelectionEx
 }
 
 
-/*
- * Allocates the vector 'dest' to 'N' elements and fills in with integers
- * between 0 and N-1 in ascending order.
- *
- * @note If 'N' is zero, an empty vector is returned.
- *
- * @param dest - reference to a vector to be filled with integers
- * @param N - desired number of elements in 'dest'.
- *
- * @return reference to 'dest'
- *
- * @throw SelectionException if allocation of the return vector fails
- */
-std::vector<std::size_t>& __fillIndices(
-        std::vector<std::size_t>& dest,
-        const std::size_t N )
-        throw(math::SelectionException)
-{
-    try
-    {
-        // (re)allocates 'dest' to 'N' elements
-        dest.resize(N);
-
-        // Nothing else to do if N==0
-        if ( 0 == N )
-        {
-            return dest;
-        }
-
-        /*
-         * Assign 'dest' with initial positions 0..(N-1)
-         */
-        #pragma omp parallel num_threads(ompIdeal(N)) \
-                    if(N>OMP_CHUNKS_PER_THREAD) \
-                    default(none) shared(dest)
-        {
-            OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
-
-            typename std::vector<std::size_t>::iterator it = dest.begin() + istart;
-            std::size_t i = istart;
-            for ( std::size_t cntr=0;
-                  cntr<elems_per_thread && it!=dest.end();
-                  ++cntr, ++i, ++it )
-            {
-                std::size_t& destCurr = *it;
-                destCurr = i;
-            }
-
-            (void) iend;
-        }  // omp parallel
-    }
-    catch ( const std::bad_alloc& ba )
-    {
-        throw math::SelectionException(math::SelectionException::OUT_OF_MEMORY);
-    }
-
-    return dest;
-}
-
-
 /**
  * Allocates the vector 'dest' and fills in with pointers to all
  * elements of 'x'.
@@ -434,7 +376,7 @@ std::size_t __partition(
  * @param pvec - vector of pointers to array's elements
  * @param P - the ordinal
  * @param from - lower bound of the range
- * @param to - upper bpound of the range
+ * @param to - upper bound of the range
  */
 template <typename F>
 void __selectRange(
@@ -500,7 +442,7 @@ void __selectRange(
  * @param K1 - first ordinal (between 0 and size(x)-1)
  * @param K2 - second ordinal (between 0 and size(x)-1), ignored if a2==NULL
  * @param a1 - pointer to assign the value of first ordinal
- * @param a2 - pointer to asign the value of the second ordinal, ignored if NULL
+ * @param a2 - pointer to assign the value of the second ordinal, ignored if NULL
  * @param smallest - if TRUE, K1.th and optionally K2.th smallest elements will be returned, K1.th and optionally K2.th largest otherwise
  *
  * @throw SelectionException if 'K1' or 'K2' is invalid or if internal allocation of memory failed
@@ -539,6 +481,15 @@ void __selectMult(
 
     // Allocates and fills the vector of indices
     math::Selection::__private::__fillPointers(x, ptrTable);
+
+
+    /*
+     * TODO 
+     * Consider random shuffling the array of pointers and thus reduce
+     * probability of the worst case scenario when the array is already
+     * (almost) sorted.
+     */
+
 
     // Selects the P1.th smallest element, initially in the whole range
     F& ret1 = *a1;
@@ -591,8 +542,16 @@ std::vector<std::size_t>& math::Selection::order(
 {
     const std::size_t N = x.size();
 
-    // allocates 'dest' and fills it with initial positions 0..(N-1)
-    math::Selection::__private::__fillIndices(dest, N);
+    try
+    {
+        // allocates 'dest' and fills it with initial positions 0..(N-1)
+        dest.resize(N);
+        math::util::fillVectorWithConsecutiveIndices(N, dest);
+    }
+    catch ( const std::bad_alloc& ba )
+    {
+        throw math::SelectionException(math::SelectionException::OUT_OF_MEMORY);
+    }
 
     if ( 0 == N )
     {
