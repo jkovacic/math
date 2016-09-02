@@ -288,6 +288,53 @@ std::vector<const F*>& __fillPointers(
 
 
 /*
+ * Median of 3.
+ * 
+ * Finds index of the median element of *ptrs[idx1], *ptrs[idx2] and *ptrs[idx3].
+ * 
+ * @param ptrs - vector of pointers to elements
+ * @param idx1 - index of the first element
+ * @param idx2 - index of the second element
+ * @param idx3 - index of the third element
+ * 
+ * @return index of median(*ptrs[idx1], *ptrs[idx2], *ptrs[idx3])
+ */
+template <typename F>
+std::size_t __medianOf3Idx(
+                const std::vector<F*>& ptrs,
+                const std::size_t idx1,
+                const std::size_t idx2,
+                const std::size_t idx3 )
+{
+    #define MATH_SELECTIONGENERIC_MEDIANOF3_BUFSIZE        ( 3 )
+
+    std::size_t buf[ MATH_SELECTIONGENERIC_MEDIANOF3_BUFSIZE ] =
+                   { idx1, idx2, idx3 };
+
+    /*
+     * The algorithm is generalized to compute the median of 'N' for small
+     * values of 'N' and 'N' ideally being an odd number (not divisible by 2).
+     * The values are sorted using the insertion sort algorithm which is known
+     * to be very convenient for small values of 'N'. For N=3, the algorithm
+     * requires no more than 3 comparisons and exchanges.
+     */
+    for ( std::size_t i=1; i<MATH_SELECTIONGENERIC_MEDIANOF3_BUFSIZE; ++i )
+    {
+        for ( std::size_t j = i;
+              j>0 && ( *ptrs.at(buf[j]) < *ptrs.at(buf[j-1]) );
+              --j )
+        {
+            std::swap(buf[j], buf[j-1]);
+        }  // for j
+    }  // for i
+
+    return buf[MATH_SELECTIONGENERIC_MEDIANOF3_BUFSIZE / 2];
+
+    #undef MATH_SELECTIONGENERIC_MEDIANOF3_BUFSIZE
+}
+
+
+/*
  * "Partitions" the given subarray 'px' between 'left' and 'right, rearranges the
  * array of pointers 'px' int he given range and returns an index 'k' s.t. all
  * elements *px[i<k] are guaranteed to be less than *px[k] and all elements *px[i>k]
@@ -322,25 +369,37 @@ std::size_t __partition(
      * http://algs4.cs.princeton.edu
      */
 
+
     /*
-     * TODO Implement a better algorithm to choose a "pivot",
-     * e.g. "median of three". Until then, the left most element
-     * of the given interval is chosen as the pivot.
+     * The pivot is chosen by the "median of 3" algorithm. It finds the median
+     * value of the leftmost, rightmost and the middle element.
      */
-    const std::size_t pivot = left;
 
-    // TODO swap 'pivot' and 'left' if any other element is
-    // selected as the pivot
+    const std::size_t med3 = math::Selection::__private::__medianOf3Idx(
+                    px,
+                    left,
+                    (left + right) / 2,
+                    right );
 
-    std::size_t i = pivot + 1;
+    /*
+     * If the selected pivot is not the leftmost element,
+     * they must be exchanged. This way the pivot remains
+     * the leftmost element of the range.
+     */
+    if ( med3 != left )
+    {
+        std::swap(px.at(med3), px.at(left));
+    }
+
+    std::size_t i = left + 1;
     std::size_t j = right;
-    const F pval = *(px.at(pivot));
+    const F pval = *(px.at(left));
 
     for ( ; ; )
     {
         // Find both elements to swap
         for ( ; i<right && *(px.at(i)) < pval; ++i );
-        for ( ; j>pivot && pval < *(px.at(j)); --j );
+        for ( ; j>left && pval < *(px.at(j)); --j );
 
         // If the pointers have crossed, terminate the "infinite" loop
         if ( i >= j )
@@ -354,9 +413,9 @@ std::size_t __partition(
     }
 
     // Move the "pivot" to its appropriate position within 'px'.
-    if ( j != pivot )
+    if ( j != left )
     {
-        std::swap( px.at(pivot), px.at(j) );
+        std::swap( px.at(left), px.at(j) );
     }
 
     return j;
