@@ -292,6 +292,10 @@ std::vector<const F*>& __fillPointers(
  * 
  * Finds index of the median element of *ptrs[idx1], *ptrs[idx2] and *ptrs[idx3].
  * 
+ * @note This function is only called internally hence it is assumed that all
+ *       arguments are valid, i.e., 'idx1', 'idx2' and 'idx3' are all less then
+ *       the size of 'ptrs'.
+ * 
  * @param ptrs - vector of pointers to elements
  * @param idx1 - index of the first element
  * @param idx2 - index of the second element
