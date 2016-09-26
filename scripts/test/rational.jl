@@ -1,3 +1,5 @@
+#!/usr/bin/env julia
+
 # A Julia script that reproduces expected results of the test module
 # 'test/rationalTest.cpp'.
 #

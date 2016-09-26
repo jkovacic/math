@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # A Python script that reproduces expected results of the test module
 # 'test/combTest.cpp'.
 #

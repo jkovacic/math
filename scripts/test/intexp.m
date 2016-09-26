@@ -1,3 +1,5 @@
+#!/usr/bin/env octave
+
 % An Octave script that reproduces the first part of expected results
 % of the test module 'test/intexpTest.cpp'.
 % The other parts are performed in 'scripts/test/intexp.jl' and

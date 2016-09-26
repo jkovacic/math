@@ -1,3 +1,5 @@
+#!/usr/bin/env octave
+
 % An Octave script that reproduces expected results of the test module
 % 'test/matrixTest.cpp'.
 %

@@ -1,3 +1,5 @@
+#!/usr/bin/env julia
+
 # A Julia script that reproduces the second part of expected results of
 # the test module 'test/intexpTest.cpp'.
 # The other parts are performed in 'scripts/test/intexp.m' and

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # A Python script that reproduces the second part of expected results of the
 # test module 'test/specfunTest.cpp'.
 # The first part is performed in 'scripts/test/specfun.mac'.

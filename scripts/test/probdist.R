@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # A R script that reproduces expected results of the test module
 # 'test/probdistTest.cpp'.
 #

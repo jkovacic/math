@@ -10,6 +10,9 @@ build/
 # Backup files of some editors:
 *~
 
+# Python bytecode files:
+*.pyc
+
 .gitattributes
 
 # Eclipse files:
