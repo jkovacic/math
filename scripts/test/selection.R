@@ -45,8 +45,6 @@ selectionTest <- function()
   {
     cat(i, '. largest mpg: ', srt[i], '\n', sep='')
   }
-  
-  return(0)
 }
 
 selectionTest()

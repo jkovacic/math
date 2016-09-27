@@ -38,8 +38,6 @@ curvefitTest <- function()
   p5 <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + I(x^5))
   cat("\n5th degree interpolation polynomial for exp(-x):\n")
   print(p5)
-  
-  return(0)
 }
 
 curvefitTest()

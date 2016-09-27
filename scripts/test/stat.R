@@ -79,8 +79,6 @@ statTest <- function()
   print(mtcars$mpg < (q[1]-1.0*d) | mtcars$mpg > (q[2]+1.0*d))
   cat('Sorted list of outliers in mpg:\n')
   print(sort(unique(mtcars$mpg[mtcars$mpg<(q[1]-0.5*d) | mtcars$mpg>(q[2]+0.5*d)])))
-  
-  return(0)
 }
 
 

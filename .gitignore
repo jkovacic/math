@@ -13,6 +13,9 @@ build/
 # Python bytecode files:
 *.pyc
 
+# History of R sessions:
+.Rhistory
+
 .gitattributes
 
 # Eclipse files:

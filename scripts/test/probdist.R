@@ -123,8 +123,6 @@ probdistTest <- function()
   cat('Poisson(4): q(p<=0.7): ', qpois(0.7, lambda=4) - 1, '\n')
   cat('Poisson(4): q(p>0.4): ', qpois(0.4, lambda=4, lower.tail=FALSE) + 1, '\n')
   cat('Poisson(4): q(p>0.6): ', qpois(0.6, lambda=4, lower.tail=FALSE), '\n')
-  
-  return(0)
 }
 
 
