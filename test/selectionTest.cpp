@@ -78,7 +78,7 @@ void selectionTest()
 
 
         vector<double> vmpgs;
-    	mtcopy(ampgs, LEN, vmpgs);
+        mtcopy(ampgs, LEN, vmpgs);
 
         vector<size_t> idx;
 
