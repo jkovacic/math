@@ -91,6 +91,8 @@ namespace SampleStat
     template <typename F>
     F ecdf(const std::vector<F>& x, const F& t, const bool incl=true) throw(StatisticsException);
 
+    template <typename F>
+    F sumproduct(const std::vector<F>& x1, const std::vector<F>& x2) throw (StatisticsException);
 }  // namespace SampleStat
 
 }  // namespace math

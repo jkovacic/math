@@ -41,6 +41,8 @@ statTest <- function()
   cat('Pearson\'s r (correlation) of mpg and wt: ', cor(mtcars$mpg, mtcars$wt), '\n')
   cat('r^2 of mpg and wt: ', cor(mtcars$mpg, mtcars$wt)^2, '\n')
 
+  cat('Sum-product of mpg and wt: ', sum(mtcars$mpg * mtcars$wt), '\n')
+
   cat('\n')
   cat('Median of mpg: ', median(mtcars$mpg), '\n')
   cat('Approx. median of mpg: ', sort(mtcars$mpg)[(n %/% 2L) + 1L], '\n')

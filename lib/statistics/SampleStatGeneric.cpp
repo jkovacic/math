@@ -927,3 +927,68 @@ F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) t
     // finally evaluate the proportion
     return static_cast<F>(total) / static_cast<F>(NN);
 }
+
+
+/**
+ * Multiplies corresponding elements in the given arrays
+ * and returns the sum of those products.
+ *
+ * @param x1 - first array
+ * @param x2 - second array
+ *
+ * @return sum of products of corresponding elements of 'x1' and 'x2'
+ *
+ * @throw StatisticsException if sizes of 'x1' and 'x2' are different or equal to 0
+ */
+template <typename F>
+F math::SampleStat::sumproduct(const std::vector<F>& x1, const std::vector<F>& x2) throw (math::StatisticsException)
+{
+    const std::size_t N1 = x1.size();
+    const std::size_t N2 = x2.size();
+
+    if ( 0==N1 || 0==N2 )
+    {
+        throw math::StatisticsException(math::StatisticsException::SAMPLE_EMPTY);
+    }
+
+    if ( N1 != N2 )
+    {
+        throw math::StatisticsException(math::StatisticsException::UNEQUAL_SAMPLE_SIZES);
+    }
+
+    F sumProd = static_cast<F>(0);
+
+    /*
+     * Coarse grained parallelism will be applied, i.e. each thread will be
+     * assigned an (approximately) equally sized contiguous block of data
+     * to be processed.
+     */
+
+    #pragma omp parallel num_threads(ompIdeal(N1)) \
+                if(N1>OMP_CHUNKS_PER_THREAD) \
+                default(none) shared(x1, x2) \
+                reduction(+ : sumProd)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N1);
+
+        // Calculate the partial sum-product of the assigned block...
+        F partSumProd  = static_cast<F>(0);
+        typename std::vector<F>::const_iterator it1 = x1.begin() + istart;
+        typename std::vector<F>::const_iterator it2 = x2.begin() + istart;
+        for ( std::size_t cntr = 0;
+              cntr<elems_per_thread && it1!=x1.end(); ++it1, ++it2, ++cntr )
+        {
+            const F& x1cur = *it1;
+            const F& x2cur = *it2;
+
+            partSumProd += x1cur * x2cur;
+        }
+
+        // ... and add it to the total sum in a thread safe manner.
+        sumProd += partSumProd;
+
+        (void) iend;
+    }
+
+    return sumProd;
+}

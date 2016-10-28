@@ -1026,6 +1026,7 @@ Sample covariance: -5.11668 (expected: -5.116685)
 Population covariance (w/o B.c.): -4.95679 (expected: -4.956788)
 Pearson's r: -0.867659 (expected: -0.8676594)
 r^2: 0.752833 (expected: 0.7528328)
+Sum-product: 1909.75 (expected: 1909.753)
 
 = Test of quantile algorithms based on sorted arrays: =
 

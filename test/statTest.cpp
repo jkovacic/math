@@ -185,6 +185,8 @@ void statisticsTest()
         cout << "Pearson's r: " << SampleStat::cor(vmpgs, vwts) << " (expected: -0.8676594)" << endl;
         cout << "r^2: " << SampleStat::r2(vmpgs, vwts) << " (expected: 0.7528328)" << endl;
 
+        cout << "Sum-product: " << SampleStat::sumproduct(vmpgs, vwts) << " (expected: 1909.753)" << endl;
+
         // Classes that obtain quantiles and outliers are tested by an auxiliary
         // function that accepts all classes derived from SampleQuantileGenericAb.
 
