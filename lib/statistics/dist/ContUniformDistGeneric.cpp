@@ -19,7 +19,7 @@ limitations under the License.
  * @author Jernej Kovacic
  *
  * Implementation of functions within the namespace ContUniformDist
- * that perform various continuous unform (a.k.a. rectangular) distribution
+ * that perform various continuous uniform (a.k.a. rectangular) distribution
  * related operations, such as calculation of upper and lower tail probabilities
  * and quantiles, probability distribution function, etc.
  */
@@ -66,7 +66,7 @@ void __checkParams(const F& min, const F& max) throw (math::StatisticsException)
  * Value of the continuous uniform distribution's probability distribution
  * function (pdf) for the given 'x'.
  *
- * @note 'min' and 'max' are interchangable.
+ * @note 'min' and 'max' are interchangeable.
  *
  * @param x - value to be calculated its probability distribution function
  * @param min - first continuous uniform distribution's parameter, typically its lower limit (default: 0)
@@ -84,7 +84,7 @@ F math::ContUniformDist::pdf(
     ) throw (math::StatisticsException)
 {
     /*
-     * Probability density function of the continuos uniform distribution:
+     * Probability density function of the continuous uniform distribution:
      *
      *          /
      *          |      0       <==  x<min || x>max
@@ -154,7 +154,7 @@ F math::ContUniformDist::probInt(
  * Probability that a value is greater or smaller (depending on 'lowerTail')
  * than the given value 'x' for the specified continuous uniform distribution.
  *
- * @note 'min' and 'max' are interchangable.
+ * @note 'min' and 'max' are interchangeable.
  *
  * @param x - value
  * @param min - first continuous uniform distribution's parameter, typically its lower limit (default: 0)
@@ -231,7 +231,7 @@ F math::ContUniformDist::prob(
  * If 'lowerTail' equals true, it returns such 'x' that P(X<x) = p
  * If 'lowerTail' equals false, it returns such 'x' that P(X>x) = p
  *
- * @note 'min' and 'max' are interchangable.
+ * @note 'min' and 'max' are interchangeable.
  *
  * @param p - probability (must be greater than 0 and less than 1)
  * @param min - first continuous uniform distribution's parameter, typically its lower limit (default: 0)

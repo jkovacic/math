@@ -22,7 +22,7 @@ limitations under the License.
  * @headername{ContUniformDist.h}
  *
  * Declaration of functions within the namespace ContUniformDist
- * that perform various continuous unform (a.k.a. rectangular) distribution
+ * that perform various continuous uniform (a.k.a. rectangular) distribution
  * related operations, such as calculation of upper and lower tail probabilities
  * and quantiles, probability distribution function, etc.
  */
