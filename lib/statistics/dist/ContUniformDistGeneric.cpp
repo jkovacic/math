@@ -113,7 +113,7 @@ F math::ContUniformDist::pdf(
  * @note 'a' and 'b' are interchangeable, the result's sign will
  *       not change in this case.
  *
- * @note 'min' and 'max' are interchangable.
+ * @note 'min' and 'max' are interchangeable.
  *
  * @param a - lower limit of the interval
  * @param b - upper limit of the interval
