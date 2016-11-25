@@ -10,6 +10,8 @@
 #   source('/path/to/stat.R')
 
 # Note: the script requires the library "moments".
+# For more details about the packege, see:
+#   https://cran.r-project.org/package=moments
 # It can be installed in R via
 #   install.packages('moments')
 

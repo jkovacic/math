@@ -10,6 +10,13 @@
 #   source('/path/to/probdist.R')
 
 
+# Note: the script requires the library "triangle".
+# For more details about the package, see:
+#   https://cran.r-project.org/package=triangle
+# It can be installed in R via
+#   install.packages('triangle')
+
+
 probdistTest <- function()
 {
   library(triangle)
