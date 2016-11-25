@@ -59,7 +59,7 @@ void mtcopyTest()
 {
     try
     {
-    	const size_t N = 10;
+        const size_t N = 10;
         const int arr[] = { 23, 56, 12, 56, 23, -23, 92, -1, 45, -21 };
         vector<int> v;
         vector<int> v2;
