@@ -227,8 +227,8 @@ F math::FDist::prob(
     ) throw (math::StatisticsException)
 {
     /*
-     * The 'cdf' represents probability that a value from the chi-squared
-     * distribution is smaller than a specified value 'x' and can be
+     * The 'cdf' represents probability that a value from the
+     * F distribution is smaller than a specified value 'x' and can be
      * expressed as:
      *
      *            /  d1    d2  \

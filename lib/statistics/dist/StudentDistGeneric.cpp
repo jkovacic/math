@@ -278,7 +278,7 @@ F math::StudentDist::prob(
       ) throw (math::StatisticsException)
 {
     /*
-     * The cdf represents probability that a value from the normal
+     * The cdf represents probability that a value from the Student's
      * distribution is smaller than a specified value 'x' and can be
      * expressed as:
      *
