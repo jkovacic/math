@@ -58,7 +58,7 @@ void __checkParams(const F& min, const F& max) throw (math::StatisticsException)
     }
 }
 
-}}}  // namespace math::NormalDist::__private
+}}}  // namespace math::ContUniformDist::__private
 
 
 
