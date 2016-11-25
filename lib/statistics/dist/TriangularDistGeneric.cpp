@@ -242,11 +242,15 @@ F math::TriangularDist::prob(
     }
     else if ( x>a && x<=c )
     {
-        cdf = (x-a)*(x-a) / ((b-a)*(c-a));
+        const F xa = x - a;
+
+        cdf = xa*xa / ((b-a)*(c-a));
     }
     else if ( x>c && x<b )
     {
-        cdf = static_cast<F>(1) - ( (b-x)*(b-x) / ((b-a)*(b-c)) );
+        const F bx = b - x;
+
+        cdf = static_cast<F>(1) - ( bx*bx / ((b-a)*(b-c)) );
     }
     else  // x >= b
     {
@@ -263,6 +267,8 @@ F math::TriangularDist::prob(
  *
  * If 'lowerTail' equals true, it returns such 'x' that P(X<x) = p
  * If 'lowerTail' equals false, it returns such 'x' that P(X>x) = p
+ *
+ * @note The function always returns a value between 'a' and 'b'.
  *
  * @note 'a', 'b' and 'c' must satisfy the criteria: a < c < b
  *
