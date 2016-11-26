@@ -111,11 +111,11 @@ F math::TriangularDist::pdf(
 
     F pdf = static_cast<F>(0);
 
-    if ( x>a && x <=c )
+    if ( a<x && x<=c )
     {
         pdf = 2*(x-a) / ((b-a)*(c-a));
     }
-    else if ( x>c && x<b)
+    else if ( c<x && x<b )
     {
         pdf = 2*(b-x) / ((b-a)*(b-c));
     }
@@ -240,13 +240,13 @@ F math::TriangularDist::prob(
     {
         cdf = static_cast<F>(0);
     }
-    else if ( x>a && x<=c )
+    else if ( a<x && x<=c )
     {
         const F xa = x - a;
 
         cdf = xa*xa / ((b-a)*(c-a));
     }
-    else if ( x>c && x<b )
+    else if ( c<x && x<b )
     {
         const F bx = b - x;
 
