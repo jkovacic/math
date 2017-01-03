@@ -39,6 +39,7 @@ limitations under the License.
 #include "TriangularDist.h"
 #include "BinomDist.h"
 #include "PoissonDist.h"
+#include "ExponentialDist.h"
 
 #include "StatisticsException.h"
 
@@ -212,6 +213,21 @@ void probDistributionTest()
         cout << "Poisson(4): q(p<=0.7):  " << PoissonDist::quant<double, int>(0.7, 4.0, false) << " (expected: 4)" << endl;
         cout << "Poisson(4): q(p>0.4):   " << PoissonDist::quant<double, int>(0.4, 4.0, true, false) << " (expected: 5)" << endl;
         cout << "Poisson(4): q(p>0.6):   " << PoissonDist::quant<double, int>(0.6, 4.0, false, false) << " (expected: 3)" << endl;
+        cout << endl;
+
+        // Exponetial distribution:
+        cout << "Exp(0.6): pdf at x = 3: " << ExponentialDist::pdf(3.0, 0.6) << " (expected: 0.09917933)" << endl;
+        cout << "Exp(4): pdf at x = 0.7: " << ExponentialDist::pdf(0.7, 4.0) << " (expected: 0.2432403)" << endl;
+        cout << "Exp(0.6): P(X<3):   " << ExponentialDist::prob(3.0, 0.6) << " (expected: 0.8347011)" << endl;
+        cout << "Exp(0.6): P(X>1.5): " << ExponentialDist::prob(1.5, 0.6, false) << " (expected: 0.4065697)" << endl;
+        cout << "Exp(4): P(X<2.5):   " << ExponentialDist::prob(2.5, 4.0) << " (expected: 0.9999546)" << endl;
+        cout << "Exp(4): P(X>3.7):   " << ExponentialDist::prob(3.7, 4.0, false) << " (expected: 3.736299e-07)" << endl;
+        cout << "Exp(0.6): P(0.2<X<4.5): " << ExponentialDist::probInt(0.2, 4.5, 0.6) << " (expected: 0.8197149)" << endl;
+        cout << "Exp(4): P(0.12<X<1.8):  " << ExponentialDist::probInt(0.12, 1.8, 4.0) << " (expected: 0.6180368)" << endl;
+        cout << "Exp(0.6): q(p<0.3): " << ExponentialDist::quant(0.3, 0.6) << " (expected: 0.5944582)" << endl;
+        cout << "Exp(0.6): q(p>0.4): " << ExponentialDist::quant(0.4, 0.6, false) << " (expected: 1.527151)" << endl;
+        cout << "Exp(4): q(p<0.6):   " << ExponentialDist::quant(0.6, 4.0) << " (expected: 0.2290727)" << endl;
+        cout << "Exp(4): q(p>0.2):   " << ExponentialDist::quant(0.2, 4.0, false) << " (expected: 0.4023595)" << endl;
 
     }
     catch ( const StatisticsException& ex )

@@ -164,6 +164,20 @@ probdistTest <- function()
   cat('Poisson(4): q(p<=0.7): ', qpois(0.7, lambda=4) - 1, '\n')
   cat('Poisson(4): q(p>0.4): ', qpois(0.4, lambda=4, lower.tail=FALSE) + 1, '\n')
   cat('Poisson(4): q(p>0.6): ', qpois(0.6, lambda=4, lower.tail=FALSE), '\n')
+  
+  cat('\nExponential distribution:\n')
+  cat('Exp(0.6): pdf at x=3: ', dexp(3, rate=0.6), '\n')
+  cat('Exp(4): pdf at x=0.7: ', dexp(0.7, rate=4), '\n')
+  cat('Exp(0.6): P(X<3): ', pexp(3, rate=0.6), '\n')
+  cat('Exp(0.6): P(X>1.5): ', pexp(1.5, rate=0.6, lower.tail=FALSE), '\n')
+  cat('Exp(4): P(X<2.5): ', pexp(2.5, rate=4), '\n')
+  cat('Exp(4): P(X>3.7): ', pexp(3.7, rate=4, lower.tail=FALSE), '\n')
+  cat('Exp(0.6): P(0.2<X<4.5): ', pexp(4.5, rate=0.6) - pexp(0.2, rate=0.6), '\n')
+  cat('Exp(4): P(0.12<X<1.8): ', pexp(1.8, rate=4) - pexp(0.12, rate=4), '\n')
+  cat('Exp(0.6): q(p<0.3): ', qexp(0.3, rate=0.6), '\n')
+  cat('Exp(0.6): q(p>0.4): ', qexp(0.4, rate=0.6, lower.tail=FALSE), '\n')
+  cat('Exp(4): q(p<0.6): ', qexp(0.6, rate=4), '\n')
+  cat('Exp(4): q(p>0.2): ', qexp(0.2, rate=4, lower.tail=FALSE), '\n')
 }
 
 
