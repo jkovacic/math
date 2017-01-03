@@ -48,7 +48,7 @@ namespace math {  namespace ExponentialDist {  namespace __private {
  * be strictly greater than 0.
  *
  * @param x - argument to check
- * @param lambda - mean number of successes to check
+ * @param lambda - rate of the exponential distribution to check
  *
  * @throw StatisticsException if any argument is invalid
  */
@@ -57,7 +57,7 @@ void __checkParams(const F& x, const F& lambda) throw(math::StatisticsException)
 {
     /*
      * lambda > 0
-     * k >= 0
+     * x >= 0
      */
 
     if ( x < static_cast<F>(0) ||
@@ -89,7 +89,8 @@ F math::ExponentialDist::pdf(
         ) throw( math::StatisticsException)
 {
     /*
-     * Probability distribution function is defined as:
+     * Probability distribution function of the exponential distribution
+     * is defined as:
      *
      *                             -lambda * x
      *   pdf = P(X==x) = lambda * e
@@ -141,8 +142,8 @@ F math::ExponentialDist::probInt(
     const F from = std::min(a, b);
     const F to = std::max(a, b);
 
-    return math::ExponentialDist::prob<F>(to, lambda) -
-           math::ExponentialDist::prob<F>(from, lambda);
+    return ( math::ExponentialDist::prob<F>(to, lambda) -
+             math::ExponentialDist::prob<F>(from, lambda) );
 }
 
 
@@ -187,7 +188,7 @@ F math::ExponentialDist::prob(
 
 
 /**
- * Quantile function for the specified exponetial distribution.
+ * Quantile function for the specified exponential distribution.
  *
  * If 'lowerTail' equals true, it returns such 'x' that P(X<x) = p
  * If 'lowerTail' equals false, it returns such 'x' that P(X>x) = p
@@ -216,7 +217,6 @@ F math::ExponentialDist::quant(
     }
 
     /*
-     *
      * Quantile of the exponential distribution can be obtained as
      *
      *          ln(1-p)
