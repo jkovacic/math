@@ -32,6 +32,7 @@ limitations under the License.
 #include <iostream>
 
 #include "NormalDist.h"
+#include "LogNormalDist.h"
 #include "StudentDist.h"
 #include "ChiSquareDist.h"
 #include "FDist.h"
@@ -65,6 +66,18 @@ void probDistributionTest()
         cout << "N(2,3): P(1<X<3): " << NormalDist::probInt(3.0, 1.0, 2.0, 3.0) << " (expected: 0.2611173)" << endl;
         cout << "N(2,3): q(p>0.75): " << NormalDist::quant(0.75, 2.0, 3.0) << " (expected: 4.023469)" << endl;
         cout << "N(2,3): q(p<0.52): " << NormalDist::quant(0.52, 2.0, 3.0, false) << " (expected: 1.849539)" << endl;
+        cout << endl;
+
+
+        // Log-normal distribution:
+        cout << "LN(2,3): z for x = 6.7:  " << LogNormalDist::getZ(6.7, 2.0, 3.0) << " (expected: -0.03263082)" << endl;
+        cout << "LN(2,3): x for z = -1.3: " << LogNormalDist::getX(-1.3, 2.0, 3.0) << " (expected: 0.1495686)" << endl;
+        cout << "LN(2,3) at x=4.5: " << LogNormalDist::pdf(4.5, 2.0, 3.0) << " (expected: 0.02915026)" << endl;
+        cout << "LN(2,3): P(X<1.72): " << LogNormalDist::prob(1.72, 2.0, 3.0) << " (expected: 0.3135219)" << endl;
+        cout << "LN(2,3): P(X>2.48): " << LogNormalDist::prob(2.48, 2.0, 3.0, false) << " (expected: 0.6420388)" << endl;
+        cout << "LN(2,3): P(1<X<3): " << LogNormalDist::probInt(3.0, 1.0, 2.0, 3.0) << " (expected: 0.1294196)" << endl;
+        cout << "LN(2,3): q(p>0.75): " << LogNormalDist::quant(0.75, 2.0, 3.0) << " (expected: 55.89468)" << endl;
+        cout << "LN(2,3): q(p<0.52): " << LogNormalDist::quant(0.52, 2.0, 3.0, false) << " (expected: 6.35689)" << endl;
         cout << endl;
 
 
