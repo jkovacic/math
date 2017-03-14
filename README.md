@@ -1,11 +1,13 @@
-##About
+About
+-----
 A simple and robust C++ library for mathematical and scientific applications. 
 It supports matrix, rational, polynomial and quaternion arithmetics,
 as well as various calculus, root-finding, combinatorics, statistical, curve
 fitting algorithms, etc. See `test/maintest.cpp` as a basic demonstration. Or use
 Doxygen to generate documentation about the API.
 
-##Usage
+Usage
+-----
 Only headers (*.h files) from the directory `include` should be included
 into applications. The included headers may additionally include several
 templated classes that cannot be compiled separately. See _Makefile_ for
@@ -15,7 +17,8 @@ Additionally a simple demo application `test/maintest.cpp` is included
 that performs a few basic unit tests. Its expected output can be found
 in the file `test/test_output.out`.
 
-##Build
+Build
+-----
 An example _Makefile_ with instructions to build a simple demo application
 is provided. It assumes you have GCC installed and in your path. You are
 free to modify a few variables to use another C++ compiler or toolchain.
@@ -23,7 +26,8 @@ For more details about official _make_ targets, please type:
 
 `make help`
 
-##OpenMP support
+OpenMP support
+--------------
 Mathematical algorithms in classes are currently being rewritten to support
 OpenMP (parallelization using multiple threads on multicore systems).
 Please note that OpenMP is currently disabled by default. To enable it,
@@ -42,10 +46,12 @@ variables and/or build rules.
 To build a parallelized version of the application, your compiler must
 support __OpenMP version 3.0__ or higher.
 
-##License
+License
+-------
 The library is licensed under the
 [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
 See LICENSE.txt for more details.
 
-##Author
+Author
+------
 The author of the library is Jernej Kova&#x010d;i&#x010d;.
