@@ -33,6 +33,8 @@ displayMathConstants() =
   print("sqrt(2) = ", sqrt(2) );
   print("sqrt(2)/2 = ", sqrt(2)/2 );
 
+  print("EulerGamma = ", Euler );
+
   /* Restore the original precision for real numbers */
   default(realprecision, orig_realprec);
 }

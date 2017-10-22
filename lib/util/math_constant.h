@@ -70,4 +70,8 @@ limitations under the License.
 #define MATH_CONST_SQRT_INV_2       ( 0.70710678118654752440084436210484903929L )
 
 
+/* Euler - Mascheroni constant a.k.a. gamma */
+#define MATH_CONST_EULERGAMMA       ( 0.57721566490153286060651209008240243104L )
+
+
 #endif  /*  _MATH_MATH_CONSTANT_H_  */
