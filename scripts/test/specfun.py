@@ -58,4 +58,5 @@ def specfunTest() :
     print("erfcInv(0.65): ", sp.erfcinv(0.65))
 
 
-specfunTest()
+if (__name__ == '__main__'):
+    specfunTest()

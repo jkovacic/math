@@ -36,4 +36,5 @@ def combTest() :
             cnt += 1
 
 
-combTest()
+if (__name__ == '__main__'):
+    combTest()
