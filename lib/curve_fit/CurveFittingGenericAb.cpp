@@ -70,7 +70,7 @@ void math::CurveFittingGenericAb<F>::_init()
  * @throw CurveFittingException if allocation of memory fails
  */
 template <typename F>
-math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::operator=(const math::CurveFittingGenericAb<F>& orig) throw (math::CurveFittingException)
+math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::operator=(const math::CurveFittingGenericAb<F>& orig)
 {
     // nothing to do if attempting to assign to itself
     if ( &orig==this )
@@ -104,7 +104,7 @@ math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::operator=(const 
  * @throw CurveFittingException if 'porig' is invalid or if allocation of memory fails
  */
 template <typename F>
-math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::copy(const math::CurveFittingGenericAb<F>* porig) throw (math::CurveFittingException)
+math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::copy(const math::CurveFittingGenericAb<F>* porig)
 {
     // Sanity check: porig must not be NULL
     if ( NULL==porig )
@@ -141,7 +141,7 @@ math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::copy(const math:
  * @throw CurveFittingException if the curve has already been generated or if allocation of memory fails
  */
 template <typename F>
-math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::enterPoint(const F& x, const F& y) throw (math::CurveFittingException)
+math::CurveFittingGenericAb<F>& math::CurveFittingGenericAb<F>::enterPoint(const F& x, const F& y)
 {
     // No additional points are allowed once the curve has been generated
     if ( true == this->m_curveGenerated )
@@ -197,7 +197,7 @@ bool math::CurveFittingGenericAb<F>::curveReady() const
  * @throw CurveFittingException if no points have been entered
  */
 template <typename F>
-F math::CurveFittingGenericAb<F>::lowerBound() const throw (math::CurveFittingException)
+F math::CurveFittingGenericAb<F>::lowerBound() const
 {
     // only applicable when at least one point was entered
     if ( true == this->m_points.empty() )
@@ -234,7 +234,7 @@ F math::CurveFittingGenericAb<F>::lowerBound() const throw (math::CurveFittingEx
  * @throw CurveFittingException if no points have been entered
  */
 template <typename F>
-F math::CurveFittingGenericAb<F>::upperBound() const throw (math::CurveFittingException)
+F math::CurveFittingGenericAb<F>::upperBound() const
 {
     // only applicable when at least one point was entered
     if ( true == this->m_points.empty() )
@@ -346,7 +346,7 @@ void math::CurveFittingGenericAb<F>::_sortPoints()
  * @throw appropriate CurveFittingException if any check is not passed
  */
 template <typename F>
-void math::CurveFittingGenericAb<F>::_curveGenerationCheck() throw (math::CurveFittingException)
+void math::CurveFittingGenericAb<F>::_curveGenerationCheck()
 {
     // Curve must not be generated yet
     if ( true==this->m_curveGenerated )

@@ -57,7 +57,7 @@ namespace math {  namespace LogNormalDist {  namespace __private
  * @throw StatisticsException if 'sigma' is not valid.
  */
 template <typename F>
-void __checkSigma(const F& sigma) throw (math::StatisticsException)
+void __checkSigma(const F& sigma)
 {
     if ( sigma < math::NumericUtil::getEPS<F>() )
     {
@@ -75,7 +75,7 @@ void __checkSigma(const F& sigma) throw (math::StatisticsException)
  * @throw StatisticsException if 'x' is not valid.
  */
 template <typename F>
-void __checkArg(const F& x) throw (math::StatisticsException)
+void __checkArg(const F& x)
 {
     if ( x < math::NumericUtil::getEPS<F>() )
     {
@@ -104,7 +104,7 @@ F math::LogNormalDist::getZ(
           const F& x,
           const F& mu,
           const F& sigma
-        ) throw (math::StatisticsException)
+        )
 {
     /*
      *
@@ -139,7 +139,7 @@ F math::LogNormalDist::getX(
           const F& z,
           const F& mu,
           const F& sigma
-        ) throw (math::StatisticsException)
+        )
 {
     /*
      *
@@ -172,7 +172,7 @@ F math::LogNormalDist::pdf(
       const F& x,
       const F& mu,
       const F& sigma
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * Probability density function of the log-normal distribution:
@@ -223,7 +223,7 @@ F math::LogNormalDist::probInt(
       const F& b,
       const F& mu,
       const F& sigma
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      *              b
@@ -265,7 +265,7 @@ F math::LogNormalDist::prob(
       const F& mu,
       const F& sigma,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      *
@@ -340,7 +340,7 @@ F math::LogNormalDist::quant(
       const F& mu,
       const F& sigma,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     // sanity check
     math::LogNormalDist::__private::__checkSigma<F>(sigma);

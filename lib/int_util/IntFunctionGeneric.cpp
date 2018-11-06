@@ -46,7 +46,6 @@ limitations under the License.
  */
 template <typename I>
 I math::IntFunction::intSqrt(const I& n, const bool ceil)
-             throw (math::IntFunctionException)
 {
     // sanity check
     if ( true == math::IntUtil::isNegative<I>(n) )
@@ -115,7 +114,7 @@ I math::IntFunction::intSqrt(const I& n, const bool ceil)
  * @throw IntFunctionException if 'n' is not strictly positive or if the type 'I' is not integral
  */
 template <typename I>
-I math::IntFunction::intLog2(const I& n, const bool ceil) throw(math::IntFunctionException)
+I math::IntFunction::intLog2(const I& n, const bool ceil)
 {
     // Sanity check:
     // - this function uses bitwise operators that might not be properly supported
@@ -192,7 +191,7 @@ namespace math {  namespace IntFunction
 {
 
     template <>
-    bool intLog2(const bool& n, const bool ceil) throw(math::IntFunctionException)
+    bool intLog2(const bool& n, const bool ceil)
     {
         (void) n;
         (void) ceil;

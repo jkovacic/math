@@ -164,7 +164,7 @@ _MATH_NUMERICUTIL_SPECIALIZED_GETEPS(long double);
  * @param eps - desired default value of 'epsilon' (default: 0)
  */
 template <class T>
-void math::NumericUtil::setEPS(const T& eps = static_cast<T>(0))
+void math::NumericUtil::setEPS(const T& eps)
 {
     // the "general" version (for integral types) of this
     // function does not do anything

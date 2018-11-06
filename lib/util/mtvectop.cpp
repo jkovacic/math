@@ -51,7 +51,7 @@ limitations under the License.
  * @param add - if 'true', addition will be performed, subtraction if 'false' (default: true)
  */
 template <class T>
-void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, const bool add=true)
+void math::mtvectadd(const std::vector<T>& v1, const std::vector<T>& v2, std::vector<T>& dest, const bool add)
 {
     const std::size_t N = std::min<std::size_t>( v1.size(), v2.size() );
 

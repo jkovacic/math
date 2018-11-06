@@ -42,7 +42,7 @@ namespace math {  namespace IntCombinatorics {  namespace __private
  * @throw CombinatoricsException if 'n' is negative
  */
 template <typename I>
-void __checkSign(const I& n) throw (math::CombinatoricsException)
+void __checkSign(const I& n)
 {
     if ( true == math::IntUtil::isNegative<I>(n) )
     {
@@ -70,9 +70,8 @@ void __checkSign(const I& n) throw (math::CombinatoricsException)
  */
 template <typename I>
 I math::IntCombinatorics::fallingFactorial(
-                            const I& N, 
-                            const I& K ) 
-                        throw(math::CombinatoricsException)
+                            const I& N,
+                            const I& K )
 {
     // sanity check
     math::IntCombinatorics::__private::__checkSign<I>(N);
@@ -136,8 +135,7 @@ I math::IntCombinatorics::fallingFactorial(
 template <typename I>
 I math::IntCombinatorics::risingFactorial( 
                             const I& N, 
-                            const I& K ) 
-                        throw(math::CombinatoricsException)
+                            const I& K )
 {
     // sanity check
     math::IntCombinatorics::__private::__checkSign<I>(N);
@@ -191,8 +189,7 @@ I math::IntCombinatorics::risingFactorial(
 template <typename I>
 I math::IntCombinatorics::factorial(
                             const I& N, 
-                            const I& from ) 
-                        throw(math::CombinatoricsException)
+                            const I& from )
 {
     // sanity check
     math::IntCombinatorics::__private::__checkSign<I>(N);
@@ -261,8 +258,7 @@ I math::IntCombinatorics::factorial(
 template <typename I>
 I math::IntCombinatorics::multiFactorial(
                             const I& N, 
-                            const I& K ) 
-                        throw(math::CombinatoricsException)
+                            const I& K )
 {    
     // sanity check
     math::IntCombinatorics::__private::__checkSign<I>(N);
@@ -312,9 +308,7 @@ I math::IntCombinatorics::multiFactorial(
  * @throw Combinatorics exception if input arguments are invalid or the result would be out of integer range
  */
 template <typename I>
-I math::IntCombinatorics::doubleFactorial(
-                            const I& N) 
-                        throw(math::CombinatoricsException)
+I math::IntCombinatorics::doubleFactorial(const I& N)
 {
     // sanity check is performed by multiFactorial())
 
@@ -342,8 +336,7 @@ I math::IntCombinatorics::doubleFactorial(
 template <typename I>
 I math::IntCombinatorics::binom(
                             const I& N, 
-                            const I& K ) 
-                        throw(math::CombinatoricsException)
+                            const I& K )
 {
     // sanity check
     math::IntCombinatorics::__private::__checkSign<I>(N);

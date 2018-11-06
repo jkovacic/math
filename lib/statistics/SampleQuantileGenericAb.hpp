@@ -97,14 +97,14 @@ private:
 
 private:
     // pure virtual methods that select (depending on implementation) n.th smallest element(s)
-    virtual F _select(const std::size_t n) const throw(StatisticsException) = 0;
+    virtual F _select(const std::size_t n) const = 0;
 
     virtual void _select2(
             const std::size_t n1,
             const std::size_t n2,
             F& val1,
             F& val2
-          ) const throw(StatisticsException) = 0;
+          ) const = 0;
 
 protected:
     void _outlierBounds(
@@ -123,19 +123,19 @@ public:
            const I& num,
            const I& den, 
            const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
-         ) const throw (StatisticsException);
+         ) const;
 
     F qntl(
            const F& p,
            const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
-         ) const throw (StatisticsException);
+         ) const;
 
     F median(const bool approx = false) const;
 
     F quartile(
            const unsigned short int q,
            const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG 
-         ) const throw (StatisticsException);
+         ) const;
 
     F iqr(const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG) const;
 
@@ -156,13 +156,13 @@ public:
            const std::size_t n, 
            const bool largest = true,
            const bool zerobase = STAT_DEFAULT_ZERO_BASE
-         ) const throw(StatisticsException) = 0;
+         ) const = 0;
 
     virtual void outliers(
            std::set<F>& outl,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
-         ) const throw (StatisticsException) = 0;
+         ) const = 0;
 
     // Destructor
     virtual ~SampleQuantileGenericAb() = 0;

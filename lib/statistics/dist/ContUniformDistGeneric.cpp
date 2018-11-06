@@ -50,7 +50,7 @@ namespace math {  namespace ContUniformDist {  namespace __private
  * @throw StatisticsException if the parameters are equal
  */
 template <typename F>
-void __checkParams(const F& min, const F& max) throw (math::StatisticsException)
+void __checkParams(const F& min, const F& max)
 {
     if ( true == math::NumericUtil::isZero<F>(min-max) )
     {
@@ -81,7 +81,7 @@ F math::ContUniformDist::pdf(
       const F& x,
       const F& min,
       const F& max
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * Probability density function of the continuous uniform distribution:
@@ -130,7 +130,7 @@ F math::ContUniformDist::probInt(
       const F& b,
       const F& min,
       const F& max
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      *              b
@@ -171,7 +171,7 @@ F math::ContUniformDist::prob(
       const F& min,
       const F& max,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * The cdf represents probability that a value from the continuous uniform
@@ -248,7 +248,7 @@ F math::ContUniformDist::quant(
       const F& min,
       const F& max,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     // sanity check
     math::ContUniformDist::__private::__checkParams<F>(min, max);

@@ -50,7 +50,7 @@ namespace PoissonDist
     F pmf(
         const I& k,
         const F& lambda
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -60,7 +60,7 @@ namespace PoissonDist
         const F& lambda,
         const bool incLower = true,
         const bool incUpper = true
-      ) throw (StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -69,7 +69,7 @@ namespace PoissonDist
         const F& lambda,
         const bool incl = true,
         const bool lowerTail = true
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -78,7 +78,7 @@ namespace PoissonDist
         const F& lambda,
         const bool smallest = true,
         const bool lowerTail = true
-      ) throw(StatisticsException);
+      );
 
 }  // namespace PoissonDist
 

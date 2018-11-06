@@ -56,7 +56,7 @@ namespace math {  namespace NormalDist {  namespace __private
  * @throw StatisticsException if 'sigma' is not valid.
  */
 template <typename F>
-void __checkSigma(const F& sigma) throw (math::StatisticsException)
+void __checkSigma(const F& sigma)
 {
     if ( sigma < math::NumericUtil::getEPS<F>() )
     {
@@ -86,7 +86,7 @@ F math::NormalDist::getZ(
           const F& x,
           const F& mu,
           const F& sigma
-        ) throw (math::StatisticsException)
+        )
 {
     /*
      *
@@ -120,7 +120,7 @@ F math::NormalDist::getX(
           const F& z,
           const F& mu,
           const F& sigma
-        ) throw (math::StatisticsException)
+        )
 {
     /*
      * x = mu + z * sigma
@@ -150,7 +150,7 @@ F math::NormalDist::pdf(
       const F& x,
       const F& mu,
       const F& sigma
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * Probability density function of the normal distribution:
@@ -200,7 +200,7 @@ F math::NormalDist::probInt(
       const F& b,
       const F& mu,
       const F& sigma
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      *              b
@@ -240,7 +240,7 @@ F math::NormalDist::prob(
       const F& mu,
       const F& sigma,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * The cdf represents probability that a value from the normal
@@ -326,7 +326,7 @@ F math::NormalDist::quant(
       const F& mu,
       const F& sigma,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     // sanity check
     math::NormalDist::__private::__checkSigma<F>(sigma);

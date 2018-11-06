@@ -56,7 +56,7 @@ math::PolynomialInterpolationGeneric<F>::PolynomialInterpolationGeneric()
  * @throw CurveFittingException if generation of the curve failed for any reason.
  */
 template <typename F>
-void math::PolynomialInterpolationGeneric<F>::generateCurve(const std::size_t degree) throw (math::CurveFittingException)
+void math::PolynomialInterpolationGeneric<F>::generateCurve(const std::size_t degree)
 {
     // performs necessary checks
     this->_curveGenerationCheck();

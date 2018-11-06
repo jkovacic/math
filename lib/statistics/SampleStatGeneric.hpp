@@ -50,49 +50,49 @@ namespace SampleStat
     F sum(const std::vector<F>& x);
 
     template <typename F>
-    F mean(const std::vector<F>& x) throw(StatisticsException);
+    F mean(const std::vector<F>& x);
 
     template <typename F>
-    F var(const std::vector<F>& x, const bool sample=true) throw(StatisticsException);
+    F var(const std::vector<F>& x, const bool sample=true);
 
     template <typename F>
-    F var(const std::vector<F>& x, const std::size_t df_sub) throw(StatisticsException);
+    F var(const std::vector<F>& x, const std::size_t df_sub);
 
     template <typename F>
-    F stdev(const std::vector<F>& x, const bool sample=true) throw(StatisticsException);
+    F stdev(const std::vector<F>& x, const bool sample=true);
 
     template <typename F>
-    F stdev(const std::vector<F>& x, const std::size_t df_sub) throw(StatisticsException);
+    F stdev(const std::vector<F>& x, const std::size_t df_sub);
 
     template <typename F>
-    F cov(const std::vector<F>& x1, const std::vector<F>& x2, const std::size_t df_sub) throw(StatisticsException);
+    F cov(const std::vector<F>& x1, const std::vector<F>& x2, const std::size_t df_sub);
 
     template <typename F>
-    F cov(const std::vector<F>& x1, const std::vector<F>& x2, const bool sample=true) throw(StatisticsException);
+    F cov(const std::vector<F>& x1, const std::vector<F>& x2, const bool sample=true);
 
     template <typename F>
-    F cor(const std::vector<F>& x1, const std::vector<F>& x2) throw(StatisticsException);
+    F cor(const std::vector<F>& x1, const std::vector<F>& x2);
 
     template <typename F>
-    F r2(const std::vector<F>& x1, const std::vector<F>& x2) throw(StatisticsException);
+    F r2(const std::vector<F>& x1, const std::vector<F>& x2);
 
     template <typename F, typename I>
-    F moment(const std::vector<F>& x, const I& n, const F& about=static_cast<F>(0)) throw(StatisticsException);
+    F moment(const std::vector<F>& x, const I& n, const F& about=static_cast<F>(0));
 
     template <typename F, typename I>
-    F centralMoment(const std::vector<F>& x, const I& n) throw(StatisticsException);
+    F centralMoment(const std::vector<F>& x, const I& n);
 
     template <typename F>
-    F skewness(const std::vector<F>& x, const bool samplesd=false) throw(StatisticsException);
+    F skewness(const std::vector<F>& x, const bool samplesd=false);
 
     template <typename F>
-    F kurtosis(const std::vector<F>& x, const bool excess=false, const bool samplesd=false) throw(StatisticsException);
+    F kurtosis(const std::vector<F>& x, const bool excess=false, const bool samplesd=false);
 
     template <typename F>
-    F ecdf(const std::vector<F>& x, const F& t, const bool incl=true) throw(StatisticsException);
+    F ecdf(const std::vector<F>& x, const F& t, const bool incl=true);
 
     template <typename F>
-    F sumproduct(const std::vector<F>& x1, const std::vector<F>& x2) throw (StatisticsException);
+    F sumproduct(const std::vector<F>& x1, const std::vector<F>& x2);
 }  // namespace SampleStat
 
 }  // namespace math

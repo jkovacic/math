@@ -44,7 +44,7 @@ namespace IntExponentiator
 {
     // Efficient calculation of base^n:
     template <class T, typename I>
-    T power(const T& base, const I& n) throw (IntFactorizationException);
+    T power(const T& base, const I& n);
 
 }  // namespace IntExponentiator
 

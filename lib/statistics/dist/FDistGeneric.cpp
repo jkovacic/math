@@ -56,7 +56,7 @@ namespace math {  namespace FDist {  namespace __private
  * @throw StatisticsException if any argument is invalid.
  */
 template <typename F>
-void __checkParams(const F& x, const F& d1, const F& d2) throw (math::StatisticsException)
+void __checkParams(const F& x, const F& d1, const F& d2)
 {
     if ( x < static_cast<F>(0) )
     {
@@ -91,7 +91,7 @@ F math::FDist::pdf(
       const F& x,
       const F& d1,
       const F& d2
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * Probability density function of the F-distribution:
@@ -185,7 +185,7 @@ F math::FDist::probInt(
       const F& b,
       const F& d1,
       const F& d2
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      *              b
@@ -224,7 +224,7 @@ F math::FDist::prob(
       const F& d1,
       const F& d2,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * The 'cdf' represents probability that a value from the
@@ -294,7 +294,7 @@ F math::FDist::quant(
       const F& d1,
       const F& d2,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     // sanity check
     math::FDist::__private::__checkParams<F>(static_cast<F>(1), d1, d2);

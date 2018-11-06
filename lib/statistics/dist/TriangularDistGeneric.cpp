@@ -52,7 +52,7 @@ namespace math {  namespace TriangularDist {  namespace __private
  * @throw StatisticsException if the parameters are invalid
  */
 template <typename F>
-void __checkParams(const F& a, const F& b, const F& c) throw (math::StatisticsException)
+void __checkParams(const F& a, const F& b, const F& c)
 {
     if ( ( (c-a) < math::NumericUtil::getEPS<F>() ) ||
            (b-c) < math::NumericUtil::getEPS<F>() )
@@ -86,7 +86,7 @@ F math::TriangularDist::pdf(
       const F& a,
       const F& b,
       const F& c
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * Probability density function of the triangular distribution:
@@ -151,7 +151,7 @@ F math::TriangularDist::probInt(
       const F& a,
       const F& b,
       const F& c
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      *              to
@@ -194,7 +194,7 @@ F math::TriangularDist::prob(
       const F& b,
       const F& c,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * The cdf represents probability that a value from the triangular
@@ -289,7 +289,7 @@ F math::TriangularDist::quant(
       const F& b,
       const F& c,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     // sanity check
     math::TriangularDist::__private::__checkParams<F>(a, b, c);

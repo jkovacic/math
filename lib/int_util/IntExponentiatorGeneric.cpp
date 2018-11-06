@@ -112,7 +112,6 @@ namespace IntExponentiator
  */
 template<class T, typename I>
 T math::IntExponentiator::power(const T& base, const I& n)
-                          throw (math::IntFactorizationException)
 {
     // only non negative exponents are supported:
     if ( true == math::IntUtil::isNegative<I>(n) )

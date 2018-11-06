@@ -48,7 +48,7 @@ bool getDiagonallyDominantMatrix(
         MatrixGeneric<T>* const pB,
         std::vector<std::size_t>& rows,
         std::vector<std::size_t>& cols
-      ) throw (MatrixException);
+      );
 
 
 template <class T>
@@ -64,7 +64,7 @@ bool solveGaussJordan(
         MatrixGeneric<T>& x,
         const bool fullp,
         const bool physSwap
-      ) throw(MatrixException);
+      );
 
 
 template <class T>
@@ -72,14 +72,14 @@ T getDeterminant(
         const MatrixGeneric<T>& A,
         const bool fullp,
         const bool physSwap
-      ) throw(MatrixException);
+      );
 
 
 template <class T>
 std::size_t getRank(
         const MatrixGeneric<T>& A,
         const bool physSwap
-      ) throw(MatrixException);
+      );
 
 }  // namespace Pivot
 

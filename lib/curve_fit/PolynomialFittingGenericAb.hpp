@@ -57,9 +57,9 @@ protected:
 
 public:
     // get a copy of the best fitting polynomial
-    PolynomialGeneric<F> getPolynomial() const throw (CurveFittingException);
+    PolynomialGeneric<F> getPolynomial() const;
     // inherited as an abstract function from the base class, value of the polynomial at the given abscissa
-    F valueAt(const F& x, const bool strict=true) const throw (CurveFittingException);
+    F valueAt(const F& x, const bool strict=true) const;
 
     //generateCurve() remains a pure virtual method and must be implemented by derived classes
 };

@@ -53,7 +53,7 @@ namespace FDist
           const F& x,
           const F& d1,
           const F& d2
-        ) throw (StatisticsException);
+        );
 
 
     template <typename F>
@@ -62,7 +62,7 @@ namespace FDist
           const F& b,
           const F& d1,
           const F& d2
-        ) throw (StatisticsException);
+        );
 
 
     template <typename F>
@@ -71,7 +71,7 @@ namespace FDist
           const F& d1,
           const F& d2,
           const bool lowerTail = true
-       ) throw (StatisticsException);
+       );
 
 
     template <typename F>
@@ -80,7 +80,7 @@ namespace FDist
           const F& d1,
           const F& d2,
           const bool lowerTail = true
-        ) throw (math::StatisticsException);
+        );
 
 }  // namespace FDist
 

@@ -38,7 +38,7 @@ limitations under the License.
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
 template <class T>
-math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw (math::CombinatoricsException)
+math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el)
 {
     try
     {
@@ -69,7 +69,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::vector<T>& el) throw 
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
 template <class T>
-math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el) throw (math::CombinatoricsException)
+math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el)
 {
     try
     {
@@ -100,7 +100,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::list<T>& el) throw (m
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
 template <class T>
-math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el) throw (math::CombinatoricsException)
+math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el)
 {
     try
     {
@@ -131,7 +131,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::set<T>& el) throw (ma
  * @throw CombinatoricsException if 'el' is empty or allocation of memory fails
  */
 template <class T>
-math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (math::CombinatoricsException)
+math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el)
 {
     try
     {
@@ -166,7 +166,7 @@ math::CombinationGeneric<T>::CombinationGeneric(const std::deque<T>& el) throw (
  * @throw CombinatoricsException if input arguments are invalid or if allocation of memory fails
  */
 template <class T>
-math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, const std::size_t len) throw (math::CombinatoricsException)
+math::CombinationGeneric<T>::CombinationGeneric(const T* elarray, const std::size_t len)
 {
     try
     {
@@ -224,7 +224,7 @@ std::size_t math::CombinationGeneric<T>::getK() const
  * @throw CombinatoricsException if input argument is invalid or if allocation of memory fails
  */
 template <class T>
-void math::CombinationGeneric<T>::setK(const std::size_t k) throw (math::CombinatoricsException)
+void math::CombinationGeneric<T>::setK(const std::size_t k)
 {
     try
     {
@@ -278,7 +278,7 @@ void math::CombinationGeneric<T>::setK(const std::size_t k) throw (math::Combina
  * @throw CombinatoriscException if n is too large or if allocation of memory fails
  */
 template <class T>
-void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const std::size_t n) throw (math::CombinatoricsException)
+void math::CombinationGeneric<T>::next(std::list<std::set<T> >& ret, const std::size_t n)
 {
     try
     {

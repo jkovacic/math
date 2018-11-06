@@ -61,7 +61,7 @@ namespace math {  namespace StudentDist {  namespace __private
  * @throw StatisticsException if 'sigma' or 'df' is not valid.
  */
 template <typename F>
-void __checkParams(const F& sigma, const F& df) throw (math::StatisticsException)
+void __checkParams(const F& sigma, const F& df)
 {
     if ( sigma < math::NumericUtil::getEPS<F>() )
     {
@@ -99,7 +99,7 @@ F math::StudentDist::getT(
         const I& n,
         const F& mu,
         const F& s
-      ) throw (math::StatisticsException)
+      )
 {
     /*
      *
@@ -136,7 +136,7 @@ F math::StudentDist::getX(
         const I& n,
         const F& mu,
         const F& s
-      ) throw (math::StatisticsException)
+      )
 {
     /*
      *
@@ -172,7 +172,7 @@ F math::StudentDist::pdf(
         const F& df,
         const F& mu,
         const F& sigma
-      ) throw (math::StatisticsException)
+      )
 {
     // sanity check
     math::StudentDist::__private::__checkParams<F>(sigma, df);
@@ -233,7 +233,7 @@ F math::StudentDist::probInt(
         const F& df,
         const F& mu,
         const F& sigma
-      ) throw (math::StatisticsException)
+      )
 {
     /*
      *              b
@@ -275,7 +275,7 @@ F math::StudentDist::prob(
         const bool lowerTail,
         const F& mu,
         const F& sigma
-      ) throw (math::StatisticsException)
+      )
 {
     /*
      * The cdf represents probability that a value from the Student's
@@ -402,7 +402,7 @@ F math::StudentDist::quant(
         const bool lowerTail,
         const F& mu,
         const F& sigma
-      ) throw (math::StatisticsException)
+      )
 {
     // sanity check
     math::StudentDist::__private::__checkParams<F>(sigma, df);

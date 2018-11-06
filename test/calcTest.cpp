@@ -48,7 +48,7 @@ class CFunc : public IFunction
 public:
     double ke, kl, n;
 
-    double operator()(const double& x) const throw(FunctionException)
+    double operator()(const double& x) const
     {
         return ke * std::exp(-(x-3)*(x-3)) + kl * x + n;
     }
@@ -58,7 +58,7 @@ public:
 class CNormPdf : public IFunction
 {
 
-    double operator()(const double& x) const throw(FunctionException)
+    double operator()(const double& x) const
     {
         return 0.39894228040143268 * std::exp( -0.5 * x * x );
     }

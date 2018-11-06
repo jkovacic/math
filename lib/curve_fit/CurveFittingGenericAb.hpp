@@ -74,7 +74,7 @@ protected:
     // have any "duplicate" points been entered?
     bool _duplicatePoints() const;
     // some necessary checks prior to generation of the curve. It also sorts points
-    void _curveGenerationCheck() throw (CurveFittingException);
+    void _curveGenerationCheck();
 
     // sorts entered points
     void _sortPoints();
@@ -84,13 +84,13 @@ protected:
 
 public:
     // assignment operator (only applicable for variables of the same type)
-    virtual CurveFittingGenericAb<F>& operator=(const CurveFittingGenericAb<F>& orig) throw (CurveFittingException);
+    virtual CurveFittingGenericAb<F>& operator=(const CurveFittingGenericAb<F>& orig);
     // copies points from 'porig' to this (applicable for all types derived from this one)
-    CurveFittingGenericAb<F>& copy(const CurveFittingGenericAb<F>* porig) throw (CurveFittingException);
+    CurveFittingGenericAb<F>& copy(const CurveFittingGenericAb<F>* porig);
 
     // enter a point
     // Note: the function is virtual as derived classes may perform a sort of input control
-    virtual CurveFittingGenericAb<F>& enterPoint(const F& x, const F& y) throw (CurveFittingException);
+    virtual CurveFittingGenericAb<F>& enterPoint(const F& x, const F& y);
 
     // Number of points entered
     std::size_t nrPoints() const;
@@ -99,14 +99,14 @@ public:
     bool curveReady() const;
 
     // The lowest and highest abscissa value of all entered points
-    F lowerBound() const throw (CurveFittingException);
-    F upperBound() const throw (CurveFittingException);
+    F lowerBound() const;
+    F upperBound() const;
 
     // generate a curve that fits entered points best
-    virtual void generateCurve(const std::size_t degree) throw (CurveFittingException) = 0;
+    virtual void generateCurve(const std::size_t degree) = 0;
 
     // value of the curve at the given abscissa
-    virtual F valueAt(const F& x, const bool strict=true) const throw (CurveFittingException) = 0;
+    virtual F valueAt(const F& x, const bool strict=true) const = 0;
 
     // Destructor
     virtual ~CurveFittingGenericAb();

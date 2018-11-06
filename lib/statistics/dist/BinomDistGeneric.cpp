@@ -66,7 +66,7 @@ namespace math {  namespace BinomDist {  namespace __private {
  * @throw StatisticsException if any parameter is not valid
  */
 template <typename F, typename I>
-void __checkParams(const I& k, const I& n, const F& p) throw(math::StatisticsException)
+void __checkParams(const I& k, const I& n, const F& p)
 {
 
     /*
@@ -108,7 +108,7 @@ template <typename F, typename I>
 F math::BinomDist::mean(
           const I& n,
           const F& p
-        ) throw(math::StatisticsException)
+        )
 {
     math::BinomDist::__private::__checkParams<F, I>(
         static_cast<F>(0), n, p);
@@ -137,7 +137,7 @@ template <typename F, typename I>
 F math::BinomDist::var(
           const I& n,
           const F& p
-        ) throw(math::StatisticsException)
+        )
 {
     math::BinomDist::__private::__checkParams<F, I>(
         static_cast<F>(0), n, p);
@@ -166,7 +166,7 @@ template <typename F, typename I>
 F math::BinomDist::stdev(
           const I& n,
           const F& p
-        ) throw(math::StatisticsException)
+        )
 {
     /*
      * Standard deviation is defined as a square root of the variance:
@@ -195,7 +195,7 @@ bool math::BinomDist::normalApprox(
           const I& n,
           const F& p,
           const F& th
-       ) throw(math::StatisticsException)
+       )
 {
     math::BinomDist::__private::__checkParams<F, I>(
         static_cast<F>(0), n, p);
@@ -221,7 +221,7 @@ F math::BinomDist::pmf(
           const I& k,
           const I& n,
           const F& p
-        ) throw(math::StatisticsException)
+        )
 {
     math::BinomDist::__private::__checkParams<F, I>(
         k, n, p);
@@ -305,7 +305,7 @@ F math::BinomDist::probInt(
           const F& p,
           const bool incLower,
           const bool incUpper
-        ) throw(math::StatisticsException)
+        )
 {
     /*
      * P(a<=X<=b) is defined as:
@@ -361,7 +361,7 @@ F math::BinomDist::prob(
           const F& p,
           const bool incl,
           const bool lowerTail
-        ) throw(math::StatisticsException)
+        )
 {
     math::BinomDist::__private::__checkParams<F, I>(
         k, n, p);
@@ -523,7 +523,7 @@ I math::BinomDist::quant(
           const F& p,
           const bool smallest,
           const bool lowerTail
-        ) throw(math::StatisticsException)
+        )
 {
     const I Imax = std::numeric_limits<I>::max();
     const I ONE = static_cast<I>(1);

@@ -46,7 +46,7 @@ limitations under the License.
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-void math::PolynomialGeneric<F>::__set1Term(const F& sc) throw(math::PolynomialException)
+void math::PolynomialGeneric<F>::__set1Term(const F& sc)
 {
     try
     {
@@ -68,7 +68,7 @@ void math::PolynomialGeneric<F>::__set1Term(const F& sc) throw(math::PolynomialE
  * @throw PolynomialException if 'cvect' is an empty vector or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>::PolynomialGeneric(const std::vector<F>& cvect) throw (math::PolynomialException)
+math::PolynomialGeneric<F>::PolynomialGeneric(const std::vector<F>& cvect)
 {
     // sanity check
     if ( cvect.size() <= 0 )
@@ -91,7 +91,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const std::vector<F>& cvect) throw
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>::PolynomialGeneric(const F& c0) throw (math::PolynomialException)
+math::PolynomialGeneric<F>::PolynomialGeneric(const F& c0)
 {
     this->__set1Term(c0);
 }
@@ -106,7 +106,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const F& c0) throw (math::Polynomi
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>::PolynomialGeneric(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F>::PolynomialGeneric(const math::PolynomialGeneric<F>& poly)
 {
     // Just copy the poly's coefficients
     this->__copyCoefs(poly.m_coef);
@@ -126,7 +126,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const math::PolynomialGeneric<F>& 
  * @throw PolynomialException if input arguments are invalid or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>::PolynomialGeneric(const F* const carray, const std::size_t n) throw (math::PolynomialException)
+math::PolynomialGeneric<F>::PolynomialGeneric(const F* const carray, const std::size_t n)
 {
     // sanity check
     if ( NULL==carray || n<=0 )
@@ -166,7 +166,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const F* const carray, const std::
  * @throw PolynomialException if 'n' is invalid or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>::PolynomialGeneric(const bool ignored, const std::size_t n) throw (math::PolynomialException)
+math::PolynomialGeneric<F>::PolynomialGeneric(const bool ignored, const std::size_t n)
 {
     // sanity check:
     if ( n<=0 )
@@ -211,7 +211,7 @@ math::PolynomialGeneric<F>::PolynomialGeneric(const bool ignored, const std::siz
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-void math::PolynomialGeneric<F>::__copyCoefs(const std::vector<F>& cvect) throw (math::PolynomialException)
+void math::PolynomialGeneric<F>::__copyCoefs(const std::vector<F>& cvect)
 {
     try
     {
@@ -267,7 +267,7 @@ void math::PolynomialGeneric<F>::__reduce()
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const math::PolynomialGeneric<F>& poly)
 {
     // Nothing to do, if attempting to assign itself
     if ( this == &poly )
@@ -295,7 +295,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const math::Po
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const F& sc)
 {
     this->__set1Term(sc);
     return *this;
@@ -308,7 +308,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator=(const F& sc) t
  * @throw PolynomialException if allocation of memory for the output vector fails
  */
 template <typename F>
-void math::PolynomialGeneric<F>::get(std::vector<F>& vec) const throw (math::PolynomialException)
+void math::PolynomialGeneric<F>::get(std::vector<F>& vec) const
 {
     try
     {
@@ -329,7 +329,7 @@ void math::PolynomialGeneric<F>::get(std::vector<F>& vec) const throw (math::Pol
  * @throw PolynomialException if allocation of memory for the output vector fails
  */
 template <typename F>
-void math::PolynomialGeneric<F>::getDesc(std::vector<F>& vec) const throw (math::PolynomialException)
+void math::PolynomialGeneric<F>::getDesc(std::vector<F>& vec) const
 {
     try
     {
@@ -410,7 +410,7 @@ std::size_t math::PolynomialGeneric<F>::degree() const
  * @throw PolynomialException if 'cvect' is invalid or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const std::vector<F>& cvect) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const std::vector<F>& cvect)
 {
     // sanity check
     if ( cvect.size() <= 0 )
@@ -439,7 +439,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const std::vector<F>
  * @throw PolynomialException if 'cvect' is invalid or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::setDesc(const std::vector<F>& cvect) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::setDesc(const std::vector<F>& cvect)
 {
     const std::size_t N = cvect.size();
 
@@ -490,7 +490,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::setDesc(const std::vecto
  * @throw PolynomialException if allocation of memory (possible when 'pos' exceeds the polynomial's degree) fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const std::size_t pos, const F& c) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const std::size_t pos, const F& c)
 {
     /*
      * If 'pos' exceeds the polynomial's degree, the appropriate number of zero-coefficients
@@ -540,7 +540,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::set(const std::size_t po
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert_(const std::size_t pos, const F& c) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert_(const std::size_t pos, const F& c)
 {
     const std::size_t N = this->m_coef.size();
 
@@ -611,7 +611,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::insert_(const std::size_
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::PolynomialGeneric<F>::insert(const std::size_t pos, const F& c) const throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::insert(const std::size_t pos, const F& c) const
 {
     math::PolynomialGeneric<F> pret(*this);
     pret.insert_(pos, c);
@@ -660,7 +660,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::remove_(const std::size_
  * @throw PolynomialException if allocation of memory for the new polynomial fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::PolynomialGeneric<F>::remove(const std::size_t pos) const throw(math::PolynomialException)
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::remove(const std::size_t pos) const
 {
     math::PolynomialGeneric<F> pret(*this);
     pret.remove_(pos);
@@ -759,7 +759,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::roundSmallCoefficients_(
  * @throw PolynomialException if allocation of memory for the new polynomial failed
  */
 template <typename F>
-math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients() const throw(math::PolynomialException)
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients() const
 {
     math::PolynomialGeneric<F> pret(*this);
     pret.roundSmallCoefficients_();
@@ -778,7 +778,7 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients() 
  * @throw PolynomialException if allocation of memory for the new polynomial failed
  */
 template <typename F>
-math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients(const F& eps) const throw(math::PolynomialException)
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients(const F& eps) const
 {
     math::PolynomialGeneric<F> pret(*this);
     pret.roundSmallCoefficients_(eps);
@@ -800,7 +800,7 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::roundSmallCoefficients(co
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const
 {
     const std::size_t N = this->m_coef.size();
 
@@ -868,7 +868,7 @@ math::PolynomialGeneric<F> math::PolynomialGeneric<F>::deriv() const throw (math
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::PolynomialGeneric<F>::integ(const F& c) const throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::PolynomialGeneric<F>::integ(const F& c) const
 {
     const std::size_t N = this->m_coef.size();
     
@@ -933,7 +933,6 @@ void math::PolynomialGeneric<F>::__polyDivision(
         const math::PolynomialGeneric<F>& p2,
         math::PolynomialGeneric<F>* q,
         math::PolynomialGeneric<F>* rem )
-    throw (math::PolynomialException)
 {
     // Division by zero is not permitted
     if ( true == p2.__isZero() )
@@ -1068,7 +1067,7 @@ void math::PolynomialGeneric<F>::__polyDivision(
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator+=(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator+=(const math::PolynomialGeneric<F>& poly)
 {
     // For a definition of polynomial addition, see operator+
     try
@@ -1126,7 +1125,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator+=(const F& sc)
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator-=(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator-=(const math::PolynomialGeneric<F>& poly)
 {
     // For a definition of polynomial subtraction, see operator-
     try
@@ -1185,7 +1184,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator-=(const F& sc)
  * @throw PolynomialException if the product would be too large or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator*=(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator*=(const math::PolynomialGeneric<F>& poly)
 {
     // for a definition of polynomial multiplication, see operator*
 
@@ -1232,7 +1231,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator*=(const F& sc)
  * @throw PolynomialException if attempting to divide by a zero polynomial
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator/=(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator/=(const math::PolynomialGeneric<F>& poly)
 {
     // Division by zero is not permitted
     if ( true == poly.__isZero() )
@@ -1260,7 +1259,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator/=(const math::P
  * @throw PolynomialException if attempting to divide by a zero polynomial
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator%=(const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator%=(const math::PolynomialGeneric<F>& poly)
 {
     // Division by zero is not permitted
     if ( true == poly.__isZero() )
@@ -1289,7 +1288,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator%=(const math::P
  * @throw PolynomialException if attempting to divide by zero
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator/=(const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator/=(const F& sc)
 {
     // Division by zero is not permitted
     if ( true == math::NumericUtil::isZero<F>(sc) )
@@ -1321,7 +1320,7 @@ math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator/=(const F& sc) 
  * @throw PolynomialException if attempting to divide by zero
  */
 template <typename F>
-math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator%=(const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F>& math::PolynomialGeneric<F>::operator%=(const F& sc)
 {
     // Division by zero is not permitted
     if ( true == math::NumericUtil::isZero<F>(sc) )
@@ -1420,7 +1419,7 @@ math::PolynomialGeneric<F>::~PolynomialGeneric()
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p)
 {
     return p;
 }
@@ -1436,7 +1435,7 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p) 
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p)
 {
     /*
      * Definition of polynomial negation is similar to negation of vectors/matrices:
@@ -1479,7 +1478,7 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p) 
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2)
 {
 
     try
@@ -1570,7 +1569,7 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& p1,
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2)
 {
     try
     {
@@ -1661,7 +1660,7 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& p1,
  * @throw PolynomialException if the product would be too large or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2)
 {
     /*
      * As explained at http://www.mathworks.com/help/matlab/ref/conv.html, multiplication of
@@ -1751,7 +1750,7 @@ math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& p1,
  * @throw PolynomialException if attempting to divide by a zero polynomial or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator/(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator/(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2)
 {
     // Division by zero is not permitted
     if ( true == p2.__isZero() )
@@ -1777,7 +1776,7 @@ math::PolynomialGeneric<F> math::operator/(const math::PolynomialGeneric<F>& p1,
  * @throw PolynomialException if attempting to divide by a zero polynomial or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator%(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator%(const math::PolynomialGeneric<F>& p1, const math::PolynomialGeneric<F>& p2)
 {
     // Division by zero is not permitted
     if ( true == p2.__isZero() )
@@ -1803,7 +1802,7 @@ math::PolynomialGeneric<F> math::operator%(const math::PolynomialGeneric<F>& p1,
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& poly, const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& poly, const F& sc)
 {
     math::PolynomialGeneric<F> retVal(poly);
 
@@ -1824,7 +1823,7 @@ math::PolynomialGeneric<F> math::operator+(const math::PolynomialGeneric<F>& pol
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& poly, const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& poly, const F& sc)
 {
     math::PolynomialGeneric<F> retVal(poly);
 
@@ -1845,7 +1844,7 @@ math::PolynomialGeneric<F> math::operator-(const math::PolynomialGeneric<F>& pol
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& poly, const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& poly, const F& sc)
 {
     /*
      * Multiplication of a polynomial by a scalar is trivial:
@@ -1881,7 +1880,7 @@ math::PolynomialGeneric<F> math::operator*(const math::PolynomialGeneric<F>& pol
  * @throw PolynomialException if attempting to divide by zero or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator/(const math::PolynomialGeneric<F>& poly, const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator/(const math::PolynomialGeneric<F>& poly, const F& sc)
 {
     // Division by zero is not permitted
     if ( true == math::NumericUtil::isZero<F>(sc) )
@@ -1909,7 +1908,7 @@ math::PolynomialGeneric<F> math::operator/(const math::PolynomialGeneric<F>& pol
  * @throw PolynomialException if attempting to divide by zero or if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator%(const math::PolynomialGeneric<F>& poly, const F& sc) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator%(const math::PolynomialGeneric<F>& poly, const F& sc)
 {
     // Division by zero is not permitted
     if ( true == math::NumericUtil::isZero<F>(sc) )
@@ -1936,7 +1935,7 @@ math::PolynomialGeneric<F> math::operator%(const math::PolynomialGeneric<F>& pol
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator+(const F& sc, const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator+(const F& sc, const math::PolynomialGeneric<F>& poly)
 {
     return (poly + sc);
 }
@@ -1953,7 +1952,7 @@ math::PolynomialGeneric<F> math::operator+(const F& sc, const math::PolynomialGe
  * @throw PolynomialException if allocation of memory fails
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator-(const F& sc, const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator-(const F& sc, const math::PolynomialGeneric<F>& poly)
 {
     return (-poly + sc);
 }
@@ -1971,7 +1970,7 @@ math::PolynomialGeneric<F> math::operator-(const F& sc, const math::PolynomialGe
   * @throw PolynomialException if allocation of memory fails
   */
 template <typename F>
-math::PolynomialGeneric<F> math::operator*(const F& sc, const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator*(const F& sc, const math::PolynomialGeneric<F>& poly)
 {
     // 'reduce' performed by operator*(poly, sc)
     return (poly * sc);
@@ -1989,7 +1988,7 @@ math::PolynomialGeneric<F> math::operator*(const F& sc, const math::PolynomialGe
  * @throw PolynomialEsception if attempting to divide by a zero polynomial
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator/(const F& sc, const math::PolynomialGeneric<F>& poly) throw (PolynomialException)
+math::PolynomialGeneric<F> math::operator/(const F& sc, const math::PolynomialGeneric<F>& poly)
 {
     math::PolynomialGeneric<F> retVal;
 
@@ -2031,7 +2030,7 @@ math::PolynomialGeneric<F> math::operator/(const F& sc, const math::PolynomialGe
  * @throw PolynomialEsception if attempting to divide by a zero polynomial
  */
 template <typename F>
-math::PolynomialGeneric<F> math::operator%(const F& sc, const math::PolynomialGeneric<F>& poly) throw (math::PolynomialException)
+math::PolynomialGeneric<F> math::operator%(const F& sc, const math::PolynomialGeneric<F>& poly)
 {
     math::PolynomialGeneric<F> retVal;
 

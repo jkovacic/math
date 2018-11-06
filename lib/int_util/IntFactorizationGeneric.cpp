@@ -43,7 +43,7 @@ namespace math {  namespace IntFactorization {  namespace __private
  * @throw IntFactorizationException if 'n' is negative
  */
 template <typename I>
-void __checkSign(const I& n) throw (math::IntFactorizationException)
+void __checkSign(const I& n)
 {
     /*
      * The actual implementation depends on signedness of 'I' and is
@@ -67,7 +67,6 @@ void __checkSign(const I& n) throw (math::IntFactorizationException)
  */
 template <typename I>
 bool math::IntFactorization::isPrime(const I& n)
-               throw(math::IntFactorizationException)
 {
     // sanity check
     math::IntFactorization::__private::__checkSign(n);
@@ -163,8 +162,7 @@ bool math::IntFactorization::isPrime(const I& n)
 template <typename I>
 I math::IntFactorization::greatestCommonDivisor(
                     const I& first, 
-                    const I& second ) 
-            throw(math::IntFactorizationException)
+                    const I& second )
 {
     // sanity check
     math::IntFactorization::__private::__checkSign<I>(first);
@@ -215,8 +213,7 @@ I math::IntFactorization::greatestCommonDivisor(
 template <typename I>
 I math::IntFactorization::leastCommonMultiple(
                     const I& first, 
-                    const I& second) 
-            throw(math::IntFactorizationException)
+                    const I& second )
 {
     /*
      * 'first' and 'second' can be expressed as:
@@ -271,8 +268,7 @@ I math::IntFactorization::leastCommonMultiple(
  * @throw IntFactorizationException if the next prime is out of I's range or 'n' is negative
  */
 template <typename I>
-I math::IntFactorization::nextPrime(const I& n) 
-            throw(math::IntFactorizationException)
+I math::IntFactorization::nextPrime(const I& n)
 {
     // sanity check
     math::IntFactorization::__private::__checkSign<I>(n);
@@ -356,8 +352,7 @@ I math::IntFactorization::nextPrime(const I& n)
 template <typename I>
 void math::IntFactorization::factor(
                     const I& n, 
-                    std::map<I, I>& fac ) 
-            throw(math::IntFactorizationException)
+                    std::map<I, I>& fac )
 {
     // sanity check
     math::IntFactorization::__private::__checkSign(n);
@@ -428,8 +423,7 @@ void math::IntFactorization::factor(
 template <typename I>
 void math::IntFactorization::divisors(
                     const I& n,
-                    std::set<I>& div ) 
-            throw(math::IntFactorizationException)
+                    std::set<I>& div )
 {
     // sanity check
     math::IntFactorization::__private::__checkSign(n);

@@ -62,7 +62,7 @@ template <typename F>
 math::SampleQuantileSelectionGeneric<F>::SampleQuantileSelectionGeneric(
             const std::vector<F>& sample,
             const bool copy
-          ) throw(math::StatisticsException)
+          )
   : math::SampleQuantileGenericAb<F>( sample.size() ),
     m_v( true==copy ? m_stor : sample )
 {
@@ -105,7 +105,7 @@ math::SampleQuantileSelectionGeneric<F>::SampleQuantileSelectionGeneric(
  * @throw StatisticsExcpetion if 'n' is larger or equal to the number of elements or if selection algorithm's internal allocation of memory fails
  */
 template <typename F>
-F math::SampleQuantileSelectionGeneric<F>::_select(const std::size_t n) const throw(math::StatisticsException)
+F math::SampleQuantileSelectionGeneric<F>::_select(const std::size_t n) const
 {
     if ( n >= this->m_N )
     {
@@ -141,7 +141,7 @@ void math::SampleQuantileSelectionGeneric<F>::_select2(
             const std::size_t n2,
             F& val1,
             F& val2
-          ) const throw(math::StatisticsException)
+          ) const
 {
     if ( n1>=this->m_N || n2>=this->m_N )
     {
@@ -217,7 +217,7 @@ F math::SampleQuantileSelectionGeneric<F>::elem(
              const std::size_t n,
              const bool largest,
              const bool zerobase
-           ) const throw(math::StatisticsException)
+           ) const
 {
     // sanity check
     if ( (true==zerobase && n>=this->m_N) ||
@@ -254,7 +254,7 @@ void math::SampleQuantileSelectionGeneric<F>::outliers(
                 std::set<F>& outl,
                 const F& iqrs,
                 const math::EQntlType::type method
-              ) const throw (math::StatisticsException)
+              ) const
 {
     try
     {

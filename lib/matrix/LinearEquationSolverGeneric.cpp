@@ -150,7 +150,7 @@ bool math::LinearEquationSolver::solveGaussJordan(
           math::MatrixGeneric<T>& sol,
           const bool fullp,
           const bool physSwap
-        ) throw (math::MatrixException)
+        )
 {
     // Sanity check
     if ( false == coef.isSquare() )
@@ -202,7 +202,7 @@ bool math::LinearEquationSolver::solveSOR(
           const bool solInitialized,
           const T& tol,
           const std::size_t maxiter
-        ) throw (math::MatrixException)
+        )
 {
     /*
      * The algorithm of the SOR method is described in detail at:
@@ -430,7 +430,7 @@ bool math::LinearEquationSolver::solveGaussSeidel(
           const bool solInitialized,
           const T& tol,
           const std::size_t maxiter
-        ) throw (math::MatrixException)
+        )
 {
     /*
      * The Gauss - Seidel method is described in detail at:
@@ -477,7 +477,7 @@ bool math::LinearEquationSolver::solveWeightedJacobi(
           const bool solInitialized,
           const T& tol,
           const std::size_t maxiter
-        ) throw (math::MatrixException)
+        )
 {
     /*
      * The algorithm of the weighted Jacobi method is described in detail at:
@@ -739,7 +739,7 @@ bool math::LinearEquationSolver::solveJacobi(
           const bool solInitialized,
           const T& tol,
           const std::size_t maxiter
-        ) throw (math::MatrixException)
+        )
 {
     /*
      * The Jacobi method is described in detail at:

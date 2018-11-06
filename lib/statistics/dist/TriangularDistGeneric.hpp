@@ -53,7 +53,7 @@ namespace TriangularDist
           const F& a,
           const F& b,
           const F& c
-        ) throw (StatisticsException);
+        );
 
 
     template <typename F>
@@ -63,7 +63,7 @@ namespace TriangularDist
           const F& a,
           const F& b,
           const F& c
-        ) throw (StatisticsException);
+        );
 
 
     template <typename F>
@@ -73,7 +73,7 @@ namespace TriangularDist
           const F& b,
           const F& c,
           const bool lowerTail = true
-        ) throw (StatisticsException);
+        );
 
 
     template <typename F>
@@ -83,7 +83,7 @@ namespace TriangularDist
           const F& b,
           const F& c,
           const bool lowerTail = true
-        ) throw (StatisticsException);
+        );
 
 
 }  // namespace TriangularDist

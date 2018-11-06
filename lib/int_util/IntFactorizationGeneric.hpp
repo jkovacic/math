@@ -50,45 +50,39 @@ namespace IntFactorization
 {    
 
     template <typename I>
-    bool isPrime(const I& n)
-                    throw(IntFactorizationException);
+    bool isPrime(const I& n);
 
 
     // greatest common divisor
     template <typename I>
     I greatestCommonDivisor(
                         const I& first, 
-                        const I& second ) 
-                    throw(IntFactorizationException);
+                        const I& second );
 
 
     // least common multiple
     template <typename I>
     I leastCommonMultiple(
                         const I& first, 
-                        const I& second ) 
-                    throw(IntFactorizationException);
+                        const I& second );
 
 
     template <typename I>
-    I nextPrime(const I& n) 
-                    throw(IntFactorizationException);
+    I nextPrime(const I& n);
 
 
     // prime factorization
     template <typename I>
     void factor(
                 const I& n, 
-                std::map<I, I>& fac ) 
-            throw(IntFactorizationException);
+                std::map<I, I>& fac );
 
 
     // list of all divisors of 'n'
     template <typename I>
     void divisors(
                 const I& n,
-                std::set<I>& div )
-            throw(IntFactorizationException);
+                std::set<I>& div );
 
 
 }  // namespace IntFactorization

@@ -50,7 +50,7 @@ namespace ExponentialDist
     F pdf(
         const F& x,
         const F& lambda
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F>
@@ -58,7 +58,7 @@ namespace ExponentialDist
         const F& a,
         const F& b,
         const F& lambda
-      ) throw (StatisticsException);
+      );
 
 
     template <typename F>
@@ -66,7 +66,7 @@ namespace ExponentialDist
         const F& x,
         const F& lambda,
         const bool lowerTail = true
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F>
@@ -74,7 +74,7 @@ namespace ExponentialDist
         const F& prob,
         const F& lambda,
         const bool lowerTail = true
-      ) throw(StatisticsException);
+      );
 
 }  // namespace ExponentialDist
 

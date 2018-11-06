@@ -34,7 +34,7 @@ limitations under the License.
  * @throw CurveFittingException if the polynomial has not been generated yet 
  */
 template <typename F>
-math::PolynomialGeneric<F> math::PolynomialFittingGenericAb<F>::getPolynomial() const throw (math::CurveFittingException)
+math::PolynomialGeneric<F> math::PolynomialFittingGenericAb<F>::getPolynomial() const
 {
     if ( false==this->m_curveGenerated )
     {
@@ -58,7 +58,7 @@ math::PolynomialGeneric<F> math::PolynomialFittingGenericAb<F>::getPolynomial() 
  * @throw CurveFittingException if the polynomial has not been generated yet or 'x' is out of definition range bounds
  */
 template <typename F>
-F math::PolynomialFittingGenericAb<F>::valueAt(const F& x, const bool strict) const throw (math::CurveFittingException)
+F math::PolynomialFittingGenericAb<F>::valueAt(const F& x, const bool strict) const
 {
     // the curve must be already generated
     if ( false==this->m_curveGenerated )

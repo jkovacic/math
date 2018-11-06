@@ -61,7 +61,7 @@ namespace __private
  * @throw CalculusException if 'h' is invalid
  */
 template <typename F>
-inline void __checkStep(const F& h) throw(math::CalculusException)
+inline void __checkStep(const F& h)
 {
     if ( h < math::NumericUtil::getEPS<F>() )
     {
@@ -91,7 +91,7 @@ F __rectangle(
         const F& a,
         const F& b,
         const std::size_t n
-      ) throw(math::CalculusException)
+      )
 {
     /*
      *
@@ -177,7 +177,7 @@ F __closedNewtonCotes(
                const F* coef,
                const F& bCoef,
                const F& hCoef
-             ) throw(math::CalculusException)
+             )
 {
     /*
      * More info about Newton - Cotes formulae:
@@ -269,7 +269,7 @@ F __trapezoidal(
         const F& a,
         const F& b,
         const std::size_t n
-      ) throw(math::CalculusException)
+      )
 {
     /*
      *
@@ -332,7 +332,7 @@ F __simpson(
        const F& a,
        const F& b,
        const std::size_t n
-     ) throw(math::CalculusException)
+     )
 {
     /*
      *   b
@@ -377,7 +377,7 @@ F __simpson38(
       const F& a,
       const F& b,
       const std::size_t n
-    ) throw(math::CalculusException)
+    )
 {
     /*
      *   b
@@ -423,7 +423,7 @@ F __boole(
       const F& a,
       const F& b,
       const std::size_t n
-    ) throw(math::CalculusException)
+    )
 {
     /*
      *   b
@@ -476,7 +476,7 @@ F __romberg(
       const F& a,
       const F& b,
       const std::size_t n
-    ) throw(math::CalculusException)
+    )
 {
     /*
      * The method only makes sense if 'n' is not too small
@@ -661,7 +661,7 @@ public:
      *
      * @throw FunctionException if inverse of phi is invalid for the given 'x'
      */
-    virtual F inv(const F& x) const throw(math::FunctionException) = 0;
+    virtual F inv(const F& x) const = 0;
 
     /*
      * Inverse of phi(x) for x = -inf
@@ -672,7 +672,7 @@ public:
      *
      * @throw FunctionExceptionif phi^(-1) is undefined at x = -inf
      */
-    virtual F invNegInf() const throw(math::FunctionException) = 0;
+    virtual F invNegInf() const = 0;
 
     /*
      * Inverse of phi(x) for x = +inf
@@ -683,7 +683,7 @@ public:
      *
      * @throw FunctionExceptionif phi^(-1) is undefined at x = inf
      */
-    virtual F invPosInf() const throw(math::FunctionException) = 0;
+    virtual F invPosInf() const = 0;
 
     /*
      * Returns TRUE if the following condition is satisfied:
@@ -754,7 +754,7 @@ public:
      *
      * @throw FunctionException if the substituted function is undefined at 'x'
      */
-    F operator()(const F& x) const throw(math::FunctionException)
+    F operator()(const F& x) const
     {
         if ( true == math::NumericUtil::isZero<F>(x) )
         {
@@ -775,7 +775,7 @@ public:
      *
      * @throw FunctionException if inv() is not defined at the given 'x' (when x==0)
      */
-    F inv(const F& x) const throw(math::FunctionException)
+    F inv(const F& x) const
     {
         if ( true == math::NumericUtil::isZero<F>(x) )
         {
@@ -793,7 +793,7 @@ public:
      *
      * @throw never thrown from this class
      */
-    F invNegInf() const throw(math::FunctionException)
+    F invNegInf() const
     {
         return -this->EPS;
         //return static_cast<F>(0);
@@ -807,7 +807,7 @@ public:
      *
      * @throw never thrown from this class
      */
-    F invPosInf() const throw(math::FunctionException)
+    F invPosInf() const
     {
         return this->EPS;
         //return static_cast<F>(0);
@@ -878,7 +878,7 @@ F math::Integ::integ(
         const F& b,
         const std::size_t n,
         const math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+      )
 {
     // sanity check:
     if ( n <= 0 )
@@ -983,7 +983,7 @@ F math::Integ::integH(
         const F& b,
         const F& h,
         const math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+      )
 {
     // Algorithms with the specified integration step do not support
     // the Romberg's method.
@@ -1043,7 +1043,7 @@ F math::Integ::integImpNegInf(
         const std::size_t nprop,
         const F& bp,
         const math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+      )
 {
     // sanity check
     if ( b >= static_cast<F>(0) && bp >= static_cast<F>(0) )
@@ -1141,7 +1141,7 @@ F math::Integ::integImpPosInf(
         const std::size_t nprop,
         const F& bp,
         const math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+      )
 {
     // sanity check
     if ( a <= static_cast<F>(0) && bp <= static_cast<F>(0) )
@@ -1236,7 +1236,7 @@ F math::Integ::integImp(
         const F& bpneg,
         const F& bppos,
         const math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+      )
 {
     // sanity check
     if (bpneg >= static_cast<F>(0) || bppos <= static_cast<F>(0) )
@@ -1336,7 +1336,7 @@ F math::Integ::integImpNegInfH(
         const F& hprop,
         const F& bp,
         const math::EIntegAlg::alg algorithm
-     ) throw(math::CalculusException)
+     )
 {
     // sanity check
     if (  b >= static_cast<F>(0) && bp >= static_cast<F>(0) )
@@ -1438,7 +1438,7 @@ F math::Integ::integImpPosInfH(
         const F& hprop,
         const F& bp,
         const math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+      )
 {
     // sanity check
     if ( a <= static_cast<F>(0) && bp <= static_cast<F>(0) )
@@ -1538,7 +1538,7 @@ F math::Integ::integImpH(
         const F& bpneg,
         const F& bppos,
         const math::EIntegAlg::alg algorithm
-      ) throw(math::CalculusException)
+      )
 {
     // sanity check
     if (bpneg >= static_cast<F>(0) || bppos <= static_cast<F>(0) )

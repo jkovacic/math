@@ -52,7 +52,7 @@ namespace RootFind
            const F& to,
            const F& epsx = static_cast<F>(ROOTFIND_EPSX_NUM) / static_cast<F>(ROOTFIND_EPSX_DEN),
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN)
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -62,7 +62,7 @@ namespace RootFind
            const F& to,
            const F& epsx = static_cast<F>(ROOTFIND_EPSX_NUM) / static_cast<F>(ROOTFIND_EPSX_DEN),
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN)
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -72,7 +72,7 @@ namespace RootFind
            const F& r1,
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN),
            const std::size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -82,7 +82,7 @@ namespace RootFind
            const F& x0,
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN),
            const std::size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -92,7 +92,7 @@ namespace RootFind
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN),
            const F& h = static_cast<F>(ROOTFIND_DIFF_STEP_NUM) / static_cast<F>(ROOTFIND_DIFF_STEP_DEN),
            const std::size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -103,7 +103,7 @@ namespace RootFind
            const F& x0,
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN),
            const std::size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -113,7 +113,7 @@ namespace RootFind
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN),
            const F& h = static_cast<F>(ROOTFIND_DIFF_STEP_NUM) / static_cast<F>(ROOTFIND_DIFF_STEP_DEN),
            const std::size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -124,7 +124,7 @@ namespace RootFind
            const F& x0,
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN),
            const std::size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw (RootFindException);
+         );
 
 
     template <typename F>
@@ -134,7 +134,7 @@ namespace RootFind
            const F& epsy = static_cast<F>(ROOTFIND_EPSY_NUM) / static_cast<F>(ROOTFIND_EPSY_DEN),
            const F& h = static_cast<F>(ROOTFIND_DIFF_STEP_NUM) / static_cast<F>(ROOTFIND_DIFF_STEP_DEN),
            const std::size_t Nmax = ROOTFIND_MAX_ITER
-         ) throw (RootFindException);
+         );
 
 }  // namepsace RootFind
 

@@ -70,7 +70,7 @@ namespace Integ
                const F& b,
                const std::size_t n = INTEG_DEFAULT_STEPS,
                const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-             ) throw(CalculusException);
+             );
 
 
     template <typename F>
@@ -80,7 +80,7 @@ namespace Integ
                const F& b,
                const F& h = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-             ) throw(CalculusException);
+             );
 
 
     template <typename F>
@@ -91,7 +91,7 @@ namespace Integ
                const std::size_t nprop = INTEG_DEFAULT_STEPS,
                const F& bp = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-             ) throw(CalculusException);
+             );
 
 
     template <typename F>
@@ -102,7 +102,7 @@ namespace Integ
                    const std::size_t prop = INTEG_DEFAULT_STEPS,
                    const F& bp = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-                 ) throw(CalculusException);
+                 );
 
 
     template <typename F>
@@ -113,7 +113,7 @@ namespace Integ
                    const F& bpneg = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const F& bppos = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-                 ) throw(CalculusException);
+                 );
 
 
     template <typename F>
@@ -124,7 +124,7 @@ namespace Integ
                    const F& hprop = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                    const F& bp = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-                 ) throw(CalculusException);
+                 );
 
 
     template <typename F>
@@ -135,7 +135,7 @@ namespace Integ
                    const F& hprop = static_cast<F>(INTEG_STEP_NUM) / static_cast<F>(INTEG_STEP_DEN),
                    const F& bp = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-                 ) throw(CalculusException);
+                 );
 
 
     template <typename F>
@@ -146,7 +146,7 @@ namespace Integ
                    const F& bpneg = -static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const F& bppos = static_cast<F>(INTEG_IMP_INT_BREAKPOINT_NUM) / static_cast<F>(INTEG_IMP_INT_BREAKPOINT_DEN),
                    const EIntegAlg::alg algorithm = INTEG_DEFAULT_METHOD
-                 ) throw(CalculusException);
+                 );
 
 }  // namespace Integ
 

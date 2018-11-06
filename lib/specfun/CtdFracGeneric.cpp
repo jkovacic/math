@@ -69,7 +69,7 @@ template <class T>
 T math::CtdFrac::ctdFrac(
            const math::CtdFrac::ICtdFracFuncGeneric<T>& ctdf,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     /*
      * The Lentz's algorithm (modified by I. J. Thompson and A. R. Barnett)

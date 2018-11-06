@@ -43,10 +43,10 @@ namespace SpecFun
 {
 
     template <class T>
-    T gamma(const T& x) throw (SpecFunException);
+    T gamma(const T& x);
 
     template <class T>
-    T beta(const T& x, const T& y) throw (SpecFunException);
+    T beta(const T& x, const T& y);
 
 
     template <class T>
@@ -54,7 +54,7 @@ namespace SpecFun
                const T& a,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -62,7 +62,7 @@ namespace SpecFun
                const T& a,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -70,7 +70,7 @@ namespace SpecFun
                const T& a,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -78,7 +78,7 @@ namespace SpecFun
                const T& a,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -86,7 +86,7 @@ namespace SpecFun
                const T& a,
                const T& g,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -94,7 +94,7 @@ namespace SpecFun
                const T& a,
                const T& g,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -102,7 +102,7 @@ namespace SpecFun
                const T& a,
                const T& g,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -110,7 +110,7 @@ namespace SpecFun
                const T& a,
                const T& g,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -119,7 +119,7 @@ namespace SpecFun
                const T& b,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -128,7 +128,7 @@ namespace SpecFun
                const T& b,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -137,7 +137,7 @@ namespace SpecFun
                const T& b,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -146,7 +146,7 @@ namespace SpecFun
                const T& b,
                const T& x,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -155,7 +155,7 @@ namespace SpecFun
                const T& b,
                const T& y,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -164,7 +164,7 @@ namespace SpecFun
                const T& b,
                const T& y,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -173,7 +173,7 @@ namespace SpecFun
                const T& b,
                const T& y,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -182,7 +182,7 @@ namespace SpecFun
                const T& b,
                const T& y,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
@@ -203,14 +203,14 @@ namespace SpecFun
     T erfInv(
                const T& e,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
     template <class T>
     T erfcInv(
                const T& e,
                const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-             ) throw (SpecFunException);
+             );
 
 
 }  // namespace SpecFun

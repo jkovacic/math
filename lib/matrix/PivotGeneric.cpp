@@ -204,7 +204,7 @@ void pivot(
         std::size_t* const pRank,
         T* const pDet,
         const bool physSwap
-      ) throw(math::MatrixException)
+      )
 {
     // sanity check
     // if B is provided it must have the same nr. of rows as A
@@ -616,7 +616,7 @@ bool math::Pivot::getDiagonallyDominantMatrix(
         math::MatrixGeneric<T>* const pB,
         std::vector<std::size_t>& rows,
         std::vector<std::size_t>& cols
-      ) throw (math::MatrixException)
+      )
 {
     // sanity check
     if ( false == A.isSquare() )
@@ -800,7 +800,7 @@ bool math::Pivot::solveGaussJordan(
         math::MatrixGeneric<T>& x,
         const bool fullp,
         const bool physSwap
-      ) throw(math::MatrixException)
+      )
 {
     // sanity check
     if ( false == A.isSquare() )
@@ -845,7 +845,7 @@ T math::Pivot::getDeterminant(
         const math::MatrixGeneric<T>& A,
         const bool fullp,
         const bool physSwap
-      ) throw(math::MatrixException)
+      )
 {
     // sanity check
     if ( false == A.isSquare() )
@@ -876,7 +876,7 @@ template <class T>
 std::size_t math::Pivot::getRank(
         const math::MatrixGeneric<T>& A,
         const bool physSwap
-      ) throw(math::MatrixException)
+      )
 {
     math::MatrixGeneric<T> temp(A);
     std::size_t rank;

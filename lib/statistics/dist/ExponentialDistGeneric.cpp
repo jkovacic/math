@@ -53,7 +53,7 @@ namespace math {  namespace ExponentialDist {  namespace __private {
  * @throw StatisticsException if any argument is invalid
  */
 template <typename F>
-void __checkParams(const F& x, const F& lambda) throw(math::StatisticsException)
+void __checkParams(const F& x, const F& lambda)
 {
     /*
      * lambda > 0
@@ -86,7 +86,7 @@ template <typename F>
 F math::ExponentialDist::pdf(
           const F& x,
           const F& lambda
-        ) throw( math::StatisticsException)
+        )
 {
     /*
      * Probability distribution function of the exponential distribution
@@ -125,7 +125,7 @@ F math::ExponentialDist::probInt(
           const F& a,
           const F& b,
           const F& lambda
-        ) throw (math::StatisticsException)
+        )
 {
     /*
      *              b
@@ -164,7 +164,7 @@ F math::ExponentialDist::prob(
       const F& x,
       const F& lambda,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * Cumulative distribution function of the exponential distribution
@@ -206,7 +206,7 @@ F math::ExponentialDist::quant(
       const F& p,
       const F& lambda,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     // sanity check
     math::ExponentialDist::__private::__checkParams<F>(static_cast<F>(1), lambda);

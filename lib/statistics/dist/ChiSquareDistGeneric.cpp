@@ -55,7 +55,7 @@ namespace math {  namespace ChiSquareDist {  namespace __private
  * @throw StatisticsException if any argument is invalid.
  */
 template <typename F>
-void __checkParams(const F& x, const F& df) throw (math::StatisticsException)
+void __checkParams(const F& x, const F& df)
 {
     if ( x < static_cast<F>(0) )
     {
@@ -87,7 +87,7 @@ template <typename F>
 F math::ChiSquareDist::pdf(
       const F& x,
       const F& df
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * Probability density function of the chi-squared distribution:
@@ -129,7 +129,7 @@ F math::ChiSquareDist::probInt(
       const F& a,
       const F& b,
       const F& df
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      *              b
@@ -166,7 +166,7 @@ F math::ChiSquareDist::prob(
       const F& x,
       const F& df,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     /*
      * The 'cdf' represents probability that a value from the chi-squared
@@ -227,7 +227,7 @@ F math::ChiSquareDist::quant(
       const F& p,
       const F& df,
       const bool lowerTail
-    ) throw (math::StatisticsException)
+    )
 {
     // sanity check
     math::ChiSquareDist::__private::__checkParams<F>(static_cast<F>(1), df);

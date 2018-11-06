@@ -442,7 +442,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator*=(const F& sc)
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator/=(
         const F& scalar
-      ) throw(math::QuaternionException)
+      )
 {
     if ( true == math::NumericUtil::isZero<F>(scalar) )
     {
@@ -471,7 +471,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator/=(
  * @throw QuaternionException if attempting to divide by zero
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const math::QuaternionGeneric<F>& q) throw(math::QuaternionException)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const math::QuaternionGeneric<F>& q)
 {
     if ( true == math::NumericUtil::isZero<F>(q.__sqsum()) )
     {
@@ -497,7 +497,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const math::Quater
  * @throw QuaternionException if attempting to divide by zero
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const F& sc) throw(math::QuaternionException)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const F& sc)
 {
     return this->operator/=(sc);
 }
@@ -514,7 +514,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const F& sc) throw
  * @throw QuaternionException if attempting to divide by zero
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const math::QuaternionGeneric<F>& q) throw(math::QuaternionException)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const math::QuaternionGeneric<F>& q)
 {
     math::QuaternionGeneric<F> lquot = math::ldiv(*this, q);
 
@@ -540,7 +540,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const math::Quater
  * @throw QuaternionException if attempting to divide by zero
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const F& sc) throw(math::QuaternionException)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::ldiv_(const F& sc)
 {
     return this->operator/=(sc);
 }
@@ -599,7 +599,7 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::conj() const
  * @throw QuaternionException if operation is not supported for type T
  */
 template <typename F>
-F math::QuaternionGeneric<F>::norm() const throw (math::QuaternionException)
+F math::QuaternionGeneric<F>::norm() const
 {
     /*
      * Norm of a quaternion is defined as:
@@ -624,7 +624,7 @@ F math::QuaternionGeneric<F>::norm() const throw (math::QuaternionException)
  * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::unit_() throw (math::QuaternionException)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::unit_()
 {
     /*
      * A unit quaternion is the quaternion, divided by its norm:
@@ -662,7 +662,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::unit_() throw (math::Qua
  * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
-math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math::QuaternionException)
+math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const
 {
     math::QuaternionGeneric<F> qret(*this);
     qret.unit_();
@@ -680,7 +680,7 @@ math::QuaternionGeneric<F> math::QuaternionGeneric<F>::unit() const throw (math:
  * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
-math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::reciprocal_() throw (math::QuaternionException)
+math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::reciprocal_()
 {
     /*
      * q^(-1) is a reciprocal quaternion of q if the following condition is satisfied;
@@ -726,7 +726,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::reciprocal_() throw (mat
  * @throw QuaternionException if 'this' is a zero-quaternion
  */
 template <typename F>
-math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const throw (math::QuaternionException)
+math::QuaternionGeneric<F> math::QuaternionGeneric<F>::reciprocal() const
 {
     math::QuaternionGeneric<F> qret(*this);
     qret.reciprocal_();
@@ -1056,7 +1056,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator/(
         const math::QuaternionGeneric<F>&q,
         const F& sc
-      ) throw(math::QuaternionException)
+      )
 {
     math::QuaternionGeneric<F> retVal(q);
     retVal /= sc;
@@ -1078,7 +1078,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::operator/(
         const F& sc,
         const math::QuaternionGeneric<F>& q
-      ) throw(math::QuaternionException)
+      )
 {
     if ( true == math::NumericUtil::isZero<F>(q.__sqsum()) )
     {
@@ -1103,7 +1103,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::rdiv(
         const math::QuaternionGeneric<F>& q1,
         const math::QuaternionGeneric<F>& q2
-      ) throw(math::QuaternionException)
+      )
 {
     math::QuaternionGeneric<F> retVal(q1);
     retVal.rdiv_(q2);
@@ -1126,7 +1126,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::rdiv(
         const math::QuaternionGeneric<F>& q,
         const F& sc
-      ) throw(math::QuaternionException)
+      )
 {
     return q / sc;
 }
@@ -1146,7 +1146,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::rdiv(
         const F& sc,
         const math::QuaternionGeneric<F>& q
-      ) throw(math::QuaternionException)
+      )
 {
     return math::rdiv(math::QuaternionGeneric<F>(sc), q);
 }
@@ -1166,7 +1166,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::ldiv(
         const math::QuaternionGeneric<F>& q1,
         const math::QuaternionGeneric<F>& q2
-      ) throw(math::QuaternionException)
+      )
 {
     if ( true == math::NumericUtil::isZero<F>(q2.__sqsum()) )
     {
@@ -1191,7 +1191,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::ldiv(
         const math::QuaternionGeneric<F>& q,
         const F& sc
-      ) throw(math::QuaternionException)
+      )
 {
     return q / sc;
 }
@@ -1211,7 +1211,7 @@ template <typename F>
 math::QuaternionGeneric<F> math::ldiv(
         const F& sc,
         const math::QuaternionGeneric<F>& q
-      ) throw(math::QuaternionException)
+      )
 {
     return math::ldiv(math::QuaternionGeneric<F>(sc), q);
 }

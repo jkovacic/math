@@ -46,7 +46,7 @@ class FFunc : public IFunction
 {
 public:
     // function: sin(x)/x - 0.5
-    double operator()(const double& x) const throw(FunctionException)
+    double operator()(const double& x) const
     {
         const double MND = 0.5;
 
@@ -75,7 +75,7 @@ public:
 class DFunc : public IFunction
 {
 public:
-    double operator()(const double& x) const throw(FunctionException)
+    double operator()(const double& x) const
     {
         /*
          * Derivation of the function f, defined above.
@@ -113,7 +113,7 @@ public:
 class D2Func : public IFunction
 {
 public:
-    double operator()(const double& x) const throw(FunctionException)
+    double operator()(const double& x) const
     {
         /*
          * 2nd order derivation of the function f, defined above.

@@ -52,21 +52,21 @@ namespace BinomDist
     F mean(
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2)
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
     F var(
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2)
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
     F stdev(
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2)
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -74,7 +74,7 @@ namespace BinomDist
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2),
         const F& th = static_cast<F>(PROBDIST_BINOM_DIST_NORMAL_APPROX_NUM) / static_cast<F>(PROBDIST_BINOM_DIST_NORMAL_APPROX_DEN)
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -82,7 +82,7 @@ namespace BinomDist
         const I& k,
         const I& n,
         const F& p = static_cast<F>(1) / static_cast<F>(2)
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -93,7 +93,7 @@ namespace BinomDist
         const F& p = static_cast<F>(1) / static_cast<F>(2),
         const bool incLower = true,
         const bool incUpper = true
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -103,7 +103,7 @@ namespace BinomDist
         const F& p = static_cast<F>(1) / static_cast<F>(2),
         const bool incl = true,
         const bool lowerTail = true
-      ) throw(StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -113,7 +113,7 @@ namespace BinomDist
         const F& p = static_cast<F>(1) / static_cast<F>(2),
         const bool smallest = true,
         const bool lowerTail = true
-      ) throw(StatisticsException);
+      );
 
 }  // namespace BinomDist
 

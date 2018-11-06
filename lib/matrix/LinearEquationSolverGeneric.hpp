@@ -49,7 +49,7 @@ namespace LinearEquationSolver
               MatrixGeneric<T>& sol,
               const bool fullp = LINEQ_GAUSS_JORDAN_FULL_PIVOT,
               const bool physSwap = LINEQ_PHYSSWAP_COEF
-            ) throw (MatrixException);
+            );
 
 
     template <class T>
@@ -61,7 +61,7 @@ namespace LinearEquationSolver
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
               const std::size_t maxiter = LINEQ_MAX_ITER
-            ) throw (MatrixException);
+            );
 
 
     template <class T>
@@ -72,7 +72,7 @@ namespace LinearEquationSolver
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
               const std::size_t maxiter = LINEQ_MAX_ITER
-            ) throw (MatrixException);
+            );
 
 
     template <class T>
@@ -84,7 +84,7 @@ namespace LinearEquationSolver
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
               const std::size_t maxiter = LINEQ_MAX_ITER
-            ) throw (MatrixException);
+            );
 
 
     template <class T>
@@ -95,7 +95,7 @@ namespace LinearEquationSolver
               const bool solInitialized = false,
               const T& tol = static_cast<T>(LINEQ_TOL_CONV_NUM) / static_cast<T>(LINEQ_TOL_CONV_DEN),
               const std::size_t maxiter = LINEQ_MAX_ITER
-            ) throw (MatrixException);
+            );
 
 }  // namespace LinearEquationSolver
 

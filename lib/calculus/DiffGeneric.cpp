@@ -55,7 +55,7 @@ F __forwardDiff(
         const math::IFunctionGeneric<F>& f,
         const F& x,
         const F& h
-      ) throw(math::FunctionException)
+      )
 {
     /*
      *
@@ -86,7 +86,7 @@ F __backwardDiff(
         const math::IFunctionGeneric<F>& f,
         const F& x,
         const F& h
-      ) throw(math::FunctionException)
+      )
 {
     /*
      *
@@ -117,7 +117,7 @@ F __centralDiff(
         const math::IFunctionGeneric<F>& f,
         const F& x,
         const F& h
-      ) throw(math::FunctionException)
+      )
 {
     /*
      *
@@ -148,7 +148,7 @@ F __5pointDiff(
         const math::IFunctionGeneric<F>& f,
         const F& x,
         const F& h
-      ) throw(math::FunctionException)
+      )
 {
     /*
      *
@@ -191,7 +191,7 @@ F math::Diff::diff(
         const F& x,
         const F& h,
         const math::EDiffMethod::method method
-      ) throw(math::CalculusException)
+      )
 {
     // sanity check:
     if ( h < math::NumericUtil::getEPS<F>() )
@@ -259,7 +259,7 @@ F math::Diff::diff2(
         const math::IFunctionGeneric<F>& f, 
         const F& x, 
         const F& h
-      ) throw (math::CalculusException)
+      )
 {
     /*
      * 2nd order central method:

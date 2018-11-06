@@ -79,7 +79,7 @@ F __newtonCommon(
            const F& h,
            const std::size_t Nmax,
            bool diffFunc
-         ) throw(math::RootFindException)
+         )
 {
     /*
      * The Newton - Raphson method is described in detail at:
@@ -189,7 +189,7 @@ F __halleyCommon(
         const std::size_t Nmax,
         const bool diffFunc,
         const bool mod
-      ) throw (math::RootFindException)
+      )
 {
     /*
      * The Halley's method is described in detail at:
@@ -326,7 +326,7 @@ F math::RootFind::bisection(
            const F& to,
            const F& epsx,
            const F& epsy
-         ) throw(math::RootFindException)
+         )
 {
     /*
      * The bisection method is described in detail at:
@@ -453,7 +453,7 @@ F math::RootFind::regulaFalsi(
            const F& to,
            const F& epsx,
            const F& epsy
-         ) throw(math::RootFindException)
+         )
 {
     /*
      * The regula falsi method is described in detail at:
@@ -577,7 +577,7 @@ F math::RootFind::secant(
            const F& r1,
            const F& epsy,
            const std::size_t Nmax
-         ) throw(math::RootFindException)
+         )
 {
     /*
      * The secant method is described in detail at:
@@ -681,7 +681,7 @@ F math::RootFind::newton(
            const F& x0,
            const F& epsy,
            const std::size_t Nmax
-         ) throw(math::RootFindException)
+         )
 {
     /*
      * The Newton - Raphson method is described in detail at:
@@ -730,7 +730,7 @@ F math::RootFind::quasiNewton(
            const F& epsy,
            const F& h,
            const std::size_t Nmax
-         ) throw(math::RootFindException)
+         )
 {
     /*
      * The Newton - Raphson method is described in detail at:
@@ -781,7 +781,7 @@ F math::RootFind::halley(
        const F& x0,
        const F& epsy,
        const std::size_t Nmax
-     ) throw (math::RootFindException)
+     )
 {
     /*
      * The Halley's method is described in detail at:
@@ -830,7 +830,7 @@ F math::RootFind::quasiHalley(
        const F& epsy,
        const F& h,
        const std::size_t Nmax
-     ) throw (math::RootFindException)
+     )
 {
     /*
      * The Halley's method is described in detail at:
@@ -882,7 +882,7 @@ F math::RootFind::halleyMod(
        const F& x0,
        const F& epsy,
        const std::size_t Nmax
-     ) throw (math::RootFindException)
+     )
 {
     /*
      * The Halley's method is described in detail at:
@@ -932,7 +932,7 @@ F math::RootFind::quasiHalleyMod(
        const F& epsy,
        const F& h,
        const std::size_t Nmax
-     ) throw (math::RootFindException)
+     )
 {
     /*
      * The Halley's method is described in detail at:

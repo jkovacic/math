@@ -68,18 +68,18 @@ private:
     std::vector<F> m_v;
 
 private:
-    virtual F _select(const std::size_t n) const throw(StatisticsException);
+    virtual F _select(const std::size_t n) const;
 
     virtual void _select2(
             const std::size_t n1,
             const std::size_t n2,
             F& val1,
             F& val2
-          ) const throw(StatisticsException);
+          ) const;
 
 public:
     // Constructor
-    SampleQuantileSortedArrayGeneric(const std::vector<F>& sample) throw(StatisticsException);
+    SampleQuantileSortedArrayGeneric(const std::vector<F>& sample);
 
     virtual F ecdf(const F& t) const;
 
@@ -91,13 +91,13 @@ public:
            const std::size_t n,
            const bool largest = true,
            const bool zerobase = STAT_DEFAULT_ZERO_BASE
-         ) const throw(StatisticsException);
+         ) const;
 
     virtual void outliers(
            std::set<F>& outl,
            const F& iqrs = static_cast<F>(STAT_OUTLIER_IQRS_NUM) / static_cast<F>(STAT_OUTLIER_IQRS_DEN),
            const EQntlType::type method = STAT_DEFAULT_QUANTILE_ALG
-         ) const throw (StatisticsException);
+         ) const;
 
     // Destructor
     virtual ~SampleQuantileSortedArrayGeneric();

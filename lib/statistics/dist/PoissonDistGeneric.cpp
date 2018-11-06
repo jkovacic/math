@@ -61,7 +61,7 @@ namespace math {  namespace PoissonDist {  namespace __private {
  * @throw StatisticsException if any argument is invalid
  */
 template <typename F, typename I>
-void __checkParams(const I& k, const F& lambda) throw(math::StatisticsException)
+void __checkParams(const I& k, const F& lambda)
 {
     /*
      * lambda > 0
@@ -93,7 +93,7 @@ template <typename F, typename I>
 F math::PoissonDist::pmf(
           const I& k,
           const F& lambda
-        ) throw( math::StatisticsException)
+        )
 {
     /*
      * Probability mass function is defined as:
@@ -151,7 +151,7 @@ F math::PoissonDist::probInt(
           const F& lambda,
           const bool incLower,
           const bool incUpper
-        ) throw (math::StatisticsException)
+        )
 {
     // sanity check
     math::PoissonDist::__private::__checkParams<F, I>(a, lambda);
@@ -197,7 +197,7 @@ F math::PoissonDist::prob(
           const F& lambda,
           const bool incl,
           const bool lowerTail
-        ) throw(math::StatisticsException)
+        )
 {
     // sanity check
     math::PoissonDist::__private::__checkParams<F, I>(k, lambda);
@@ -296,7 +296,7 @@ I math::PoissonDist::quant(
           const F& lambda,
           const bool smallest,
           const bool lowerTail
-        ) throw(math::StatisticsException)
+        )
 {
     // sanity check
     math::PoissonDist::__private::__checkParams(static_cast<I>(0), lambda);

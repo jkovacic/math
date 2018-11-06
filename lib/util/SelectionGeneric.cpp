@@ -102,7 +102,7 @@ public:
  * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F __minmax(const std::vector<F>& x, const bool min) throw(math::SelectionException)
+F __minmax(const std::vector<F>& x, const bool min)
 {
     const std::size_t N = x.size();
 
@@ -161,7 +161,7 @@ F __minmax(const std::vector<F>& x, const bool min) throw(math::SelectionExcepti
  * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F __whichMinMax(const std::vector<F>& x, const bool min) throw(math::SelectionException)
+F __whichMinMax(const std::vector<F>& x, const bool min)
 {
     const std::size_t N = x.size();
 
@@ -244,7 +244,7 @@ template <typename F>
 std::vector<const F*>& __fillPointers(
         const std::vector<F>& x,
         std::vector<const F*>& dest
-      ) throw (math::SelectionException)
+      )
 {
     try
     {
@@ -518,7 +518,7 @@ void __selectMult(
             F* const a1,
             F* const a2,
             const bool smallest
-          ) throw(math::SelectionException)
+          )
 {
     if ( NULL == a1 )
     {
@@ -601,7 +601,7 @@ std::vector<std::size_t>& math::Selection::order(
         const std::vector<F>& x,
         std::vector<std::size_t>& dest,
         const bool asc
-      ) throw(math::SelectionException)
+      )
 {
     const std::size_t N = x.size();
 
@@ -658,8 +658,8 @@ template <typename F>
 std::vector<std::size_t>& math::Selection::rank(
             const std::vector<F>& x,
             std::vector<std::size_t>& dest,
-            const bool asc = true
-          ) throw(math::SelectionException)
+            const bool asc
+          )
 {
     try
     {
@@ -732,7 +732,7 @@ std::vector<std::size_t>& math::Selection::rank(
  * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F math::Selection::min(const std::vector<F>& x) throw(math::SelectionException)
+F math::Selection::min(const std::vector<F>& x)
 {
     return math::Selection::__private::__minmax<F>(x, true);
 }
@@ -746,7 +746,7 @@ F math::Selection::min(const std::vector<F>& x) throw(math::SelectionException)
  * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-F math::Selection::max(const std::vector<F>& x) throw(math::SelectionException)
+F math::Selection::max(const std::vector<F>& x)
 {
     return math::Selection::__private::__minmax<F>(x, false);
 }
@@ -760,7 +760,7 @@ F math::Selection::max(const std::vector<F>& x) throw(math::SelectionException)
  * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-std::size_t math::Selection::whichMin(const std::vector<F>& x) throw(math::SelectionException)
+std::size_t math::Selection::whichMin(const std::vector<F>& x)
 {
     return math::Selection::__private::__whichMinMax(x, true);
 }
@@ -774,7 +774,7 @@ std::size_t math::Selection::whichMin(const std::vector<F>& x) throw(math::Selec
  * @throw SelectionException if 'x' is empty
  */
 template <typename F>
-std::size_t math::Selection::whichMax(const std::vector<F>& x) throw(SelectionException)
+std::size_t math::Selection::whichMax(const std::vector<F>& x)
 {
     return math::Selection::__private::__whichMinMax(x, false);
 }
@@ -801,7 +801,7 @@ F math::Selection::select(
             const std::vector<F>& x,
             const std::size_t K,
             const bool smallest
-          ) throw (math::SelectionException)
+          )
 {
     F retVal;
     math::Selection::__private::__selectMult(x, K, K, &retVal, static_cast<F* const>(NULL), smallest);
@@ -835,7 +835,7 @@ void math::Selection::select2(
             F& val1,
             F& val2,
             const bool smallest
-          ) throw (math::SelectionException)
+          )
 {
     math::Selection::__private::__selectMult(x, K1, K2, &val1, &val2, smallest);
 }

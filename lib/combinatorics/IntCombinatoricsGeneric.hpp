@@ -48,40 +48,35 @@ namespace IntCombinatorics
     template <typename I>
     I factorial(
             const I& N, 
-            const I& from = static_cast<I>(1) ) 
-          throw(CombinatoricsException);
+            const I& from = static_cast<I>(1) );
     
     // falling factorial power: N * (N-1) * ... * (N-K+1):
     template <typename I>
     I fallingFactorial(
             const I& N, 
-            const I& K ) 
-          throw(CombinatoricsException);
+            const I& K );
     
     // rising factorial power: N * (N+1) * ... * (N+K-1):
     template <typename I>
     I risingFactorial(
             const I& N, 
-            const I& K ) 
-          throw(CombinatoricsException);
+            const I& K );
     
     // multifactorial: N * (N-K) * (N-2*K) * ... :
     template <typename I>
     I multiFactorial(
             const I& N, 
-            const I& K ) 
-          throw(CombinatoricsException);
+            const I& K );
     
     // double factorial: N * (N-2) * (N-4) * ... :
     template <typename I>
-    I doubleFactorial( const I& N ) throw(CombinatoricsException);
+    I doubleFactorial( const I& N );
     
     // binomial coefficient:
     template <typename I>
     I binom(
             const I& N, 
-            const I& K ) 
-          throw(CombinatoricsException);
+            const I& K );
 
 }  // namespace IntCombinatorics
 

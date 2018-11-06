@@ -48,12 +48,12 @@ namespace IntFunction
 
     // floor/ceil of sqrt(n)
     template <typename I>
-    I intSqrt(const I& n, const bool ceil=false) throw(IntFunctionException);
+    I intSqrt(const I& n, const bool ceil=false);
 
 
     // floor/ceil of log2(n)
     template <typename I>
-    I intLog2(const I& n, const bool ceil=false) throw(IntFunctionException);
+    I intLog2(const I& n, const bool ceil=false);
 
 }  // namespace IntFunction
 

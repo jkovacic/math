@@ -72,18 +72,18 @@ private:
     bool started;
     
     // Initializes internal data
-    void __init() throw (CombinatoricsException);
+    void __init();
     
 public:
     // Constructors
-    PermutationGeneric(const std::vector<T>& el) throw (CombinatoricsException);
-    PermutationGeneric(const std::list<T>& el) throw (CombinatoricsException);
-    PermutationGeneric(const std::set<T>& el) throw (CombinatoricsException);
-    PermutationGeneric(const std::deque<T>& el) throw (CombinatoricsException);
-    PermutationGeneric(const T* elarray, const std::size_t len) throw (CombinatoricsException);       
+    PermutationGeneric(const std::vector<T>& el);
+    PermutationGeneric(const std::list<T>& el);
+    PermutationGeneric(const std::set<T>& el);
+    PermutationGeneric(const std::deque<T>& el);
+    PermutationGeneric(const T* elarray, const std::size_t len);       
     
     // Retrieves next n permutations
-    void next(std::list<std::list<T> >& ret, const std::size_t n=1) throw (CombinatoricsException);
+    void next(std::list<std::list<T> >& ret, const std::size_t n=1);
     
     // More permutations available to be retrieved?
     bool hasNext() const;

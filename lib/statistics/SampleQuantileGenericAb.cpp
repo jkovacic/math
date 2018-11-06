@@ -119,7 +119,7 @@ F math::SampleQuantileGenericAb<F>::quantile(
                     const I& num, 
                     const I& den, 
                     const math::EQntlType::type method ) 
-                const throw(math::StatisticsException)
+                const
 {
     if ( true == math::IntUtil::isNegative<I>(num) ||
          true == math::IntUtil::isNegative<I>(den) ||
@@ -150,7 +150,7 @@ F math::SampleQuantileGenericAb<F>::quantile(
  * @throw StatisticsException if any input argument is invalid
  */
 template <typename F>
-F math::SampleQuantileGenericAb<F>::qntl(const F& p, const math::EQntlType::type method) const throw(math::StatisticsException)
+F math::SampleQuantileGenericAb<F>::qntl(const F& p, const math::EQntlType::type method) const
 {
     F retVal;
 
@@ -501,7 +501,7 @@ template <typename F>
 F math::SampleQuantileGenericAb<F>::quartile(
             const unsigned short int q, 
             const math::EQntlType::type method) 
-        const throw(math::StatisticsException)
+        const
 {
     F retVal;
 

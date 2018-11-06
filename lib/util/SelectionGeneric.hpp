@@ -50,7 +50,7 @@ namespace Selection
             const std::vector<F>& x,
             std::vector<std::size_t>& dest,
             const bool asc = true
-          ) throw(SelectionException);
+          );
 
 
     template <typename F>
@@ -58,27 +58,27 @@ namespace Selection
             const std::vector<F>& x,
             std::vector<std::size_t>& dest,
             const bool asc = true
-          ) throw(SelectionException);
+          );
 
 
     template <typename F>
-    F min(const std::vector<F>& x) throw(SelectionException);
+    F min(const std::vector<F>& x);
 
 
     template <typename F>
-    F max(const std::vector<F>& x) throw(SelectionException);
+    F max(const std::vector<F>& x);
 
 
     template <typename F>
-    std::size_t whichMin(const std::vector<F>& x) throw(SelectionException);
+    std::size_t whichMin(const std::vector<F>& x);
 
 
     template <typename F>
-    std::size_t whichMax(const std::vector<F>& x) throw(SelectionException);
+    std::size_t whichMax(const std::vector<F>& x);
 
 
     template <typename F>
-    F select(const std::vector<F>& x, const std::size_t K, const bool smallest=true) throw(SelectionException);
+    F select(const std::vector<F>& x, const std::size_t K, const bool smallest=true);
 
 
     template <typename F>
@@ -89,7 +89,7 @@ namespace Selection
             F& val1,
             F& val2,
             const bool smallest = true
-          ) throw(SelectionException);
+          );
 
 }  // namespace SampleOrder
 }  // namespace math

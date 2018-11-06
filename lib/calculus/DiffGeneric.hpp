@@ -70,7 +70,7 @@ namespace Diff
                const F& x,
                const F& h = static_cast<F>(DIFF_STEP_NUM) / static_cast<F>(DIFF_STEP_DEN),
                const EDiffMethod::method method = DIFF_DEFAULT_METHOD
-             ) throw (CalculusException);
+             );
 
 
     template <typename F>
@@ -78,7 +78,7 @@ namespace Diff
                const IFunctionGeneric<F>& f,
                const F& x,
                const F& h = static_cast<F>(DIFF_STEP_NUM) / static_cast<F>(DIFF_STEP_DEN)
-             ) throw (CalculusException);
+             );
 
 
 

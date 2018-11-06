@@ -54,46 +54,46 @@ template <class T> class MatrixGeneric;
 
 // to declare the class's friend functions:
 template <class T>
-MatrixGeneric<T> operator+(const MatrixGeneric<T>& m) throw(MatrixException);
+MatrixGeneric<T> operator+(const MatrixGeneric<T>& m);
 
 template <class T>
-MatrixGeneric<T> operator-(const MatrixGeneric<T>& m) throw(MatrixException);
+MatrixGeneric<T> operator-(const MatrixGeneric<T>& m);
 
 template <class T>
-MatrixGeneric<T> operator+(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+MatrixGeneric<T> operator+(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
 
 template <class T>
-MatrixGeneric<T> operator-(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+MatrixGeneric<T> operator-(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
 
 template <class T>
-MatrixGeneric<T> operator*(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+MatrixGeneric<T> operator*(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
 
 template <class T>
-MatrixGeneric<T> operator*(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+MatrixGeneric<T> operator*(const MatrixGeneric<T>& m, const T& sc);
 
 template <class T>
-MatrixGeneric<T> operator*(const T& sc, const MatrixGeneric<T>& m) throw (MatrixException);
+MatrixGeneric<T> operator*(const T& sc, const MatrixGeneric<T>& m);
 
 template <class T>
-MatrixGeneric<T> operator+(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+MatrixGeneric<T> operator+(const MatrixGeneric<T>& m, const T& sc);
 
 template <class T>
-MatrixGeneric<T> operator+(const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
+MatrixGeneric<T> operator+(const T& sc, const MatrixGeneric<T>& m);
 
 template <class T>
-MatrixGeneric<T> operator-(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+MatrixGeneric<T> operator-(const MatrixGeneric<T>& m, const T& sc);
 
 template <class T>
-MatrixGeneric<T> operator-(const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
+MatrixGeneric<T> operator-(const T& sc, const MatrixGeneric<T>& m);
 
 template <class T>
-MatrixGeneric<T> operator/(const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
+MatrixGeneric<T> operator/(const MatrixGeneric<T>& m, const T& sc);
 
 template <class T>
-MatrixGeneric<T> matEwMult(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+MatrixGeneric<T> matEwMult(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
 
 template <class T>
-MatrixGeneric<T> matEwDiv(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+MatrixGeneric<T> matEwDiv(const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
 
 
 namespace __matrixprivate
@@ -130,14 +130,14 @@ private:
 
 
     // Initializes a new matrix
-    void __init(const std::size_t rows, const std::size_t cols) throw (MatrixException);
+    void __init(const std::size_t rows, const std::size_t cols);
 
     /*
      * Copy elements from one matrix into another. Used at copy constructors,
      * assignment operators etc. It s also suitable for use in derived  classes,
      * so it should be 'protected' instead of 'private'
      */
-    void __copyElems(const MatrixGeneric<T>& orig) throw (MatrixException);
+    void __copyElems(const MatrixGeneric<T>& orig);
 
     /*
      * A utility function that returns the position of element's "coordinates"
@@ -161,121 +161,121 @@ private:
     void __triangPart(const bool upper, const bool lower, const bool diag);
 
     //  convenience functions that find minimum/maximum values of each m's row or column
-    T __minmaxRowCol(const std::size_t rc, const bool row, const bool maxv, const bool absval) const throw (MatrixException);
-    void __minmaxRowsCols(const MatrixGeneric<T>& m, const bool row, const bool maxv, const bool absval) throw (MatrixException);
+    T __minmaxRowCol(const std::size_t rc, const bool row, const bool maxv, const bool absval) const;
+    void __minmaxRowsCols(const MatrixGeneric<T>& m, const bool row, const bool maxv, const bool absval);
 
 public:
     // Constructors
-    MatrixGeneric(const std::size_t rows, const std::size_t columns) throw (MatrixException);
-    MatrixGeneric(const std::size_t n) throw (MatrixException);
+    MatrixGeneric(const std::size_t rows, const std::size_t columns);
+    MatrixGeneric(const std::size_t n);
     // Copy constructor
-    MatrixGeneric(const MatrixGeneric<T>& orig) throw (MatrixException);
+    MatrixGeneric(const MatrixGeneric<T>& orig);
 
     // Number of rows and columns
     std::size_t nrRows() const;
     std::size_t nrColumns() const;
 
     // Get and set the element of the specified row and column
-    T get(const std::size_t row, const std::size_t column) const throw (MatrixException);
-    T& at(const std::size_t row, const std::size_t column) throw (MatrixException);
-    const T& at(const std::size_t row, const std::size_t column) const throw(MatrixException);
-    T& operator()(const std::size_t row, const std::size_t column) throw(MatrixException);
-    const T& operator()(const std::size_t row, const std::size_t column) const throw(MatrixException);
-    T& operator()(const std::size_t idx) throw(MatrixException);
-    const T& operator()(const std::size_t idx) const throw(MatrixException);
-    MatrixGeneric<T>& set(const std::size_t row, const std::size_t column, const T& element) throw (MatrixException);  
+    T get(const std::size_t row, const std::size_t column) const;
+    T& at(const std::size_t row, const std::size_t column);
+    const T& at(const std::size_t row, const std::size_t column) const;
+    T& operator()(const std::size_t row, const std::size_t column);
+    const T& operator()(const std::size_t row, const std::size_t column) const;
+    T& operator()(const std::size_t idx);
+    const T& operator()(const std::size_t idx) const;
+    MatrixGeneric<T>& set(const std::size_t row, const std::size_t column, const T& element);
 
     // Display elements of the matrix
-    void display(std::ostream& str = std::cout) const throw (MatrixException);
+    void display(std::ostream& str = std::cout) const;
 
     // Matrix arithmetics operators
-    MatrixGeneric<T>& operator=(const MatrixGeneric<T>& m) throw(MatrixException);
-    MatrixGeneric<T>& operator=(const T& scalar) throw(MatrixException);
-    MatrixGeneric<T>& operator+=(const MatrixGeneric<T>& m) throw(MatrixException);
-    MatrixGeneric<T>& operator-=(const MatrixGeneric<T>& m) throw(MatrixException);
-    MatrixGeneric<T>& operator*=(const MatrixGeneric<T>&m ) throw(MatrixException);
+    MatrixGeneric<T>& operator=(const MatrixGeneric<T>& m);
+    MatrixGeneric<T>& operator=(const T& scalar);
+    MatrixGeneric<T>& operator+=(const MatrixGeneric<T>& m);
+    MatrixGeneric<T>& operator-=(const MatrixGeneric<T>& m);
+    MatrixGeneric<T>& operator*=(const MatrixGeneric<T>&m );
     MatrixGeneric<T>& operator*=(const T& scalar);
     MatrixGeneric<T>& operator+=(const T& scalar);
     MatrixGeneric<T>& operator-=(const T& scalar);
-    MatrixGeneric<T>& operator/=(const T& scalar) throw(MatrixException);
+    MatrixGeneric<T>& operator/=(const T& scalar);
 
-    MatrixGeneric<T>& ewMult(const MatrixGeneric<T>& m) throw (MatrixException);
-    MatrixGeneric<T>& ewDiv(const MatrixGeneric<T>& m) throw (MatrixException);
+    MatrixGeneric<T>& ewMult(const MatrixGeneric<T>& m);
+    MatrixGeneric<T>& ewDiv(const MatrixGeneric<T>& m);
 
     // Transpose the matrix
-    MatrixGeneric<T> transpose() const throw (MatrixException);
-    MatrixGeneric<T>& transpose_() throw (MatrixException);
+    MatrixGeneric<T> transpose() const;
+    MatrixGeneric<T>& transpose_();
     MatrixGeneric<T>& conj_();
-    MatrixGeneric<T> conj() const throw (MatrixException);
+    MatrixGeneric<T> conj() const;
 
     // Round very small elements to 0
     MatrixGeneric<T>& roundSmallElements_();
     MatrixGeneric<T>& roundSmallElements_(const T& eps);
-    MatrixGeneric<T> roundSmallElements() const throw(MatrixException);
-    MatrixGeneric<T> roundSmallElements(const T& eps) const throw(MatrixException);
+    MatrixGeneric<T> roundSmallElements() const;
+    MatrixGeneric<T> roundSmallElements(const T& eps) const;
 
     // Minimum or maximum values of each column/row:
-    T minRow(const std::size_t row, const bool absval = false) const throw (MatrixException);
-    T maxRow(const std::size_t row, const bool absval = false) const throw (MatrixException);
-    T minColumn(const std::size_t column, const bool absval = false) const throw (MatrixException);
-    T maxColumn(const std::size_t column, const bool absval = false) const throw (MatrixException);
-    MatrixGeneric<T> minRows(const bool absval = false) const throw (MatrixException);
-    MatrixGeneric<T> maxRows(const bool absval = false) const throw(MatrixException);
-    MatrixGeneric<T> minColumns(const bool absval = false) const throw (MatrixException);
-    MatrixGeneric<T> maxColumns(const bool absval = false) const throw (MatrixException);
+    T minRow(const std::size_t row, const bool absval = false) const;
+    T maxRow(const std::size_t row, const bool absval = false) const;
+    T minColumn(const std::size_t column, const bool absval = false) const;
+    T maxColumn(const std::size_t column, const bool absval = false) const;
+    MatrixGeneric<T> minRows(const bool absval = false) const;
+    MatrixGeneric<T> maxRows(const bool absval = false) const;
+    MatrixGeneric<T> minColumns(const bool absval = false) const;
+    MatrixGeneric<T> maxColumns(const bool absval = false) const;
 
     // Insert or remove rows/columns.
-    MatrixGeneric<T>& removeRow_(const std::size_t rowNr) throw (MatrixException);
-    MatrixGeneric<T>& removeColumn_(const std::size_t colNr) throw (MatrixException);
-    MatrixGeneric<T>& insertRow_(const std::size_t rowNr, const T& el = static_cast<T>(0)) throw (MatrixException);
-    MatrixGeneric<T>& insertColumn_(const std::size_t colNr, const T& el = static_cast<T>(0)) throw (MatrixException);
-    MatrixGeneric<T> removeRow(const std::size_t rowNr) const throw (MatrixException);
-    MatrixGeneric<T> removeColumn(const std::size_t colNr) const throw (MatrixException);
-    MatrixGeneric<T> insertRow(const std::size_t rowNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
-    MatrixGeneric<T> insertColumn(const std::size_t colNr, const T& el = static_cast<T>(0)) const throw (MatrixException);
+    MatrixGeneric<T>& removeRow_(const std::size_t rowNr);
+    MatrixGeneric<T>& removeColumn_(const std::size_t colNr);
+    MatrixGeneric<T>& insertRow_(const std::size_t rowNr, const T& el = static_cast<T>(0));
+    MatrixGeneric<T>& insertColumn_(const std::size_t colNr, const T& el = static_cast<T>(0));
+    MatrixGeneric<T> removeRow(const std::size_t rowNr) const;
+    MatrixGeneric<T> removeColumn(const std::size_t colNr) const;
+    MatrixGeneric<T> insertRow(const std::size_t rowNr, const T& el = static_cast<T>(0)) const;
+    MatrixGeneric<T> insertColumn(const std::size_t colNr, const T& el = static_cast<T>(0)) const;
 
     // Swap rows and columns
-    MatrixGeneric<T>& swapRows_(const std::size_t r1, const std::size_t r2) throw(MatrixException);
-    MatrixGeneric<T>& swapColumns_(const std::size_t c1, const std::size_t c2) throw(MatrixException);
-    MatrixGeneric<T> swapRows(const std::size_t r1, const std::size_t r2) const throw(MatrixException);
-    MatrixGeneric<T> swapColumns(const std::size_t c1, const std::size_t c2) const throw(MatrixException);
+    MatrixGeneric<T>& swapRows_(const std::size_t r1, const std::size_t r2);
+    MatrixGeneric<T>& swapColumns_(const std::size_t c1, const std::size_t c2);
+    MatrixGeneric<T> swapRows(const std::size_t r1, const std::size_t r2) const;
+    MatrixGeneric<T> swapColumns(const std::size_t c1, const std::size_t c2) const;
 
     // Triangular parts of this one:
     MatrixGeneric<T>& upperTriangularPart_(const bool inclDiag=true);
     MatrixGeneric<T>& lowerTriangularPart_(const bool inclDiag=true);
     MatrixGeneric<T>& diagPart_();
-    MatrixGeneric<T> upperTriangularPart(const bool inclDiag=true) const throw(MatrixException);
-    MatrixGeneric<T> lowerTriangularPart(const bool inclDiag=true) const throw(MatrixException);
-    MatrixGeneric<T> diagPart() const throw(MatrixException);
+    MatrixGeneric<T> upperTriangularPart(const bool inclDiag=true) const;
+    MatrixGeneric<T> lowerTriangularPart(const bool inclDiag=true) const;
+    MatrixGeneric<T> diagPart() const;
 
     // These methods are only applicable for square matrices:
-    MatrixGeneric<T>& setDiag_(const T& scalar) throw(MatrixException);
-    MatrixGeneric<T>& setUnit_() throw(MatrixException);
-    T determinant(const bool fullp=MATRIX_DET_FULL_PIVOT, const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
-    MatrixGeneric<T> inverse(const bool fullp=MATRIX_INVERSE_FULL_PIVOT, const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
+    MatrixGeneric<T>& setDiag_(const T& scalar);
+    MatrixGeneric<T>& setUnit_();
+    T determinant(const bool fullp=MATRIX_DET_FULL_PIVOT, const bool physSwap=MATRIX_PHYSSWAP_COEF) const;
+    MatrixGeneric<T> inverse(const bool fullp=MATRIX_INVERSE_FULL_PIVOT, const bool physSwap=MATRIX_PHYSSWAP_COEF) const;
 
     bool isSquare() const;
-    std::size_t rank(const bool physSwap=MATRIX_PHYSSWAP_COEF) const throw(MatrixException);
+    std::size_t rank(const bool physSwap=MATRIX_PHYSSWAP_COEF) const;
 
     // Destructor
     virtual ~MatrixGeneric();
 
 
     // Declaration of friend functions
-    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator+ <>) (const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator- <>) (const T& sc, const MatrixGeneric<T>& m) throw(MatrixException);
-    friend MatrixGeneric<T> (math::operator/ <>) (const MatrixGeneric<T>& m, const T& sc) throw(MatrixException);
-    friend MatrixGeneric<T> (math::matEwMult <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
-    friend MatrixGeneric<T> (math::matEwDiv <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2) throw(MatrixException);
+    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m);
+    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m);
+    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
+    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
+    friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
+    friend MatrixGeneric<T> (math::operator* <>) (const MatrixGeneric<T>& m, const T& sc);
+    friend MatrixGeneric<T> (math::operator* <>) (const T& sc, const MatrixGeneric<T>& m);
+    friend MatrixGeneric<T> (math::operator+ <>) (const MatrixGeneric<T>& m, const T& sc);
+    friend MatrixGeneric<T> (math::operator+ <>) (const T& sc, const MatrixGeneric<T>& m);
+    friend MatrixGeneric<T> (math::operator- <>) (const MatrixGeneric<T>& m, const T& sc);
+    friend MatrixGeneric<T> (math::operator- <>) (const T& sc, const MatrixGeneric<T>& m);
+    friend MatrixGeneric<T> (math::operator/ <>) (const MatrixGeneric<T>& m, const T& sc);
+    friend MatrixGeneric<T> (math::matEwMult <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
+    friend MatrixGeneric<T> (math::matEwDiv <>) (const MatrixGeneric<T>& m1, const MatrixGeneric<T>& m2);
     friend void (math::__matrixprivate::__matconj <>) (MatrixGeneric<T>& m);
     friend void (math::__matrixprivate::__matconj <>) (MatrixGeneric<std::complex<T> >& m);
 };

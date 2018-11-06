@@ -46,7 +46,7 @@ limitations under the License.
  * @throw StatisticsException if 'sample' is empty or allocation of memory for its copy failed
  */
 template <typename F>
-math::SampleQuantileSortedArrayGeneric<F>::SampleQuantileSortedArrayGeneric(const std::vector<F>& sample) throw(math::StatisticsException)
+math::SampleQuantileSortedArrayGeneric<F>::SampleQuantileSortedArrayGeneric(const std::vector<F>& sample)
   : math::SampleQuantileGenericAb<F>( sample.size() )
 {
     try
@@ -77,7 +77,7 @@ math::SampleQuantileSortedArrayGeneric<F>::SampleQuantileSortedArrayGeneric(cons
  * @throw StatisticsExcpetion if 'n' is larger or equal to the number of elements
  */
 template <typename F>
-F math::SampleQuantileSortedArrayGeneric<F>::_select(const std::size_t n) const throw(math::StatisticsException)
+F math::SampleQuantileSortedArrayGeneric<F>::_select(const std::size_t n) const
 {
     if ( n >= this->m_N )
     {
@@ -105,7 +105,7 @@ void math::SampleQuantileSortedArrayGeneric<F>::_select2(
             const std::size_t n2,
             F& val1,
             F& val2
-          ) const throw(math::StatisticsException)
+          ) const
 {
     if ( n1>=this->m_N || n2>=this->m_N )
     {
@@ -240,7 +240,7 @@ F math::SampleQuantileSortedArrayGeneric<F>::elem(
              const std::size_t n,
              const bool largest,
              const bool zerobase
-           ) const throw(math::StatisticsException)
+           ) const
 {
     // sanity check
     if ( (true==zerobase && n>=this->m_N) ||
@@ -279,8 +279,7 @@ template <typename F>
 void math::SampleQuantileSortedArrayGeneric<F>::outliers(
                 std::set<F>& outl,
                 const F& iqrs,
-                const math::EQntlType::type method) const
-            throw (math::StatisticsException)
+                const math::EQntlType::type method ) const
 {
     try
     {

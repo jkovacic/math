@@ -53,7 +53,7 @@ namespace math {  namespace RationalNS {  namespace __private
  *
  * @throw RationalException if absolute value of 'str' exceeds I's range
  */
-long long int __str2ll(const std::string& str) throw (math::RationalException)
+long long int __str2ll(const std::string& str)
 {
     // sanity check already performed by the caller function
 
@@ -90,7 +90,7 @@ long long int __str2ll(const std::string& str) throw (math::RationalException)
  *
  * @throw RationalException if the result exceeds unsigned I's range
  */
- long long int __pow10(const std::size_t n) throw (math::RationalException)
+ long long int __pow10(const std::size_t n)
 {
 
 #define POW10_BASE            ( 10ULL )
@@ -226,8 +226,7 @@ long long int __auxSum(
             const I& denom2, 
             const I& num2, 
             const I& denom1,
-            const bool add ) 
-        throw (math::RationalException)
+            const bool add )
 {
     // All intermediate results are long long int values:
 
@@ -291,8 +290,7 @@ long long int __auxSum(
 template <typename I>
 long long int __auxProd(
             const I& a, 
-            const I& b) 
-        throw (math::RationalException)
+            const I& b)
 {
     // if any factor equals 0, the product will also be 0:
     if ( static_cast<I>(0)==a || static_cast<I>(0)==b)
@@ -367,8 +365,7 @@ long long int __auxProd(
 template <typename I>
 math::RationalGeneric<I>::RationalGeneric(
             const I& numerator, 
-            const I& denominator) 
-        throw(math::RationalException)
+            const I& denominator)
 {
     /*
      * Just call a function that actually sets both members.
@@ -392,8 +389,7 @@ math::RationalGeneric<I>::RationalGeneric(
 template <typename I>
 math::RationalGeneric<I>::RationalGeneric(
             const std::string& str, 
-            const std::size_t repSeqLen) 
-        throw (math::RationalException)
+            const std::size_t repSeqLen)
 {
     /*
      * Just call a function that actually sets both members.
@@ -476,8 +472,7 @@ I math::RationalGeneric<I>::getDenominator() const
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::set(
             const I& numerator, 
-            const I& denominator) 
-        throw(math::RationalException)
+            const I& denominator)
 {
     /*
      * Some internal methods may call this function, passing
@@ -541,8 +536,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::set(
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::set(
             const std::string& str, 
-            const std::size_t repSeqLen) 
-        throw (math::RationalException)
+            const std::size_t repSeqLen)
 {
     const std::size_t LEN = str.length();
     std::size_t decPoint = LEN; // position of the decimal point. LEN represents no decimal point.
@@ -704,7 +698,6 @@ template <typename I>
 void math::RationalGeneric<I>::__setLL(
         const long long int numerator,
         const long long int denominator )
-        throw (math::RationalException)
 {
     // Zero denominator is not valid:
     if ( 0LL == denominator )
@@ -840,7 +833,7 @@ bool math::RationalGeneric<I>::isNegative() const
  * @throw RationalException if attempting to invert a fraction whose numerator equals zero
  */
 template <typename I>
-math::RationalGeneric<I>& math::RationalGeneric<I>::inv_() throw(math::RationalException)
+math::RationalGeneric<I>& math::RationalGeneric<I>::inv_()
 {
     // Check if inversion is possible (m_num!=0)
     if ( static_cast<I>(0) == this->m_num )
@@ -865,7 +858,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::inv_() throw(math::RationalE
  * @throw RationalException the fraction's value is equal to zero
  */
 template <typename I>
-math::RationalGeneric<I> math::RationalGeneric<I>::inv() const throw(math::RationalException)
+math::RationalGeneric<I> math::RationalGeneric<I>::inv() const
 {
     math::RationalGeneric<I> retVal(*this);
     retVal.inv_();
@@ -928,7 +921,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator=(const I& sc)
  */
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::operator+=(
-            const math::RationalGeneric<I>& frac) throw(math::RationalException)
+            const math::RationalGeneric<I>& frac)
 {
     // See definition of fraction addition in operator+()
     // Result will be assigned to itself so use set
@@ -958,7 +951,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator+=(
  */
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::operator-=(
-            const math::RationalGeneric<I>& frac) throw(math::RationalException)
+            const math::RationalGeneric<I>& frac)
 {
     // See definition of fraction subtraction in operator-
     // Result will be assigned to itself so use set().
@@ -987,8 +980,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator-=(
  */
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::operator*=(
-            const math::RationalGeneric<I>& frac ) 
-        throw(math::RationalException)
+            const math::RationalGeneric<I>& frac )
 {
     // See definition of fraction multiplication in operator*.
     // Result will be assigned to itself so use set().
@@ -1018,8 +1010,7 @@ math::RationalGeneric<I>& math::RationalGeneric<I>::operator*=(
  */
 template <typename I>
 math::RationalGeneric<I>& math::RationalGeneric<I>::operator/=(
-            const math::RationalGeneric<I>& frac ) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& frac )
 {
     // See definition of fraction division in operator/.
     // Check if frac's numerator equals 0
@@ -1144,7 +1135,6 @@ math::RationalGeneric<I> math::operator+(const math::RationalGeneric<I>& f)
  */
 template <typename I>
 math::RationalGeneric<I> math::operator-(const math::RationalGeneric<I>& f)
-                         throw (math::RationalException)
 {
     // check if I is an unsigned type
     if ( f.m_num != static_cast<I>(0) &&
@@ -1174,8 +1164,7 @@ math::RationalGeneric<I> math::operator-(const math::RationalGeneric<I>& f)
 template <typename I>
 math::RationalGeneric<I> math::operator+(
             const math::RationalGeneric<I>& f1, 
-            const math::RationalGeneric<I>& f2 ) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& f2 )
 {
     /*
      * Unreduced sum of two fractions:
@@ -1216,7 +1205,6 @@ template <typename I>
 math::RationalGeneric<I> math::operator+(
             const math::RationalGeneric<I>& f,
             const I& i )
-        throw (RationalException)
 {
     const long long int numerator =
             math::RationalNS::__private::__auxSum<I>(
@@ -1244,7 +1232,6 @@ template <typename I>
 math::RationalGeneric<I> math::operator+(
             const I& i,
             const math::RationalGeneric<I>& f )
-        throw (RationalException)
 {
     const long long int numerator =
             math::RationalNS::__private::__auxSum<I>(
@@ -1270,8 +1257,7 @@ math::RationalGeneric<I> math::operator+(
 template <typename I>
 math::RationalGeneric<I> math::operator-(
             const math::RationalGeneric<I>& f1, 
-            const math::RationalGeneric<I>& f2 ) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& f2 )
 {
     /*
      * Unreduced difference of two fractions:
@@ -1314,8 +1300,7 @@ math::RationalGeneric<I> math::operator-(
 template <typename I>
 math::RationalGeneric<I> math::operator-(
             const math::RationalGeneric<I>& f, 
-            const I& i ) 
-        throw (math::RationalException)
+            const I& i )
 {
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
@@ -1342,8 +1327,7 @@ math::RationalGeneric<I> math::operator-(
 template <typename I>
 math::RationalGeneric<I> math::operator-(
             const I& i, 
-            const math::RationalGeneric<I>& f ) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& f )
 {
     const long long int numerator = 
             math::RationalNS::__private::__auxSum<I>(
@@ -1370,8 +1354,7 @@ math::RationalGeneric<I> math::operator-(
 template <typename I>
 math::RationalGeneric<I> math::operator*(
             const math::RationalGeneric<I>& f1, 
-            const math::RationalGeneric<I>& f2) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& f2)
 {
     /*
      * Unreduced product of two fractions:
@@ -1408,8 +1391,7 @@ math::RationalGeneric<I> math::operator*(
 template <typename I>
 math::RationalGeneric<I> math::operator*(
             const math::RationalGeneric<I>& f, 
-            const I& i) 
-        throw (math::RationalException)
+            const I& i)
 {
     const long long int numerator = 
             math::RationalNS::__private::__auxProd<I>(f.m_num, i);
@@ -1435,8 +1417,7 @@ math::RationalGeneric<I> math::operator*(
 template <typename I>
 math::RationalGeneric<I> math::operator*(
             const I& i, 
-            const math::RationalGeneric<I>& f ) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& f )
 {
     const long long int numerator = 
             math::RationalNS::__private::__auxProd<I>(f.m_num, i);
@@ -1463,8 +1444,7 @@ math::RationalGeneric<I> math::operator*(
 template <typename I>
 math::RationalGeneric<I> math::operator/(
             const math::RationalGeneric<I>& f1, 
-            const math::RationalGeneric<I>& f2 ) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& f2 )
 {
     /*
      * Unreduced quotient of two fractions:
@@ -1509,8 +1489,7 @@ math::RationalGeneric<I> math::operator/(
 template <typename I>
 math::RationalGeneric<I> math::operator/(
             const math::RationalGeneric<I>& f, 
-            const I& i ) 
-        throw (math::RationalException)
+            const I& i )
 {
     // Check if 'i' equals 0
     if ( static_cast<I>(0) == i )
@@ -1544,8 +1523,7 @@ math::RationalGeneric<I> math::operator/(
 template <typename I>
 math::RationalGeneric<I> math::operator/(
             const I& i, 
-            const math::RationalGeneric<I>& f ) 
-        throw (math::RationalException)
+            const math::RationalGeneric<I>& f )
 {
     // Check if f's numerator equals 0
     if ( true == f.isZero() )

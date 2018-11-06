@@ -55,7 +55,7 @@ namespace StudentDist
         const I& n = static_cast<I>(1),
         const F& mu = static_cast<F>(0),
         const F& s = static_cast<F>(1)
-      ) throw (StatisticsException);
+      );
 
 
     template <typename F, typename I>
@@ -64,7 +64,7 @@ namespace StudentDist
         const I& n = static_cast<I>(1),
         const F& mu = static_cast<F>(0),
         const F& s = static_cast<F>(1)
-      ) throw (StatisticsException);
+      );
 
 
 
@@ -74,7 +74,7 @@ namespace StudentDist
         const F& df,
         const F& mu = static_cast<F>(0),
         const F& sigma = static_cast<F>(1)
-      ) throw (StatisticsException);
+      );
 
 
     template <typename F>
@@ -84,7 +84,7 @@ namespace StudentDist
         const F& df,
         const F& mu = static_cast<F>(0),
         const F& sigma = static_cast<F>(1)
-      ) throw (StatisticsException);
+      );
 
 
 
@@ -95,7 +95,7 @@ namespace StudentDist
         const bool lowerTail = true,
         const F& mu = static_cast<F>(0),
         const F& sigma = static_cast<F>(1)
-      ) throw (StatisticsException);
+      );
 
 
 
@@ -106,7 +106,7 @@ namespace StudentDist
         const bool lowerTail = true,
         const F& mu = static_cast<F>(0),
         const F& sigma = static_cast<F>(1)
-      ) throw (StatisticsException);
+      );
 
 }  // namespace StudentDist
 

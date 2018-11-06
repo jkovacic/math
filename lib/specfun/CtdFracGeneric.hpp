@@ -94,7 +94,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined
      */
-    virtual T fa(const std::size_t i) const throw (FunctionException) = 0;
+    virtual T fa(const std::size_t i) const = 0;
 
     /*
      * An interface for the function that returns the i^th coefficient
@@ -110,7 +110,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined
      */
-    virtual T fb(const std::size_t i) const throw (FunctionException) = 0;
+    virtual T fb(const std::size_t i) const = 0;
 
     virtual ~ICtdFracFuncGeneric();
 
@@ -123,7 +123,7 @@ template <class T>
 T ctdFrac(
            const ICtdFracFuncGeneric<T>& ctdf,
            const T& tol = static_cast<T>(SPECFUN_TOL_NUM)/static_cast<T>(SPECFUN_TOL_DEN)
-         ) throw(SpecFunException);
+         );
 
 }  // namespace CtdFrac
 

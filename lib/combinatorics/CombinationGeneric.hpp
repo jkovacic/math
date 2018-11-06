@@ -77,18 +77,18 @@ private:
     
 public:
     // Constructors:
-    CombinationGeneric(const std::vector<T>& el) throw(CombinatoricsException);
-    CombinationGeneric(const std::list<T>& el) throw(CombinatoricsException);
-    CombinationGeneric(const std::set<T>& el) throw(CombinatoricsException);
-    CombinationGeneric(const std::deque<T>& el) throw (CombinatoricsException);
-    CombinationGeneric(const T* elarray, const std::size_t len) throw (CombinatoricsException);
+    CombinationGeneric(const std::vector<T>& el);
+    CombinationGeneric(const std::list<T>& el);
+    CombinationGeneric(const std::set<T>& el);
+    CombinationGeneric(const std::deque<T>& el);
+    CombinationGeneric(const T* elarray, const std::size_t len);
     
     // Getter and setter for size of a subset (k) 
     std::size_t getK() const;
-    void setK(const std::size_t k) throw (CombinatoricsException);
+    void setK(const std::size_t k);
     
     // Retrieves next n combinations
-    void next(std::list<std::set<T> >& ret, const std::size_t n=1) throw (CombinatoricsException);
+    void next(std::list<std::set<T> >& ret, const std::size_t n=1);
     
     // More combinations available to be retrieved?
     bool hasNext() const;

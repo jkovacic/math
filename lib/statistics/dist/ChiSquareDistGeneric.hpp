@@ -51,7 +51,7 @@ namespace ChiSquareDist
     F pdf(
           const F& x,
           const F& df
-        ) throw (StatisticsException);
+        );
 
 
     template <typename F>
@@ -59,7 +59,7 @@ namespace ChiSquareDist
           const F& a,
           const F& b,
           const F& df
-        ) throw (StatisticsException);
+        );
 
 
     template <typename F>
@@ -67,7 +67,7 @@ namespace ChiSquareDist
           const F& x,
           const F& df,
           const bool lowerTail = true
-       ) throw (StatisticsException);
+       );
 
 
     template <typename F>
@@ -75,7 +75,7 @@ namespace ChiSquareDist
           const F& p,
           const F& df,
           const bool lowerTail = true
-        ) throw (math::StatisticsException);
+        );
 
 }  // namespace ChiSquareDist
 

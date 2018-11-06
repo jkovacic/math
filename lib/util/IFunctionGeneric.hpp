@@ -77,7 +77,7 @@ public:
      *
      * @throw FunctionExcpetion::UNDEFINED if the function is not defined at given 'x'
      */
-    virtual T operator()(const T& x) const throw(FunctionException) = 0;
+    virtual T operator()(const T& x) const = 0;
 
     virtual ~IFunctionGeneric();
 };  // class IFunctionGeneric

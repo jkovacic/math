@@ -162,7 +162,7 @@ F math::SampleStat::sum(const std::vector<F>& x)
  * @throw StatisticsException if 'x' is empty
  */
 template <typename F>
-F math::SampleStat::mean(const std::vector<F>& x) throw(math::StatisticsException)
+F math::SampleStat::mean(const std::vector<F>& x)
 {
     /*
      * Arithmetical mean is calculated as:
@@ -202,7 +202,7 @@ F math::SampleStat::mean(const std::vector<F>& x) throw(math::StatisticsExceptio
  * @throw StatisticsException if 'x' is empty or if 'df_sub' exceeds sample's size
  */
 template <typename F>
-F math::SampleStat::var(const std::vector<F>& x, const std::size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::var(const std::vector<F>& x, const std::size_t df_sub)
 {
     /*
      * The best known algorithm to calculate a variance is:
@@ -311,7 +311,7 @@ F math::SampleStat::var(const std::vector<F>& x, const std::size_t df_sub) throw
  * @throw StatisticsException if the sample is empty or too small
  */
 template <typename F>
-F math::SampleStat::var(const std::vector<F>& x, const bool sample) throw(math::StatisticsException)
+F math::SampleStat::var(const std::vector<F>& x, const bool sample)
 {
     return math::SampleStat::var<F>( x, static_cast<std::size_t>( (false==sample ? 0 : 1) ) );
 }
@@ -330,7 +330,7 @@ F math::SampleStat::var(const std::vector<F>& x, const bool sample) throw(math::
  * @throw StatisticsException if the sample is empty or too small
  */
 template <typename F>
-F math::SampleStat::stdev(const std::vector<F>& x, const bool sample) throw(math::StatisticsException)
+F math::SampleStat::stdev(const std::vector<F>& x, const bool sample)
 {
     return math::SampleStat::stdev<F>( x, static_cast<std::size_t>( (false==sample ? 0 : 1) ) );
 }
@@ -350,7 +350,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, const bool sample) throw(math
  * @throw StatisticsException if 'x' is empty or 'df_sub' exceeds sample's size
  */
 template <typename F>
-F math::SampleStat::stdev(const std::vector<F>& x, const std::size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::stdev(const std::vector<F>& x, const std::size_t df_sub)
 {
     /*
      * Standard deviation is calculated as square root
@@ -377,7 +377,7 @@ F math::SampleStat::stdev(const std::vector<F>& x, const std::size_t df_sub) thr
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or 'df_sub' exceeds single sample's size
  */
 template <typename F>
-F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const std::size_t df_sub) throw(math::StatisticsException)
+F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const std::size_t df_sub)
 {
     /*
      * Covariance of two equally sized samples (X1 and X2) can be
@@ -502,7 +502,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
 template <typename F>
-F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const bool sample) throw(math::StatisticsException)
+F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, const bool sample)
 {
     return math::SampleStat::cov<F>( x1, x2, static_cast<std::size_t>( (false==sample ? 0 : 1) ) );
 }
@@ -522,7 +522,7 @@ F math::SampleStat::cov(const std::vector<F>& x1, const std::vector<F>& x2, cons
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
 template <typename F>
-F math::SampleStat::cor(const std::vector<F>& x1, const std::vector<F>& x2) throw(math::StatisticsException)
+F math::SampleStat::cor(const std::vector<F>& x1, const std::vector<F>& x2)
 {
     /*
      * Correlation can be calculated as:
@@ -560,7 +560,7 @@ F math::SampleStat::cor(const std::vector<F>& x1, const std::vector<F>& x2) thro
  * @throw StatisticsException if any vector is empty, if they are not of equal sizes or if they are too small
  */
 template <typename F>
-F math::SampleStat::r2(const std::vector<F>& x1, const std::vector<F>& x2) throw(math::StatisticsException)
+F math::SampleStat::r2(const std::vector<F>& x1, const std::vector<F>& x2)
 {
     /*
      * R squared can be calculated by squaring the samples' correlation:
@@ -600,7 +600,7 @@ F math::SampleStat::r2(const std::vector<F>& x1, const std::vector<F>& x2) throw
  * @throw StatisticsException if 'n' is negative or 'x' is an empty vector
  */
 template <typename F, typename I>
-F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) throw(math::StatisticsException)
+F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about)
 {
     /*
      * A moment about an arbitrary value is defined as:
@@ -692,7 +692,7 @@ F math::SampleStat::moment(const std::vector<F>& x, const I& n, const F& about) 
  * @throw StatisticsException if 'n' is negative or 'x' is an empty vector
  */
 template <typename F, typename I>
-F math::SampleStat::centralMoment(const std::vector<F>& x, const I& n) throw(math::StatisticsException)
+F math::SampleStat::centralMoment(const std::vector<F>& x, const I& n)
 {
     /*
      * Central moment about the mean is defined as:
@@ -776,7 +776,7 @@ F math::SampleStat::centralMoment(const std::vector<F>& x, const I& n) throw(mat
  * @throw StatisticsExcpetion if 'x' is empty or all observations are equal
  */
 template <typename F>
-F math::SampleStat::skewness(const std::vector<F>& x, const bool samplesd) throw(math::StatisticsException)
+F math::SampleStat::skewness(const std::vector<F>& x, const bool samplesd)
 {
     /*
      * Sample skewness is defined as:
@@ -824,7 +824,7 @@ F math::SampleStat::skewness(const std::vector<F>& x, const bool samplesd) throw
  * @throw StatisticsExcpetion if 'x' is empty or all observations are equal
  */
 template <typename F>
-F math::SampleStat::kurtosis(const std::vector<F>& x, const bool excess, const bool samplesd) throw(math::StatisticsException)
+F math::SampleStat::kurtosis(const std::vector<F>& x, const bool excess, const bool samplesd)
 {
     /*
      * Sample's excess kurtosis is defined as:
@@ -878,7 +878,7 @@ F math::SampleStat::kurtosis(const std::vector<F>& x, const bool excess, const b
  * @throw StatisticsExeption if 'x' is an empty vector
  */
 template <typename F>
-F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) throw(math::StatisticsException)
+F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl)
 {
     // Number of all observations
     const std::size_t NN = x.size();
@@ -941,7 +941,7 @@ F math::SampleStat::ecdf(const std::vector<F>& x, const F& t, const bool incl) t
  * @throw StatisticsException if sizes of 'x1' and 'x2' are different or equal to 0
  */
 template <typename F>
-F math::SampleStat::sumproduct(const std::vector<F>& x1, const std::vector<F>& x2) throw (math::StatisticsException)
+F math::SampleStat::sumproduct(const std::vector<F>& x1, const std::vector<F>& x2)
 {
     const std::size_t N1 = x1.size();
     const std::size_t N2 = x2.size();

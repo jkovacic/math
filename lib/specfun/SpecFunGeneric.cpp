@@ -250,7 +250,7 @@ T __lnGamma(const T& x)
  * @throw SpecFunexception if gamma function is not defined for the given 'x' (when 'x' is a negative integer)
  */
 template <class T>
-T math::SpecFun::gamma(const T& x) throw (math::SpecFunException)
+T math::SpecFun::gamma(const T& x)
 {
 
     const T PI = static_cast<T>(MATH_CONST_PI);
@@ -405,7 +405,7 @@ T math::SpecFun::gamma(const T& x) throw (math::SpecFunException)
  * @throw SpecFunException if function is not defined for any 'x' or 'y' (if any input is a negative integer)
  */
 template <class T>
-T math::SpecFun::beta(const T& x, const T& y) throw (math::SpecFunException)
+T math::SpecFun::beta(const T& x, const T& y)
 {
     /*
      * It can be shown that B(x,y) can be expressed with gamma
@@ -474,14 +474,14 @@ public:
     }
 
     // a(x,i) = -i * (i-a)
-    T fa(const std::size_t i) const throw (math::FunctionException)
+    T fa(const std::size_t i) const
     {
         const T f = static_cast<T>(i);
         return -f * (f - this->m_a);
     }
 
     // b(x,i) = x - a + 1 + 2*i
-    T fb(const std::size_t i) const throw (math::FunctionException)
+    T fb(const std::size_t i) const
     {
         return this->m_x - this->m_a + static_cast<T>(1) + 
                     static_cast<T>(2) * static_cast<T>(i);
@@ -542,7 +542,7 @@ public:
      * a(x,i) = -(a+m)*(a+b+m)*x / ( (a+2m)*(a+2m+1) )   when i=2*m+1
      * a(x,i) = m*(b-m)*x / ( (a+2m-1)*(a+2m) )          when i=2*m
      */
-    T fa(const std::size_t i) const throw(math::FunctionException)
+    T fa(const std::size_t i) const
     {
         const std::size_t m = i / 2;
         T ai = static_cast<T>(0);
@@ -564,7 +564,7 @@ public:
     }
 
     // b(x,i) = 1
-    T fb(const std::size_t i) const throw(math::FunctionException)
+    T fb(const std::size_t i) const
     {
         (void) i;
         return static_cast<T>(1);
@@ -591,7 +591,7 @@ T __incGamma(
                  const bool upper,
                  const bool reg,
                  const T& tol
-               ) throw(math::SpecFunException)
+               )
 {
     // An instance of __CtdFIncGamma that implements 'fa' and 'fb':
     const math::SpecFun::__private::__CtdFIncGamma<T> coef(a, x);
@@ -761,7 +761,7 @@ std::complex<T> __incGamma(
                  const bool upper,
                  const bool reg,
                  const std::complex<T>& tol
-               ) throw(math::SpecFunException)
+               )
 {
     /*
      * The lower incomplete gamma function can be expanded into:
@@ -873,7 +873,7 @@ T __incBeta(
           const bool lower,
           const bool reg,
           const T& tol
-        ) throw (math::SpecFunException)
+        )
 {
     // sanity check
     if ( a < math::NumericUtil::getEPS<T>() ||
@@ -1004,7 +1004,7 @@ std::complex<T> __incBeta(
           const bool lower,
           const bool reg,
           const std::complex<T>& tol
-        ) throw (math::SpecFunException)
+        )
 {
     /*
      * Series expansion of the incomplete beta function as explained at:
@@ -1137,7 +1137,7 @@ T math::SpecFun::incGammaUpper(
                const T& a,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incGamma(a, x, true, false, tol);
 }
@@ -1172,7 +1172,7 @@ T math::SpecFun::incGammaLower(
                const T& a,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incGamma(a, x, false, false, tol);
 }
@@ -1207,7 +1207,7 @@ T math::SpecFun::incGammaUpperReg(
                const T& a,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incGamma(a, x, true, true, tol);
 }
@@ -1242,7 +1242,7 @@ T math::SpecFun::incGammaLowerReg(
                const T& a,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incGamma(a, x, false, true, tol);
 }
@@ -1280,7 +1280,7 @@ T math::SpecFun::incBetaLower(
                const T& b,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incBeta(a, b, x, true, false, tol);
 }
@@ -1318,7 +1318,7 @@ T math::SpecFun::incBetaUpper(
                const T& b,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incBeta(a, b, x, false, false, tol);
 }
@@ -1356,7 +1356,7 @@ T math::SpecFun::incBetaLowerReg(
                const T& b,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incBeta(a, b, x, true, true, tol);
 }
@@ -1394,7 +1394,7 @@ T math::SpecFun::incBetaUpperReg(
                const T& b,
                const T& x,
                const T& tol
-             ) throw(math::SpecFunException)
+             )
 {
     return math::SpecFun::__private::__incBeta(a, b, x, false, true, tol);
 }
@@ -1602,7 +1602,7 @@ T __invIncGamma(
              const bool upper,
              const bool reg,
              const T& tol
-           ) throw (math::SpecFunException)
+           )
 {
     // sanity check
     if ( a < math::NumericUtil::getEPS<T>() ||
@@ -1815,7 +1815,7 @@ T __invIncBeta(
              const bool lower,
              const bool reg,
              const T& tol
-           ) throw (math::SpecFunException)
+           )
 {
     // sanity check
     if ( a < math::NumericUtil::getEPS<T>() ||
@@ -2064,7 +2064,7 @@ T math::SpecFun::incGammaLowerInv(
            const T& a,
            const T& g,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncGamma<T>(a, g, false, false, tol);
 }
@@ -2098,7 +2098,7 @@ T math::SpecFun::incGammaUpperInv(
            const T& a,
            const T& g,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncGamma<T>(a, g, true, false, tol);
 }
@@ -2132,7 +2132,7 @@ T math::SpecFun::incGammaLowerRegInv(
            const T& a,
            const T& g,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncGamma<T>(a, g, false, true, tol);
 }
@@ -2166,7 +2166,7 @@ T math::SpecFun::incGammaUpperRegInv(
            const T& a,
            const T& g,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncGamma<T>(a, g, true, true, tol);
 }
@@ -2202,7 +2202,7 @@ T math::SpecFun::incBetaLowerInv(
            const T& b,
            const T& y,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncBeta<T>(a, b, y, true, false, tol);
 }
@@ -2238,7 +2238,7 @@ T math::SpecFun::incBetaUpperInv(
            const T& b,
            const T& y,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncBeta<T>(a, b, y, false, false, tol);
 }
@@ -2274,7 +2274,7 @@ T math::SpecFun::incBetaLowerRegInv(
            const T& b,
            const T& y,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncBeta<T>(a, b, y, true, true, tol);
 }
@@ -2310,7 +2310,7 @@ T math::SpecFun::incBetaUpperRegInv(
            const T& b,
            const T& y,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     return math::SpecFun::__private::__invIncBeta<T>(a, b, y, false, true, tol);
 }
@@ -2335,7 +2335,7 @@ template <class T>
 T math::SpecFun::erfInv(
            const T& e,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     /*
      * The following properties of the error function will be applied:
@@ -2395,7 +2395,7 @@ template <class T>
 T math::SpecFun::erfcInv(
            const T& e,
            const T& tol
-         ) throw (math::SpecFunException)
+         )
 {
     /*
      * The following properties of the complementary error function will be applied:
