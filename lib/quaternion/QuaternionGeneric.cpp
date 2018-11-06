@@ -62,7 +62,7 @@ limitations under the License.
  * @param o - scalar component of the quaternion (default: 0)
  * @param i - component i of the quaternion (default: 0)
  * @param j - component j of the quaternion (default: 0)
- * @param k - component j of the quaternion (default: 0)
+ * @param k - component k of the quaternion (default: 0)
  */
 template <typename F>
 math::QuaternionGeneric<F>::QuaternionGeneric(const F& o, const F& i, const F& j, const F& k) :
@@ -96,7 +96,7 @@ math::QuaternionGeneric<F>::QuaternionGeneric(const math::QuaternionGeneric<F>& 
 template <typename F>
 math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::operator=(const math::QuaternionGeneric<F>& q)
 {
-    // Nothing to do, if attempting to assign itself
+    // Nothing to do if attempting to assign itself
     if ( this == &q )
     {
         return *this;
@@ -180,7 +180,7 @@ F math::QuaternionGeneric<F>::getK() const
  * @param o - scalar component of the quaternion (default: 0)
  * @param i - component i of the quaternion (default: 0)
  * @param j - component j of the quaternion (default: 0)
- * @param k - component j of the quaternion (default: 0)
+ * @param k - component k of the quaternion (default: 0)
  *
  * @return reference to itself
  */
@@ -490,7 +490,7 @@ math::QuaternionGeneric<F>& math::QuaternionGeneric<F>::rdiv_(const math::Quater
  *
  * @note This operator is actually equivalent to left division by a scalar
  *
- * @param sc - scalar to divide "'his'
+ * @param sc - scalar to divide 'this'
  *
  * @return reference to itself
  *
@@ -975,7 +975,7 @@ math::QuaternionGeneric<F> math::operator*(const math::QuaternionGeneric<F>& q, 
     /*
      * From the definition of quaternion multiplication (see operator*),
      * one can quickly derive the following simplified formula:
-     *   (a+ b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
+     *   (a + b*i + c*j + d*k) * s = (a*s + (b*s)*i + (c*s)*j + (d*s)*k))
      */
 
     return math::QuaternionGeneric<F>(
