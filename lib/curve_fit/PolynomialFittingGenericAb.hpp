@@ -21,8 +21,8 @@ limitations under the License.
  *
  * An internal header file, it should not be included directly.
  *
- * Declaration of the class PolynomialFittingGenericAb.h. This is an 
- * abstract class with some functionality common to all derived classes
+ * Declaration and partial implementation of the class PolynomialFittingGenericAb.h.
+ * This is an abstract class with some functionality common to all derived classes
  * that perform polynomial interpolation, regression, etc.
  */
 
@@ -56,17 +56,58 @@ protected:
     PolynomialGeneric<F> m_poly;
 
 public:
-    // get a copy of the best fitting polynomial
-    PolynomialGeneric<F> getPolynomial() const;
-    // inherited as an abstract function from the base class, value of the polynomial at the given abscissa
-    F valueAt(const F& x, const bool strict=true) const;
+
+    /**
+     * @return a copy of the polynomial that best fits entered points.
+     * 
+     * @throw CurveFittingException if the polynomial has not been generated yet 
+     */
+    PolynomialGeneric<F> getPolynomial() const
+    {
+        if ( false==this->m_curveGenerated )
+        {
+            throw math::CurveFittingException(math::CurveFittingException::CURVE_NOT_GENERATED);
+        }
+
+        return this->m_poly;
+    }
+    
+    
+    
+    /**
+     * Evaluates the best fitting polynomial at the given input value 'x'.
+     * Sometimes extrapolation (when 'x' is not within bounds defined by the entered 
+     * points) is not desired, so by default an exception is thrown on such occurrences.
+     * 
+     * @param x - input argument to the polynomial
+     * @param strict - whether an exception is thrown if 'x' is out of bounds (default: true)
+     * 
+     * @return value of the polynomial for the given 'x'
+     * 
+     * @throw CurveFittingException if the polynomial has not been generated yet or 'x' is out of definition range bounds
+     */
+    F valueAt(const F& x, const bool strict=true) const
+    {
+        // the curve must be already generated
+        if ( false==this->m_curveGenerated )
+        {
+            throw math::CurveFittingException(math::CurveFittingException::CURVE_NOT_GENERATED);
+        }
+
+        // check if 'x' is within the definition range
+        if ( true==strict && (x<this->m_points.front().m_x || x>this->m_points.back().m_x) )
+        {
+            throw math::CurveFittingException(math::CurveFittingException::OUT_OF_BOUNDS);
+        }
+
+        // evaluate the polynomial using the PolynomialGeneric's member function
+        return this->m_poly.value(x);
+    }
 
     //generateCurve() remains a pure virtual method and must be implemented by derived classes
 };
 
 }  // namespace math
 
-// DEFINITION
-#include "curve_fit/PolynomialFittingGenericAb.cpp"
 
 #endif  // _MATH_POLYNOMIALFITTINGGENERICAB_HPP_

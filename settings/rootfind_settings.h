@@ -58,7 +58,7 @@ limitations under the License.
  * Default 1st order differentiation method for algorithms
  * that perform numerical differentiation.
  */
-#define ROOTFIND_DEFAULT_DIFF_METHOD       math::EDiffMethod::CENTRAL
+#define ROOTFIND_DEFAULT_DIFF_METHOD       math::Diff::EDiffMethod::CENTRAL
 
 
 

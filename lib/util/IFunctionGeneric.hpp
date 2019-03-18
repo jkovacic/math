@@ -21,7 +21,7 @@ limitations under the License.
  * An internal header file, it should not be included directly.
  * @headername{IFunction.h}
  *
- * Declaration of the base class IFunctionGeneric
+ * Declaration and implementation of the base class IFunctionGeneric
  */
 
 #ifndef _MATH_IFUNCTIONGENERIC_HPP_
@@ -79,7 +79,14 @@ public:
      */
     virtual T operator()(const T& x) const = 0;
 
-    virtual ~IFunctionGeneric();
+    /*
+     * IFunctionGeneric's destructor, "implemented" as an empty function
+     */
+    virtual ~IFunctionGeneric()
+    {
+        // empty destructor
+    }
+
 };  // class IFunctionGeneric
 
 // Float, double and long double functions make most sense,
@@ -91,7 +98,5 @@ typedef IFunctionGeneric<long double>   LDIFunction;
 
 }
 
-// DEFINITION
-#include "util/IFunctionGeneric.cpp"
 
 #endif  // _MATH_IFUNCTIONGENERIC_HPP_

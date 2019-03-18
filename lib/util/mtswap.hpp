@@ -20,8 +20,8 @@ limitations under the License.
  *
  * An internal header file, it should not be included directly.
  *
- * Declaration of functions that perform swapping of
- * vector's elements.
+ * Declaration and implementation of functions that perform
+ * swapping of vector's elements.
  *
  * Since vectors are contiguous containers, it is possible to
  * distribute large amounts of swaps among multiple threads
@@ -35,23 +35,76 @@ limitations under the License.
 #ifndef _MATH_MTSWAP_HPP_
 #define _MATH_MTSWAP_HPP_
 
+
+#include <cstddef>
 #include <vector>
+#include <algorithm>
+
+#include "../settings/omp_settings.h"
+#include "omp/omp_header.h"
+#include "omp/omp_coarse.h"
+
 
 namespace math
 {
 
 
+/**
+ * Swaps all elements of two equally sized vector's ranges.
+ * The regions can belong either to two different vectors
+ * (of the same templated parameter) or to two ranges of
+ * the same vector.
+ *
+ * @note The regions must not overlap!
+ *
+ * @param first - iterator to the initial element of the selected range
+ * @param last - iterator to the final element of the selected range (will not be swapped)
+ * @param destit - iterator to the first element of the second range
+ */
 template <class T>
 void mtswap(
         const typename std::vector<T>::iterator& first,
         const typename std::vector<T>::iterator& last,
-        const typename std::vector<T>::iterator& destit );
+        const typename std::vector<T>::iterator& destit )
+{
+    // Nothing to do if 'last' is located before 'first'
+    if ( last <= first )
+    {
+        return;
+    }
+
+    // Number of elements in the range
+    const std::size_t N = last - first;
+
+    // Coarse grained parallelism, if OpenMP is enabled
+    #pragma omp parallel num_threads(ompIdeal(N)) \
+                    if(N>OMP_CHUNKS_PER_THREAD) \
+                    default(none) shared(destit, first)
+    {
+        OMP_COARSE_GRAINED_PAR_INIT_VARS(N);
+
+        // Iterator to the final element of the source block
+        const typename std::vector<T>::const_iterator final = first + iend;
+
+        // iterator to the current element of the source block
+        typename std::vector<T>::iterator it = first + istart;
+
+        typename std::vector<T>::iterator dest = destit + istart;
+        for ( ;
+              it != final;
+              ++it, ++dest )
+        {
+            T& currSrc = *it;
+            T& currDest = *dest;
+
+            std::swap<T>(currSrc, currDest);
+        }
+    }
+}
+
 
 }  // namespace math
 
-
-// DEFINITION
-#include "util/mtswap.cpp"
 
 
 #endif  // _MATH_MTSWAP_HPP_

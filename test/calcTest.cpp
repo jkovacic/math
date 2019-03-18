@@ -79,15 +79,15 @@ void calculusTest()
         cout << "f(x) = " << f.ke << "*exp(-(x-3)^2) " << showpos << f.kl << "*x " << f.n << noshowpos << endl << endl;
 
         cout << "Numerical integration:" << endl;
-        for ( int method=EIntegAlg::RECTANGLE; method<=EIntegAlg::BOOLE; ++method )
+        for ( int method=Integ::EIntegAlg::RECTANGLE; method<=Integ::EIntegAlg::BOOLE; ++method )
         {
             cout << "Method " << method << ": Int(f(x), 0, 5) = " <<
-                     Integ::integ(f, 0., 5., 10000, static_cast<EIntegAlg::alg>(method)) << endl;
+                     Integ::integ(f, 0., 5., 10000, static_cast<Integ::EIntegAlg::alg>(method)) << endl;
         }
 
         // A different 'n' is required for the Romberg's method:
         cout << "Romberg's method: Int(f(x), 0, 5) = " <<
-                     Integ::integ(f, 0., 5., 6, EIntegAlg::ROMBERG) << endl;
+                     Integ::integ(f, 0., 5., 6, Integ::EIntegAlg::ROMBERG) << endl;
 
         cout << "Expected result: 16.23780211731536" << endl;
 
@@ -109,10 +109,10 @@ void calculusTest()
 
 
         cout << endl << "Numerical differentiation:" << endl;
-        for ( int method=EDiffMethod::FORWARD; method<=EDiffMethod::FIVE_POINT; ++method )
+        for ( int method=Diff::EDiffMethod::FORWARD; method<=Diff::EDiffMethod::FIVE_POINT; ++method )
         {
             cout << "Method " << method << ": f'(4) = " <<
-                    Diff::diff(f, 4.0, 0.001, static_cast<EDiffMethod::method>(method)) << endl;
+                    Diff::diff(f, 4.0, 0.001, static_cast<Diff::EDiffMethod::method>(method)) << endl;
         }
         cout << "Expected result: 0.48496878235998" << endl;
 

@@ -45,7 +45,7 @@ limitations under the License.
 /**
  * Default integration method
  */
-#define INTEG_DEFAULT_METHOD       math::EIntegAlg::SIMPSON
+#define INTEG_DEFAULT_METHOD       math::Integ::EIntegAlg::SIMPSON
 
 
 /**
@@ -68,7 +68,7 @@ limitations under the License.
 /**
  * Default 1st order differentiation method
  */
-#define DIFF_DEFAULT_METHOD        math::EDiffMethod::CENTRAL
+#define DIFF_DEFAULT_METHOD        math::Diff::EDiffMethod::CENTRAL
 
 
 #endif  /* _MATH_CALC_SETTINGS_H_ */

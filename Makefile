@@ -95,7 +95,7 @@ DEP_LINEQ_SETTINGS = $(SETTINGDIR)lineq_settings.h
 # Header dependencies of templated classes
 # Note #1: Dependencies may be listed several times and all
 #          duplicated dependencies will be removed from the list later
-# Note #2: No Suffixes (.hpp and .cpp) must be appended to file names
+# Note #2: No Suffixes (.hpp and possibly .cpp) must be appended to file names
 #          as it will be handled later.
 #          The only exception are OMP and settings dependencies (*.h files) that are
 #          actually not objects.
@@ -128,12 +128,11 @@ DEP_RAT = $(LIBRATIONALDIR)RationalGeneric $(DEP_INTUTIL) $(DEP_INTFACT)
 DEP_SPECFUN = $(LIBSPECFUNDIR)SpecFunGeneric $(DEP_NUMUTIL) $(DEP_MATHCONST) $(DEP_SPECFUN_SETTINGS) $(LIBSPECFUNDIR)lanczos_coef.h
 DEP_SPECFUN += $(LIBSPECFUNDIR)CtdFracGeneric $(DEP_NUMUTIL) $(DEP_SPECFUN_SETTINGS)
 
-DEP_PIVOT = $(LIBMATRIXDIR)PivotGeneric $(DEP_NUMUTIL) $(DEP_PSEUDOFUNC) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
-DEP_MATRIX = $(DEP_MATRIX_SETTINGS) $(LIBMATRIXDIR)MatrixGeneric $(DEP_PIVOT) \
-             $(DEP_MTCOPY) $(DEP_MTVECTOP) $(DEP_MTSWAP) $(DEP_OMPSETTINGS) \
-             $(DEP_OMPHEADER) $(DEP_OMPCOARSE) $(DEP_NUMUTIL)
-DEP_LINEQ = $(LIBMATRIXDIR)LinearEquationSolverGeneric $(DEP_NUMUTIL) $(DEP_PSEUDOFUNC) $(DEP_MATRIX) $(DEP_PIVOT) $(DEP_LINEQ_SETTINGS) \
-            $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
+DEP_MATRIX = $(DEP_MATRIX_SETTINGS) $(LIBMATRIXDIR)MatrixGeneric \
+             $(DEP_MTCOPY) $(DEP_MTVECTOP) $(DEP_MTSWAP) $(DEP_OMPSETTINGS) $(DEP_NUMUTIL) \
+             $(DEP_FILLVECTORS) $(DEP_PSEUDOFUNC) $(DEP_OMPHEADER) $(DEP_OMPCOARSE) $(DEP_NUMUTIL)
+DEP_LINEQ = $(LIBMATRIXDIR)LinearEquationSolverGeneric $(DEP_NUMUTIL) $(DEP_PSEUDOFUNC) $(DEP_MATRIX) $(DEP_LINEQ_SETTINGS) \
+            $(DEP_FILLVECTORS) $(DEP_OMPSETTINGS) $(DEP_OMPHEADER) $(DEP_OMPCOARSE)
 
 DEP_CURVEFITAB = $(LIBCURVEFITDIR)CurveFittingGenericAb $(DEP_NUMUTIL)
 DEP_CURVEFITPOLY = $(LIBCURVEFITDIR)PolynomialFittingGenericAb $(DEP_CURVEFITAB) $(DEP_POLYNOMIAL)
@@ -309,7 +308,6 @@ TEST_PROBDIST_GENDEP = $(DEP_NORMDIST) $(DEP_LOGNORMDIST) $(DEP_STUDDIST) $(DEP_
 #
 # Note: any white spaces after the comma may be joined to the input list 
 gen_deps = $(sort $(addsuffix $(HEADERSUFFIX),$(filter-out %.h,$1))) \
-           $(sort $(addsuffix $(CPPSUFFIX),$(filter-out %.h,$1))) \
            $(sort $(filter %.h,$1))
 
 
