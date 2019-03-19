@@ -696,12 +696,22 @@ public:
     /**
      * Destructor
      */
-    virtual ~SampleQuantileGenericAb()
-    {
-        // Actually nothing to do
-    }
+    virtual ~SampleQuantileGenericAb() = 0;
+
 
 };  // class SampleQuantileGenericAb
+
+
+
+/*
+ * Pure virtual destructor must be "implemented" separately
+ */
+template <class F>
+SampleQuantileGenericAb<F>::~SampleQuantileGenericAb()
+{
+    // Actually nothing to do
+}
+
 
 }  // namespace math
 
